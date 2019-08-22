@@ -2,9 +2,11 @@ from setuptools import setup, find_packages
 import os.path
 from distutils.command.build_py import build_py
 
+package = 'spopt' #name of package
+
 # Get __version__ from spopt/__init__.py without importing the package
 # __version__ has to be defined in the first line
-with open('spopt/__init__.py', 'r') as f:
+with open('%s/__init__.py' % package, 'r') as f:
     exec(f.readline())
 
 def _get_requirements_from_files(groups_files):
@@ -29,7 +31,7 @@ def setup_package():
     install_reqs = reqs.pop('base')
     extras_reqs = reqs
 
-    setup(name='spopt', #name of package
+    setup(name=package,
           version=__version__,
           description='', #short <80chr description
           url='', #github repo
