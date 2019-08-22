@@ -55,7 +55,8 @@ def setup_package():
           install_requires=install_reqs,
           extras_require=extras_reqs,
           zip_safe=False,
-          cmdclass = {'build.py':build_py})
+          cmdclass = {'build.py':build_py},
+          python_requires='>3.5')
 
 if __name__ == '__main__':
     setup_package()
