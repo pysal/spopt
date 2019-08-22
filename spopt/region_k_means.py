@@ -1,6 +1,4 @@
 from .BaseClass import BaseSpOptHeuristicSolver
-from libpysal.weights.util import get_points_array_from_shapefile
-from libpysal.io.fileio import FileIO as psopen
 from collections import defaultdict
 import numpy
 import networkx
@@ -63,7 +61,6 @@ def _seeds(areas, k):
 
 def is_neighbor(area, region, w):
     """Check if area is a neighbor of any member of region"""
-    neighboring = False
     for member in region:
         if area in w[member]:
             return True
