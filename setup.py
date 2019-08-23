@@ -34,7 +34,7 @@ def setup_package():
     setup(name=package,
           version=__version__,
           description='', #short <80chr description
-          url='', #github repo
+          url='https://github.com/pysal/'+package,, #github repo
           maintainer='',
           maintainer_email='',
           test_suite = 'nose.collector',
