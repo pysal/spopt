@@ -8,10 +8,12 @@ env:
 matrix:
   fast_finish: true
   allow_failures: #allow travis tests to fail if using the github version of libpysal
-      - python: 3.6
-        env: PYSAL_PYPI=false MPLBACKEND='pdf'
-      - python: 3.7
-        env: PYSAL_PYPI=false MPLBACKEND='pdf'
+      - name: "python-3.6"
+        env: PY=3.6 PYSAL_PYPI=false MPLBACKEND='pdf'
+      - name: "python-3.7"
+        env: PY=3.7 PYSAL_PYPI=false MPLBACKEND='pdf'
+      - name: "tarball"
+        env: PY=3.7 PYSAL_PYPI=false MPLBACKEND='pdf'
 
 before_install:
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
