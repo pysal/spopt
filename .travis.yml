@@ -14,6 +14,7 @@ env:
   - PYSAL_PYPI=false MPLBACKEND='pdf'
 
 matrix:
+  fast_finish: true
   allow_failures: #allow travis tests to fail if using the github version of libpysal
       - python: 3.6
         env: PYSAL_PYPI=false MPLBACKEND='pdf'
