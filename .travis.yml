@@ -9,12 +9,6 @@ python:
   - 3.6
   - 3.7
 
-# to add testing, replace spopt with your package's name, and {AUTHOR_EMAILS} with a
-# YAML list of author emails, like:
-# - robert@gmail.com
-# - betsy@gmail.com
-# - frank@gmail.com
-
 env:
   - PYSAL_PYPI=true MPLBACKEND='pdf'
   - PYSAL_PYPI=false MPLBACKEND='pdf'
