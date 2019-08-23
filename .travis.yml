@@ -1,17 +1,13 @@
+dist: xenial
 language: python
-sudo: false
+sudo: true
 branches:
   only:
     - master
-python:
-  - 3.5
-  - 3.6
 
-# to add testing, replace spopt with your package's name, and {AUTHOR_EMAILS} with a
-# YAML list of author emails, like:
-# - robert@gmail.com
-# - betsy@gmail.com
-# - frank@gmail.com
+python:
+  - 3.6
+  - 3.7
 
 env:
   - PYSAL_PYPI=true MPLBACKEND='pdf'
@@ -19,9 +15,9 @@ env:
 
 matrix:
   allow_failures: #allow travis tests to fail if using the github version of libpysal
-      - python: 3.5
-        env: PYSAL_PYPI=false MPLBACKEND='pdf'
       - python: 3.6
+        env: PYSAL_PYPI=false MPLBACKEND='pdf'
+      - python: 3.7
         env: PYSAL_PYPI=false MPLBACKEND='pdf'
 
 before_install:
@@ -31,13 +27,14 @@ before_install:
   - export PATH=`pwd`/miniconda/bin:$PATH
   - conda update --yes conda
   - conda config --append channels conda-forge
+  - conda config --set channel_priority strict
   - conda create -y -q -n test-env python=$TRAVIS_PYTHON_VERSION
   - source activate test-env
 
 install:
   - conda install --yes pip
   - conda install --yes --file requirements.txt;
-  - conda install --yes -c conda-forge geopandas #comment this line if geopandas is not a dependency for the package
+  #- conda install --yes -c conda-forge geopandas #comment this line if geopandas is not a dependency for the package
   - pip install -r requirements_pip.txt
   - pip install -r requirements_tests.txt
   # configure dual tests (for dependency libpysal)
