@@ -1,11 +1,13 @@
+dist: xenial
 language: python
-sudo: false
+sudo: true
 branches:
   only:
     - master
+
 python:
-  - 3.5
   - 3.6
+  - 3.7
 
 # to add testing, replace spopt with your package's name, and {AUTHOR_EMAILS} with a
 # YAML list of author emails, like:
