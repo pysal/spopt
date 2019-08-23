@@ -16,22 +16,24 @@ matrix:
         env: PY=3.7 PYSAL_PYPI=false MPLBACKEND='pdf'
 
 before_install:
-  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-  - chmod +x miniconda.sh
-  - ./miniconda.sh -b -p ./miniconda
-  - export PATH=`pwd`/miniconda/bin:$PATH
-  - conda update --yes conda
-  - conda config --append channels conda-forge
-  - conda config --set channel_priority strict
-  - conda create -y -q -n test-env python=$TRAVIS_PYTHON_VERSION
-  - source activate test-env
+  # Install miniconda and create TEST env.
+  - |
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+    bash miniconda.sh -b -p $HOME/miniconda
+    export PATH="$HOME/miniconda/bin:$PATH"
+    conda config --set always_yes yes --set changeps1 no --set show_channel_urls true
+    conda update --quiet conda
+    conda config --add channels conda-forge --force
+    conda config --set channel_priority strict
+    conda config --set safety_checks disabled
+    conda create --name TEST python=$PY --file requirements.txt --file --file requirements_docs.txt --file
+    source activate TEST
+    conda info --all
 
 install:
   - conda install --yes pip
-  - conda install --yes --file requirements.txt;
   #- conda install --yes -c conda-forge geopandas #comment this line if geopandas is not a dependency for the package
   - pip install -r requirements_pip.txt
-  - pip install -r requirements_tests.txt
   # configure dual tests (for dependency libpysal)
   - if "$PYSAL_PYPI"; then
         echo 'testing pypi libpysal' && pip install libpysal;
