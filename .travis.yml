@@ -34,7 +34,6 @@ before_install:
 
 install:
   - pip install -e . --no-deps --force-reinstall
-  #- conda install --yes -c conda-forge geopandas #comment this line if geopandas is not a dependency for the package
   - pip install -r requirements_pip.txt
   # configure dual tests (for dependency libpysal)
   - if "$PYSAL_PYPI"; then
