@@ -7,13 +7,13 @@ env:
 
 matrix:
   fast_finish: true
-  allow_failures: #allow travis tests to fail if using the github version of libpysal
+  include:
       - name: "python-3.6"
-        env: PY=3.6 PYSAL_PYPI=false MPLBACKEND='pdf'
+        env: PY=3.6
       - name: "python-3.7"
-        env: PY=3.7 PYSAL_PYPI=false MPLBACKEND='pdf'
+        env: PY=3.7
       - name: "tarball"
-        env: PY=3.7 PYSAL_PYPI=false MPLBACKEND='pdf'
+        env: PY=3.7
 
 before_install:
   # Install miniconda and create TEST env.
