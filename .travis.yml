@@ -1,19 +1,21 @@
 language: minimal
 sudo: false
 
-env:
-  - PYSAL_PYPI=true MPLBACKEND='pdf'
-  - PYSAL_PYPI=false MPLBACKEND='pdf'
-
 matrix:
   fast_finish: true
   include:
       - name: "python-3.6"
-        env: PY=3.6
+        env: PY=3.6 PYSAL_PYPI=true
+      - name: "python-3.6"
+        env: PY=3.6 PYSAL_PYPI=false
       - name: "python-3.7"
-        env: PY=3.7
+        env: PY=3.7 PYSAL_PYPI=true
+      - name: "python-3.7"
+        env: PY=3.7 PYSAL_PYPI=false
       - name: "tarball"
-        env: PY=3.7
+        env: PY=3.7 PYSAL_PYPI=true
+      - name: "tarball"
+        env: PY=3.7 PYSAL_PYPI=false
 
 before_install:
   # Install miniconda and create TEST env.
