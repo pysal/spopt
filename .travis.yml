@@ -42,9 +42,14 @@ install:
     fi;
 
 script:
-  - python setup.py sdist >/dev/null
-  - python setup.py install
-  - nosetests --verbose --with-coverage --cover-package=spopt
+  - if [[ $TRAVIS_JOB_NAME == python-* ]]; then
+      travis_wait 45 nosetests --verbose --with-coverage --cover-package=spopt ;
+    fi
+
+  - if [[ $TRAVIS_JOB_NAME == 'tarball' ]]; then
+      pip wheel . -w dist --no-deps ;
+      twine check dist/* ;
+    fi
 
 notifications:
     email:
