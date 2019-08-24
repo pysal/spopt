@@ -4,3 +4,5 @@ nose-exclude
 coverage
 coveralls
 matplotlib
+twine
+wheel
