@@ -24,7 +24,7 @@ ITERSA=10
 
 
 def maxp(gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_construction=ITERCONSTRUCT,
-         max_iterations_sa=ITERSA, verbose=True):
+         max_iterations_sa=ITERSA, verbose=False):
     """
     Arguments
     ---------
@@ -49,7 +49,8 @@ def maxp(gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_co
            max number of iterations for customized simulated annealing
 
     verbose: boolean
-             True
+             False
+             Reporting solution progress/debugging
 
     Returns
     -------
@@ -149,7 +150,6 @@ def construction_phase(arr,
                     labels, threshold_array, P, NeighborPolys, C,
                     weight, spatialThre)
 
-                print('spatialAttrTotal, LabelID ', (spatialAttrTotal, labeledID))
                 if spatialAttrTotal < spatialThre:
                     enclave.extend(labeledID)
                 else:
@@ -385,7 +385,8 @@ def performSA(initLabels, initRegionList, initRegionSpatialAttr,
 
 
 class MaxPHeuristic(BaseSpOptHeuristicSolver):
-    def __init__(self, gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_construction=99, max_iterations_sa=ITERSA):
+    def __init__(self, gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_construction=99, max_iterations_sa=ITERSA,
+                 verbose=False):
         self.gdf = gdf
         self.w = w
         self.attrs_name = attrs_name
@@ -394,10 +395,12 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         self.top_n = top_n
         self.max_iterations_construction = max_iterations_construction
         self.max_iterations_sa = max_iterations_sa
+        self.verbose=verbose
 
     def solve(self):
         max_p, label = maxp(self.gdf, self.w, self.attrs_name, self.threshold_name,
-                            self.threshold, self.top_n, self.max_iterations_construction, self.max_iterations_sa)
+                            self.threshold, self.top_n, self.max_iterations_construction, self.max_iterations_sa,
+                            verbose=self.verbose)
         self.labels_ = label
         self.p = max_p
 
