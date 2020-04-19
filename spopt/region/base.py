@@ -1,4 +1,4 @@
-"""Base classes for spopt"""
+"""Base classes for spopt/region"""
 
 from libpysal.io.fileio import FileIO as psopen
 import numpy

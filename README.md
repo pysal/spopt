@@ -5,7 +5,7 @@
 
 #### Regionalization
 
-![](https://i.imgur.com/obvhdaL.png)
+![https://github.com/sjsrey/spopt/blob/master/notebooks/maxp.ipynb](https://i.imgur.com/obvhdaL.png)
 
 #### Location Allocation
 
