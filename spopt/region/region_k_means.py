@@ -1,9 +1,9 @@
-from .BaseClass import BaseSpOptHeuristicSolver
+from collections import defaultdict
+import numpy
+from ..BaseClass import BaseSpOptHeuristicSolver
 from .base import (w_to_g, move_ok, ok_moves, region_neighbors, _centroid,
                    _closest, _seeds, is_neighbor)
 
-from collections import defaultdict
-import numpy
 
 def region_k_means(X, n_clusters, w):
     """Region-K-means

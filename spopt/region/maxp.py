@@ -6,7 +6,7 @@ regionalization for spatially explicit neighborhood delineation." International
 Journal of Geographical Information Science. Accepted 2020-04-12.
 """
 
-from .BaseClass import BaseSpOptHeuristicSolver
+from ..BaseClass import BaseSpOptHeuristicSolver
 from .base import (w_to_g, move_ok, ok_moves, region_neighbors, _centroid,
                    _closest, _seeds, is_neighbor)
 
