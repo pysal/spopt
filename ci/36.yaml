@@ -9,6 +9,7 @@ dependencies:
   - networkx
   - libpysal
   - pytest
+  - pytest-cov
   - coverage
   - coveralls
   - pip
