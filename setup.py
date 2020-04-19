@@ -46,7 +46,8 @@ def setup_package():
             'License :: OSI Approved :: BSD License',
             'Programming Language :: Python',
             'Programming Language :: Python :: 3.6',
-            'Programming Language :: Python :: 3.7'
+            'Programming Language :: Python :: 3.7',
+            'Programming Language :: Python :: 3.8'
             ],
           license='3-Clause BSD',
           packages=find_packages(),
@@ -54,7 +55,7 @@ def setup_package():
           extras_require=extras_reqs,
           zip_safe=False,
           cmdclass = {'build.py':build_py},
-          python_requires='>3.6')
+          python_requires='>=3.6')
 
 if __name__ == '__main__':
     setup_package()

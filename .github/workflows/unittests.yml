@@ -14,7 +14,7 @@
      strategy:
        matrix:
          os: ['macos-latest', 'ubuntu-latest', 'windows-latest']
-         environment-file: [ci/36.yaml, ci/37.yaml]
+         environment-file: [ci/36.yaml, ci/37.yaml, ci/38.yaml]
      steps:
        - uses: actions/checkout@v2
        - uses: goanpeca/setup-miniconda@v1
