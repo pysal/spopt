@@ -23,8 +23,6 @@ def setup_package():
 
     _groups_files = {
         'base': 'requirements.txt', #basic requirements
-        'pip': 'requirements_pip.txt', #requirements with pip
-        'tests': 'requirements_tests.txt', #requirements for tests
         'docs': 'requirements_docs.txt' #requirements for building docs
     }
     reqs = _get_requirements_from_files(_groups_files)

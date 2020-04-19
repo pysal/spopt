@@ -1,0 +1,39 @@
+ on:
+   push:
+     branches:
+     - '*'
+   pull_request:
+     branches:
+     - '*'
+
+ jobs:
+   unittests:
+     name: conda (${{ matrix.os }}, ${{ matrix.environment-file }})
+     runs-on: ${{ matrix.os }}
+     timeout-minutes: 30 
+     strategy:
+       matrix:
+         os: ['macos-latest', 'ubuntu-latest']
+         environment-file: [ci/36.yaml, ci/37.yaml]
+     steps:
+       - uses: actions/checkout@v2
+       - uses: goanpeca/setup-miniconda@v1
+         with:
+            miniconda-version: 'latest'
+            auto-update-conda: true
+            auto-activate-base: false
+            environment-file: ${{ matrix.environment-file }}
+            activate-environment: test
+       - shell: bash -l {0}
+         run: conda info --all
+       - shell: bash -l {0}
+         run: conda list
+       - shell: bash -l {0}
+         run: conda config --show-sources
+       - shell: bash -l {0}
+         run: conda config --show
+       - shell: bash -l {0}
+         run: pip install -e . --no-deps --force-reinstall
+       - shell: bash -l {0}
+         run: |
+           py.test -v spopt --cov=spopt --cov-report=xml
