@@ -14,3 +14,4 @@ def test_RegionKMeansHeuristic():
     model = RKM(data, 3, w)
     model.solve()
     numpy.array_equal(model.labels_, numpy.array([1, 2, 2, 1, 2, 0, 1, 1, 0]))
+
