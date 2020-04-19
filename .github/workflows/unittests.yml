@@ -35,3 +35,9 @@
        - shell: bash -l {0}
          run: |
            pytest -v spopt --cov=spopt --cov-report=xml
+       - name: codecov (${{ matrix.os }}, ${{ matrix.environment-file }})
+         uses: codecov/codecov-action@v1
+         with:
+           token: ${{ secrets.CODECOV_TOKEN }}
+           file: ./coverage.xml
+           name: spot-codecov
