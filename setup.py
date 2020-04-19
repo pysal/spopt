@@ -35,8 +35,6 @@ def setup_package():
           url='https://github.com/pysal/'+package, #github repo
           maintainer='',
           maintainer_email='',
-          test_suite = 'nose.collector',
-          tests_require=['nose'],
           keywords='spatial statistics',
           classifiers=[
             'Development Status :: 5 - Production/Stable',
