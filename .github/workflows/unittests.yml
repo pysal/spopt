@@ -13,7 +13,7 @@
      timeout-minutes: 30 
      strategy:
        matrix:
-         os: ['macos-latest', 'ubuntu-latest']
+         os: ['macos-latest', 'ubuntu-latest', 'windows-latest']
          environment-file: [ci/36.yaml, ci/37.yaml]
      steps:
        - uses: actions/checkout@v2
@@ -36,4 +36,4 @@
          run: pip install -e . --no-deps --force-reinstall
        - shell: bash -l {0}
          run: |
-           py.test -v spopt --cov=spopt --cov-report=xml
+           pytest -v spopt --cov=spopt --cov-report=xml
