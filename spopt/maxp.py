@@ -1,3 +1,11 @@
+"""
+Max-p regions algorithm
+
+Source: Wei, Ran, Sergio J. Rey, and Elijah Knaap (2020) "Efficient
+regionalization for spatially explicit neighborhood delineation." International
+Journal of Geographical Information Science. Accepted 2020-04-12.
+"""
+
 from .BaseClass import BaseSpOptHeuristicSolver
 from .base import (w_to_g, move_ok, ok_moves, region_neighbors, _centroid,
                    _closest, _seeds, is_neighbor)
@@ -13,7 +21,6 @@ from scipy.sparse.csgraph import connected_components
 
 ITERCONSTRUCT=999
 ITERSA=10
-
 
 
 def maxp(gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_construction=ITERCONSTRUCT,
@@ -66,7 +73,6 @@ def maxp(gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_co
     if verbose:
         print("max_p: ", max_p)
         print('number of good partitions:', len(rl_list))
-
 
 
     alpha = 0.998
@@ -143,6 +149,7 @@ def construction_phase(arr,
                     labels, threshold_array, P, NeighborPolys, C,
                     weight, spatialThre)
 
+                print('spatialAttrTotal, LabelID ', (spatialAttrTotal, labeledID))
                 if spatialAttrTotal < spatialThre:
                     enclave.extend(labeledID)
                 else:
@@ -176,7 +183,7 @@ def construction_phase(arr,
         if pv == realmaxpv:
             realLabelsList.append(labels_list[ipv])
 
-    return realmaxpv, realLabelsList
+    return [realmaxpv, realLabelsList]
 
 
 def growClusterForPoly(labels, threshold_array, P, NeighborPolys, C,
@@ -325,6 +332,8 @@ def performSA(initLabels, initRegionList, initRegionSpatialAttr,
                                           threshold_array, weight,
                                           distance_matrix, threshold)
 
+        if len(potentialAreas) == 0:
+            break
         poa = potentialAreas[np.random.randint(len(potentialAreas))]
         lostDistance, minAddedDistance, potentialMove = checkMove(
             poa, labels, regionLists, threshold_array, weight,
@@ -375,9 +384,6 @@ def performSA(initLabels, initRegionList, initRegionSpatialAttr,
     return [labels, regionLists, regionSpatialAttrs]
 
 
-
-
-
 class MaxPHeuristic(BaseSpOptHeuristicSolver):
     def __init__(self, gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_construction=99, max_iterations_sa=ITERSA):
         self.gdf = gdf
@@ -395,6 +401,3 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         self.labels_ = label
         self.p = max_p
 
-if __name__ == "__main__":
-    set_input('data/n100.dbf', ['SAR1'], 'Uniform2', 100, 'result/test.shp', 2,
-              999, 10)

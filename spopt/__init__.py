@@ -3,4 +3,6 @@ __version__ = "0.1.0"
 
 
 # import modules/functions
-from .region_k_means import RegionKMeansHeuristic, w_to_g
+from .region_k_means import RegionKMeansHeuristic
+from .maxp import MaxPHeuristic
+from .base import  w_to_g
