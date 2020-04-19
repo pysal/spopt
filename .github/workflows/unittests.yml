@@ -33,7 +33,5 @@
        - shell: bash -l {0}
          run: conda config --show
        - shell: bash -l {0}
-         run: pip install -e . --no-deps --force-reinstall
-       - shell: bash -l {0}
          run: |
            pytest -v spopt --cov=spopt --cov-report=xml
