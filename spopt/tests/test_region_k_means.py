@@ -3,7 +3,7 @@ import libpysal
 import os
 import sys
 #sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
-from ..region_k_means import RegionKMeansHeuristic
+from .. import RegionKMeansHeuristic
 
 
 def test_RegionKMeansHeuristic():
