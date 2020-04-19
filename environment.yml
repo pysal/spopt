@@ -1,0 +1,14 @@
+name: spopt
+channels:
+  - conda-forge
+dependencies:
+  - scipy>=0.11
+  - numpy>=1.3
+  - pandas
+  - geopandas
+  - networkx
+  - libpysal
+  - pip
+  - pip:
+    - ortools
+

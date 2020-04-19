@@ -23,8 +23,6 @@ def setup_package():
 
     _groups_files = {
         'base': 'requirements.txt', #basic requirements
-        'pip': 'requirements_pip.txt', #requirements with pip
-        'tests': 'requirements_tests.txt', #requirements for tests
         'docs': 'requirements_docs.txt' #requirements for building docs
     }
     reqs = _get_requirements_from_files(_groups_files)
@@ -33,15 +31,13 @@ def setup_package():
 
     setup(name=package,
           version=__version__,
-          description='', #short <80chr description
+          description='Regionalization and Location Allocation in PySAL',
           url='https://github.com/pysal/'+package, #github repo
-          maintainer='',
+          maintainer='PySAL Developers',
           maintainer_email='',
-          test_suite = 'nose.collector',
-          tests_require=['nose'],
           keywords='spatial statistics',
           classifiers=[
-            'Development Status :: 5 - Production/Stable',
+            'Development Status :: 4 - Beta',
             'Intended Audience :: Science/Research',
             'Intended Audience :: Developers',
             'Intended Audience :: Education',
@@ -58,7 +54,7 @@ def setup_package():
           extras_require=extras_reqs,
           zip_safe=False,
           cmdclass = {'build.py':build_py},
-          python_requires='>3.5')
+          python_requires='>3.6')
 
 if __name__ == '__main__':
     setup_package()
