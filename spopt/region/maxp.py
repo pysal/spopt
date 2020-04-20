@@ -12,9 +12,7 @@ from .base import (w_to_g, move_ok, ok_moves, region_neighbors, _centroid,
 
 import matplotlib.pyplot as plt
 from scipy.spatial.distance import pdist, squareform
-import pandas as pd
 import geopandas as gp
-import time
 import numpy as np
 from copy import deepcopy
 from scipy.sparse.csgraph import connected_components
@@ -82,17 +80,15 @@ def maxp(gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_co
     best_obj_value = np.inf
     best_label = None
     best_fn = None
-    best_sa_time = np.inf
+
     for irl, rl in enumerate(rl_list):
         label, regionList, regionSpatialAttr = rl
         if verbose:
             print(irl)
         for saiter in range(max_iterations_sa):
-            sa_start_time = time.time()
             finalLabel, finalRegionList, finalRegionSpatialAttr = performSA(
                 label, regionList, regionSpatialAttr, threshold_array,
                 w, distance_matrix, threshold, alpha, tabuLength, max_no_move)
-            sa_end_time = time.time()
             totalWithinRegionDistance = calculateWithinRegionDistance(
                 finalRegionList, distance_matrix)
             if verbose:
@@ -102,7 +98,6 @@ def maxp(gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_co
                 best_obj_value = totalWithinRegionDistance
                 best_label = finalLabel
                 best_fn = irl
-                best_sa_time = sa_end_time - sa_start_time
     if verbose:
         print("best objective value:")
         print(best_obj_value)
