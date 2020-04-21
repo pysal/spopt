@@ -146,6 +146,7 @@ def construction_phase(arr,
                     weight, spatialThre)
 
                 if spatialAttrTotal < spatialThre:
+                    C -= 1
                     enclave.extend(labeledID)
                 else:
                     regionList[C] = labeledID
