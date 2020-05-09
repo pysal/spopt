@@ -9,7 +9,22 @@
 
 ### Regionalization
 
-![https://github.com/sjsrey/spopt/blob/master/notebooks/maxp.ipynb](https://i.imgur.com/obvhdaL.png)
+```python
+import spopt, libpysal, geopandas, numpy
+mexico = geopandas.read_file(libpysal.examples.get_path("mexicojoin.shp"))
+mexico["count"] = 1
+attrs = [f"PCGDP{year}" for year in range(1950,2010, 10)]
+w = libpysal.weights.Queen.from_dataframe(mexico)
+mexico["count"], threshold_name, threshold, top_n  = 1, "count", 4, 2
+numpy.random.seed(123456)
+model = spopt.MaxPHeuristic(mexico, w, attrs, threshold_name, threshold, top_n)
+model.solve()
+mexico["maxp_new"] = model.labels_
+mexico.plot(column="maxp_new", categorical=True, figsize=(12,8), ec="w");
+```
+<p align="center">
+<img src="figs/maxp.svg" height="400" />
+</p>
 
 ### Facility Location
 
