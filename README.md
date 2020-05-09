@@ -1,3 +1,8 @@
+
+<p align="center">
+<img src="docs/_static/images/pysal_banner.svg" width="370" height="200" />
+</p>
+
 # `spopt`: Spatial Optimization
 
 #### Regionalization, facility location, and transportation-oriented modeling
