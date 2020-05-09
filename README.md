@@ -25,7 +25,7 @@ mexico["maxp_new"] = model.labels_
 mexico.plot(column="maxp_new", categorical=True, figsize=(12,8), ec="w");
 ```
 <p align="center">
-<img src="figs/maxp.svg" height="400" />
+<img src="docs/_static/image/maxp.svg" height="400" />
 </p>
 
 ### Facility Location
@@ -67,6 +67,6 @@ This project is/was partially funded through:
 
 [//]: # (remove comment material below)
 
-[//]: # ([<img align="middle" src="figs/IMAGE1.png" width="150">](link1) Some text1: [Project title 1](another_link1))
+[//]: # ([<img align="middle" src="docs/_static/image/IMAGE1.png" width="150">](link1) Some text1: [Project title 1](another_link1))
 
-[//]: # ([<img align="middle" src="figs/IMAGE2.png" width="150">](link2) Some text2: [Project title 2](another_link2)
+[//]: # ([<img align="middle" src="docs/_static/image/IMAGE2.png" width="150">](link2) Some text2: [Project title 2](another_link2)
