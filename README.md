@@ -21,7 +21,7 @@ Blurb of several sentences for high-level description.
 import spopt, libpysal, geopandas, numpy
 mexico = geopandas.read_file(libpysal.examples.get_path("mexicojoin.shp"))
 mexico["count"] = 1
-attrs = [f"PCGDP{year}" for year in range(1950,2010, 10)]
+attrs = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
 w = libpysal.weights.Queen.from_dataframe(mexico)
 mexico["count"], threshold_name, threshold, top_n  = 1, "count", 4, 2
 numpy.random.seed(123456)
@@ -31,7 +31,7 @@ mexico["maxp_new"] = model.labels_
 mexico.plot(column="maxp_new", categorical=True, figsize=(12,8), ec="w");
 ```
 <p align="center">
-<img src="docs/_static/images/maxp.svg" height="400" />
+<img src="docs/_static/images/maxp.svg" height="350" />
 </p>
 
 ### Facility Location
