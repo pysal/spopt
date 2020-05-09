@@ -67,8 +67,6 @@ The project is licensed under the [BSD 3-Clause license](https://github.com/pysa
 
 This project is/was partially funded through:
 
-[//]: # (remove comment material below)
+<!-- [<img align="middle" src="docs/_static/image/IMAGE1.png" width="150">](link1) Some text1: [Project title 1](another_link1) -->
 
-[//]: # ([<img align="middle" src="docs/_static/image/IMAGE1.png" width="150">](link1) Some text1: [Project title 1](another_link1))
-
-[//]: # ([<img align="middle" src="docs/_static/image/IMAGE2.png" width="150">](link2) Some text2: [Project title 2](another_link2)
+<!-- [<img align="middle" src="docs/_static/image/IMAGE2.png" width="150">](link2) Some text2: [Project title 2](another_link2) -->
