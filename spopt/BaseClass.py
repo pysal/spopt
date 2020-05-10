@@ -6,7 +6,11 @@ class BaseSpOptSolver(ABC):
     """Base class for all spatial optimization model solvers.
 
     """
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> master
     @abstractmethod
     def solve(self):
         """Solve the optimization model.
@@ -26,7 +30,7 @@ class BaseSpOptExactSolver(BaseSpOptSolver):
         The or-tools MIP solver.
 
     """
-    
+
     def __init__(self, name):
         """
         
@@ -38,7 +42,8 @@ class BaseSpOptExactSolver(BaseSpOptSolver):
         
         """
         self.spOptSolver = pywraplp.Solver(
-            name, pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
+            name, pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
+        )
 
     def solve(self):
         """Solve the optimization model.
@@ -52,7 +57,7 @@ class BaseSpOptHeuristicSolver(BaseSpOptSolver):
     """Base class for all spatial optimization model heuristic solvers.
 
     """
-    
+
     @abstractmethod
     def solve(self):
         """Solve the optimization model.
@@ -62,8 +67,8 @@ class BaseSpOptHeuristicSolver(BaseSpOptSolver):
         pass
 
 
-if __name__ != '__main__':
-    #hs = BaseSpOptHeuristicSolver()
-    #hs.solve()
-    es = BaseSpOptExactSolver('tests')
+if __name__ != "__main__":
+    # hs = BaseSpOptHeuristicSolver()
+    # hs.solve()
+    es = BaseSpOptExactSolver("tests")
     es.solve()
