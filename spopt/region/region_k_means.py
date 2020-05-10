@@ -150,7 +150,7 @@ class RegionKMeansHeuristic(BaseSpOptHeuristicSolver):
         self.k = k
 
     def solve(self):
-         """Solve the region k-means heuristic."""
+        """Solve the region k-means heuristic."""
         centroid, label, iters = region_k_means(self.data, self.k, self.w)
         self.labels_ = label
         self.centroids_ = centroid
