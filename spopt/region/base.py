@@ -7,7 +7,8 @@ import networkx
 
 class RegionMixin(object):
     """Mixin class for all region solvers"""
-    _solver_type = 'regionalizer'
+
+    _solver_type = "regionalizer"
 
     def solve_assign(self, X, adjacency):
         self.solve(X, adjacency)
@@ -76,4 +77,3 @@ def is_neighbor(area, region, w):
         if area in w[member]:
             return True
     return False
-
