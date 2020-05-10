@@ -73,35 +73,36 @@ def move_ok(area, source, destination, g, w):
     destination : 
         ...
     
-    g : 
+    g : networkx.Graph
         ...
     
-    w : 
+    w : libpysal.weights.W
         ...
     
     Returns
     -------
     
-    is_move_ok : bool
+    _move_ok_ : bool
         ``True`` if the move is acceptable otherwise ``False``.
     
-    
     """
-
+    
+    _move_ok_ = False
+    
     # first check if area has a neighbor in destination
     if not is_neighbor(area, destination, w):
-        return False
+        return _move_ok_
     # check if moving area would break source connectivity
     new_source = [j for j in source if j != area]
     if networkx.is_connected(g.subgraph(new_source)):
-        return True
+        _move_ok_ = True
+        return _move_ok_
     else:
-        return False
+        return _move_ok_
 
 
 def ok_moves(candidates, regions, labels_, closest, g, w, areas):
     """Check a sequence of candidate moves.
-    
     
     Parameters
     ----------
@@ -118,10 +119,10 @@ def ok_moves(candidates, regions, labels_, closest, g, w, areas):
     closest : 
         ...
     
-    g : 
+    g : networkx.Graph
         ...
     
-    w : 
+    w : libpysal.weights.W
         ...
     
     areas : 
@@ -220,7 +221,6 @@ def _closest(data, centroids):
 def _seeds(areas, k):
     """Randomly select `k` seeds from a sequence of areas.
     
-    
     Parameters
     ----------
     
@@ -254,19 +254,22 @@ def is_neighbor(area, region, w):
     region : 
         ...
     
-    w : 
+    w : libpysal.weights.W
         ...
     
     Returns
     -------
     
-    neighboring : 
-        ...
+    neighboring : bool
+        ``True`` if area is a neighbor of any member
+        of region otherwise ``False``.
     
     """
+    
     neighboring = False
     for member in region:
         if area in w[member]:
             neighboring = True
             return neighboring
     return neighboring
+

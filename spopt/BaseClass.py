@@ -6,11 +6,7 @@ class BaseSpOptSolver(ABC):
     """Base class for all spatial optimization model solvers.
 
     """
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> master
     @abstractmethod
     def solve(self):
         """Solve the optimization model.
