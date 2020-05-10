@@ -14,34 +14,34 @@ from .base import (
 
 
 def region_k_means(X, n_clusters, w):
-    """Region-K-means
-
-    K-means with the constraint that each cluster forms a spatially connected component.
-
+    """Solve the region-K-means problem, the K-means with the constraint
+    that each cluster forms a spatially connected component.
 
     Parameters
     ----------
 
-    X : array-like, shape (n_samples, n_features)
-        The observations to clusters
+    X : {numpy.ndarray, list}
+        The observations to cluster shaped ``(n_samples, n_features)``.
 
-    n_clusters: int
-        The number of clusters to form
+    n_clusters : int
+        The number of clusters to form.
 
-    w: spatial weights object
-
+    w : libpysal.weights.W
+        ...
 
     Returns
     -------
 
-    label: integer ndarray with shape (n_samples,)
-        label[i] is the code or index of the centroid the i'th observation is closest to
+    label : numpy.ndarray
+        Integer array with shape ``(n_samples,)``, where ``label[i]`` is the
+        code or index of the centroid the ``i``th observation is closest to.
 
-    centroid: float ndarray with shape (k, n_features)
-       Centroids found at the last iteration of region_k_means.
+    centroid : numpy.ndarray
+       Floating point array of centroids in the shape of ``(k, n_features)``
+       found at the last iteration of ``region_k_means``.
 
-    iters: int
-          number of iterations for reassignment phase
+    iters : int
+        The number of iterations for the reassignment phase.
 
     """
 
@@ -115,12 +115,42 @@ def region_k_means(X, n_clusters, w):
 
 
 class RegionKMeansHeuristic(BaseSpOptHeuristicSolver):
+    """...Needs a short description..."""
+    
     def __init__(self, data, k, w):
+        """
+        
+        Parameters
+        ----------
+        
+        data : 
+            ...
+        
+        k : 
+            ...
+        
+        w : 
+            ...
+        
+        Attributes
+        ----------
+        
+        labels_ : 
+            ...
+        
+        centroids_ : 
+            ...
+        
+        iters_ : 
+            ...
+        
+        """
         self.data = data
         self.w = w
         self.k = k
 
     def solve(self):
+         """Solve the region k-means heuristic."""
         centroid, label, iters = region_k_means(self.data, self.k, self.w)
         self.labels_ = label
         self.centroids_ = centroid
