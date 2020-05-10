@@ -7,8 +7,16 @@ Journal of Geographical Information Science. Accepted 2020-04-12.
 """
 
 from ..BaseClass import BaseSpOptHeuristicSolver
-from .base import (w_to_g, move_ok, ok_moves, region_neighbors, _centroid,
-                   _closest, _seeds, is_neighbor)
+from .base import (
+    w_to_g,
+    move_ok,
+    ok_moves,
+    region_neighbors,
+    _centroid,
+    _closest,
+    _seeds,
+    is_neighbor,
+)
 
 import matplotlib.pyplot as plt
 from scipy.spatial.distance import pdist, squareform
@@ -17,12 +25,21 @@ import numpy as np
 from copy import deepcopy
 from scipy.sparse.csgraph import connected_components
 
-ITERCONSTRUCT=999
-ITERSA=10
+ITERCONSTRUCT = 999
+ITERSA = 10
 
 
-def maxp(gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_construction=ITERCONSTRUCT,
-         max_iterations_sa=ITERSA, verbose=False):
+def maxp(
+    gdf,
+    w,
+    attrs_name,
+    threshold_name,
+    threshold,
+    top_n,
+    max_iterations_construction=ITERCONSTRUCT,
+    max_iterations_sa=ITERSA,
+    verbose=False,
+):
     """
     Arguments
     ---------
@@ -62,17 +79,23 @@ def maxp(gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_co
 
     attr = gdf[attrs_name].values
     threshold_array = gdf[threshold_name].values
-    distance_matrix = squareform(pdist(attr, metric='cityblock'))
-    n,k = attr.shape
+    distance_matrix = squareform(pdist(attr, metric="cityblock"))
+    n, k = attr.shape
     arr = np.arange(n)
-    max_p, rl_list = construction_phase(arr, attr, threshold_array,
-                                       distance_matrix, w, threshold, top_n,
-                                       max_iterations_construction)
+    max_p, rl_list = construction_phase(
+        arr,
+        attr,
+        threshold_array,
+        distance_matrix,
+        w,
+        threshold,
+        top_n,
+        max_iterations_construction,
+    )
 
     if verbose:
         print("max_p: ", max_p)
-        print('number of good partitions:', len(rl_list))
-
+        print("number of good partitions:", len(rl_list))
 
     alpha = 0.998
     tabuLength = 10
@@ -87,10 +110,20 @@ def maxp(gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_co
             print(irl)
         for saiter in range(max_iterations_sa):
             finalLabel, finalRegionList, finalRegionSpatialAttr = performSA(
-                label, regionList, regionSpatialAttr, threshold_array,
-                w, distance_matrix, threshold, alpha, tabuLength, max_no_move)
+                label,
+                regionList,
+                regionSpatialAttr,
+                threshold_array,
+                w,
+                distance_matrix,
+                threshold,
+                alpha,
+                tabuLength,
+                max_no_move,
+            )
             totalWithinRegionDistance = calculateWithinRegionDistance(
-                finalRegionList, distance_matrix)
+                finalRegionList, distance_matrix
+            )
             if verbose:
                 print("totalWithinRegionDistance after SA: ")
                 print(totalWithinRegionDistance)
@@ -102,16 +135,19 @@ def maxp(gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_co
         print("best objective value:")
         print(best_obj_value)
 
-    return  max_p, best_label
+    return max_p, best_label
 
-def construction_phase(arr,
-                       attr,
-                       threshold_array,
-                       distance_matrix,
-                       weight,
-                       spatialThre,
-                       random_assign_choice,
-                       max_it=999):
+
+def construction_phase(
+    arr,
+    attr,
+    threshold_array,
+    distance_matrix,
+    weight,
+    spatialThre,
+    random_assign_choice,
+    max_it=999,
+):
     labels_list = []
     pv_list = []
     max_p = 0
@@ -142,8 +178,8 @@ def construction_phase(arr,
             else:
                 C += 1
                 labeledID, spatialAttrTotal = growClusterForPoly(
-                    labels, threshold_array, P, NeighborPolys, C,
-                    weight, spatialThre)
+                    labels, threshold_array, P, NeighborPolys, C, weight, spatialThre
+                )
 
                 if spatialAttrTotal < spatialThre:
                     C -= 1
@@ -169,10 +205,10 @@ def construction_phase(arr,
                 threshold_array,
                 weight,
                 distance_matrix,
-                random_assign=random_assign_choice)
+                random_assign=random_assign_choice,
+            )
             pv_list.append(max_p)
-            labels_list.append(
-                [maxp_labels, maxp_regionList, maxp_regionSpatialAttr])
+            labels_list.append([maxp_labels, maxp_regionList, maxp_regionSpatialAttr])
     realLabelsList = []
     realmaxpv = max(pv_list)
     for ipv, pv in enumerate(pv_list):
@@ -182,8 +218,9 @@ def construction_phase(arr,
     return [realmaxpv, realLabelsList]
 
 
-def growClusterForPoly(labels, threshold_array, P, NeighborPolys, C,
-                       weight, spatialThre):
+def growClusterForPoly(
+    labels, threshold_array, P, NeighborPolys, C, weight, spatialThre
+):
     labels[P] = C
     labeledID = [P]
     spatialAttrTotal = threshold_array[P]
@@ -209,14 +246,16 @@ def growClusterForPoly(labels, threshold_array, P, NeighborPolys, C,
     return labeledID, spatialAttrTotal
 
 
-def assignEnclave(enclave,
-                  labels,
-                  regionList,
-                  regionSpatialAttr,
-                  threshold_array,
-                  weight,
-                  distance_matrix,
-                  random_assign=1):
+def assignEnclave(
+    enclave,
+    labels,
+    regionList,
+    regionSpatialAttr,
+    threshold_array,
+    weight,
+    distance_matrix,
+    random_assign=1,
+):
     enclave_index = 0
     while len(enclave) > 0:
         ec = enclave[enclave_index]
@@ -246,11 +285,7 @@ def assignEnclave(enclave,
             regionSpatialAttr[assignedRegion] += threshold_array[ec]
             del enclave[enclave_index]
             enclave_index = 0
-    return [
-        deepcopy(labels),
-        deepcopy(regionList),
-        deepcopy(regionSpatialAttr)
-    ]
+    return [deepcopy(labels), deepcopy(regionList), deepcopy(regionSpatialAttr)]
 
 
 def calculateWithinRegionDistance(regionList, distance_matrix):
@@ -263,8 +298,15 @@ def calculateWithinRegionDistance(regionList, distance_matrix):
     return totalWithinRegionDistance
 
 
-def pickMoveArea(labels, regionLists, regionSpatialAttrs,
-                 threshold_array, weight, distance_matrix, threshold):
+def pickMoveArea(
+    labels,
+    regionLists,
+    regionSpatialAttrs,
+    threshold_array,
+    weight,
+    distance_matrix,
+    threshold,
+):
     potentialAreas = []
     labels_array = np.array(labels)
     for k, v in regionSpatialAttrs.items():
@@ -285,8 +327,9 @@ def pickMoveArea(labels, regionLists, regionSpatialAttrs,
     return potentialAreas
 
 
-def checkMove(poa, labels, regionLists, threshold_array, weight,
-              distance_matrix, threshold):
+def checkMove(
+    poa, labels, regionLists, threshold_array, weight, distance_matrix, threshold
+):
     poaNeighbor = weight.neighbors[poa]
     donorRegion = labels[poa]
 
@@ -308,9 +351,18 @@ def checkMove(poa, labels, regionLists, threshold_array, weight,
     return [lostDistance, minAddedDistance, potentialMove]
 
 
-def performSA(initLabels, initRegionList, initRegionSpatialAttr,
-              threshold_array, weight, distance_matrix, threshold,
-              alpha, tabuLength, max_no_move):
+def performSA(
+    initLabels,
+    initRegionList,
+    initRegionSpatialAttr,
+    threshold_array,
+    weight,
+    distance_matrix,
+    threshold,
+    alpha,
+    tabuLength,
+    max_no_move,
+):
     t = 1
     ni_move_ct = 0
     make_move_flag = False
@@ -323,17 +375,28 @@ def performSA(initLabels, initRegionList, initRegionSpatialAttr,
 
     while ni_move_ct <= max_no_move:
         if len(potentialAreas) == 0:
-            potentialAreas = pickMoveArea(labels, regionLists,
-                                          regionSpatialAttrs,
-                                          threshold_array, weight,
-                                          distance_matrix, threshold)
+            potentialAreas = pickMoveArea(
+                labels,
+                regionLists,
+                regionSpatialAttrs,
+                threshold_array,
+                weight,
+                distance_matrix,
+                threshold,
+            )
 
         if len(potentialAreas) == 0:
             break
         poa = potentialAreas[np.random.randint(len(potentialAreas))]
         lostDistance, minAddedDistance, potentialMove = checkMove(
-            poa, labels, regionLists, threshold_array, weight,
-            distance_matrix, threshold)
+            poa,
+            labels,
+            regionLists,
+            threshold_array,
+            weight,
+            distance_matrix,
+            threshold,
+        )
 
         if potentialMove == None:
             potentialAreas.remove(poa)
@@ -365,8 +428,7 @@ def performSA(initLabels, initRegionList, initRegionSpatialAttr,
             regionLists[donorRegion].remove(poa)
             regionLists[recipientRegion].append(poa)
             regionSpatialAttrs[donorRegion] -= threshold_array[poa]
-            regionSpatialAttrs[recipientRegion] += threshold_array[
-                poa]
+            regionSpatialAttrs[recipientRegion] += threshold_array[poa]
 
             impactedAreas = []
             for pa in potentialAreas:
@@ -381,8 +443,18 @@ def performSA(initLabels, initRegionList, initRegionSpatialAttr,
 
 
 class MaxPHeuristic(BaseSpOptHeuristicSolver):
-    def __init__(self, gdf, w, attrs_name, threshold_name, threshold, top_n, max_iterations_construction=99, max_iterations_sa=ITERSA,
-                 verbose=False):
+    def __init__(
+        self,
+        gdf,
+        w,
+        attrs_name,
+        threshold_name,
+        threshold,
+        top_n,
+        max_iterations_construction=99,
+        max_iterations_sa=ITERSA,
+        verbose=False,
+    ):
         self.gdf = gdf
         self.w = w
         self.attrs_name = attrs_name
@@ -391,12 +463,19 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         self.top_n = top_n
         self.max_iterations_construction = max_iterations_construction
         self.max_iterations_sa = max_iterations_sa
-        self.verbose=verbose
+        self.verbose = verbose
 
     def solve(self):
-        max_p, label = maxp(self.gdf, self.w, self.attrs_name, self.threshold_name,
-                            self.threshold, self.top_n, self.max_iterations_construction, self.max_iterations_sa,
-                            verbose=self.verbose)
+        max_p, label = maxp(
+            self.gdf,
+            self.w,
+            self.attrs_name,
+            self.threshold_name,
+            self.threshold,
+            self.top_n,
+            self.max_iterations_construction,
+            self.max_iterations_sa,
+            verbose=self.verbose,
+        )
         self.labels_ = label
         self.p = max_p
-
