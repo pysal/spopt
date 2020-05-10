@@ -40,7 +40,7 @@ def maxp(
     max_iterations_sa=ITERSA,
     verbose=False,
 ):
-    """
+    """...Needs a short description...
     
     Parameters
     ----------
@@ -155,7 +155,7 @@ def construction_phase(
     random_assign_choice,
     max_it=999,
 ):
-    """
+    """...Needs a short description...
     
     Parameters
     ----------
@@ -266,7 +266,7 @@ def construction_phase(
 def growClusterForPoly(
     labels, threshold_array, P, NeighborPolys, C, weight, spatialThre
 ):
-    """
+    """...Needs a short description...
     
     Parameters
     ----------
@@ -336,7 +336,7 @@ def assignEnclave(
     distance_matrix,
     random_assign=1,
 ):
-    """
+    """...Needs a short description...
     
     Parameters
     ----------
@@ -407,7 +407,7 @@ def assignEnclave(
 
 
 def calculateWithinRegionDistance(regionList, distance_matrix):
-    """
+    """...Needs a short description...
     
     Parameters
     ----------
@@ -444,8 +444,34 @@ def pickMoveArea(
     distance_matrix,
     threshold,
 ):
-    """
+    """...Needs a short description...
     
+    Parameters
+    ----------
+    
+    labels : 
+        ...
+    
+    regionLists : 
+        ...
+    
+    regionSpatialAttrs : 
+        ...
+    
+    threshold_array : 
+        ...
+    
+    weight : 
+        ...
+    
+    threshold : 
+        ...
+    
+    Returns
+    -------
+    
+    potentialAreas : list
+        ...
     
     """
     
@@ -472,8 +498,38 @@ def pickMoveArea(
 def checkMove(
     poa, labels, regionLists, threshold_array, weight, distance_matrix, threshold
 ):
-    """
+    """...Needs a short description...
     
+    Parameters
+    ----------
+    
+    poa : 
+        ...
+    
+    labels : 
+        ...
+    
+    regionLists : 
+        ...
+    
+    threshold_array : 
+        ...
+    
+    weight : 
+        ...
+    
+    distance_matrix : 
+        ...
+    
+    threshold : 
+        ...
+    
+    Returns
+    -------
+    
+    move_info : list
+        The results from simulated annealing including ``lostDistance``,
+        ``minAddedDistance``, and ``potentialMove``.
     
     """
     
@@ -494,8 +550,9 @@ def checkMove(
             if addedDistance < minAddedDistance:
                 minAddedDistance = addedDistance
                 potentialMove = (poa, donorRegion, recipientRegion)
-
-    return [lostDistance, minAddedDistance, potentialMove]
+    
+    move_info = [lostDistance, minAddedDistance, potentialMove]
+    return move_info
 
 
 def performSA(
@@ -510,7 +567,7 @@ def performSA(
     tabuLength,
     max_no_move,
 ):
-    """
+    """...Needs a short description...
         
     Parameters
     ----------
