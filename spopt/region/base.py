@@ -6,16 +6,50 @@ import networkx
 
 
 class RegionMixin(object):
-    """Mixin class for all region solvers"""
+    """Mixin class for all region solvers."""
     _solver_type = 'regionalizer'
 
     def solve_assign(self, X, adjacency):
+        """
+        
+        Parameters
+        ----------
+        
+        X : 
+            ...
+        
+        adjacency : 
+            ...
+    
+        Returns
+        -------
+        
+        _labels_ : 
+            ...
+        
+        """
+        
         self.solve(X, adjacency)
-        return self.labels_
+        _labels_ = self.labels_
+        return _labels_
 
 
 def w_to_g(w):
-    """Get a networkx graph from a PySAL W"""
+    """Get a ``networkx`` graph from a PySAL W.
+    
+    Parameters
+    ----------
+    
+    w : libpysal.weights.W
+        ...
+    
+    Returns
+    -------
+    
+    g : networkx.Graph
+        ...
+    
+    """
     g = networkx.Graph()
     for ego, alters in w.neighbors.items():
         for alter in alters:
@@ -24,7 +58,34 @@ def w_to_g(w):
 
 
 def move_ok(area, source, destination, g, w):
-    """Check if area can move from source region to destination region"""
+    """Check if area can move from source region to destination region.
+    
+    Parameters
+    ----------
+    
+    area : 
+        ...
+    
+    source : 
+        ...
+    
+    destination : 
+        ...
+    
+    g : 
+        ...
+    
+    w : 
+        ...
+    
+    Returns
+    -------
+    
+    is_move_ok : bool
+        ``True`` if the move is acceptable otherwise ``False``.
+    
+    
+    """
 
     # first check if area has a neighbor in destination
     if not is_neighbor(area, destination, w):
@@ -38,7 +99,41 @@ def move_ok(area, source, destination, g, w):
 
 
 def ok_moves(candidates, regions, labels_, closest, g, w, areas):
-    """Check a sequence of candidate moves"""
+    """Check a sequence of candidate moves.
+    
+    
+    Parameters
+    ----------
+    
+    candidates : 
+        ...
+    
+    regions : 
+        ...
+    
+    labels_ : 
+        ...
+    
+    closest : 
+        ...
+    
+    g : 
+        ...
+    
+    w : 
+        ...
+    
+    areas : 
+        ...
+    
+    Returns
+    -------
+    
+    keep : list
+        ...
+    
+    """
+    
     keep = []
     for area in candidates:
         source = areas[labels_ == labels_[area]]
@@ -49,31 +144,129 @@ def ok_moves(candidates, regions, labels_, closest, g, w, areas):
 
 
 def region_neighbors(a_list, region):
-    """Get neighbors for members of a region"""
+    """Get neighbors for members of a region.
+    
+    Parameters
+    ----------
+    
+    a_list : 
+        ...
+    
+    region : 
+        ...
+    
+    Returns
+    -------
+    
+    _region_neighbors_ : list
+        ...
+    
+    """
+    
     neighbors = a_list[a_list["focal"].isin(region)].neighbor.values
-    return [j for j in neighbors if j not in region]
+    _region_neighbors_ = [j for j in neighbors if j not in region]
+    return _region_neighbors_
 
 
 def _centroid(regions, data):
-    """Get centroids for all regions"""
-    return numpy.array([data[region, :].mean(axis=0) for region in regions])
+    """Get centroids for all regions.
+    
+    Parameters
+    ----------
+    
+    regions : 
+        ...
+    
+    data : 
+        ...
+    
+    Returns
+    -------
+    
+    _centroid_ : numpy.array
+        ...
+    
+    """
+    
+    _centroid_ = numpy.array([data[region, :].mean(axis=0) for region in regions])
+    return _centroid_
 
 
 def _closest(data, centroids):
-    """For each row in data, find the closest row in centroids"""
-    return [numpy.argmin(((row - centroids) ** 2).sum(axis=1)) for row in data]
+    """For each row in data, find the closest row in centroids.
+    
+    Parameters
+    ----------
+    
+    data : 
+        ...
+    
+    centroids : 
+        ...
+    
+    Returns
+    -------
+    
+    _closest_ : list
+        ...
+    
+    """
+    
+    _closest_ = [numpy.argmin(((row - centroids) ** 2).sum(axis=1)) for row in data]
+    return _closest_
 
 
 def _seeds(areas, k):
-    """randomly select k seeds from a sequence of areas"""
-    return numpy.random.choice(areas, size=k, replace=False)
+    """Randomly select `k` seeds from a sequence of areas.
+    
+    
+    Parameters
+    ----------
+    
+    areas : 
+        ...
+    
+    k : int
+        The number of desired seeds.
+    
+    Returns
+    -------
+    
+    _seeds_ : numpy.array
+        ...
+    
+    """
+    
+    _seeds_ = numpy.random.choice(areas, size=k, replace=False)
+    return _seeds_
 
 
 def is_neighbor(area, region, w):
-    """Check if area is a neighbor of any member of region"""
+    """Check if area is a neighbor of any member of region.
+    
+    Parameters
+    ----------
+    
+    area : 
+        ...
+    
+    region : 
+        ...
+    
+    w : 
+        ...
+    
+    Returns
+    -------
+    
+    neighboring : 
+        ...
+    
+    """
     neighboring = False
     for member in region:
         if area in w[member]:
-            return True
-    return False
+            neighboring = True
+            return neighboring
+    return neighboring
 
