@@ -40,41 +40,48 @@ def maxp(
     max_iterations_sa=ITERSA,
     verbose=False,
 ):
-    """
-    Arguments
-    ---------
-    gdf: geodataframe
+    """...Needs a short description...
+    
+    Parameters
+    ----------
+    
+    gdf : geopandas.GeoDataFrame
+        ...
 
-    w: pysal W
+    w : libpysal.weights.W
+        ...
 
-    attrs_name: list of strings for attribute names (cols of gdf)
+    attrs_name : list
+        Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
 
-    threshold_name: string (name of threshold variable)
+    threshold_name : string
+        The name of the threshold variable.
 
-    threshold: numeric
-             value for threshold
+    threshold : {int, float}
+        The threshold value.
 
-    top_n: int
-           Max number of candidate regions for enclave assignment
+    top_n : int
+        Max number of candidate regions for enclave assignment.
 
-    max_iterations_construction: int
-           max number of iterations for construction phase
+    max_iterations_construction : int
+        Max number of iterations for construction phase.
 
     max_iterations_SA: int
-           max number of iterations for customized simulated annealing
+        Max number of iterations for customized simulated annealing.
 
-    verbose: boolean
-             False
-             Reporting solution progress/debugging
+    verbose : boolean
+        Set to ``True`` for reporting solution progress/debugging.
+        Default is ``False``.
 
     Returns
     -------
 
-    max_p: int
-           number of regions
+    max_p : int
+        The number of regions.
 
-    labels: array
-           region ids for observations
+    labels : numpy.array
+        Region IDs for observations.
+    
     """
 
     attr = gdf[attrs_name].values
@@ -148,6 +155,43 @@ def construction_phase(
     random_assign_choice,
     max_it=999,
 ):
+    """...Needs a short description...
+    
+    Parameters
+    ----------
+    
+    arr : 
+        ...
+    
+    attr : 
+        ...
+    
+    threshold_array : 
+        ...
+    
+    distance_matrix : 
+        ...
+    
+    weight : 
+        ...
+    
+    spatialThre : 
+        ...
+    
+    random_assign_choice : 
+        ...
+    
+    max_it : int
+        Maximum number of iterations. Default is 999.
+    
+    Returns
+    -------
+    
+    real_values : list
+        ``realmaxpv``, ``realLabelsList``
+    
+    """
+    
     labels_list = []
     pv_list = []
     max_p = 0
@@ -214,13 +258,47 @@ def construction_phase(
     for ipv, pv in enumerate(pv_list):
         if pv == realmaxpv:
             realLabelsList.append(labels_list[ipv])
-
-    return [realmaxpv, realLabelsList]
+    
+    real_values = [realmaxpv, realLabelsList]
+    return real_values
 
 
 def growClusterForPoly(
     labels, threshold_array, P, NeighborPolys, C, weight, spatialThre
 ):
+    """...Needs a short description...
+    
+    Parameters
+    ----------
+    
+    labels : 
+        ...
+    
+    threshold_array : 
+        ...
+    
+    P : 
+        ...
+    
+    NeighborPolys : 
+        ...
+    
+    C : 
+        ...
+    
+    weight : 
+        ...
+    
+    spatialThre : 
+        ...
+    
+    Returns
+    -------
+    
+    cluster_info : tuple
+        ``labeledID``, ``spatialAttrTotal``
+    
+    """
     labels[P] = C
     labeledID = [P]
     spatialAttrTotal = threshold_array[P]
@@ -243,7 +321,9 @@ def growClusterForPoly(
                     if not pnn in NeighborPolys:
                         NeighborPolys.append(pnn)
         i += 1
-    return labeledID, spatialAttrTotal
+    
+    cluster_info = labeledID, spatialAttrTotal
+    return cluster_info
 
 
 def assignEnclave(
@@ -256,6 +336,42 @@ def assignEnclave(
     distance_matrix,
     random_assign=1,
 ):
+    """...Needs a short description...
+    
+    Parameters
+    ----------
+    
+    enclave : 
+        ...
+    
+    labels : 
+        ...
+    
+    regionList : 
+        ...
+    
+    regionSpatialAttr : 
+        ...
+    
+    threshold_array : 
+        ...
+        
+    weight : 
+        ...
+    
+    distance_matrix : 
+        ...
+    
+    random_assign : int
+        ... ... Default is 1.
+    
+    Returns
+    -------
+    
+    region_info : list
+        Deep copies of ``labels``, ``regionList``, and ``regionSpatialAttr``
+    
+    """
     enclave_index = 0
     while len(enclave) > 0:
         ec = enclave[enclave_index]
@@ -285,10 +401,31 @@ def assignEnclave(
             regionSpatialAttr[assignedRegion] += threshold_array[ec]
             del enclave[enclave_index]
             enclave_index = 0
-    return [deepcopy(labels), deepcopy(regionList), deepcopy(regionSpatialAttr)]
+    
+    region_info = [deepcopy(labels), deepcopy(regionList), deepcopy(regionSpatialAttr)]
+    return region_info
 
 
 def calculateWithinRegionDistance(regionList, distance_matrix):
+    """...Needs a short description...
+    
+    Parameters
+    ----------
+    
+    regionList : 
+        ...
+    
+    distance_matrix : 
+        ...
+    
+    Returns
+    -------
+    
+    totalWithinRegionDistance : {int, float}
+        ...
+    
+    """
+    
     totalWithinRegionDistance = 0
     for k, v in regionList.items():
         nv = np.array(v)
@@ -307,6 +444,37 @@ def pickMoveArea(
     distance_matrix,
     threshold,
 ):
+    """...Needs a short description...
+    
+    Parameters
+    ----------
+    
+    labels : 
+        ...
+    
+    regionLists : 
+        ...
+    
+    regionSpatialAttrs : 
+        ...
+    
+    threshold_array : 
+        ...
+    
+    weight : 
+        ...
+    
+    threshold : 
+        ...
+    
+    Returns
+    -------
+    
+    potentialAreas : list
+        ...
+    
+    """
+    
     potentialAreas = []
     labels_array = np.array(labels)
     for k, v in regionSpatialAttrs.items():
@@ -330,6 +498,41 @@ def pickMoveArea(
 def checkMove(
     poa, labels, regionLists, threshold_array, weight, distance_matrix, threshold
 ):
+    """...Needs a short description...
+    
+    Parameters
+    ----------
+    
+    poa : 
+        ...
+    
+    labels : 
+        ...
+    
+    regionLists : 
+        ...
+    
+    threshold_array : 
+        ...
+    
+    weight : 
+        ...
+    
+    distance_matrix : 
+        ...
+    
+    threshold : 
+        ...
+    
+    Returns
+    -------
+    
+    move_info : list
+        The results from simulated annealing including ``lostDistance``,
+        ``minAddedDistance``, and ``potentialMove``.
+    
+    """
+    
     poaNeighbor = weight.neighbors[poa]
     donorRegion = labels[poa]
 
@@ -347,8 +550,9 @@ def checkMove(
             if addedDistance < minAddedDistance:
                 minAddedDistance = addedDistance
                 potentialMove = (poa, donorRegion, recipientRegion)
-
-    return [lostDistance, minAddedDistance, potentialMove]
+    
+    move_info = [lostDistance, minAddedDistance, potentialMove]
+    return move_info
 
 
 def performSA(
@@ -363,6 +567,50 @@ def performSA(
     tabuLength,
     max_no_move,
 ):
+    """...Needs a short description...
+        
+    Parameters
+    ----------
+    
+    initLabels : 
+        ...
+    
+    initRegionList : 
+        ...
+    
+    initRegionSpatialAttr : 
+        ...
+    
+    threshold_array : 
+        ...
+    
+    weight : 
+        ...
+    
+    distance_matrix : 
+        ...
+    
+    threshold : int
+        ...
+    
+    alpha : 
+        ...
+    
+    tabuLength : bool
+        ...
+    
+    max_no_move : bool
+        ...
+    
+    Returns
+    -------
+    
+    sa_res : list
+        The results from simulated annealing including ``labels``,
+        ``regionLists``, and ``regionSpatialAttrs``.
+    
+    """
+    
     t = 1
     ni_move_ct = 0
     make_move_flag = False
@@ -438,11 +686,12 @@ def performSA(
                 potentialAreas.remove(pa)
 
         t = t * alpha
-
+    sa_res = [labels, regionLists, regionSpatialAttrs]
     return [labels, regionLists, regionSpatialAttrs]
 
 
 class MaxPHeuristic(BaseSpOptHeuristicSolver):
+    """...Needs a short description..."""
     def __init__(
         self,
         gdf,
@@ -455,6 +704,48 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         max_iterations_sa=ITERSA,
         verbose=False,
     ):
+        """
+        
+        Parameters
+        ----------
+        
+        gdf : 
+            ...
+        
+        w : 
+            ...
+        
+        attrs_name : 
+            ...
+        
+        threshold_name : 
+            ...
+        
+        threshold : 
+            ...
+        
+        top_n : 
+            ...
+        
+        max_iterations_construction : int
+            ... Default is 99.
+        
+        max_iterations_sa : 
+            ... Default is 'ITERSA'.
+        
+        verbose : bool
+            Default is ``False``.
+        
+        Attributes
+        ----------
+        
+        labels_ : 
+            ...
+        
+        p : 
+            ...
+        
+        """
         self.gdf = gdf
         self.w = w
         self.attrs_name = attrs_name
@@ -466,6 +757,7 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         self.verbose = verbose
 
     def solve(self):
+        """...Needs a short description..."""
         max_p, label = maxp(
             self.gdf,
             self.w,
