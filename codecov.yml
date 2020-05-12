@@ -1,3 +1,6 @@
+codecov:
+  notify:
+    after_n_builds: 9
 coverage:
   range: 50..95
   round: nearest
@@ -12,3 +15,8 @@ coverage:
         target: 80%
   ignore:
     - "tests/*"
+comment:
+  layout: "reach, diff, files"
+  behavior: once
+  after_n_builds: 9
+  require_changes: true
