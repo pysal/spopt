@@ -1,0 +1,14 @@
+coverage:
+  range: 50..95
+  round: nearest
+  precision: 1
+  status:
+    project:
+      default:
+        threshold: 2%
+    patch:
+      default:
+        threshold: 2%
+        target: 80%
+  ignore:
+    - "tests/*"
