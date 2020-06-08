@@ -106,7 +106,7 @@ def maxp(
 
     alpha = 0.998
     tabuLength = 10
-    max_no_move = attr.size
+    max_no_move = n
     best_obj_value = np.inf
     best_label = None
     best_fn = None
