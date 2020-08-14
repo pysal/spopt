@@ -1,5 +1,4 @@
-from setuptools import setup, find_packages
-import os.path
+from setuptools import setup
 from distutils.command.build_py import build_py
 
 package = "spopt"  # name of package
@@ -37,8 +36,8 @@ def setup_package():
         description="Regionalization and Location Allocation in PySAL",
         url="https://github.com/pysal/" + package,  # github repo
         maintainer="PySAL Developers",
-        maintainer_email="jgaboardi@gmail.com",
-        keywords="spatial statistics",
+        maintainer_email="xin.feng@ucr.edu,jgaboardi@gmail.com",
+        keywords="spatial optimization",
         classifiers=[
             "Development Status :: 4 - Beta",
             "Intended Audience :: Science/Research",
@@ -53,7 +52,7 @@ def setup_package():
             "Programming Language :: Python :: 3.8",
         ],
         license="3-Clause BSD",
-        packages=find_packages(),
+        packages=[package],
         install_requires=install_reqs,
         extras_require=extras_reqs,
         zip_safe=False,
