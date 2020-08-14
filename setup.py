@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-import os.path
 from distutils.command.build_py import build_py
 
 package = "spopt"  # name of package
