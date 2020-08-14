@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 from distutils.command.build_py import build_py
 
 package = "spopt"  # name of package
@@ -52,7 +52,7 @@ def setup_package():
             "Programming Language :: Python :: 3.8",
         ],
         license="3-Clause BSD",
-        packages=find_packages(),
+        packages=[package],
         install_requires=install_reqs,
         extras_require=extras_reqs,
         zip_safe=False,
