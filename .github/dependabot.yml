@@ -11,6 +11,7 @@ updates:
       interval: "daily"
     reviewers:
       - "jGaboardi"
+      - "xf37"
 
   - package-ecosystem: "pip"
     directory: "/"
@@ -18,3 +19,4 @@ updates:
       interval: "daily"
     reviewers:
       - "jGaboardi"
+      - "xf37"
