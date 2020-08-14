@@ -37,7 +37,7 @@ def setup_package():
         url="https://github.com/pysal/" + package,  # github repo
         maintainer="PySAL Developers",
         maintainer_email="jgaboardi@gmail.com",
-        keywords="spatial statistics",
+        keywords="spatial optimization",
         classifiers=[
             "Development Status :: 4 - Beta",
             "Intended Audience :: Science/Research",
