@@ -36,7 +36,7 @@ def setup_package():
         description="Regionalization and Location Allocation in PySAL",
         url="https://github.com/pysal/" + package,  # github repo
         maintainer="PySAL Developers",
-        maintainer_email="jgaboardi@gmail.com",
+        maintainer_email="xin.feng@ucr.edu,jgaboardi@gmail.com",
         keywords="spatial optimization",
         classifiers=[
             "Development Status :: 4 - Beta",
