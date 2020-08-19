@@ -217,7 +217,7 @@ def construction_phase(
 
             NeighborPolys = deepcopy(weight.neighbors[P])
 
-            if len(NeighborPolys) < 0:
+            if len(NeighborPolys) == 0:
                 labels[P] = -1
             else:
                 C += 1
