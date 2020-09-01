@@ -1,8 +1,7 @@
 import numpy as np
 import libpysal
 import geopandas as gpd
-
-#from .. import SKATER
+from .. import SKATER
 
 def test_skater():
     pth = libpysal.examples.get_path("mexicojoin.shp")
