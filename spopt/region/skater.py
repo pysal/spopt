@@ -11,7 +11,7 @@ import numpy as np
 import copy
 deletion = namedtuple('deletion', ('in_node', 'out_node', 'score'))
 
-class Spanning_Forest(object):
+class SpanningForest(object):
     def __init__(self,
                  dissimilarity=skm.manhattan_distances,
                  affinity=None,
@@ -282,7 +282,7 @@ if __name__ == "__main__":
 
 
 
-class SKATER(BaseSpOptHeuristicSolver):
+class Skater(BaseSpOptHeuristicSolver):
     """...Needs a short description..."""
     
     def __init__(
@@ -335,7 +335,7 @@ class SKATER(BaseSpOptHeuristicSolver):
         """Solve the region k-means heuristic."""
         data = self.gdf
         X = data[self.attrs_name].values
-        model = Spanning_Forest()
+        model = SpanningForest()
         model.fit(self.n_clusters, self.w, data=X, quorum=self.floor, trace=self.trace)
         self.labels_ = model.current_labels_
 

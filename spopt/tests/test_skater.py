@@ -1,7 +1,7 @@
 import numpy as np
 import libpysal
 import geopandas as gpd
-from .. import SKATER
+from .. import Skater
 
 def test_skater():
     pth = libpysal.examples.get_path("mexicojoin.shp")
@@ -10,7 +10,7 @@ def test_skater():
     attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
     w = libpysal.weights.Queen.from_dataframe(mexico)
     np.random.seed(123456)
-    model = SKATER(gdf=mexico, w=w, attrs_name=attrs_name)
+    model = Skater(gdf=mexico, w=w, attrs_name=attrs_name)
     model.solve()
     labels = np.array(
         [0, 0, 1, 2, 2, 1, 1, 1, 1, 1, 3, 2, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1])
