@@ -12,7 +12,7 @@ class BaseSpOptSolver(ABC):
         """Solve the optimization model.
 
         """
-        
+
         pass
 
 
@@ -45,7 +45,7 @@ class BaseSpOptExactSolver(BaseSpOptSolver):
         """Solve the optimization model.
 
         """
-        
+
         self.spOptSolver.Solve()
 
 
@@ -59,7 +59,7 @@ class BaseSpOptHeuristicSolver(BaseSpOptSolver):
         """Solve the optimization model.
 
         """
-        
+
         pass
 
 

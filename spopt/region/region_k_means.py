@@ -116,7 +116,7 @@ def region_k_means(X, n_clusters, w):
 
 class RegionKMeansHeuristic(BaseSpOptHeuristicSolver):
     """...Needs a short description..."""
-    
+
     def __init__(self, data, k, w):
         """
         

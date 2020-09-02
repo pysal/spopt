@@ -191,7 +191,7 @@ def construction_phase(
         ``realmaxpv``, ``realLabelsList``
     
     """
-    
+
     labels_list = []
     pv_list = []
     max_p = 0
@@ -258,7 +258,7 @@ def construction_phase(
     for ipv, pv in enumerate(pv_list):
         if pv == realmaxpv:
             realLabelsList.append(labels_list[ipv])
-    
+
     real_values = [realmaxpv, realLabelsList]
     return real_values
 
@@ -321,7 +321,7 @@ def growClusterForPoly(
                     if not pnn in NeighborPolys:
                         NeighborPolys.append(pnn)
         i += 1
-    
+
     cluster_info = labeledID, spatialAttrTotal
     return cluster_info
 
@@ -401,7 +401,7 @@ def assignEnclave(
             regionSpatialAttr[assignedRegion] += threshold_array[ec]
             del enclave[enclave_index]
             enclave_index = 0
-    
+
     region_info = [deepcopy(labels), deepcopy(regionList), deepcopy(regionSpatialAttr)]
     return region_info
 
@@ -425,7 +425,7 @@ def calculateWithinRegionDistance(regionList, distance_matrix):
         ...
     
     """
-    
+
     totalWithinRegionDistance = 0
     for k, v in regionList.items():
         nv = np.array(v)
@@ -474,7 +474,7 @@ def pickMoveArea(
         ...
     
     """
-    
+
     potentialAreas = []
     labels_array = np.array(labels)
     for k, v in regionSpatialAttrs.items():
@@ -532,7 +532,7 @@ def checkMove(
         ``minAddedDistance``, and ``potentialMove``.
     
     """
-    
+
     poaNeighbor = weight.neighbors[poa]
     donorRegion = labels[poa]
 
@@ -550,7 +550,7 @@ def checkMove(
             if addedDistance < minAddedDistance:
                 minAddedDistance = addedDistance
                 potentialMove = (poa, donorRegion, recipientRegion)
-    
+
     move_info = [lostDistance, minAddedDistance, potentialMove]
     return move_info
 
@@ -610,7 +610,7 @@ def performSA(
         ``regionLists``, and ``regionSpatialAttrs``.
     
     """
-    
+
     t = 1
     ni_move_ct = 0
     make_move_flag = False
@@ -692,6 +692,7 @@ def performSA(
 
 class MaxPHeuristic(BaseSpOptHeuristicSolver):
     """...Needs a short description..."""
+
     def __init__(
         self,
         gdf,

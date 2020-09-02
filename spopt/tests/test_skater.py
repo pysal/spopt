@@ -3,6 +3,7 @@ import libpysal
 import geopandas as gpd
 from .. import Skater
 
+
 def test_skater():
     pth = libpysal.examples.get_path("mexicojoin.shp")
     mexico = gpd.read_file(pth)
@@ -13,5 +14,39 @@ def test_skater():
     model = Skater(gdf=mexico, w=w, attrs_name=attrs_name)
     model.solve()
     labels = np.array(
-        [0, 0, 1, 2, 2, 1, 1, 1, 1, 1, 3, 2, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1])
+        [
+            0,
+            0,
+            1,
+            2,
+            2,
+            1,
+            1,
+            1,
+            1,
+            1,
+            3,
+            2,
+            1,
+            1,
+            1,
+            1,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+        ]
+    )
     return np.array_equal(model.labels_, labels)
