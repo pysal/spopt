@@ -264,22 +264,6 @@ class SpanningForest(object):
             MSF.eliminate_zeros()
             return (MSF, *cg.connected_components(MSF, directed=False))
         raise OptimizeWarning('Score of the ({},{}) cut is inf, the quorum is likely not met!')
-        
-    
-if __name__ == "__main__":
-    
-    from libpysal import examples, weights
-    import geopandas as gpd
-    
-    df = gpd.read_file(examples.get_path('NAT.shp'))
-    data = df[df.filter(like='90').columns.tolist()\
-           + df.filter(like='89').columns.tolist()].values
-    data_c = (data - data.mean(axis=0)) / data.std(axis=0)
-    W = weights.Queen.from_dataframe(df)
-    result = Spanning_Forest().fit(10, W, data_c, quorum=100)
-    
-    will_fail = Spanning_Forest().fit(10,W,data_c, quorum=500)
-
 
 
 class Skater(BaseSpOptHeuristicSolver):
@@ -339,4 +323,18 @@ class Skater(BaseSpOptHeuristicSolver):
         model.fit(self.n_clusters, self.w, data=X, quorum=self.floor, trace=self.trace)
         self.labels_ = model.current_labels_
 
+
+if __name__ == "__main__":
+    
+    from libpysal import examples, weights
+    import geopandas as gpd
+    
+    df = gpd.read_file(examples.get_path('NAT.shp'))
+    data = df[df.filter(like='90').columns.tolist()\
+           + df.filter(like='89').columns.tolist()].values
+    data_c = (data - data.mean(axis=0)) / data.std(axis=0)
+    W = weights.Queen.from_dataframe(df)
+    result = SpanningForest().fit(10, W, data_c, quorum=100)
+    
+    will_fail = SpanningForest().fit(10,W,data_c, quorum=500)
 
