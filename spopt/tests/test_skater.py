@@ -6,7 +6,7 @@ import unittest
 
 class TestSkater(unittest.TestCase):
 
-    def set_up():
+    def setUp(self):
         self.pth = libpysal.examples.get_path("mexicojoin.shp")
         self.mexico = gpd.read_file(self.pth)
         self.mexico["count"] = 1
