@@ -337,7 +337,7 @@ class SpanningForest(object):
 
 
 class Skater(BaseSpOptHeuristicSolver):
-    """...Needs a short description..."""
+    """Skater is a spatial regionalization algorithm based on spanning tree pruning"""
 
     def __init__(
         self,
@@ -348,6 +348,10 @@ class Skater(BaseSpOptHeuristicSolver):
         floor=-np.inf,
         trace=False,
         islands="increase",
+        dissimilarity=skm.manhattan_distances,
+        affinity=None,
+        reduction=np.sum,
+        center=np.mean,
     ):
         """
         # SKATER spatial clustering algorithm.
@@ -366,14 +370,29 @@ class Skater(BaseSpOptHeuristicSolver):
         n_clusters : int, optional, default: 5
         The number of clusters to form.
 
-        floor : type
-        TODO.
+        floor: floor on the size of regions.
 
-        trace : type
-        TODO.
+        trace: bool denoting whether to store intermediate
+               labelings as the tree gets pruned
+               
+        islands: string describing what to do with islands. 
+                 If "ignore", will discover `n_clusters` regions, treating islands as their own regions.
+                 If "increase", will discover `n_clusters` regions, treating islands as separate from n_clusters. 
 
-        islands : type
-        TODO.
+
+        Parameters for spanning tree pruning.
+        ----------
+
+        dissimilarity : a callable distance metric.
+
+        affinity : an callable affinity metric between 0,1. 
+                   Will be inverted to provide a 
+                   dissimilarity metric.
+
+        reduction: the reduction applied over all clusters
+                   to provide the map score.
+
+        center:    way to compute the center of each region in attribute space
         
         """
         self.gdf = gdf
@@ -383,12 +402,16 @@ class Skater(BaseSpOptHeuristicSolver):
         self.floor = floor
         self.trace = trace
         self.islands = islands
+        self.dissimilarity = dissimilarity
+        self.affinity = affinity
+        self.reduction = reduction
+        self.center = center
 
     def solve(self):
         """Solve the region k-means heuristic."""
         data = self.gdf
         X = data[self.attrs_name].values
-        model = SpanningForest()
+        model = SpanningForest(self.dissimilarity, self.affinity, self.reduction, self.center)
         model.fit(self.n_clusters, self.w, data=X, quorum=self.floor, trace=self.trace)
         self.labels_ = model.current_labels_
 
