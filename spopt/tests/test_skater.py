@@ -54,4 +54,4 @@ class TestSkater(unittest.TestCase):
                 1,
             ]
         )
-        numpy.testing.assert_equal(observed_labels, known_labels)
+        np.testing.assert_equal(observed_labels, known_labels)
