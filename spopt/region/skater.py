@@ -348,10 +348,7 @@ class Skater(BaseSpOptHeuristicSolver):
         floor=-np.inf,
         trace=False,
         islands="increase",
-        dissimilarity=skm.manhattan_distances,
-        affinity=None,
-        reduction=np.sum,
-        center=np.mean,
+        spanning_forest_kwds=dict()
     ):
         """
         # SKATER spatial clustering algorithm.
@@ -382,17 +379,18 @@ class Skater(BaseSpOptHeuristicSolver):
 
         Parameters for spanning tree pruning.
         ----------
+        spanning_forest_kwds include:
 
-        dissimilarity : a callable distance metric.
+            dissimilarity : a callable distance metric.
 
-        affinity : an callable affinity metric between 0,1. 
-                   Will be inverted to provide a 
-                   dissimilarity metric.
+            affinity : an callable affinity metric between 0,1. 
+                       Will be inverted to provide a 
+                       dissimilarity metric.
 
-        reduction: the reduction applied over all clusters
-                   to provide the map score.
+            reduction: the reduction applied over all clusters
+                       to provide the map score.
 
-        center:    way to compute the center of each region in attribute space
+            center:    way to compute the center of each region in attribute space
         
         """
         self.gdf = gdf
@@ -402,31 +400,12 @@ class Skater(BaseSpOptHeuristicSolver):
         self.floor = floor
         self.trace = trace
         self.islands = islands
-        self.dissimilarity = dissimilarity
-        self.affinity = affinity
-        self.reduction = reduction
-        self.center = center
+        self.spanning_forest_kwds = spanning_forest_kwds
 
     def solve(self):
         """Solve the region k-means heuristic."""
         data = self.gdf
         X = data[self.attrs_name].values
-        model = SpanningForest(self.dissimilarity, self.affinity, self.reduction, self.center)
+        model = SpanningForest(**self.spanning_forest_kwds)
         model.fit(self.n_clusters, self.w, data=X, quorum=self.floor, trace=self.trace)
         self.labels_ = model.current_labels_
-
-
-if __name__ == "__main__":
-
-    from libpysal import examples, weights
-    import geopandas as gpd
-
-    df = gpd.read_file(examples.get_path("NAT.shp"))
-    data = df[
-        df.filter(like="90").columns.tolist() + df.filter(like="89").columns.tolist()
-    ].values
-    data_c = (data - data.mean(axis=0)) / data.std(axis=0)
-    W = weights.Queen.from_dataframe(df)
-    result = SpanningForest().fit(10, W, data_c, quorum=100)
-
-    will_fail = SpanningForest().fit(10, W, data_c, quorum=500)
