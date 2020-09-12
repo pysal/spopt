@@ -4,3 +4,6 @@ pandas>=1
 networkx
 libpysal
 ortools
+scikit-learn
+geopandas
+

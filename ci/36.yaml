@@ -10,6 +10,7 @@ dependencies:
   - libpysal
   - geopandas
   - matplotlib
+  - scikit-learn
   - pytest
   - pytest-cov
   - coverage

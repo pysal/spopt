@@ -29,7 +29,7 @@ class RegionMixin(object):
             ...
         
         """
-        
+
         self.solve(X, adjacency)
         _labels_ = self.labels_
         return _labels_
@@ -86,9 +86,9 @@ def move_ok(area, source, destination, g, w):
         ``True`` if the move is acceptable otherwise ``False``.
     
     """
-    
+
     _move_ok_ = False
-    
+
     # first check if area has a neighbor in destination
     if not is_neighbor(area, destination, w):
         return _move_ok_
@@ -135,7 +135,7 @@ def ok_moves(candidates, regions, labels_, closest, g, w, areas):
         ...
     
     """
-    
+
     keep = []
     for area in candidates:
         source = areas[labels_ == labels_[area]]
@@ -164,7 +164,7 @@ def region_neighbors(a_list, region):
         ...
     
     """
-    
+
     neighbors = a_list[a_list["focal"].isin(region)].neighbor.values
     _region_neighbors_ = [j for j in neighbors if j not in region]
     return _region_neighbors_
@@ -189,7 +189,7 @@ def _centroid(regions, data):
         ...
     
     """
-    
+
     _centroid_ = numpy.array([data[region, :].mean(axis=0) for region in regions])
     return _centroid_
 
@@ -213,7 +213,7 @@ def _closest(data, centroids):
         ...
     
     """
-    
+
     _closest_ = [numpy.argmin(((row - centroids) ** 2).sum(axis=1)) for row in data]
     return _closest_
 
@@ -237,7 +237,7 @@ def _seeds(areas, k):
         ...
     
     """
-    
+
     _seeds_ = numpy.random.choice(areas, size=k, replace=False)
     return _seeds_
 
@@ -265,11 +265,10 @@ def is_neighbor(area, region, w):
         of region otherwise ``False``.
     
     """
-    
+
     neighboring = False
     for member in region:
         if area in w[member]:
             neighboring = True
             return neighboring
     return neighboring
-
