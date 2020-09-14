@@ -17,7 +17,7 @@ class TestWard(unittest.TestCase):
         self.attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
         self.w = libpysal.weights.Queen.from_dataframe(self.mexico)
         np.random.seed(123456)
-        self.model = WardSpatial(gdf=self.mexico, w=self.w)
+        self.model = WardSpatial(gdf=self.mexico, w=self.w, attrs_name=self.attrs_name)
         self.model.solve()
 
 
