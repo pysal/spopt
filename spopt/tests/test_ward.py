@@ -3,7 +3,7 @@ import libpysal
 import geopandas as gpd
 import os
 import sys
-from .. import ward
+from .. import WardSpatial
 import unittest
 
 
