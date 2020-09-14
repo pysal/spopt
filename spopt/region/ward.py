@@ -11,7 +11,7 @@ from sklearn.cluster import (
 class WardSpatial(BaseSpOptHeuristicSolver):
     """ Agglomerative clustering using Ward linkage with a spatial connectivity constraint."""
     
-    def __init__(self, gdf, w, attrs_name, n_clusters=5):
+    def __init__(self, gdf, w, attrs_name, n_clusters=5, clustering_kwds=dict()):
         """
         
         Parameters
@@ -30,6 +30,7 @@ class WardSpatial(BaseSpOptHeuristicSolver):
         self.w = w
         self.attrs_name = attrs_name
         self.n_clusters = n_clusters
+        self.clustering_kwds = clustering_kwds
 
 
     def solve(self):
@@ -37,7 +38,7 @@ class WardSpatial(BaseSpOptHeuristicSolver):
         data = self.gdf
         X = data[self.attrs_name].values
         model = AgglomerativeClustering(
-            n_clusters=self.n_clusters, connectivity=self.w.sparse, linkage="ward"
+            n_clusters=self.n_clusters, connectivity=self.w.sparse, linkage="ward", **self.clustering_kwds
         )
         model.fit(X)
         self.labels_ = model.labels_
