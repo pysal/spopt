@@ -1,7 +1,7 @@
 import numpy as np
 import libpysal
 import geopandas as gpd
-from .. import spenc
+from .. import Spenc
 import unittest
 
 
