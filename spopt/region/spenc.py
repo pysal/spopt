@@ -9,7 +9,7 @@ class Spenc(BaseSpOptHeuristicSolver):
 	Spatially encouraged spectral clustering.
 	:cite:`wolf2018`
 	"""
-	def __init__(self, gdf, w, attrs_name, n_clusters=5, gamma=1):
+	def __init__(self, gdf, w, attrs_name, n_clusters=5, random_state, gamma=1):
 		"""
 
 		Parameters
@@ -34,12 +34,13 @@ class Spenc(BaseSpOptHeuristicSolver):
 		self.attrs_name = attrs_name
 		self.n_clusters = n_clusters
 		self.gamma = gamma
+		self.random_state = random_state
 	
 	def solve(self):
 		"""Solve the spenc"""
 		data = self.gdf
 		X = data[self.attrs_name].values
 		#_import_tryer("spenc", "SPENC", "spenc")
-		model = SPENC(n_clusters=self.n_clusters, gamma=self.gamma)
+		model = SPENC(n_clusters=self.n_clusters, random_state=self.random_state, gamma=self.gamma)
 		model.fit(X, self.w.sparse)
 		self.labels_ = model.labels_
