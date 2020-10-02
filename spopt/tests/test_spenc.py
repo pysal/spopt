@@ -22,7 +22,7 @@ class TestSpenc(unittest.TestCase):
         observed_labels = self.model.labels_
         known_labels = np.array(
             [
-                4
+                4,
                 0,
                 3,
                 1,
