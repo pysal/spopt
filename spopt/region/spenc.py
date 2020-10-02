@@ -9,7 +9,7 @@ class Spenc(BaseSpOptHeuristicSolver):
 	Spatially encouraged spectral clustering.
 	:cite:`wolf2018`
 	"""
-	def __init__(self, gdf, w, attrs_name, n_clusters=5, random_state, gamma=1):
+	def __init__(self, gdf, w, attrs_name, n_clusters=5, random_state=None, gamma=1):
 		"""
 
 		Parameters
