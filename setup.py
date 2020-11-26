@@ -33,7 +33,7 @@ def setup_package():
     setup(
         name=package,
         version=__version__,
-        description="Regionalization and Location Allocation in PySAL",
+        description="Spatial Optimization in PySAL",
         url="https://github.com/pysal/" + package,  # github repo
         maintainer="PySAL Developers",
         maintainer_email="xin.feng@ucr.edu,jgaboardi@gmail.com",
