@@ -15,9 +15,12 @@
        matrix:
          os: ['macos-latest', 'ubuntu-latest', 'windows-latest']
          environment-file: [ci/36.yaml, ci/37.yaml, ci/38.yaml]
+         exclude:
+          - environment-file: ci/36.yaml
+            os: windows-latest
      steps:
        - uses: actions/checkout@v2
-       - uses: goanpeca/setup-miniconda@v1
+       - uses: conda-incubator/setup-miniconda@v2
          with:
             miniconda-version: 'latest'
             auto-update-conda: true
