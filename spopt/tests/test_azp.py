@@ -1,7 +1,7 @@
 import numpy as np
 import libpysal
 import geopandas as gpd
-from .. import azp
+from .. import AZP
 
 def test_azp():
     pth = libpysal.examples.get_path("mexicojoin.shp")
