@@ -40,7 +40,7 @@ def maxp(
     max_iterations_sa=ITERSA,
     verbose=False,
 ):
-    """...Needs a short description...
+    """Solve the max-p-regions problem that maximizes the number of regions and minimizes total within-region heterogeneity while ensuring each region is contiguous and satisfies threshold contraint
     
     Parameters
     ----------
@@ -155,7 +155,7 @@ def construction_phase(
     random_assign_choice,
     max_it=999,
 ):
-    """...Needs a short description...
+    """construct feasible solution for max-p-regions
     
     Parameters
     ----------
@@ -266,7 +266,7 @@ def construction_phase(
 def growClusterForPoly(
     labels, threshold_array, P, NeighborPolys, C, weight, spatialThre
 ):
-    """...Needs a short description...
+    """grow one region until threshold constraint is satisified
     
     Parameters
     ----------
@@ -336,7 +336,7 @@ def assignEnclave(
     distance_matrix,
     random_assign=1,
 ):
-    """...Needs a short description...
+    """assign enclaves to one of the identified regions
     
     Parameters
     ----------
@@ -407,7 +407,7 @@ def assignEnclave(
 
 
 def calculateWithinRegionDistance(regionList, distance_matrix):
-    """...Needs a short description...
+    """calculate total wthin-region distance/dissimilarity
     
     Parameters
     ----------
@@ -444,7 +444,7 @@ def pickMoveArea(
     distance_matrix,
     threshold,
 ):
-    """...Needs a short description...
+    """pick a spatial unit that can move from one region to another without violating threshold and contiguity constraints
     
     Parameters
     ----------
@@ -498,7 +498,7 @@ def pickMoveArea(
 def checkMove(
     poa, labels, regionLists, threshold_array, weight, distance_matrix, threshold
 ):
-    """...Needs a short description...
+    """calculate the dissimilarity increase/decrease from one potential move
     
     Parameters
     ----------
@@ -567,7 +567,7 @@ def performSA(
     tabuLength,
     max_no_move,
 ):
-    """...Needs a short description...
+    """perform the tabu list integrated simulated annealing algorithm
         
     Parameters
     ----------
@@ -691,7 +691,7 @@ def performSA(
 
 
 class MaxPHeuristic(BaseSpOptHeuristicSolver):
-    """...Needs a short description..."""
+    """interface for the maxp"""
 
     def __init__(
         self,
