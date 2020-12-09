@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spopt.spopt.region.azp &#8212; spopt v0.1.0 Manual</title>
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pysal-styles.css" />
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../../../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../../installation.html">Installation</a></li>
+                <li><a href="../../../../api.html">API</a></li>
+                <li><a href="../../../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#region-methods">Region Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#region-methods">Region Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for spopt.spopt.region.azp</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">..BaseClass</span> <span class="kn">import</span> <span class="n">BaseSpOptHeuristicSolver</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+<span class="kn">from</span> <span class="nn">spopt.spopt.region.csgraph_utils</span> <span class="kn">import</span> <span class="n">sub_adj_matrix</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">,</span> <span class="n">is_connected</span>
+<span class="kn">from</span> <span class="nn">spopt.spopt.region.objective_function</span> <span class="kn">import</span> <span class="n">ObjectiveFunctionPairwise</span>
+<span class="kn">from</span> <span class="nn">spopt.spopt.region.azp_util</span> <span class="kn">import</span> <span class="n">AllowMoveStrategy</span><span class="p">,</span> \
+                                            <span class="n">AllowMoveAZP</span><span class="p">,</span>\
+                                            <span class="n">AllowMoveAZPSimulatedAnnealing</span>
+<span class="kn">from</span> <span class="nn">spopt.spopt.region.util</span> <span class="kn">import</span> <span class="n">array_from_df_col</span><span class="p">,</span> <span class="n">array_from_dict_values</span><span class="p">,</span> \
+    <span class="n">assert_feasible</span><span class="p">,</span> <span class="n">boolean_assert_feasible</span><span class="p">,</span> <span class="n">copy_func</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">generate_initial_sol</span><span class="p">,</span> \
+    <span class="n">make_move</span><span class="p">,</span> <span class="n">Move</span><span class="p">,</span> <span class="n">pop_randomly_from</span><span class="p">,</span> <span class="n">random_element_from</span><span class="p">,</span>\
+    <span class="n">scipy_sparse_matrix_from_w</span><span class="p">,</span> <span class="n">separate_components</span><span class="p">,</span> <span class="n">w_from_gdf</span><span class="p">,</span>\
+    <span class="n">array_from_graph_or_dict</span><span class="p">,</span> <span class="n">scipy_sparse_matrix_from_dict</span>
+
+
+<div class="viewcode-block" id="AZP"><a class="viewcode-back" href="../../../../generated/spopt.spopt.region.azp.AZP.html#spopt.spopt.region.azp.AZP">[docs]</a><span class="k">class</span> <span class="nc">AZP</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
+<div class="viewcode-block" id="AZP.__init__"><a class="viewcode-back" href="../../../../generated/spopt.spopt.region.azp.AZP.html#spopt.spopt.region.azp.AZP.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">gdf</span><span class="p">,</span> 
+        <span class="n">w</span><span class="p">,</span> 
+        <span class="n">attrs_name</span><span class="p">,</span> 
+        <span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> 
+        <span class="n">allow_move_strategy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">()</span>
+        <span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span> <span class="o">=</span> <span class="n">attrs_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">n_clusters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span> <span class="o">=</span> <span class="n">allow_move_strategy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_labels</span> <span class="o">=</span> <span class="n">initial_labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objective_func</span> <span class="o">=</span> <span class="n">objective_func</span></div>
+
+<div class="viewcode-block" id="AZP.solve"><a class="viewcode-back" href="../../../../generated/spopt.spopt.region.azp.AZP.html#spopt.spopt.region.azp.AZP.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Solve the spenc&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="c1">#_import_tryer(&quot;spenc&quot;, &quot;SPENC&quot;, &quot;spenc&quot;)</span>
+        <span class="c1">##########</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">AZP_orig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">fit_from_w</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span> \
+            <span class="n">initial_labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_labels</span><span class="p">,</span> <span class="n">objective_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_func</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">labels_</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">AZP_orig</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class offering the implementation of the AZP algorithm (see [OR1995]_).</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    labels_ : :class:`numpy.ndarray`</span>
+<span class="sd">        Each element is a region label specifying to which region the</span>
+<span class="sd">        corresponding area was assigned to by the last run of a fit-method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allow_move_strategy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        allow_move_strategy : None or :class:`AllowMoveStrategy`, default: None</span>
+<span class="sd">            If None, then the AZP algorithm in [OR1995]_ is chosen.</span>
+<span class="sd">            For a different behavior for allowing moves an AllowMoveStrategy</span>
+<span class="sd">            instance can be passed as argument.</span>
+<span class="sd">        random_state : None, int, str, bytes, or bytearray, default: None</span>
+<span class="sd">            Random seed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_regions</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">allow_move_strategy</span><span class="p">,</span> <span class="n">AllowMoveStrategy</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span> <span class="o">=</span> <span class="n">allow_move_strategy</span>
+        <span class="k">elif</span> <span class="n">allow_move_strategy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span> <span class="o">=</span> <span class="n">AllowMoveAZP</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The allow_move_strategy argument must be either &quot;</span>
+                             <span class="s2">&quot;None, or an instance of AllowMoveStrategy.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">objective_func</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">adj</span><span class="p">,</span>
+            <span class="n">attr</span><span class="p">,</span>
+            <span class="n">n_regions</span><span class="p">,</span>
+            <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform the AZP algorithm as described in [OR1995]_.</span>
+
+<span class="sd">        The resulting region labels are assigned to the instance&#39;s</span>
+<span class="sd">        :attr:`labels_` attribute.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        adj : :class:`scipy.sparse.csr_matrix`</span>
+<span class="sd">            Adjacency matrix representing the contiguity relation.</span>
+<span class="sd">        attr : :class:`numpy.ndarray`</span>
+<span class="sd">            Array (number of areas x number of attributes) of areas&#39; attributes</span>
+<span class="sd">            relevant to clustering.</span>
+<span class="sd">        n_regions : `int`</span>
+<span class="sd">            Number of desired regions.</span>
+<span class="sd">        initial_labels : :class:`numpy.ndarray` or None, default: None</span>
+<span class="sd">            One-dimensional array of labels at the beginning of the algorithm.</span>
+<span class="sd">            If None, then a random initial clustering will be generated.</span>
+<span class="sd">        objective_func : :class:`region.objective_function.ObjectiveFunction`, default: ObjectiveFunctionPairwise()</span>
+<span class="sd">            The objective function to use.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="o">.</span><span class="n">attr_all</span> <span class="o">=</span> <span class="n">attr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objective_func</span> <span class="o">=</span> <span class="n">objective_func</span>
+        <span class="c1"># step 1</span>
+        <span class="k">if</span> <span class="n">initial_labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">assert_feasible</span><span class="p">(</span><span class="n">initial_labels</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">n_regions</span><span class="p">)</span>
+            <span class="n">initial_labels_gen</span> <span class="o">=</span> <span class="n">separate_components</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">initial_labels</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">initial_labels_gen</span> <span class="o">=</span> <span class="n">generate_initial_sol</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">n_regions</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">labels_comp</span> <span class="ow">in</span> <span class="n">initial_labels_gen</span><span class="p">:</span>
+            <span class="n">comp_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels_comp</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">adj_comp</span> <span class="o">=</span> <span class="n">sub_adj_matrix</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">comp_idx</span><span class="p">)</span>
+            <span class="n">labels_comp</span> <span class="o">=</span> <span class="n">labels_comp</span><span class="p">[</span><span class="n">comp_idx</span><span class="p">]</span>
+            <span class="n">attr_comp</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="n">comp_idx</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="o">.</span><span class="n">start_new_component</span><span class="p">(</span>
+                <span class="n">labels_comp</span><span class="p">,</span> <span class="n">attr_comp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_func</span><span class="p">,</span> <span class="n">comp_idx</span><span class="p">)</span>
+
+            <span class="n">labels_comp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_azp_connected_component</span><span class="p">(</span>
+                <span class="n">adj_comp</span><span class="p">,</span> <span class="n">labels_comp</span><span class="p">,</span> <span class="n">attr_comp</span><span class="p">)</span>
+            <span class="n">labels</span><span class="p">[</span><span class="n">comp_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels_comp</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_regions</span> <span class="o">=</span> <span class="n">n_regions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="n">labels</span>
+
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">fit_from_scipy_sparse_matrix</span><span class="p">)</span>
+    <span class="n">fit</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;Alias for :meth:`fit_from_scipy_sparse_matrix`.</span><span class="se">\n\n</span><span class="s2">&quot;</span> \
+                  <span class="o">+</span> <span class="n">fit_from_scipy_sparse_matrix</span><span class="o">.</span><span class="vm">__doc__</span>
+
+    <span class="k">def</span> <span class="nf">fit_from_w</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                   <span class="n">w</span><span class="p">,</span>
+                   <span class="n">attr</span><span class="p">,</span>
+                   <span class="n">n_regions</span><span class="p">,</span>
+                   <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alternative API for :meth:`fit_from_scipy_sparse_matrix`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        w : :class:`libpysal.weights.weights.W`</span>
+<span class="sd">            W object representing the contiguity relation.</span>
+<span class="sd">        attr : :class:`numpy.ndarray`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        n_regions : `int`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        initial_labels : :class:`numpy.ndarray` or None, default: None</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        objective_func : :class:`region.ObjectiveFunction`, default: ObjectiveFunctionPairwise()</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">scipy_sparse_matrix_from_w</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
+            <span class="n">adj</span><span class="p">,</span>
+            <span class="n">attr</span><span class="p">,</span>
+            <span class="n">n_regions</span><span class="p">,</span>
+            <span class="n">initial_labels</span><span class="p">,</span>
+            <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fit_from_networkx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                          <span class="n">graph</span><span class="p">,</span>
+                          <span class="n">attr</span><span class="p">,</span>
+                          <span class="n">n_regions</span><span class="p">,</span>
+                          <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alternative API for :meth:`fit_from_scipy_sparse_matrix`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : `networkx.Graph`</span>
+<span class="sd">            Graph representing the contiguity relation.</span>
+<span class="sd">        attr : str, list or dict</span>
+<span class="sd">            If the clustering criteria are present in the networkx.Graph</span>
+<span class="sd">            `graph` as node attributes, then they can be specified as a string</span>
+<span class="sd">            (for one criterion) or as a list of strings (for multiple</span>
+<span class="sd">            criteria).</span>
+<span class="sd">            Alternatively, a dict can be used with each key being a node of the</span>
+<span class="sd">            networkx.Graph `graph` and each value being the corresponding</span>
+<span class="sd">            clustering criterion (a scalar (e.g. `float` or `int`) or a</span>
+<span class="sd">            :class:`numpy.ndarray`).</span>
+<span class="sd">            If there are no clustering criteria present in the networkx.Graph</span>
+<span class="sd">            `graph` as node attributes, then a dictionary must be used for this</span>
+<span class="sd">            argument. Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_dict` for more details about the expected dict.</span>
+<span class="sd">        n_regions : `int`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        initial_labels : str or dict or None, default: None</span>
+<span class="sd">            If str, then the string names the graph&#39;s attribute holding the</span>
+<span class="sd">            information about the initial clustering.</span>
+<span class="sd">            If dict, then each key is a node and each value is the region the</span>
+<span class="sd">            key area is assigned to at the beginning of the algorithm.</span>
+<span class="sd">            If None, then a random initial clustering will be generated.</span>
+<span class="sd">        objective_func : :class:`region.ObjectiveFunction`, default: ObjectiveFunctionPairwise()</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">to_scipy_sparse_matrix</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">array_from_graph_or_dict</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">initial_labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">initial_labels</span> <span class="o">=</span> <span class="n">array_from_graph_or_dict</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">initial_labels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
+            <span class="n">adj</span><span class="p">,</span>
+            <span class="n">attr</span><span class="p">,</span>
+            <span class="n">n_regions</span><span class="p">,</span>
+            <span class="n">initial_labels</span><span class="p">,</span>
+            <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fit_from_geodataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                              <span class="n">gdf</span><span class="p">,</span>
+                              <span class="n">attr</span><span class="p">,</span>
+                              <span class="n">n_regions</span><span class="p">,</span>
+                              <span class="n">contiguity</span><span class="o">=</span><span class="s2">&quot;rook&quot;</span><span class="p">,</span>
+                              <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alternative API for :meth:`fit_from_scipy_sparse_matrix`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gdf : :class:`geopandas.GeoDataFrame`</span>
+
+<span class="sd">        attr : `str` or `list`</span>
+<span class="sd">            The clustering-relevant attributes (columns of the GeoDataFrame</span>
+<span class="sd">            `gdf`) are specified as string (for one column) or list of strings</span>
+<span class="sd">            (for multiple columns).</span>
+<span class="sd">        n_regions : `int`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        contiguity : {&quot;rook&quot;, &quot;queen&quot;}, default: &quot;rook&quot;</span>
+<span class="sd">            Defines the contiguity relationship between areas. Possible</span>
+<span class="sd">            contiguity definitions are:</span>
+
+<span class="sd">            * &quot;rook&quot; - Rook contiguity.</span>
+<span class="sd">            * &quot;queen&quot; - Queen contiguity.</span>
+
+<span class="sd">        initial_labels : :class:`numpy.ndarray` or None, default: None</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        objective_func : :class:`region.ObjectiveFunction`, default: ObjectiveFunctionPairwise()</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">w_from_gdf</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">contiguity</span><span class="p">)</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">array_from_df_col</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_from_w</span><span class="p">(</span>
+            <span class="n">w</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">n_regions</span><span class="p">,</span> <span class="n">initial_labels</span><span class="p">,</span> <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fit_from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                      <span class="n">neighbor_dict</span><span class="p">,</span>
+                      <span class="n">attr</span><span class="p">,</span>
+                      <span class="n">n_regions</span><span class="p">,</span>
+                      <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alternative API for :meth:`fit_from_scipy_sparse_matrix`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        neighbor_dict : `dict`</span>
+<span class="sd">            Each key is an area and each value is an iterable of the key area&#39;s</span>
+<span class="sd">            neighbors.</span>
+<span class="sd">        attr : `dict`</span>
+<span class="sd">            Each key is an area and each value is the corresponding</span>
+<span class="sd">            clustering-relevant attribute.</span>
+<span class="sd">        n_regions : `int`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        initial_labels : `dict` or None, default: None</span>
+<span class="sd">            Each key represents an area. Each value represents the region, the</span>
+<span class="sd">            corresponding area is assigned to at the beginning of the</span>
+<span class="sd">            algorithm.</span>
+<span class="sd">            If None, then a random initial clustering will be generated.</span>
+<span class="sd">        objective_func : :class:`region.ObjectiveFunction`, default: ObjectiveFunctionPairwise()</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sorted_areas</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">neighbor_dict</span><span class="p">)</span>
+
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">scipy_sparse_matrix_from_dict</span><span class="p">(</span><span class="n">neighbor_dict</span><span class="p">)</span>
+        <span class="n">attr_arr</span> <span class="o">=</span> <span class="n">array_from_dict_values</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">sorted_areas</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">initial_labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">initial_labels</span> <span class="o">=</span> <span class="n">array_from_dict_values</span><span class="p">(</span>
+                <span class="n">initial_labels</span><span class="p">,</span> <span class="n">sorted_areas</span><span class="p">,</span> <span class="n">flat_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
+            <span class="n">adj</span><span class="p">,</span>
+            <span class="n">attr_arr</span><span class="p">,</span>
+            <span class="n">n_regions</span><span class="p">,</span>
+            <span class="n">initial_labels</span><span class="p">,</span>
+            <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_azp_connected_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">initial_clustering</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implementation of the AZP algorithm for a spatially connected set of</span>
+<span class="sd">        areas (i.e. for every area there is a path to every other area).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        adj : :class:`scipy.sparse.csr_matrix`</span>
+<span class="sd">            Adjacency matrix representing the contiguity relation. The matrix&#39;</span>
+<span class="sd">            shape is (N, N) where N denotes the number of areas in the</span>
+<span class="sd">            currently considered connected component.</span>
+<span class="sd">        initial_clustering : :class:`numpy.ndarray`</span>
+<span class="sd">            Array of labels. Shape: (N,) where N denotes the number of areas in</span>
+<span class="sd">            the currently considered connected component.</span>
+<span class="sd">        attr : :class:`numpy.ndarray`</span>
+<span class="sd">            Array of labels. Shape: (N, M) where N denotes the number of areas</span>
+<span class="sd">            in the currently considered connected component and M denotes the</span>
+<span class="sd">            number of attributes per area.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        labels : :class:`numpy.ndarray`</span>
+<span class="sd">            One-dimensional array of region labels after the AZP algorithm has</span>
+<span class="sd">            been performed. Only region labels of the currently considered</span>
+<span class="sd">            connected component are returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if there is only one region in the initial solution, just return it.</span>
+        <span class="n">distinct_regions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">initial_clustering</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">distinct_regions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">initial_clustering</span>
+        <span class="n">distinct_regions_copy</span> <span class="o">=</span> <span class="n">distinct_regions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1">#  step 2: make a list of the M regions</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">initial_clustering</span>
+
+        <span class="n">obj_val_start</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+        <span class="n">obj_val_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="o">.</span><span class="n">objective_val</span>
+
+        <span class="n">region_neighbors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">distinct_regions</span><span class="p">:</span>
+            <span class="n">region_areas</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">region</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">neighs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">region_areas</span><span class="p">:</span>
+                <span class="n">neighs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">area</span><span class="p">))</span>
+            <span class="n">region_neighbors</span><span class="p">[</span><span class="n">region</span><span class="p">]</span> <span class="o">=</span> <span class="n">neighs</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">region_areas</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">neighs</span>
+
+        <span class="c1"># step 7: Repeat until no further improving moves are made</span>
+        <span class="k">while</span> <span class="n">obj_val_end</span> <span class="o">&lt;</span> <span class="n">obj_val_start</span><span class="p">:</span>  <span class="c1"># improvement</span>
+            <span class="n">obj_val_start</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">obj_val_end</span><span class="p">)</span>
+            <span class="n">distinct_regions</span> <span class="o">=</span> <span class="n">distinct_regions_copy</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># step 6: when the list for region K is exhausted return to step 3</span>
+            <span class="c1"># and select another region and repeat steps 4-6</span>
+
+            <span class="k">while</span> <span class="n">distinct_regions</span><span class="p">:</span>
+                <span class="c1"># step 3: select &amp; remove any region K at random from this list</span>
+                <span class="n">recipient</span> <span class="o">=</span> <span class="n">pop_randomly_from</span><span class="p">(</span><span class="n">distinct_regions</span><span class="p">)</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="c1"># step 4: identify a set of zones bordering on members of</span>
+                    <span class="c1"># region K that could be moved into region K without</span>
+                    <span class="c1"># destroying the internal contiguity of the donor region(s)</span>
+
+                    <span class="n">candidates</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">neigh</span> <span class="ow">in</span> <span class="n">region_neighbors</span><span class="p">[</span><span class="n">recipient</span><span class="p">]:</span>
+                        <span class="n">neigh_region</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">neigh</span><span class="p">]</span>
+                        <span class="n">sub_adj</span> <span class="o">=</span> <span class="n">sub_adj_matrix</span><span class="p">(</span>
+                            <span class="n">adj</span><span class="p">,</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">neigh_region</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                            <span class="n">wo_nodes</span><span class="o">=</span><span class="n">neigh</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">is_connected</span><span class="p">(</span><span class="n">sub_adj</span><span class="p">):</span>
+                            <span class="c1"># if area is alone in its region, it must stay</span>
+                            <span class="k">if</span> <span class="n">count</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">neigh_region</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="n">candidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neigh</span><span class="p">)</span>
+                    <span class="c1"># step 5: randomly select zones from this list until either</span>
+                    <span class="c1"># there is a local improvement in the current value of the</span>
+                    <span class="c1"># objective function or a move that is equivalently as good</span>
+                    <span class="c1"># as the current best. Then make the move, update the list</span>
+                    <span class="c1"># of candidate zones, and return to step 4 or else repeat</span>
+                    <span class="c1"># step 5 until the list is exhausted.</span>
+                    <span class="k">while</span> <span class="n">candidates</span><span class="p">:</span>
+                        <span class="n">cand</span> <span class="o">=</span> <span class="n">pop_randomly_from</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="p">(</span><span class="n">cand</span><span class="p">,</span> <span class="n">recipient</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+                            <span class="n">donor</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">cand</span><span class="p">]</span>
+
+                            <span class="n">make_move</span><span class="p">(</span><span class="n">cand</span><span class="p">,</span> <span class="n">recipient</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+                            <span class="n">region_neighbors</span><span class="p">[</span><span class="n">donor</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cand</span><span class="p">)</span>
+                            <span class="n">region_neighbors</span><span class="p">[</span><span class="n">recipient</span><span class="p">]</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">cand</span><span class="p">)</span>
+
+                            <span class="n">neighs_of_cand</span> <span class="o">=</span> <span class="n">neighbors</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">cand</span><span class="p">)</span>
+
+                            <span class="n">recipient_region_areas</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">recipient</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+                            <span class="n">region_neighbors</span><span class="p">[</span><span class="n">recipient</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">neighs_of_cand</span><span class="p">)</span>
+                            <span class="n">region_neighbors</span><span class="p">[</span><span class="n">recipient</span><span class="p">]</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span>
+                                <span class="n">recipient_region_areas</span><span class="p">)</span>
+
+                            <span class="n">donor_region_areas</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">donor</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+                            <span class="n">not_donor_neighs_anymore</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+                                <span class="n">area</span> <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">neighs_of_cand</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
+                                    <span class="n">a</span> <span class="ow">in</span> <span class="n">donor_region_areas</span>
+                                    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">area</span><span class="p">)))</span>
+                            <span class="n">region_neighbors</span><span class="p">[</span><span class="n">donor</span><span class="p">]</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span>
+                                <span class="n">not_donor_neighs_anymore</span><span class="p">)</span>
+                            <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">break</span>
+
+            <span class="n">obj_val_end</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="o">.</span><span class="n">objective_val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">labels</span>
+
+
+<span class="k">class</span> <span class="nc">AZPSimulatedAnnealing</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class offering the implementation of the AZP-SA algorithm (see [OR1995]_).</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    labels_ : :class:`numpy.ndarray`</span>
+<span class="sd">        Each element is a region label specifying to which region the</span>
+<span class="sd">        corresponding area was assigned to by the last run of a fit-method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">init_temperature</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">max_iterations</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">),</span>
+                 <span class="n">sa_moves_term</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                 <span class="n">nonmoving_steps_before_stop</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                 <span class="n">repetitions_before_termination</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                 <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        init_temperature : float</span>
+<span class="sd">            The initial temperature used in the simulated annealing algorithm.</span>
+<span class="sd">        max_iterations : int or {float(&quot;inf&quot;)}, default: float(&quot;inf&quot;)</span>
+<span class="sd">            Termination condition for step b: Terminate if the AZP algorithm</span>
+<span class="sd">            has run for `max_iterations` times.</span>
+<span class="sd">        sa_moves_term : int, default: 0</span>
+<span class="sd">            Termination condition for step b: Count the SA-moves made by the</span>
+<span class="sd">            repeated runs of the AZP (modified in step 5) and terminate after</span>
+<span class="sd">            the AZP run that made the cumulative number of SA-moves reach or</span>
+<span class="sd">            exceed `sa_moves_term`.</span>
+<span class="sd">        nonmoving_steps_before_stop : int, default: 3</span>
+<span class="sd">            Termination condition: Repeat steps b and c until no further moves</span>
+<span class="sd">            occur for `nonmoving_steps_before_stop` times.</span>
+<span class="sd">        repetitions_before_termination : int, default: 5</span>
+<span class="sd">            Termination condition not present in [OR1995]_: Terminate if the</span>
+<span class="sd">            AZP runs returned a given solution for</span>
+<span class="sd">            `repetitions_before_termination` times.</span>
+<span class="sd">        random_state : None, int, str, bytes, or bytearray</span>
+<span class="sd">            Random seed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">azp</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">init_temperature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_temperature</span> <span class="o">=</span> <span class="n">init_temperature</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;TODO&quot;</span><span class="p">)</span>  <span class="c1"># todo</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxit</span> <span class="o">=</span> <span class="n">max_iterations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sa_moves_term</span> <span class="o">=</span> <span class="n">sa_moves_term</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sa_moves_term_reached</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move_made</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nonmoving_steps_before_stop</span> <span class="o">=</span> <span class="n">nonmoving_steps_before_stop</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">visited</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reps_before_termination</span> <span class="o">=</span> <span class="n">repetitions_before_termination</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_regions</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">fit_from_geodataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                              <span class="n">gdf</span><span class="p">,</span>
+                              <span class="n">attr</span><span class="p">,</span>
+                              <span class="n">n_regions</span><span class="p">,</span>
+                              <span class="n">contiguity</span><span class="o">=</span><span class="s2">&quot;rook&quot;</span><span class="p">,</span>
+                              <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">cooling_factor</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
+                              <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gdf : :class:`geopandas.GeoDataFrame`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.fit_from_geodataframe`.</span>
+<span class="sd">        attr : `str` or `list`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.fit_from_geodataframe`.</span>
+<span class="sd">        n_regions : `int`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.fit_from_geodataframe`.</span>
+<span class="sd">        contiguity : `str`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.fit_from_geodataframe`.</span>
+<span class="sd">        initial_labels : :class:`numpy.ndarray` or None, default: None</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.fit_from_geodataframe`.</span>
+<span class="sd">        cooling_factor : float, default: 0.85</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        objective_func : :class:`region.ObjectiveFunction`, default: ObjectiveFunctionPairwise()</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">w_from_gdf</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">contiguity</span><span class="p">)</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">array_from_df_col</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_from_w</span><span class="p">(</span>
+            <span class="n">w</span><span class="p">,</span>
+            <span class="n">attr</span><span class="p">,</span>
+            <span class="n">n_regions</span><span class="p">,</span>
+            <span class="n">initial_labels</span><span class="p">,</span>
+            <span class="n">cooling_factor</span><span class="o">=</span><span class="n">cooling_factor</span><span class="p">,</span>
+            <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fit_from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                      <span class="n">neighbor_dict</span><span class="p">,</span>
+                      <span class="n">attr</span><span class="p">,</span>
+                      <span class="n">n_regions</span><span class="p">,</span>
+                      <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">cooling_factor</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
+                      <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        neighbor_dict : `dict`</span>
+<span class="sd">            Refer to the corresponding argument in :meth:`AZP.fit_from_dict`.</span>
+<span class="sd">        attr : `dict`</span>
+<span class="sd">            Refer to the corresponding argument in :meth:`AZP.fit_from_dict`.</span>
+<span class="sd">        n_regions : `int`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        initial_labels : `dict` or None, default: None</span>
+<span class="sd">            Refer to the corresponding argument in :meth:`AZP.fit_from_dict`.</span>
+<span class="sd">        cooling_factor : float, default: 0.85</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        objective_func : :class:`region.ObjectiveFunction`, default: ObjectiveFunctionPairwise()</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sorted_areas</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">neighbor_dict</span><span class="p">)</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">scipy_sparse_matrix_from_dict</span><span class="p">(</span><span class="n">neighbor_dict</span><span class="p">)</span>
+        <span class="n">attr_arr</span> <span class="o">=</span> <span class="n">array_from_dict_values</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">sorted_areas</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">initial_labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">initial_labels</span> <span class="o">=</span> <span class="n">array_from_dict_values</span><span class="p">(</span>
+                <span class="n">initial_labels</span><span class="p">,</span> <span class="n">sorted_areas</span><span class="p">,</span> <span class="n">flat_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
+            <span class="n">adj</span><span class="p">,</span>
+            <span class="n">attr_arr</span><span class="p">,</span>
+            <span class="n">n_regions</span><span class="p">,</span>
+            <span class="n">initial_labels</span><span class="o">=</span><span class="n">initial_labels</span><span class="p">,</span>
+            <span class="n">cooling_factor</span><span class="o">=</span><span class="n">cooling_factor</span><span class="p">,</span>
+            <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fit_from_networkx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                          <span class="n">graph</span><span class="p">,</span>
+                          <span class="n">attr</span><span class="p">,</span>
+                          <span class="n">n_regions</span><span class="p">,</span>
+                          <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">cooling_factor</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
+                          <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : `networkx.Graph`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.fit_from_networkx`.</span>
+<span class="sd">        attr : str, list or dict</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.fit_from_networkx`.</span>
+<span class="sd">        n_regions : `int`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        initial_labels : str or dict or None, default: None</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.fit_from_networkx`.</span>
+<span class="sd">        cooling_factor : float, default: 0.85</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        objective_func : :class:`region.ObjectiveFunction`, default: ObjectiveFunctionPairwise()</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">to_scipy_sparse_matrix</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">array_from_graph_or_dict</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">initial_labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">initial_labels</span> <span class="o">=</span> <span class="n">array_from_graph_or_dict</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">initial_labels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
+            <span class="n">adj</span><span class="p">,</span>
+            <span class="n">attr</span><span class="p">,</span>
+            <span class="n">n_regions</span><span class="p">,</span>
+            <span class="n">initial_labels</span><span class="p">,</span>
+            <span class="n">cooling_factor</span><span class="o">=</span><span class="n">cooling_factor</span><span class="p">,</span>
+            <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">adj</span><span class="p">,</span>
+            <span class="n">attr</span><span class="p">,</span>
+            <span class="n">n_regions</span><span class="p">,</span>
+            <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">cooling_factor</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
+            <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        adj : :class:`scipy.sparse.csr_matrix`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        attr : :class:`numpy.ndarray`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        n_regions : `int`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        initial_labels : :class:`numpy.ndarray` or None, default: None</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        cooling_factor : float, default: 0.85</span>
+<span class="sd">            Float :math:`\\in (0, 1)` specifying the cooling factor for the</span>
+<span class="sd">            simulated annealing.</span>
+<span class="sd">        objective_func : :class:`region.ObjectiveFunction`, default: ObjectiveFunctionPairwise()</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">cooling_factor</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The cooling_factor argument must be greater &quot;</span>
+                             <span class="s2">&quot;than 0 and less than 1&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span> <span class="o">=</span> <span class="n">AllowMoveAZPSimulatedAnnealing</span><span class="p">(</span>
+            <span class="n">init_temperature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">init_temperature</span><span class="p">,</span>
+            <span class="n">sa_moves_term</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sa_moves_term</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="o">.</span><span class="n">register_sa_moves_term</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sa_moves_alert</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="o">.</span><span class="n">register_move_made</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">move_made_alert</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">azp</span> <span class="o">=</span> <span class="n">AZP</span><span class="p">(</span>
+            <span class="n">allow_move_strategy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
+        <span class="c1"># step a</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_temperature</span>
+        <span class="n">nonmoving_steps</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># step d: repeat step b and c</span>
+        <span class="k">while</span> <span class="n">nonmoving_steps</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">nonmoving_steps_before_stop</span><span class="p">:</span>
+            <span class="n">it</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sa_moves_term_reached</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+            <span class="c1"># step b</span>
+            <span class="k">while</span> <span class="n">it</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxit</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sa_moves_term_reached</span><span class="p">:</span>
+                <span class="n">it</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">old_sol</span> <span class="o">=</span> <span class="n">initial_labels</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">azp</span><span class="o">.</span><span class="n">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
+                    <span class="n">adj</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">n_regions</span><span class="p">,</span> <span class="n">initial_labels</span><span class="p">,</span> <span class="n">objective_func</span><span class="p">)</span>
+                <span class="n">initial_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">azp</span><span class="o">.</span><span class="n">labels_</span>
+
+                <span class="k">if</span> <span class="n">old_sol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="n">old_sol</span> <span class="o">==</span> <span class="n">initial_labels</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                        <span class="k">break</span>
+            <span class="c1"># added termination condition (not in Openshaw &amp; Rao (1995))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">visited</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">initial_labels</span><span class="p">))</span> \
+                    <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reps_before_termination</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visited</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">initial_labels</span><span class="p">))</span>
+            <span class="c1"># step c</span>
+            <span class="n">t</span> <span class="o">*=</span> <span class="n">cooling_factor</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="o">.</span><span class="n">update_temperature</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_made</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">move_made</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nonmoving_steps</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="n">initial_labels</span>
+
+    <span class="k">def</span> <span class="nf">fit_from_w</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                   <span class="n">w</span><span class="p">,</span>
+                   <span class="n">attr</span><span class="p">,</span>
+                   <span class="n">n_regions</span><span class="p">,</span>
+                   <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">cooling_factor</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
+                   <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        w : :class:`libpysal.weights.weights.W`</span>
+<span class="sd">            Refer to the corresponding argument in :meth:`AZP.fit_from_w`.</span>
+<span class="sd">        attr : :class:`numpy.ndarray`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        n_regions : `int`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        initial_labels : :class:`numpy.ndarray` or None, default: None</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        cooling_factor : float, default: 0.85</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        objective_func : :class:`region.ObjectiveFunction`, default: ObjectiveFunctionPairwise()</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">scipy_sparse_matrix_from_w</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
+            <span class="n">adj</span><span class="p">,</span>
+            <span class="n">attr</span><span class="p">,</span>
+            <span class="n">n_regions</span><span class="p">,</span>
+            <span class="n">initial_labels</span><span class="p">,</span>
+            <span class="n">cooling_factor</span><span class="o">=</span><span class="n">cooling_factor</span><span class="p">,</span>
+            <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">sa_moves_alert</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sa_moves_term_reached</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">move_made_alert</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move_made</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="k">class</span> <span class="nc">AZPTabu</span><span class="p">(</span><span class="n">AZP</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Superclass for tabu variants of the AZP.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_make_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">adj</span><span class="p">):</span>
+        <span class="n">old_region</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">area</span><span class="p">]</span>
+        <span class="n">make_move</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">boolean_assert_feasible</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">adj</span><span class="p">):</span> <span class="c1"># If the move breaks the contiguity, revert it!</span>
+            <span class="n">make_move</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">old_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> <span class="c1"># Revert Move!</span>
+            <span class="n">reverse_move</span> <span class="o">=</span> <span class="n">Move</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">new_region</span><span class="p">,</span> <span class="n">old_region</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reverse_move</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># step 5: Tabu the reverse move for R iterations.</span>
+            <span class="n">reverse_move</span> <span class="o">=</span> <span class="n">Move</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">new_region</span><span class="p">,</span> <span class="n">old_region</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reverse_move</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">reset_tabu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tabu_len</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">tabu_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span><span class="o">.</span><span class="n">maxlen</span> <span class="k">if</span> <span class="n">tabu_len</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">tabu_len</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([],</span> <span class="n">tabu_len</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">AZPBasicTabu</span><span class="p">(</span><span class="n">AZPTabu</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implementation of the AZP with basic tabu (refer to [OR1995]_).</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    labels_ : :class:`numpy.ndarray`</span>
+<span class="sd">        Each element is a region label specifying to which region the</span>
+<span class="sd">        corresponding area was assigned to by the last run of a fit-method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">tabu_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">repetitions_before_termination</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                 <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tabu_length : numbers.Integral</span>
+<span class="sd">            The size of the tabu list.</span>
+<span class="sd">        repetitions_before_termination : numbers.integral</span>
+<span class="sd">            This argument specifies a termination condition. If a solution has</span>
+<span class="sd">            been visited for `repetitions_before_termination` times, the</span>
+<span class="sd">            clustering function will terminate.</span>
+<span class="sd">        random_state : None, int, str, bytes, or bytearray, default: None</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.__init__`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([],</span> <span class="n">tabu_length</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visited</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reps_before_termination</span> <span class="o">=</span> <span class="n">repetitions_before_termination</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_azp_connected_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">initial_clustering</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implementation of the basic tabu version of the AZP algorithm (refer</span>
+<span class="sd">        to [OR1995]_) for a spatially connected set of areas (i.e. for every</span>
+<span class="sd">        area there is a path to every other area).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        adj : :class:`scipy.sparse.csr_matrix`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP._azp_connected_component`.</span>
+<span class="sd">        initial_clustering : :class:`numpy.ndarray`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP._azp_connected_component`.</span>
+<span class="sd">        attr : :class:`numpy.ndarray`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP._azp_connected_component`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        labels : :class:`numpy.ndarray`</span>
+<span class="sd">            Refer to the return value in :meth:`AZP._azp_connected_component`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_tabu</span><span class="p">()</span>
+        <span class="c1"># if there is only one region in the initial solution, just return it.</span>
+        <span class="n">distinct_regions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">initial_clustering</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">distinct_regions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">initial_clustering</span>
+
+        <span class="c1">#  step 2: make a list of the M regions</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">initial_clustering</span>
+
+        <span class="n">visited</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># added termination condition (not in Openshaw &amp; Rao (1995))</span>
+            <span class="n">label_tup</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">visited</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">label_tup</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reps_before_termination</span><span class="p">:</span>
+                <span class="n">stop</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">visited</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label_tup</span><span class="p">)</span>
+
+            <span class="c1"># step 1 Find the global best move that is not prohibited or tabu.</span>
+            <span class="c1"># find possible moves (globally)</span>
+            <span class="n">best_move</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">best_objval_diff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">old_region</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">area</span><span class="p">]</span>
+                <span class="n">sub_adj</span> <span class="o">=</span> <span class="n">sub_adj_matrix</span><span class="p">(</span>
+                    <span class="n">adj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">old_region</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wo_nodes</span><span class="o">=</span><span class="n">area</span><span class="p">)</span>
+                <span class="c1"># moving the area must not destroy spatial contiguity in donor</span>
+                <span class="c1"># region and if area is alone in its region, it must stay:</span>
+                <span class="k">if</span> <span class="n">is_connected</span><span class="p">(</span><span class="n">sub_adj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">count</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">old_region</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">neigh</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">area</span><span class="p">):</span>
+                        <span class="n">new_region</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">neigh</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">new_region</span> <span class="o">!=</span> <span class="n">old_region</span><span class="p">:</span>
+                            <span class="n">possible_move</span> <span class="o">=</span> <span class="n">Move</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">old_region</span><span class="p">,</span> <span class="n">new_region</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">possible_move</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span><span class="p">:</span>
+                                <span class="n">objval_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_func</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                                    <span class="n">possible_move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span>
+                                    <span class="n">possible_move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="n">objval_diff</span> <span class="o">&lt;</span> <span class="n">best_objval_diff</span><span class="p">:</span>
+                                    <span class="n">best_move</span> <span class="o">=</span> <span class="n">possible_move</span>
+                                    <span class="n">best_objval_diff</span> <span class="o">=</span> <span class="n">objval_diff</span>
+            <span class="c1"># step 2: Make this move if it is an improvement or equivalet in</span>
+            <span class="c1"># value.</span>
+            <span class="k">if</span> <span class="n">best_move</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">best_objval_diff</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="p">(</span><span class="n">best_move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span> <span class="n">best_move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_make_move</span><span class="p">(</span><span class="n">best_move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span> <span class="n">best_move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">adj</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># step 3: if no improving move can be made, then see if a tabu</span>
+                <span class="c1"># move can be made which improves on the current local best</span>
+                <span class="c1"># (termed an aspiration move)</span>
+                <span class="n">improving_tabus</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">move</span> <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span>
+                    <span class="k">if</span> <span class="n">labels</span><span class="p">[</span><span class="n">move</span><span class="o">.</span><span class="n">area</span><span class="p">]</span> <span class="o">==</span> <span class="n">move</span><span class="o">.</span><span class="n">old_region</span>
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_func</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span> <span class="n">move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span>
+                                                   <span class="n">labels</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span>
+                <span class="p">]</span>
+                <span class="k">if</span> <span class="n">improving_tabus</span><span class="p">:</span>
+                    <span class="n">aspiration_move</span> <span class="o">=</span> <span class="n">random_element_from</span><span class="p">(</span><span class="n">improving_tabus</span><span class="p">)</span>
+                    
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="p">(</span><span class="n">aspiration_move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span> <span class="n">aspiration_move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+                    
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_make_move</span><span class="p">(</span><span class="n">aspiration_move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span> <span class="n">aspiration_move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">adj</span><span class="p">)</span>
+                        
+                <span class="k">if</span> <span class="n">stop</span><span class="p">:</span>
+                        <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># step 4: If there is no improving move and no aspirational</span>
+                    <span class="c1"># move, then make the best move even if it is nonimproving</span>
+                    <span class="c1"># (that is, results in a worse value of the objective</span>
+                    <span class="c1"># function).</span>
+                    <span class="k">if</span> <span class="n">stop</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="k">if</span> <span class="n">best_move</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="p">(</span><span class="n">best_move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span> <span class="n">best_move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_make_move</span><span class="p">(</span><span class="n">best_move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span> <span class="n">best_move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">adj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">labels</span>
+
+
+<span class="k">class</span> <span class="nc">AZPReactiveTabu</span><span class="p">(</span><span class="n">AZPTabu</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implementation of the AZP with reactive tabu (refer to [OR1995]_).</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    labels_ : :class:`numpy.ndarray`</span>
+<span class="sd">        Each element is a region label specifying to which region the</span>
+<span class="sd">        corresponding area was assigned to by the last run of a fit-method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_iterations</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        max_iterations : int</span>
+<span class="sd">           Termination condition: The algorithm terminates after steps 3-11</span>
+<span class="sd">           (see [OR1995]_) are repeated for `max_max_iterations` times.</span>
+<span class="sd">        k1 : int</span>
+<span class="sd">            Defining a necessary condition for jumping from step 7 to step 11</span>
+<span class="sd">            in the algorithm (see [OR1995]_). Such a jump requires (besides the</span>
+<span class="sd">            condition involving `k2`) a solution to be visited more than `k1`</span>
+<span class="sd">            times.</span>
+<span class="sd">        k2 : int</span>
+<span class="sd">            Defining a necessary condition for jumping from step 7 to step 11</span>
+<span class="sd">            in the algorithm (see [OR1995]_). Such a jump requires (besides the</span>
+<span class="sd">            condition involving `k1`) a cycle of solutions to be found at least</span>
+<span class="sd">            `k2` times.</span>
+<span class="sd">        random_state : None, int, str, bytes, or bytearray, default: None</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP.__init__`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([],</span> <span class="n">maxlen</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">avg_it_until_rep</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rep_counter</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">max_iterations</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The `max_iterations` argument must be &gt; 0.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxit</span> <span class="o">=</span> <span class="n">max_iterations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visited</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k1</span> <span class="o">=</span> <span class="n">k1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k2</span> <span class="o">=</span> <span class="n">k2</span>
+
+    <span class="k">def</span> <span class="nf">_azp_connected_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">initial_labels</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implementation of the reactive tabu version of the AZP algorithm (refer</span>
+<span class="sd">        to [OR1995]_) for a spatially connected set of areas (i.e. for every</span>
+<span class="sd">        area there is a path to every other area).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        adj : :class:`scipy.sparse.csr_matrix`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP._azp_connected_component`.</span>
+<span class="sd">        initial_labels : :class:`numpy.ndarray`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP._azp_connected_component`.</span>
+<span class="sd">        attr : :class:`numpy.ndarray`</span>
+<span class="sd">            Refer to the corresponding argument in</span>
+<span class="sd">            :meth:`AZP._azp_connected_component`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        labels : :class:`numpy.ndarray`</span>
+<span class="sd">            Refer to the return value in :meth:`AZP._azp_connected_component`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_tabu</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># if there is only one region in the initial solution, just return it.</span>
+        <span class="n">distinct_regions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">initial_labels</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">distinct_regions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">initial_labels</span>
+
+        <span class="c1">#  step 2: make a list of the M regions</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">initial_labels</span>
+
+        <span class="n">it_since_tabu_len_changed</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">obj_val_start</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+        <span class="c1"># step 12: Repeat steps 3-11 until either no further improvements are</span>
+        <span class="c1"># made or a maximum number of iterations are exceeded.</span>
+        <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maxit</span><span class="p">):</span>
+            <span class="n">obj_val_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_func</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj_val_end</span> <span class="o">&lt;</span> <span class="n">obj_val_start</span><span class="p">:</span>
+                <span class="k">break</span>  <span class="c1"># step 12</span>
+            <span class="n">obj_val_start</span> <span class="o">=</span> <span class="n">obj_val_end</span>
+
+            <span class="n">it_since_tabu_len_changed</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># step 3: Define the list of all possible moves that are not tabu</span>
+            <span class="c1"># and retain regional connectivity.</span>
+            <span class="n">possible_moves</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">old_region</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">area</span><span class="p">]</span>
+                <span class="n">sub_adj</span> <span class="o">=</span> <span class="n">sub_adj_matrix</span><span class="p">(</span>
+                    <span class="n">adj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">old_region</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wo_nodes</span><span class="o">=</span><span class="n">area</span><span class="p">)</span>
+                <span class="c1"># moving the area must not destroy spatial contiguity in donor</span>
+                <span class="c1"># region and if area is alone in its region, it must stay:</span>
+                <span class="k">if</span> <span class="n">is_connected</span><span class="p">(</span><span class="n">sub_adj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">count</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">old_region</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">neigh</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">area</span><span class="p">):</span>
+                        <span class="n">new_region</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">neigh</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">new_region</span> <span class="o">!=</span> <span class="n">old_region</span><span class="p">:</span>
+                            <span class="n">possible_move</span> <span class="o">=</span> <span class="n">Move</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">old_region</span><span class="p">,</span> <span class="n">new_region</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">possible_move</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span><span class="p">:</span>
+                                <span class="n">possible_moves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">possible_move</span><span class="p">)</span>
+            <span class="c1"># step 4: Find the best nontabu move.</span>
+            <span class="n">best_move</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">best_move_index</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">best_objval_diff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">move</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">possible_moves</span><span class="p">):</span>
+                <span class="n">obj_val_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_func</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="n">move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span> <span class="n">move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">obj_val_diff</span> <span class="o">&lt;</span> <span class="n">best_objval_diff</span><span class="p">:</span>
+                    <span class="n">best_move_index</span><span class="p">,</span> <span class="n">best_move</span> <span class="o">=</span> <span class="n">i</span><span class="p">,</span> <span class="n">move</span>
+                    <span class="n">best_objval_diff</span> <span class="o">=</span> <span class="n">obj_val_diff</span>
+            <span class="c1"># step 5: Make the move if possible. Update the tabu status.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="p">(</span><span class="n">best_move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span> <span class="n">best_move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_make_move</span><span class="p">(</span><span class="n">best_move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span> <span class="n">best_move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">adj</span><span class="p">)</span>
+            <span class="c1"># step 6: Look up the current zoning system in a list of all zoning</span>
+            <span class="c1"># systems visited so far during the search. If not found then go</span>
+            <span class="c1"># to step 10.</span>
+            <span class="c1"># Sets can&#39;t be permuted so we convert our list to a set:</span>
+            <span class="n">label_tup</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">label_tup</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visited</span><span class="p">:</span>
+                <span class="c1"># step 7: If it is found and it has been visited more than K1</span>
+                <span class="c1"># times already and this cyclical behavior has been found on</span>
+                <span class="c1"># at least K2 other occasions (involving other zones) then go</span>
+                <span class="c1"># to step 11.</span>
+                <span class="n">times_visited</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">visited</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">label_tup</span><span class="p">)</span>
+                <span class="n">cycle</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">visited</span><span class="p">))</span>
+                <span class="n">cycle</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">[:</span><span class="n">cycle</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">label_tup</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">cycle</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">cycle</span><span class="p">))</span>
+                <span class="n">it_until_repetition</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cycle</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">times_visited</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">k1</span><span class="p">:</span>
+                    <span class="n">times_cycle_found</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k2</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">visited</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">cycle</span><span class="p">)):</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">visited</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">cycle</span><span class="p">)]</span> <span class="o">==</span> <span class="n">cycle</span><span class="p">:</span>
+                                <span class="n">times_cycle_found</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">if</span> <span class="n">times_cycle_found</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k2</span><span class="p">:</span>
+                                    <span class="k">break</span>
+                    <span class="k">if</span> <span class="n">times_cycle_found</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k2</span><span class="p">:</span>
+                        <span class="c1"># step 11: Delete all stored zoning systems and make P</span>
+                        <span class="c1"># random moves, P = 1 + self.avg_it_until_rep/2, and</span>
+                        <span class="c1"># update tabu to preclude a return to the previous</span>
+                        <span class="c1"># state.</span>
+                        <span class="c1"># we save the labels such that we can access it if</span>
+                        <span class="c1"># this step yields a poor solution.</span>
+                        <span class="n">last_step</span> <span class="o">=</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">visited</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">avg_it_until_rep</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                        <span class="n">possible_moves</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">best_move_index</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                            <span class="n">move</span> <span class="o">=</span> <span class="n">possible_moves</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">possible_moves</span><span class="p">)))</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="p">(</span><span class="n">move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span> <span class="n">move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_make_move</span><span class="p">(</span><span class="n">move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span> <span class="n">move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">adj</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="c1"># step 8: Update a moving average of the repetition</span>
+                    <span class="c1"># interval self.avg_it_until_rep, and increase the</span>
+                    <span class="c1"># prohibition period R to 1.1*R.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">rep_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">avg_it</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">avg_it_until_rep</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">avg_it_until_rep</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_counter</span> <span class="o">*</span> \
+                        <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">rep_counter</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">avg_it</span> <span class="o">+</span> <span class="n">it_until_repetition</span><span class="p">)</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tabu</span><span class="p">,</span> <span class="mf">1.1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span><span class="o">.</span><span class="n">maxlen</span><span class="p">)</span>
+                    <span class="c1"># step 9: If the number of iterations since R was last</span>
+                    <span class="c1"># changed exceeds self.avg_it_until_rep, then decrease R to</span>
+                    <span class="c1"># max(0.9*R, 1).</span>
+                    <span class="k">if</span> <span class="n">it_since_tabu_len_changed</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">avg_it_until_rep</span><span class="p">:</span>
+                        <span class="n">new_tabu_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="mf">0.9</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span><span class="o">.</span><span class="n">maxlen</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+                        <span class="n">new_tabu_len</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">new_tabu_len</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tabu</span><span class="p">,</span> <span class="n">new_tabu_len</span><span class="p">)</span>
+                    <span class="n">it_since_tabu_len_changed</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># step 8</span>
+
+            <span class="c1"># step 10: Save the zoning system and go to step 12.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visited</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
+            <span class="n">last_step</span> <span class="o">=</span> <span class="mi">10</span>
+
+        <span class="k">if</span> <span class="n">last_step</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">visited</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">visited</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c1"># if step 11 was the last one, the result is in last_step[1]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">last_step</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

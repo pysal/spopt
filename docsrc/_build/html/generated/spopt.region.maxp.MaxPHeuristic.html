@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spopt.region.maxp.MaxPHeuristic &#8212; spopt v0.1.0 Manual</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">spopt.region.maxp.MaxPHeuristic</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="spopt-region-maxp-maxpheuristic">
+<h1>spopt.region.maxp.MaxPHeuristic<a class="headerlink" href="#spopt-region-maxp-maxpheuristic" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="spopt.region.maxp.MaxPHeuristic">
+<em class="property">class </em><code class="sig-prename descclassname">spopt.region.maxp.</code><code class="sig-name descname">MaxPHeuristic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gdf</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">attrs_name</span></em>, <em class="sig-param"><span class="n">threshold_name</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">top_n</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">max_iterations_construction</span><span class="o">=</span><span class="default_value">99</span></em>, <em class="sig-param"><span class="n">max_iterations_sa</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/maxp.html#MaxPHeuristic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spopt.region.maxp.MaxPHeuristic" title="Permalink to this definition">¶</a></dt>
+<dd><p>The max-p-regions involves the aggregation of n areas into an unknown maximum number of 
+homogeneous regions, while ensuring that each region satisfies a minimum threshold value 
+imposed on a predefined spatially extensive attribute.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>gdf</strong><span class="classifier"><a class="reference external" href="https://geopandas.readthedocs.io/en/latest/reference/geopandas.GeoDataFrame.html#geopandas.GeoDataFrame" title="(in GeoPandas v0+untagged.50.ge506de5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geopandas.GeoDataFrame</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">required</span></code></span></dt><dd><p>Geodataframe containing original data</p>
+</dd>
+<dt><strong>w</strong><span class="classifier"><a class="reference external" href="https://pysal.org/libpysal/generated/libpysal.weights.W.html#libpysal.weights.W" title="(in libpysal v4.3.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">required</span></code></span></dt><dd><p>Weights object created from given data</p>
+</dd>
+<dt><strong>attrs_name</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">required</span></code></span></dt><dd><p>Strings for attribute names (cols of <code class="docutils literal notranslate"><span class="pre">geopandas.GeoDataFrame</span></code>).</p>
+</dd>
+<dt><strong>threshold_name</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">required</span></code></span></dt><dd><p>The name of the threshold variable.</p>
+</dd>
+<dt><strong>threshold</strong><span class="classifier">{<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a>}, <code class="xref py py-obj docutils literal notranslate"><span class="pre">required</span></code></span></dt><dd><p>The threshold value.</p>
+</dd>
+<dt><strong>top_n</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>Max number of candidate regions for enclave assignment.</p>
+</dd>
+<dt><strong>max_iterations_construction</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>Max number of iterations for construction phase.</p>
+</dd>
+<dt><strong>max_iterations_SA: int</strong></dt><dd><p>Max number of iterations for customized simulated annealing.</p>
+</dd>
+<dt><strong>verbose</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>Set to <code class="docutils literal notranslate"><span class="pre">True</span></code> for reporting solution progress/debugging.
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl>
+<dt><strong>max_p</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>The number of regions.</p>
+</dd>
+<dt><strong>labels_</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a></span></dt><dd><p>Region IDs for observations.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">libpysal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spopt.region.maxp</span> <span class="kn">import</span> <span class="n">MaxPHeuristic</span>
+</pre></div>
+</div>
+<p>Read the data.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pth</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;mexicojoin.shp&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mexico</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">pth</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mexico</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Create the weight.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">Queen</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">mexico</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Define the collumns of <code class="docutils literal notranslate"><span class="pre">geopandas.GeoDataFrame</span></code> to be spatially extensive attribute.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">attrs_name</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;PCGDP</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1950</span><span class="p">,</span> <span class="mi">2010</span><span class="p">,</span> <span class="mi">10</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>Define the threshold variable and the threshold value.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">threshold_name</span> <span class="o">=</span> <span class="s2">&quot;count&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">threshold</span> <span class="o">=</span> <span class="mi">4</span>
+</pre></div>
+</div>
+<p>Run the max-p-regions algorithm.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">MaxPHeuristic</span><span class="p">(</span><span class="n">mexico</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">attrs_name</span><span class="p">,</span> <span class="n">threshold_name</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Get the number of regions and region IDs for unit areas.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">p</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">labels_</span>
+</pre></div>
+</div>
+<p>Show the regionalization results.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mexico</span><span class="p">[</span><span class="s2">&quot;maxp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">labels_</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mexico</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;maxp&quot;</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">)</span> 
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="spopt.region.maxp.MaxPHeuristic.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gdf</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">attrs_name</span></em>, <em class="sig-param"><span class="n">threshold_name</span></em>, <em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">top_n</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">max_iterations_construction</span><span class="o">=</span><span class="default_value">99</span></em>, <em class="sig-param"><span class="n">max_iterations_sa</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/maxp.html#MaxPHeuristic.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spopt.region.maxp.MaxPHeuristic.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.region.maxp.MaxPHeuristic.__init__" title="spopt.region.maxp.MaxPHeuristic.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(gdf, w, attrs_name, threshold_name, …)</p></td>
+<td><p>Initialize self.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.region.maxp.MaxPHeuristic.solve" title="spopt.region.maxp.MaxPHeuristic.solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve</span></code></a>()</p></td>
+<td><p>Solve a max-p-regions problem and get back the results</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="spopt.region.maxp.MaxPHeuristic.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/maxp.html#MaxPHeuristic.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spopt.region.maxp.MaxPHeuristic.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve a max-p-regions problem and get back the results</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/spopt.region.maxp.MaxPHeuristic.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

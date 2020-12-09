@@ -1,0 +1,23 @@
+﻿spopt.spopt.region.spenc.Spenc
+==============================
+
+.. currentmodule:: spopt.spopt.region.spenc
+
+.. autoclass:: Spenc
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Spenc.__init__
+      ~Spenc.solve
+   
+   
+
+   
+   
+   

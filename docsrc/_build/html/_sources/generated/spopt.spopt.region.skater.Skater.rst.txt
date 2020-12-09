@@ -1,0 +1,23 @@
+﻿spopt.spopt.region.skater.Skater
+================================
+
+.. currentmodule:: spopt.spopt.region.skater
+
+.. autoclass:: Skater
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Skater.__init__
+      ~Skater.solve
+   
+   
+
+   
+   
+   

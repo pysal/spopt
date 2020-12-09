@@ -40,7 +40,7 @@ def maxp(
     max_iterations_sa=ITERSA,
     verbose=False,
 ):
-    """Solve the max-p-regions problem that maximizes the number of regions and minimizes total within-region heterogeneity while ensuring each region is contiguous and satisfies threshold contraint
+    """...Needs a short description...
     
     Parameters
     ----------
@@ -155,7 +155,7 @@ def construction_phase(
     random_assign_choice,
     max_it=999,
 ):
-    """construct feasible solution for max-p-regions
+    """...Needs a short description...
     
     Parameters
     ----------
@@ -266,7 +266,7 @@ def construction_phase(
 def growClusterForPoly(
     labels, threshold_array, P, NeighborPolys, C, weight, spatialThre
 ):
-    """grow one region until threshold constraint is satisified
+    """...Needs a short description...
     
     Parameters
     ----------
@@ -336,7 +336,7 @@ def assignEnclave(
     distance_matrix,
     random_assign=1,
 ):
-    """assign enclaves to one of the identified regions
+    """...Needs a short description...
     
     Parameters
     ----------
@@ -407,7 +407,7 @@ def assignEnclave(
 
 
 def calculateWithinRegionDistance(regionList, distance_matrix):
-    """calculate total wthin-region distance/dissimilarity
+    """...Needs a short description...
     
     Parameters
     ----------
@@ -444,7 +444,7 @@ def pickMoveArea(
     distance_matrix,
     threshold,
 ):
-    """pick a spatial unit that can move from one region to another without violating threshold and contiguity constraints
+    """...Needs a short description...
     
     Parameters
     ----------
@@ -498,7 +498,7 @@ def pickMoveArea(
 def checkMove(
     poa, labels, regionLists, threshold_array, weight, distance_matrix, threshold
 ):
-    """calculate the dissimilarity increase/decrease from one potential move
+    """...Needs a short description...
     
     Parameters
     ----------
@@ -567,7 +567,7 @@ def performSA(
     tabuLength,
     max_no_move,
 ):
-    """perform the tabu list integrated simulated annealing algorithm
+    """...Needs a short description...
         
     Parameters
     ----------
@@ -691,7 +691,97 @@ def performSA(
 
 
 class MaxPHeuristic(BaseSpOptHeuristicSolver):
-    """interface for the maxp"""
+    """The max-p-regions involves the aggregation of n areas into an unknown maximum number of 
+    homogeneous regions, while ensuring that each region satisfies a minimum threshold value 
+    imposed on a predefined spatially extensive attribute.
+
+    Parameters
+    ----------
+    
+    gdf : geopandas.GeoDataFrame, required
+        Geodataframe containing original data
+
+    w : libpysal.weights.W, required
+        Weights object created from given data
+
+    attrs_name : list, required
+        Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
+
+    threshold_name : string, required
+        The name of the threshold variable.
+
+    threshold : {int, float}, required
+        The threshold value.
+
+    top_n : int
+        Max number of candidate regions for enclave assignment.
+
+    max_iterations_construction : int
+        Max number of iterations for construction phase.
+
+    max_iterations_SA: int
+        Max number of iterations for customized simulated annealing.
+
+    verbose : boolean
+        Set to ``True`` for reporting solution progress/debugging.
+        Default is ``False``.
+
+    Returns
+    -------
+
+    max_p : int
+        The number of regions.
+
+    labels_ : numpy.array
+        Region IDs for observations.
+
+
+
+    Examples
+    --------
+      
+    >>> import numpy
+    >>> import libpysal
+    >>> import geopandas as gpd
+    >>> from spopt.region.maxp import MaxPHeuristic
+  
+    Read the data.
+
+    >>> pth = libpysal.examples.get_path("mexicojoin.shp")
+    >>> mexico = gpd.read_file(pth)
+    >>> mexico["count"] = 1
+
+    Create the weight.
+
+    >>> w = libpysal.weights.Queen.from_dataframe(mexico)
+    
+    Define the collumns of ``geopandas.GeoDataFrame`` to be spatially extensive attribute.
+
+    >>> attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
+    
+    Define the threshold variable and the threshold value.
+
+    >>> threshold_name = "count"
+    >>> threshold = 4
+
+    Run the max-p-regions algorithm.
+
+    >>> model = MaxPHeuristic(mexico, w, attrs_name, threshold_name, threshold)
+    >>> model.solve()
+
+    Get the number of regions and region IDs for unit areas.
+
+    >>> model.p
+    >>> model.labels_
+
+    Show the regionalization results.
+
+    >>> mexico["maxp"] = model.labels_
+    >>> mexico.plot(column="maxp", categorical=True, figsize=(12,8), cmap='plasma') 
+
+
+
+    """
 
     def __init__(
         self,
@@ -700,53 +790,12 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         attrs_name,
         threshold_name,
         threshold,
-        top_n,
+        top_n=2,
         max_iterations_construction=99,
         max_iterations_sa=ITERSA,
         verbose=False,
     ):
-        """
-        
-        Parameters
-        ----------
-        
-        gdf : 
-            ...
-        
-        w : 
-            ...
-        
-        attrs_name : 
-            ...
-        
-        threshold_name : 
-            ...
-        
-        threshold : 
-            ...
-        
-        top_n : 
-            ...
-        
-        max_iterations_construction : int
-            ... Default is 99.
-        
-        max_iterations_sa : 
-            ... Default is 'ITERSA'.
-        
-        verbose : bool
-            Default is ``False``.
-        
-        Attributes
-        ----------
-        
-        labels_ : 
-            ...
-        
-        p : 
-            ...
-        
-        """
+
         self.gdf = gdf
         self.w = w
         self.attrs_name = attrs_name
@@ -758,7 +807,7 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         self.verbose = verbose
 
     def solve(self):
-        """...Needs a short description..."""
+        """Solve a max-p-regions problem and get back the results"""
         max_p, label = maxp(
             self.gdf,
             self.w,

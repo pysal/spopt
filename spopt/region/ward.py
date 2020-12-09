@@ -9,23 +9,38 @@ from sklearn.cluster import (
 )
 
 class WardSpatial(BaseSpOptHeuristicSolver):
-    """ Agglomerative clustering using Ward linkage with a spatial connectivity constraint."""
-    
-    def __init__(self, gdf, w, attrs_name, n_clusters=5, clustering_kwds=dict()):
-        """
+    """ Agglomerative clustering using Ward linkage with a spatial connectivity constraint.
         
         Parameters
         ----------
         
-        gdf : geopandas.GeoDataFrame
+        gdf : geopandas.GeoDataFrame, required
+            Geodataframe containing original data
 
-        w : libpywal.weights.W instance
-        spatial weights matrix
+        w : libpysal.weights.W, required
+            Weights object created from given data
+
+        attrs_name : list, required
+            Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
 
         n_clusters : int, optional, default: 5
-        The number of clusters to form.
+            The number of clusters to form.
+
+        clustering_kwds: dictionary, optional, default: dict()
+            Other parameters about clustering could be used in sklearn.cluster.AgglometariveClustering.
+        
+        Returns
+        -------
+
+        labels_ : numpy.array
+            Cluster labels for observations.
+
 
         """
+
+
+    def __init__(self, gdf, w, attrs_name, n_clusters=5, clustering_kwds=dict()):
+        
         self.gdf = gdf
         self.w = w
         self.attrs_name = attrs_name

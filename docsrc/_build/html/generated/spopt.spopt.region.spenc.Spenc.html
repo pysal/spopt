@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spopt.spopt.region.spenc.Spenc &#8212; spopt v0.1.0 Manual</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="spopt.spopt.region.azp.AZP" href="spopt.spopt.region.azp.AZP.html" />
+    <link rel="prev" title="spopt.spopt.region.skater.Skater" href="spopt.spopt.region.skater.Skater.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">spopt.spopt.region.spenc.Spenc</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="spopt-spopt-region-spenc-spenc">
+<h1>spopt.spopt.region.spenc.Spenc<a class="headerlink" href="#spopt-spopt-region-spenc-spenc" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="spopt.spopt.region.spenc.Spenc">
+<em class="property">class </em><code class="sig-prename descclassname">spopt.spopt.region.spenc.</code><code class="sig-name descname">Spenc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gdf</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">attrs_name</span></em>, <em class="sig-param"><span class="n">n_clusters</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">gamma</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/spopt/region/spenc.html#Spenc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spopt.spopt.region.spenc.Spenc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spatially encouraged spectral clustering.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>gdf</strong><span class="classifier"><a class="reference external" href="https://geopandas.readthedocs.io/en/latest/reference/geopandas.GeoDataFrame.html#geopandas.GeoDataFrame" title="(in GeoPandas v0+untagged.50.ge506de5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geopandas.GeoDataFrame</span></code></a></span></dt><dd></dd>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpywal.weights.W</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">instance</span></code></span></dt><dd></dd>
+<dt><strong>spatial weights matrix</strong></dt><dd></dd>
+<dt><strong>attrs_name</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd></dd>
+<dt><strong>Strings for attribute names (cols of ``geopandas.GeoDataFrame``).</strong></dt><dd></dd>
+<dt><strong>n_clusters</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">optional</span></code>, default: 5</span></dt><dd></dd>
+<dt><strong>The number of clusters to form.</strong></dt><dd></dd>
+<dt><strong>gamma: int, default:1</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="spopt.spopt.region.spenc.Spenc.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gdf</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">attrs_name</span></em>, <em class="sig-param"><span class="n">n_clusters</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">gamma</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/spopt/region/spenc.html#Spenc.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spopt.spopt.region.spenc.Spenc.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.spopt.region.spenc.Spenc.__init__" title="spopt.spopt.region.spenc.Spenc.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(gdf, w, attrs_name[, n_clusters, …])</p></td>
+<td><p>Initialize self.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.spopt.region.spenc.Spenc.solve" title="spopt.spopt.region.spenc.Spenc.solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve</span></code></a>()</p></td>
+<td><p>Solve the spenc</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="spopt.spopt.region.spenc.Spenc.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/spopt/region/spenc.html#Spenc.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spopt.spopt.region.spenc.Spenc.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve the spenc</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/spopt.spopt.region.spenc.Spenc.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

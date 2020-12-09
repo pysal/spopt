@@ -337,35 +337,23 @@ class SpanningForest(object):
 
 
 class Skater(BaseSpOptHeuristicSolver):
-    """Skater is a spatial regionalization algorithm based on spanning tree pruning"""
+    """Skater is a spatial regionalization algorithm based on spanning tree pruning
+        
 
-    def __init__(
-        self,
-        gdf,
-        w,
-        attrs_name,
-        n_clusters=5,
-        floor=-np.inf,
-        trace=False,
-        islands="increase",
-        spanning_forest_kwds=dict()
-    ):
-        """
-        # SKATER spatial clustering algorithm.
         Parameters
         ----------
         
-        gdf : geopandas.GeoDataFrame
-            ... : 
-   
-        w : libpysal.weights.W instance
-        spatial weights matrix
+        gdf : geopandas.GeoDataFrame, required
+            Geodataframe containing original data
 
-        attrs_name : list
-        Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
+        w : libpysal.weights.W, required
+            Weights object created from given data
+
+        attrs_name : list, required
+            Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
         
         n_clusters : int, optional, default: 5
-        The number of clusters to form.
+            The number of clusters to form.
 
         floor: floor on the size of regions.
 
@@ -393,6 +381,20 @@ class Skater(BaseSpOptHeuristicSolver):
             center:    way to compute the center of each region in attribute space
         
         """
+
+
+    def __init__(
+        self,
+        gdf,
+        w,
+        attrs_name,
+        n_clusters=5,
+        floor=-np.inf,
+        trace=False,
+        islands="increase",
+        spanning_forest_kwds=dict()
+    ):
+        
         self.gdf = gdf
         self.w = w
         self.attrs_name = attrs_name

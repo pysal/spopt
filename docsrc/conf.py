@@ -7,11 +7,12 @@
 import sys, os
 import sphinx_bootstrap_theme
 
-sys.path.insert(0, os.path.abspath("../../"))
+sys.path.insert(0, os.path.abspath("../"))
 
 # import your package to obtain the version info to display on the docs website
 import spopt
 
+#spopt.__version__ = "0.1.0"
 
 # -- General configuration ------------------------------------------------
 
@@ -49,7 +50,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "spopt"
-copyright = "2018, pysal developers"
+copyright = "2020, pysal developers"
 author = "pysal developers"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -160,7 +161,7 @@ html_static_path = ["_static"]
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = project + "doc"
+htmlhelp_basename =  "spoptdoc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -184,7 +185,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "%s.tex" % project, u"%s Documentation" % project, u"pysal developers", "manual"),
+    (
+        master_doc, 
+        "spoptdoc.tex", 
+        u"spopt Documentation", 
+        u"spopt developers",
+        "manual",
+    )
 ]
 
 
@@ -192,7 +199,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, project, u"%s Documentation" % project, [author], 1)]
+man_pages = [(master_doc, "spopt", u"spopt Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -203,10 +210,10 @@ man_pages = [(master_doc, project, u"%s Documentation" % project, [author], 1)]
 texinfo_documents = [
     (
         master_doc,
-        project,
-        u"%s Documentation" % project,
+        "spopt",
+        u"spopt Documentation",
         author,
-        project,
+        "spopt",
         "Spatial Optimization with PySAL",
         "Miscellaneous",
     ),
@@ -235,7 +242,7 @@ plot_include_source = True
 
 
 def setup(app):
-    app.add_stylesheet("pysal-styles.css")
+    app.add_css_file("pysal-styles.css")
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
@@ -249,42 +256,5 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3.8/", None),
     "python-mip": ("https://python-mip.readthedocs.io/en/latest/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
-}
-
-
-# This is processed by Jinja2 and inserted before each notebook
-nbsphinx_prolog = r"""
-{% set docname = env.doc2path(env.docname, base='docsrc/') %}
-{% set fullpath = env.doc2path(env.docname, base='tree/master/docsrc/') %}
-.. only:: html
-    .. role:: raw-html(raw)
-        :format: html
-    .. nbinfo::
-        This page was generated from `{{ docname }}`__.
-        Interactive online version:
-        :raw-html:`<a href="https://mybinder.org/v2/gh/pysal/%s/master?filepath={{ docname }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`
-    __ https://github.com/pysal/%s/{{ fullpath }}
-.. raw:: latex
-    \nbsphinxstartnotebook{\scriptsize\noindent\strut
-    \textcolor{gray}{The following section was generated from
-    \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
-""" % (project, project)
-
-# This is processed by Jinja2 and inserted after each notebook
-nbsphinx_epilog = r"""
-.. raw:: latex
-    \nbsphinxstopnotebook{\scriptsize\noindent\strut
-    \textcolor{gray}{\dotfill\ \sphinxcode{\sphinxupquote{\strut
-    {{ env.doc2path(env.docname, base='doc') | escape_latex }}}} ends here.}}
-"""
-
-# List of arguments to be passed to the kernel that executes the notebooks:
-nbsphinx_execute_arguments = [
-    "--InlineBackend.figure_formats={'svg', 'pdf'}",
-    "--InlineBackend.rc={'figure.dpi': 96}",
-]
-
-mathjax_config = {
-    "TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": True}},
 }
 

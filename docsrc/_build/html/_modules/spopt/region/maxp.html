@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spopt.region.maxp &#8212; spopt v0.1.0 Manual</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../installation.html">Installation</a></li>
+                <li><a href="../../../api.html">API</a></li>
+                <li><a href="../../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#region-methods">Region Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#region-methods">Region Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for spopt.region.maxp</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Max-p regions algorithm</span>
+
+<span class="sd">Source: Wei, Ran, Sergio J. Rey, and Elijah Knaap (2020) &quot;Efficient</span>
+<span class="sd">regionalization for spatially explicit neighborhood delineation.&quot; International</span>
+<span class="sd">Journal of Geographical Information Science. Accepted 2020-04-12.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">..BaseClass</span> <span class="kn">import</span> <span class="n">BaseSpOptHeuristicSolver</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">w_to_g</span><span class="p">,</span>
+    <span class="n">move_ok</span><span class="p">,</span>
+    <span class="n">ok_moves</span><span class="p">,</span>
+    <span class="n">region_neighbors</span><span class="p">,</span>
+    <span class="n">_centroid</span><span class="p">,</span>
+    <span class="n">_closest</span><span class="p">,</span>
+    <span class="n">_seeds</span><span class="p">,</span>
+    <span class="n">is_neighbor</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">pdist</span><span class="p">,</span> <span class="n">squareform</span>
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.csgraph</span> <span class="kn">import</span> <span class="n">connected_components</span>
+
+<span class="n">ITERCONSTRUCT</span> <span class="o">=</span> <span class="mi">999</span>
+<span class="n">ITERSA</span> <span class="o">=</span> <span class="mi">10</span>
+
+
+<span class="k">def</span> <span class="nf">maxp</span><span class="p">(</span>
+    <span class="n">gdf</span><span class="p">,</span>
+    <span class="n">w</span><span class="p">,</span>
+    <span class="n">attrs_name</span><span class="p">,</span>
+    <span class="n">threshold_name</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">,</span>
+    <span class="n">top_n</span><span class="p">,</span>
+    <span class="n">max_iterations_construction</span><span class="o">=</span><span class="n">ITERCONSTRUCT</span><span class="p">,</span>
+    <span class="n">max_iterations_sa</span><span class="o">=</span><span class="n">ITERSA</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;...Needs a short description...</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    gdf : geopandas.GeoDataFrame</span>
+<span class="sd">        ...</span>
+
+<span class="sd">    w : libpysal.weights.W</span>
+<span class="sd">        ...</span>
+
+<span class="sd">    attrs_name : list</span>
+<span class="sd">        Strings for attribute names (cols of ``geopandas.GeoDataFrame``).</span>
+
+<span class="sd">    threshold_name : string</span>
+<span class="sd">        The name of the threshold variable.</span>
+
+<span class="sd">    threshold : {int, float}</span>
+<span class="sd">        The threshold value.</span>
+
+<span class="sd">    top_n : int</span>
+<span class="sd">        Max number of candidate regions for enclave assignment.</span>
+
+<span class="sd">    max_iterations_construction : int</span>
+<span class="sd">        Max number of iterations for construction phase.</span>
+
+<span class="sd">    max_iterations_SA: int</span>
+<span class="sd">        Max number of iterations for customized simulated annealing.</span>
+
+<span class="sd">    verbose : boolean</span>
+<span class="sd">        Set to ``True`` for reporting solution progress/debugging.</span>
+<span class="sd">        Default is ``False``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    max_p : int</span>
+<span class="sd">        The number of regions.</span>
+
+<span class="sd">    labels : numpy.array</span>
+<span class="sd">        Region IDs for observations.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">attr</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="n">attrs_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">threshold_array</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="n">threshold_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">squareform</span><span class="p">(</span><span class="n">pdist</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;cityblock&quot;</span><span class="p">))</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">max_p</span><span class="p">,</span> <span class="n">rl_list</span> <span class="o">=</span> <span class="n">construction_phase</span><span class="p">(</span>
+        <span class="n">arr</span><span class="p">,</span>
+        <span class="n">attr</span><span class="p">,</span>
+        <span class="n">threshold_array</span><span class="p">,</span>
+        <span class="n">distance_matrix</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">,</span>
+        <span class="n">top_n</span><span class="p">,</span>
+        <span class="n">max_iterations_construction</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;max_p: &quot;</span><span class="p">,</span> <span class="n">max_p</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;number of good partitions:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rl_list</span><span class="p">))</span>
+
+    <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.998</span>
+    <span class="n">tabuLength</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">max_no_move</span> <span class="o">=</span> <span class="n">n</span>
+    <span class="n">best_obj_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="n">best_label</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">best_fn</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">irl</span><span class="p">,</span> <span class="n">rl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rl_list</span><span class="p">):</span>
+        <span class="n">label</span><span class="p">,</span> <span class="n">regionList</span><span class="p">,</span> <span class="n">regionSpatialAttr</span> <span class="o">=</span> <span class="n">rl</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">irl</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">saiter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iterations_sa</span><span class="p">):</span>
+            <span class="n">finalLabel</span><span class="p">,</span> <span class="n">finalRegionList</span><span class="p">,</span> <span class="n">finalRegionSpatialAttr</span> <span class="o">=</span> <span class="n">performSA</span><span class="p">(</span>
+                <span class="n">label</span><span class="p">,</span>
+                <span class="n">regionList</span><span class="p">,</span>
+                <span class="n">regionSpatialAttr</span><span class="p">,</span>
+                <span class="n">threshold_array</span><span class="p">,</span>
+                <span class="n">w</span><span class="p">,</span>
+                <span class="n">distance_matrix</span><span class="p">,</span>
+                <span class="n">threshold</span><span class="p">,</span>
+                <span class="n">alpha</span><span class="p">,</span>
+                <span class="n">tabuLength</span><span class="p">,</span>
+                <span class="n">max_no_move</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">totalWithinRegionDistance</span> <span class="o">=</span> <span class="n">calculateWithinRegionDistance</span><span class="p">(</span>
+                <span class="n">finalRegionList</span><span class="p">,</span> <span class="n">distance_matrix</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;totalWithinRegionDistance after SA: &quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">totalWithinRegionDistance</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">totalWithinRegionDistance</span> <span class="o">&lt;</span> <span class="n">best_obj_value</span><span class="p">:</span>
+                <span class="n">best_obj_value</span> <span class="o">=</span> <span class="n">totalWithinRegionDistance</span>
+                <span class="n">best_label</span> <span class="o">=</span> <span class="n">finalLabel</span>
+                <span class="n">best_fn</span> <span class="o">=</span> <span class="n">irl</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;best objective value:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">best_obj_value</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">max_p</span><span class="p">,</span> <span class="n">best_label</span>
+
+
+<span class="k">def</span> <span class="nf">construction_phase</span><span class="p">(</span>
+    <span class="n">arr</span><span class="p">,</span>
+    <span class="n">attr</span><span class="p">,</span>
+    <span class="n">threshold_array</span><span class="p">,</span>
+    <span class="n">distance_matrix</span><span class="p">,</span>
+    <span class="n">weight</span><span class="p">,</span>
+    <span class="n">spatialThre</span><span class="p">,</span>
+    <span class="n">random_assign_choice</span><span class="p">,</span>
+    <span class="n">max_it</span><span class="o">=</span><span class="mi">999</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;...Needs a short description...</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    arr : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    attr : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    threshold_array : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    distance_matrix : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    weight : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    spatialThre : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    random_assign_choice : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    max_it : int</span>
+<span class="sd">        Maximum number of iterations. Default is 999.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    real_values : list</span>
+<span class="sd">        ``realmaxpv``, ``realLabelsList``</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">labels_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">pv_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">max_p</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">maxp_labels</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">maxp_regionList</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">maxp_regionSpatialAttr</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_it</span><span class="p">):</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">threshold_array</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">regionSpatialAttr</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">enclave</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">regionList</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
+        <span class="n">labeledID</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">arr_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">threshold_array</span><span class="p">)):</span>
+
+            <span class="n">P</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">arr_index</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">P</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">NeighborPolys</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">weight</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">P</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">NeighborPolys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">labels</span><span class="p">[</span><span class="n">P</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">C</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">labeledID</span><span class="p">,</span> <span class="n">spatialAttrTotal</span> <span class="o">=</span> <span class="n">growClusterForPoly</span><span class="p">(</span>
+                    <span class="n">labels</span><span class="p">,</span> <span class="n">threshold_array</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NeighborPolys</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">spatialThre</span>
+                <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">spatialAttrTotal</span> <span class="o">&lt;</span> <span class="n">spatialThre</span><span class="p">:</span>
+                    <span class="n">C</span> <span class="o">-=</span> <span class="mi">1</span>
+                    <span class="n">enclave</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">labeledID</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">regionList</span><span class="p">[</span><span class="n">C</span><span class="p">]</span> <span class="o">=</span> <span class="n">labeledID</span>
+                    <span class="n">regionSpatialAttr</span><span class="p">[</span><span class="n">C</span><span class="p">]</span> <span class="o">=</span> <span class="n">spatialAttrTotal</span>
+        <span class="n">num_regions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">regionList</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">enclave</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">num_regions</span> <span class="o">&lt;</span> <span class="n">max_p</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">max_p</span> <span class="o">=</span> <span class="n">num_regions</span>
+            <span class="n">maxp_labels</span><span class="p">,</span> <span class="n">maxp_regionList</span><span class="p">,</span> <span class="n">maxp_regionSpatialAttr</span> <span class="o">=</span> <span class="n">assignEnclave</span><span class="p">(</span>
+                <span class="n">enclave</span><span class="p">,</span>
+                <span class="n">labels</span><span class="p">,</span>
+                <span class="n">regionList</span><span class="p">,</span>
+                <span class="n">regionSpatialAttr</span><span class="p">,</span>
+                <span class="n">threshold_array</span><span class="p">,</span>
+                <span class="n">weight</span><span class="p">,</span>
+                <span class="n">distance_matrix</span><span class="p">,</span>
+                <span class="n">random_assign</span><span class="o">=</span><span class="n">random_assign_choice</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">pv_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">max_p</span><span class="p">)</span>
+            <span class="n">labels_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">maxp_labels</span><span class="p">,</span> <span class="n">maxp_regionList</span><span class="p">,</span> <span class="n">maxp_regionSpatialAttr</span><span class="p">])</span>
+    <span class="n">realLabelsList</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">realmaxpv</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pv_list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ipv</span><span class="p">,</span> <span class="n">pv</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pv_list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">pv</span> <span class="o">==</span> <span class="n">realmaxpv</span><span class="p">:</span>
+            <span class="n">realLabelsList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels_list</span><span class="p">[</span><span class="n">ipv</span><span class="p">])</span>
+
+    <span class="n">real_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">realmaxpv</span><span class="p">,</span> <span class="n">realLabelsList</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">real_values</span>
+
+
+<span class="k">def</span> <span class="nf">growClusterForPoly</span><span class="p">(</span>
+    <span class="n">labels</span><span class="p">,</span> <span class="n">threshold_array</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">NeighborPolys</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">spatialThre</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;...Needs a short description...</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    labels : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    threshold_array : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    P : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    NeighborPolys : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    C : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    weight : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    spatialThre : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    cluster_info : tuple</span>
+<span class="sd">        ``labeledID``, ``spatialAttrTotal``</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">labels</span><span class="p">[</span><span class="n">P</span><span class="p">]</span> <span class="o">=</span> <span class="n">C</span>
+    <span class="n">labeledID</span> <span class="o">=</span> <span class="p">[</span><span class="n">P</span><span class="p">]</span>
+    <span class="n">spatialAttrTotal</span> <span class="o">=</span> <span class="n">threshold_array</span><span class="p">[</span><span class="n">P</span><span class="p">]</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">NeighborPolys</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">spatialAttrTotal</span> <span class="o">&gt;=</span> <span class="n">spatialThre</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">Pn</span> <span class="o">=</span> <span class="n">NeighborPolys</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">labels</span><span class="p">[</span><span class="n">Pn</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">labels</span><span class="p">[</span><span class="n">Pn</span><span class="p">]</span> <span class="o">=</span> <span class="n">C</span>
+            <span class="n">labeledID</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Pn</span><span class="p">)</span>
+            <span class="n">spatialAttrTotal</span> <span class="o">+=</span> <span class="n">threshold_array</span><span class="p">[</span><span class="n">Pn</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">spatialAttrTotal</span> <span class="o">&lt;</span> <span class="n">spatialThre</span><span class="p">:</span>
+                <span class="n">PnNeighborPolys</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">Pn</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">pnn</span> <span class="ow">in</span> <span class="n">PnNeighborPolys</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">pnn</span> <span class="ow">in</span> <span class="n">NeighborPolys</span><span class="p">:</span>
+                        <span class="n">NeighborPolys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pnn</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">cluster_info</span> <span class="o">=</span> <span class="n">labeledID</span><span class="p">,</span> <span class="n">spatialAttrTotal</span>
+    <span class="k">return</span> <span class="n">cluster_info</span>
+
+
+<span class="k">def</span> <span class="nf">assignEnclave</span><span class="p">(</span>
+    <span class="n">enclave</span><span class="p">,</span>
+    <span class="n">labels</span><span class="p">,</span>
+    <span class="n">regionList</span><span class="p">,</span>
+    <span class="n">regionSpatialAttr</span><span class="p">,</span>
+    <span class="n">threshold_array</span><span class="p">,</span>
+    <span class="n">weight</span><span class="p">,</span>
+    <span class="n">distance_matrix</span><span class="p">,</span>
+    <span class="n">random_assign</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;...Needs a short description...</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    enclave : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    labels : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    regionList : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    regionSpatialAttr : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    threshold_array : </span>
+<span class="sd">        ...</span>
+<span class="sd">        </span>
+<span class="sd">    weight : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    distance_matrix : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    random_assign : int</span>
+<span class="sd">        ... ... Default is 1.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    region_info : list</span>
+<span class="sd">        Deep copies of ``labels``, ``regionList``, and ``regionSpatialAttr``</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">enclave_index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">enclave</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ec</span> <span class="o">=</span> <span class="n">enclave</span><span class="p">[</span><span class="n">enclave_index</span><span class="p">]</span>
+        <span class="n">ecNeighbors</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">ec</span><span class="p">]</span>
+        <span class="n">minDistance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+        <span class="n">assignedRegion</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ecNeighborsList</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ecTopNeighborsList</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">ecn</span> <span class="ow">in</span> <span class="n">ecNeighbors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ecn</span> <span class="ow">in</span> <span class="n">enclave</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">rm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">regionList</span><span class="p">[</span><span class="n">labels</span><span class="p">[</span><span class="n">ecn</span><span class="p">]])</span>
+            <span class="n">totalDistance</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">[</span><span class="n">ec</span><span class="p">,</span> <span class="n">rm</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">ecNeighborsList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ecn</span><span class="p">,</span> <span class="n">totalDistance</span><span class="p">))</span>
+        <span class="n">ecNeighborsList</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ecNeighborsList</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">tup</span><span class="p">:</span> <span class="n">tup</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">top_num</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">ecNeighborsList</span><span class="p">),</span> <span class="n">random_assign</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">top_num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ecn_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">top_num</span><span class="p">)</span>
+            <span class="n">assignedRegion</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">ecNeighborsList</span><span class="p">[</span><span class="n">ecn_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="n">assignedRegion</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">enclave_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">labels</span><span class="p">[</span><span class="n">ec</span><span class="p">]</span> <span class="o">=</span> <span class="n">assignedRegion</span>
+            <span class="n">regionList</span><span class="p">[</span><span class="n">assignedRegion</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ec</span><span class="p">)</span>
+            <span class="n">regionSpatialAttr</span><span class="p">[</span><span class="n">assignedRegion</span><span class="p">]</span> <span class="o">+=</span> <span class="n">threshold_array</span><span class="p">[</span><span class="n">ec</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">enclave</span><span class="p">[</span><span class="n">enclave_index</span><span class="p">]</span>
+            <span class="n">enclave_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">region_info</span> <span class="o">=</span> <span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">regionList</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">regionSpatialAttr</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">region_info</span>
+
+
+<span class="k">def</span> <span class="nf">calculateWithinRegionDistance</span><span class="p">(</span><span class="n">regionList</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;...Needs a short description...</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    regionList : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    distance_matrix : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    totalWithinRegionDistance : {int, float}</span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">totalWithinRegionDistance</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">regionList</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">nv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">regionDistance</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">[</span><span class="n">nv</span><span class="p">,</span> <span class="p">:][:,</span> <span class="n">nv</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">totalWithinRegionDistance</span> <span class="o">+=</span> <span class="n">regionDistance</span>
+
+    <span class="k">return</span> <span class="n">totalWithinRegionDistance</span>
+
+
+<span class="k">def</span> <span class="nf">pickMoveArea</span><span class="p">(</span>
+    <span class="n">labels</span><span class="p">,</span>
+    <span class="n">regionLists</span><span class="p">,</span>
+    <span class="n">regionSpatialAttrs</span><span class="p">,</span>
+    <span class="n">threshold_array</span><span class="p">,</span>
+    <span class="n">weight</span><span class="p">,</span>
+    <span class="n">distance_matrix</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;...Needs a short description...</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    labels : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    regionLists : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    regionSpatialAttrs : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    threshold_array : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    weight : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    threshold : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    potentialAreas : list</span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">potentialAreas</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">labels_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">regionSpatialAttrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">rla</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">regionLists</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="n">rasa</span> <span class="o">=</span> <span class="n">threshold_array</span><span class="p">[</span><span class="n">rla</span><span class="p">]</span>
+        <span class="n">lostSA</span> <span class="o">=</span> <span class="n">v</span> <span class="o">-</span> <span class="n">rasa</span>
+        <span class="n">pas_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">lostSA</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">pas_indices</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">pasi</span> <span class="ow">in</span> <span class="n">pas_indices</span><span class="p">:</span>
+                <span class="n">leftAreas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">rla</span><span class="p">,</span> <span class="n">pasi</span><span class="p">)</span>
+                <span class="n">ws</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">sparse</span>
+                <span class="n">cc</span> <span class="o">=</span> <span class="n">connected_components</span><span class="p">(</span><span class="n">ws</span><span class="p">[</span><span class="n">leftAreas</span><span class="p">,</span> <span class="p">:][:,</span> <span class="n">leftAreas</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">cc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">potentialAreas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rla</span><span class="p">[</span><span class="n">pasi</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+    <span class="k">return</span> <span class="n">potentialAreas</span>
+
+
+<span class="k">def</span> <span class="nf">checkMove</span><span class="p">(</span>
+    <span class="n">poa</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">regionLists</span><span class="p">,</span> <span class="n">threshold_array</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">,</span> <span class="n">threshold</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;...Needs a short description...</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    poa : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    labels : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    regionLists : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    threshold_array : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    weight : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    distance_matrix : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    threshold : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    move_info : list</span>
+<span class="sd">        The results from simulated annealing including ``lostDistance``,</span>
+<span class="sd">        ``minAddedDistance``, and ``potentialMove``.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">poaNeighbor</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">poa</span><span class="p">]</span>
+    <span class="n">donorRegion</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">poa</span><span class="p">]</span>
+
+    <span class="n">rm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">regionLists</span><span class="p">[</span><span class="n">donorRegion</span><span class="p">])</span>
+    <span class="n">lostDistance</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">[</span><span class="n">poa</span><span class="p">,</span> <span class="n">rm</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">potentialMove</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">minAddedDistance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+    <span class="k">for</span> <span class="n">poan</span> <span class="ow">in</span> <span class="n">poaNeighbor</span><span class="p">:</span>
+        <span class="n">recipientRegion</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">poan</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">donorRegion</span> <span class="o">!=</span> <span class="n">recipientRegion</span><span class="p">:</span>
+            <span class="n">rm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">regionLists</span><span class="p">[</span><span class="n">recipientRegion</span><span class="p">])</span>
+            <span class="n">addedDistance</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">[</span><span class="n">poa</span><span class="p">,</span> <span class="n">rm</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">addedDistance</span> <span class="o">&lt;</span> <span class="n">minAddedDistance</span><span class="p">:</span>
+                <span class="n">minAddedDistance</span> <span class="o">=</span> <span class="n">addedDistance</span>
+                <span class="n">potentialMove</span> <span class="o">=</span> <span class="p">(</span><span class="n">poa</span><span class="p">,</span> <span class="n">donorRegion</span><span class="p">,</span> <span class="n">recipientRegion</span><span class="p">)</span>
+
+    <span class="n">move_info</span> <span class="o">=</span> <span class="p">[</span><span class="n">lostDistance</span><span class="p">,</span> <span class="n">minAddedDistance</span><span class="p">,</span> <span class="n">potentialMove</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">move_info</span>
+
+
+<span class="k">def</span> <span class="nf">performSA</span><span class="p">(</span>
+    <span class="n">initLabels</span><span class="p">,</span>
+    <span class="n">initRegionList</span><span class="p">,</span>
+    <span class="n">initRegionSpatialAttr</span><span class="p">,</span>
+    <span class="n">threshold_array</span><span class="p">,</span>
+    <span class="n">weight</span><span class="p">,</span>
+    <span class="n">distance_matrix</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="p">,</span>
+    <span class="n">tabuLength</span><span class="p">,</span>
+    <span class="n">max_no_move</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;...Needs a short description...</span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    initLabels : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    initRegionList : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    initRegionSpatialAttr : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    threshold_array : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    weight : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    distance_matrix : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    threshold : int</span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    alpha : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    tabuLength : bool</span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    max_no_move : bool</span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    sa_res : list</span>
+<span class="sd">        The results from simulated annealing including ``labels``,</span>
+<span class="sd">        ``regionLists``, and ``regionSpatialAttrs``.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">ni_move_ct</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">make_move_flag</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">tabuList</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">potentialAreas</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">initLabels</span><span class="p">)</span>
+    <span class="n">regionLists</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">initRegionList</span><span class="p">)</span>
+    <span class="n">regionSpatialAttrs</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">initRegionSpatialAttr</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">ni_move_ct</span> <span class="o">&lt;=</span> <span class="n">max_no_move</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">potentialAreas</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">potentialAreas</span> <span class="o">=</span> <span class="n">pickMoveArea</span><span class="p">(</span>
+                <span class="n">labels</span><span class="p">,</span>
+                <span class="n">regionLists</span><span class="p">,</span>
+                <span class="n">regionSpatialAttrs</span><span class="p">,</span>
+                <span class="n">threshold_array</span><span class="p">,</span>
+                <span class="n">weight</span><span class="p">,</span>
+                <span class="n">distance_matrix</span><span class="p">,</span>
+                <span class="n">threshold</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">potentialAreas</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">poa</span> <span class="o">=</span> <span class="n">potentialAreas</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">potentialAreas</span><span class="p">))]</span>
+        <span class="n">lostDistance</span><span class="p">,</span> <span class="n">minAddedDistance</span><span class="p">,</span> <span class="n">potentialMove</span> <span class="o">=</span> <span class="n">checkMove</span><span class="p">(</span>
+            <span class="n">poa</span><span class="p">,</span>
+            <span class="n">labels</span><span class="p">,</span>
+            <span class="n">regionLists</span><span class="p">,</span>
+            <span class="n">threshold_array</span><span class="p">,</span>
+            <span class="n">weight</span><span class="p">,</span>
+            <span class="n">distance_matrix</span><span class="p">,</span>
+            <span class="n">threshold</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">potentialMove</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">potentialAreas</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">poa</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">lostDistance</span> <span class="o">-</span> <span class="n">minAddedDistance</span>
+        <span class="n">donorRegion</span> <span class="o">=</span> <span class="n">potentialMove</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">recipientRegion</span> <span class="o">=</span> <span class="n">potentialMove</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">diff</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">make_move_flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">poa</span><span class="p">,</span> <span class="n">recipientRegion</span><span class="p">,</span> <span class="n">donorRegion</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tabuList</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tabuList</span><span class="p">)</span> <span class="o">==</span> <span class="n">tabuLength</span><span class="p">:</span>
+                    <span class="n">tabuList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">tabuList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">poa</span><span class="p">,</span> <span class="n">recipientRegion</span><span class="p">,</span> <span class="n">donorRegion</span><span class="p">))</span>
+
+            <span class="n">ni_move_ct</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ni_move_ct</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">prob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">diff</span> <span class="o">/</span> <span class="n">t</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">prob</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="ow">and</span> <span class="n">potentialMove</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tabuList</span><span class="p">:</span>
+                <span class="n">make_move_flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">make_move_flag</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">potentialAreas</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">poa</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">make_move_flag</span><span class="p">:</span>
+            <span class="n">labels</span><span class="p">[</span><span class="n">poa</span><span class="p">]</span> <span class="o">=</span> <span class="n">recipientRegion</span>
+            <span class="n">regionLists</span><span class="p">[</span><span class="n">donorRegion</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">poa</span><span class="p">)</span>
+            <span class="n">regionLists</span><span class="p">[</span><span class="n">recipientRegion</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">poa</span><span class="p">)</span>
+            <span class="n">regionSpatialAttrs</span><span class="p">[</span><span class="n">donorRegion</span><span class="p">]</span> <span class="o">-=</span> <span class="n">threshold_array</span><span class="p">[</span><span class="n">poa</span><span class="p">]</span>
+            <span class="n">regionSpatialAttrs</span><span class="p">[</span><span class="n">recipientRegion</span><span class="p">]</span> <span class="o">+=</span> <span class="n">threshold_array</span><span class="p">[</span><span class="n">poa</span><span class="p">]</span>
+
+            <span class="n">impactedAreas</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">pa</span> <span class="ow">in</span> <span class="n">potentialAreas</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">labels</span><span class="p">[</span><span class="n">pa</span><span class="p">]</span> <span class="o">==</span> <span class="n">recipientRegion</span> <span class="ow">or</span> <span class="n">labels</span><span class="p">[</span><span class="n">pa</span><span class="p">]</span> <span class="o">==</span> <span class="n">donorRegion</span><span class="p">:</span>
+                    <span class="n">impactedAreas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pa</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">pa</span> <span class="ow">in</span> <span class="n">impactedAreas</span><span class="p">:</span>
+                <span class="n">potentialAreas</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">pa</span><span class="p">)</span>
+
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">alpha</span>
+    <span class="n">sa_res</span> <span class="o">=</span> <span class="p">[</span><span class="n">labels</span><span class="p">,</span> <span class="n">regionLists</span><span class="p">,</span> <span class="n">regionSpatialAttrs</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">labels</span><span class="p">,</span> <span class="n">regionLists</span><span class="p">,</span> <span class="n">regionSpatialAttrs</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="MaxPHeuristic"><a class="viewcode-back" href="../../../generated/spopt.region.maxp.MaxPHeuristic.html#spopt.region.maxp.MaxPHeuristic">[docs]</a><span class="k">class</span> <span class="nc">MaxPHeuristic</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The max-p-regions involves the aggregation of n areas into an unknown maximum number of </span>
+<span class="sd">    homogeneous regions, while ensuring that each region satisfies a minimum threshold value </span>
+<span class="sd">    imposed on a predefined spatially extensive attribute.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    gdf : geopandas.GeoDataFrame, required</span>
+<span class="sd">        Geodataframe containing original data</span>
+
+<span class="sd">    w : libpysal.weights.W, required</span>
+<span class="sd">        Weights object created from given data</span>
+
+<span class="sd">    attrs_name : list, required</span>
+<span class="sd">        Strings for attribute names (cols of ``geopandas.GeoDataFrame``).</span>
+
+<span class="sd">    threshold_name : string, required</span>
+<span class="sd">        The name of the threshold variable.</span>
+
+<span class="sd">    threshold : {int, float}, required</span>
+<span class="sd">        The threshold value.</span>
+
+<span class="sd">    top_n : int</span>
+<span class="sd">        Max number of candidate regions for enclave assignment.</span>
+
+<span class="sd">    max_iterations_construction : int</span>
+<span class="sd">        Max number of iterations for construction phase.</span>
+
+<span class="sd">    max_iterations_SA: int</span>
+<span class="sd">        Max number of iterations for customized simulated annealing.</span>
+
+<span class="sd">    verbose : boolean</span>
+<span class="sd">        Set to ``True`` for reporting solution progress/debugging.</span>
+<span class="sd">        Default is ``False``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    max_p : int</span>
+<span class="sd">        The number of regions.</span>
+
+<span class="sd">    labels_ : numpy.array</span>
+<span class="sd">        Region IDs for observations.</span>
+
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">      </span>
+<span class="sd">    &gt;&gt;&gt; import numpy</span>
+<span class="sd">    &gt;&gt;&gt; import libpysal</span>
+<span class="sd">    &gt;&gt;&gt; import geopandas as gpd</span>
+<span class="sd">    &gt;&gt;&gt; from spopt.region.maxp import MaxPHeuristic</span>
+<span class="sd">  </span>
+<span class="sd">    Read the data.</span>
+
+<span class="sd">    &gt;&gt;&gt; pth = libpysal.examples.get_path(&quot;mexicojoin.shp&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; mexico = gpd.read_file(pth)</span>
+<span class="sd">    &gt;&gt;&gt; mexico[&quot;count&quot;] = 1</span>
+
+<span class="sd">    Create the weight.</span>
+
+<span class="sd">    &gt;&gt;&gt; w = libpysal.weights.Queen.from_dataframe(mexico)</span>
+<span class="sd">    </span>
+<span class="sd">    Define the collumns of ``geopandas.GeoDataFrame`` to be spatially extensive attribute.</span>
+
+<span class="sd">    &gt;&gt;&gt; attrs_name = [f&quot;PCGDP{year}&quot; for year in range(1950, 2010, 10)]</span>
+<span class="sd">    </span>
+<span class="sd">    Define the threshold variable and the threshold value.</span>
+
+<span class="sd">    &gt;&gt;&gt; threshold_name = &quot;count&quot;</span>
+<span class="sd">    &gt;&gt;&gt; threshold = 4</span>
+
+<span class="sd">    Run the max-p-regions algorithm.</span>
+
+<span class="sd">    &gt;&gt;&gt; model = MaxPHeuristic(mexico, w, attrs_name, threshold_name, threshold)</span>
+<span class="sd">    &gt;&gt;&gt; model.solve()</span>
+
+<span class="sd">    Get the number of regions and region IDs for unit areas.</span>
+
+<span class="sd">    &gt;&gt;&gt; model.p</span>
+<span class="sd">    &gt;&gt;&gt; model.labels_</span>
+
+<span class="sd">    Show the regionalization results.</span>
+
+<span class="sd">    &gt;&gt;&gt; mexico[&quot;maxp&quot;] = model.labels_</span>
+<span class="sd">    &gt;&gt;&gt; mexico.plot(column=&quot;maxp&quot;, categorical=True, figsize=(12,8), cmap=&#39;plasma&#39;) </span>
+
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MaxPHeuristic.__init__"><a class="viewcode-back" href="../../../generated/spopt.region.maxp.MaxPHeuristic.html#spopt.region.maxp.MaxPHeuristic.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">gdf</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">,</span>
+        <span class="n">attrs_name</span><span class="p">,</span>
+        <span class="n">threshold_name</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">,</span>
+        <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">max_iterations_construction</span><span class="o">=</span><span class="mi">99</span><span class="p">,</span>
+        <span class="n">max_iterations_sa</span><span class="o">=</span><span class="n">ITERSA</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span> <span class="o">=</span> <span class="n">attrs_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold_name</span> <span class="o">=</span> <span class="n">threshold_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_n</span> <span class="o">=</span> <span class="n">top_n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_iterations_construction</span> <span class="o">=</span> <span class="n">max_iterations_construction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_iterations_sa</span> <span class="o">=</span> <span class="n">max_iterations_sa</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span></div>
+
+<div class="viewcode-block" id="MaxPHeuristic.solve"><a class="viewcode-back" href="../../../generated/spopt.region.maxp.MaxPHeuristic.html#spopt.region.maxp.MaxPHeuristic.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Solve a max-p-regions problem and get back the results&quot;&quot;&quot;</span>
+        <span class="n">max_p</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">maxp</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">threshold_name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">top_n</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_iterations_construction</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_iterations_sa</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">max_p</span></div></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

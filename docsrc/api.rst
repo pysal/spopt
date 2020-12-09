@@ -5,14 +5,21 @@
 API reference
 =============
 
-.. _markov_api:
+.. _data_api:
 
-Markov Methods
---------------
+Region Methods
+-----------------------
+Model based approaches aggregate larger amount of small areas into less number of large regions for certain purposes.
+
+.. currentmodule::spopt
 
 .. autosummary::
    :toctree: generated/
 
-    giddy.markov.Markov
-    giddy.markov.Spatial_Markov
+    region.maxp.MaxPHeuristic
+    region.ward.WardSpatial
+    region.skater.Skater
+    region.spenc.Spenc
+    region.azp.AZP
+    
 
