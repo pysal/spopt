@@ -18,7 +18,7 @@
          exclude:
           - environment-file: ci/36.yaml
             os: windows-latest
-          - environment-files: ci/38.yaml
+          - environment-file: ci/38.yaml
             os: ubuntu-latest
      steps:
        - uses: actions/checkout@v2
