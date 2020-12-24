@@ -337,7 +337,95 @@ class SpanningForest(object):
 
 
 class Skater(BaseSpOptHeuristicSolver):
-    """Skater is a spatial regionalization algorithm based on spanning tree pruning"""
+    """Skater is a spatial regionalization algorithm based on spanning tree pruning
+        
+
+        Parameters
+        ----------
+        
+        gdf : geopandas.GeoDataFrame, required
+            Geodataframe containing original data.
+
+        w : libpysal.weights.W, required
+            Weights object created from given data.
+
+        attrs_name : list, required
+            Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
+        
+        n_clusters : int, optional, default: 5
+            The number of clusters to form.
+
+        floor: floor on the size of regions, default: -inf
+
+        trace: bool denoting whether to store intermediate, default: False
+               labelings as the tree gets pruned.
+               
+        islands: string describing what to do with islands, default: "increase"
+                 If "ignore", will discover `n_clusters` regions, treating islands as their own regions.
+                 If "increase", will discover `n_clusters` regions, treating islands as separate from n_clusters. 
+
+
+        spanning_forest_kwds include:
+
+        dissimilarity :
+            A callable distance metric.
+
+        affinity : an callable affinity metric between 0,1 
+            Will be inverted to provide a dissimilarity metric.
+
+        reduction: 
+            The reduction applied over all clusters to provide the map score.
+
+        center:  
+            A way to compute the center of each region in attribute space.
+
+        Attributes
+        -------
+
+        labels_ : numpy.array
+            Region IDs for observations.
+
+
+        Examples
+        --------
+
+        >>> import numpy as np
+        >>> import libpysal
+        >>> import geopandas as gpd
+        >>> from spopt.region.skater import Skater
+        >>> from sklearn.metrics import pairwise as skm
+
+        Read the data.
+
+        >>> pth = libpysal.examples.get_path('airbnb_Chicago 2015.shp')
+        >>> chicago = gpd.read_file(pth)
+
+        Initialize the parameters.
+
+        >>> w = libpysal.weights.Queen.from_dataframe(chicago)
+        >>> attrs_name = ['num_spots']
+        >>> n_clusters = 10
+        >>> floor = 3
+        >>> trace = False
+        >>> islands = "increase"
+        >>> spanning_forest_kwds = dict(dissimilarity=skm.manhattan_distances, affinity=None, reduction=np.sum, center=np.mean)
+
+        Run the skater algorithm.
+
+        >>> model = Skater(chicago, w, attrs_name, n_clusters, floor, trace, islands, spanning_forest_kwds)
+        >>> model.solve()
+
+        Get the region IDs for unit areas.
+
+        >>> model.labels_
+        
+        Show the clustering results.
+
+        >>> chicago['skater_new'] = model.labels_
+        >>> chicago.plot(column='skater_new', categorical=True, figsize=(12,8), edgecolor='w')
+        
+        """
+
 
     def __init__(
         self,
@@ -349,50 +437,7 @@ class Skater(BaseSpOptHeuristicSolver):
         trace=False,
         islands="increase",
         spanning_forest_kwds=dict()
-    ):
-        """
-        # SKATER spatial clustering algorithm.
-        Parameters
-        ----------
-        
-        gdf : geopandas.GeoDataFrame
-            ... : 
-   
-        w : libpysal.weights.W instance
-        spatial weights matrix
-
-        attrs_name : list
-        Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
-        
-        n_clusters : int, optional, default: 5
-        The number of clusters to form.
-
-        floor: floor on the size of regions.
-
-        trace: bool denoting whether to store intermediate
-               labelings as the tree gets pruned
-               
-        islands: string describing what to do with islands. 
-                 If "ignore", will discover `n_clusters` regions, treating islands as their own regions.
-                 If "increase", will discover `n_clusters` regions, treating islands as separate from n_clusters. 
-
-
-        Parameters for spanning tree pruning.
-        ----------
-        spanning_forest_kwds include:
-
-            dissimilarity : a callable distance metric.
-
-            affinity : an callable affinity metric between 0,1. 
-                       Will be inverted to provide a 
-                       dissimilarity metric.
-
-            reduction: the reduction applied over all clusters
-                       to provide the map score.
-
-            center:    way to compute the center of each region in attribute space
-        
-        """
+    ):    
         self.gdf = gdf
         self.w = w
         self.attrs_name = attrs_name
@@ -403,7 +448,6 @@ class Skater(BaseSpOptHeuristicSolver):
         self.spanning_forest_kwds = spanning_forest_kwds
 
     def solve(self):
-        """Solve the region k-means heuristic."""
         data = self.gdf
         X = data[self.attrs_name].values
         model = SpanningForest(**self.spanning_forest_kwds)
