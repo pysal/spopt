@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spopt.region.skater &#8212; spopt v0.1.0 Manual</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../installation.html">Installation</a></li>
+                <li><a href="../../../tutorial.html">Tutorial</a></li>
+                <li><a href="../../../api.html">API</a></li>
+                <li><a href="../../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/maxp.html">Maxp Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/azp.html">AZP algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/skater.html">Skater</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/reg-k-means.html">Region K Means</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#region-methods">Region Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for spopt.region.skater</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">..BaseClass</span> <span class="kn">import</span> <span class="n">BaseSpOptHeuristicSolver</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">pairwise</span> <span class="k">as</span> <span class="n">skm</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csgraph</span> <span class="k">as</span> <span class="n">cg</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">OptimizeWarning</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="n">deletion</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;deletion&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;in_node&quot;</span><span class="p">,</span> <span class="s2">&quot;out_node&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">SpanningForest</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dissimilarity</span><span class="o">=</span><span class="n">skm</span><span class="o">.</span><span class="n">manhattan_distances</span><span class="p">,</span>
+        <span class="n">affinity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">reduction</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+        <span class="n">center</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the SKATER algorithm.</span>
+
+<span class="sd">        dissimilarity : a callable distance metric</span>
+<span class="sd">        affinity : an callable affinity metric between 0,1. </span>
+<span class="sd">                   Will be inverted to provide a </span>
+<span class="sd">                   dissimilarity metric.</span>
+<span class="sd">        reduction: the reduction applied over all clusters</span>
+<span class="sd">                   to provide the map score.</span>
+<span class="sd">        center:    way to compute the center of each region in attribute space</span>
+<span class="sd">        </span>
+<span class="sd">        NOTE: Optimization occurs with respect to a *dissimilarity* metric, so the reduction should</span>
+<span class="sd">              yield some kind of score where larger values are *less desirable* than smaller values. </span>
+<span class="sd">              Typically, this means we use addition. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">affinity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># invert the 0,1 affinity to</span>
+            <span class="c1"># to an unbounded positive dissimilarity</span>
+            <span class="n">metric</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">affinity</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">metric</span> <span class="o">=</span> <span class="n">dissimilarity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="n">metric</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reduction</span> <span class="o">=</span> <span class="n">reduction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;Minimum_Spanning_Tree_Pruning(metric = </span><span class="si">{}</span><span class="s2">, reduction = </span><span class="si">{}</span><span class="s2">, center = </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_clusters</span><span class="p">,</span>
+        <span class="n">W</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">quorum</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+        <span class="n">trace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">islands</span><span class="o">=</span><span class="s2">&quot;increase&quot;</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        n_clusters : int of clusters wanted</span>
+<span class="sd">        W : pysal W object expressing the neighbor relationships between observations. </span>
+<span class="sd">            Should be symmetric and binary, so Queen/Rook, DistanceBand, or a symmetrized KNN.</span>
+<span class="sd">        data: np.ndarray of (N,P) shape with N observations and P features</span>
+<span class="sd">        quorum: floor on the size of regions.</span>
+<span class="sd">        trace: bool denoting whether to store intermediate</span>
+<span class="sd">               labelings as the tree gets pruned</span>
+<span class="sd">        islands: string describing what to do with islands. </span>
+<span class="sd">                 If &quot;ignore&quot;, will discover `n_clusters` regions, treating islands as their own regions.</span>
+<span class="sd">                 If &quot;increase&quot;, will discover `n_clusters` regions, treating islands as separate from n_clusters. </span>
+
+<span class="sd">        verbose: bool/int describing how much output to provide to the user, </span>
+<span class="sd">                 in terms of print statements or progressbars.</span>
+<span class="sd">        </span>
+<span class="sd">        NOTE: Optimization occurs with respect to a *dissimilarity* metric, so the problem *minimizes* </span>
+<span class="sd">              the map dissimilarity. So, lower scores are better. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_trace</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">attribute_kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">W</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">W</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">W</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attribute_kernel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">W</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;b&quot;</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">sparse</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">super_verbose</span> <span class="o">=</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="n">start_W</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">dissim</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">attribute_kernel</span><span class="p">)</span>
+        <span class="n">dissim</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
+        <span class="n">end_W</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_W</span>
+
+        <span class="k">if</span> <span class="n">super_verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing Affinity Kernel took </span><span class="si">{:.2f}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end_W</span><span class="p">))</span>
+
+        <span class="n">tree_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">MSF</span> <span class="o">=</span> <span class="n">cg</span><span class="o">.</span><span class="n">minimum_spanning_tree</span><span class="p">(</span><span class="n">dissim</span><span class="p">)</span>
+        <span class="n">tree_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">tree_time</span>
+        <span class="k">if</span> <span class="n">super_verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing initial MST took </span><span class="si">{:.2f}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tree_time</span><span class="p">))</span>
+
+        <span class="n">initial_component_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">current_n_subtrees</span><span class="p">,</span> <span class="n">current_labels</span> <span class="o">=</span> <span class="n">cg</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span>
+            <span class="n">MSF</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">initial_component_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">initial_component_time</span>
+
+        <span class="k">if</span> <span class="n">super_verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Computing connected components took </span><span class="si">{:.2f}</span><span class="s2">s.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">initial_component_time</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">current_n_subtrees</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">island_warnings</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">&quot;Increasing `n_clusters` from </span><span class="si">{}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2"> in order to account for islands.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">n_clusters</span><span class="p">,</span> <span class="n">n_clusters</span> <span class="o">+</span> <span class="n">current_n_subtrees</span>
+                <span class="p">),</span>
+                <span class="s2">&quot;Counting islands towards the remaining </span><span class="si">{}</span><span class="s2"> clusters.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">n_clusters</span> <span class="o">-</span> <span class="p">(</span><span class="n">current_n_subtrees</span><span class="p">)</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+            <span class="n">ignoring_islands</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">islands</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+            <span class="n">chosen_warning</span> <span class="o">=</span> <span class="n">island_warnings</span><span class="p">[</span><span class="n">ignoring_islands</span><span class="p">]</span>
+            <span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;By default, the graph is disconnected! </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chosen_warning</span><span class="p">),</span>
+                <span class="n">OptimizeWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ignoring_islands</span><span class="p">:</span>
+                <span class="n">n_clusters</span> <span class="o">+=</span> <span class="n">current_n_subtrees</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">island_populations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">current_labels</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">island_populations</span> <span class="o">&lt;</span> <span class="n">quorum</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Islands must be larger than the quorum. If not, drop the small islands and solve for&quot;</span>
+                    <span class="s2">&quot; clusters in the remaining field.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">if</span> <span class="n">trace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_trace</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">current_labels</span><span class="p">,</span> <span class="n">deletion</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">super_verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trace</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">while</span> <span class="n">current_n_subtrees</span> <span class="o">&lt;</span> <span class="n">n_clusters</span><span class="p">:</span>  <span class="c1"># while we don&#39;t have enough regions</span>
+            <span class="n">best_deletion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_cut</span><span class="p">(</span>
+                <span class="n">MSF</span><span class="p">,</span>
+                <span class="n">data</span><span class="p">,</span>
+                <span class="n">quorum</span><span class="o">=</span><span class="n">quorum</span><span class="p">,</span>
+                <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">target_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">best_deletion</span><span class="o">.</span><span class="n">score</span><span class="p">):</span>  <span class="c1"># if our search succeeds</span>
+                <span class="c1"># accept the best move as *the* move</span>
+                <span class="k">if</span> <span class="n">super_verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;making cut </span><span class="si">{}</span><span class="s2">...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">best_deletion</span><span class="p">))</span>
+                <span class="n">MSF</span><span class="p">,</span> <span class="n">current_n_subtrees</span><span class="p">,</span> <span class="n">current_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_cut</span><span class="p">(</span>
+                    <span class="o">*</span><span class="n">best_deletion</span><span class="p">,</span> <span class="n">MSF</span><span class="o">=</span><span class="n">MSF</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># otherwise, it means the MSF admits no further cuts (no backtracking here)</span>
+                <span class="n">current_n_subtrees</span><span class="p">,</span> <span class="n">current_labels</span> <span class="o">=</span> <span class="n">cg</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span>
+                    <span class="n">MSF</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+                <span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;MSF contains no valid moves after finding </span><span class="si">{}</span><span class="s2"> subtrees.&quot;</span>
+                    <span class="s2">&quot;Decrease the size of your quorum to find the remaining </span><span class="si">{}</span><span class="s2"> subtrees.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">current_n_subtrees</span><span class="p">,</span> <span class="n">n_clusters</span> <span class="o">-</span> <span class="n">current_n_subtrees</span>
+                    <span class="p">),</span>
+                    <span class="n">OptimizeWarning</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_labels_</span> <span class="o">=</span> <span class="n">current_labels</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">minimum_spanning_forest_</span> <span class="o">=</span> <span class="n">MSF</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_elapsed_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+                <span class="k">return</span> <span class="bp">self</span>
+            <span class="k">if</span> <span class="n">trace</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_trace</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">current_labels</span><span class="p">,</span> <span class="n">best_deletion</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_labels_</span> <span class="o">=</span> <span class="n">current_labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minimum_spanning_forest_</span> <span class="o">=</span> <span class="n">MSF</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elapsed_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">quorum</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This yields a score for the data, given the labels provided. If no labels are provided,</span>
+<span class="sd">        and the object has been fit, then the labels discovered from the previous fit are used. </span>
+<span class="sd">        </span>
+<span class="sd">        If a quorum is not passed, it is assumed to be irrelevant. </span>
+<span class="sd">        </span>
+<span class="sd">        If a quorum is passed and the labels do not meet quorum, the score is inf. </span>
+<span class="sd">       </span>
+<span class="sd">        data    :   (N,P) array of data on which to compute the score of the regions expressed in labels</span>
+<span class="sd">        labels  :   (N,) array of labels expressing the classification of each observation into a region.</span>
+<span class="sd">        quorum  :   int expressing the minimum size of regions. Can be -inf if there is no lower bound. </span>
+<span class="sd">                    Any region below quorum makes the score inf.</span>
+<span class="sd">        </span>
+<span class="sd">        NOTE: Optimization occurs with respect to a *dissimilarity* metric, so the problem *minimizes* </span>
+<span class="sd">              the map dissimilarity. So, lower scores are better. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_labels_</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Labels not provided and MSF_Prune object has not been fit to data yet.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">assert</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span> <span class="p">(</span>
+            <span class="s2">&quot;Length of label array (</span><span class="si">{}</span><span class="s2">) does not match &quot;</span>
+            <span class="s2">&quot;length of data (</span><span class="si">{}</span><span class="s2">)! &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">subtree_quorums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">n_subtrees</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">subtree_quorums</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">subtree_quorums</span> <span class="o">&lt;</span> <span class="n">quorum</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="n">part_scores</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reduction</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span>
+                    <span class="n">X</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">labels</span> <span class="o">==</span> <span class="n">l</span><span class="p">],</span>
+                    <span class="n">Y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">labels</span> <span class="o">==</span> <span class="n">l</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_subtrees</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduction</span><span class="p">(</span><span class="n">part_scores</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">find_cut</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">MSF</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">quorum</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+        <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">target_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">make</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find the best cut from the MSF.</span>
+<span class="sd">        </span>
+<span class="sd">        MSF: (N,N) scipy sparse matrix with zero elements removed. </span>
+<span class="sd">             Represents the adjacency matrix for the minimum spanning forest. </span>
+<span class="sd">             Constructed from sparse.csgraph.sparse_from_dense or using MSF.eliminate_zeros(). </span>
+<span class="sd">             You MUST remove zero entries for this to work, otherwise they are considered no-cost paths. </span>
+<span class="sd">        data: (N,p) attribute matrix. If not provided, replaced with (N,1) vector of ones. </span>
+<span class="sd">        quorum: int denoting the minimum number of elements in the region</span>
+<span class="sd">        labels: (N,) flat vector of labels for each point. Represents the &quot;cluster labels&quot; </span>
+<span class="sd">                for disconnected components of the graph. </span>
+<span class="sd">        target_label: int from the labels array to subset the MSF. If passed along with `labels`, then a cut</span>
+<span class="sd">                      will be found that is restricted to that subset of the MSF.</span>
+<span class="sd">        make: bool, whether or not to modify the input MSF in order to make the best cut that was found. </span>
+<span class="sd">        verbose: bool/int, denoting how much output to provide to the user, in terms</span>
+<span class="sd">                 of print statements or progressbars</span>
+<span class="sd">                      </span>
+<span class="sd">        Returns a namedtuple with in_node, out_node, and score. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">MSF</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">target_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Both labels and target_label must be supplied! Only </span><span class="si">{}</span><span class="s2"> provided.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">,</span> <span class="s2">&quot;target_label&quot;</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="n">target_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)]</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+
+                <span class="k">def</span> <span class="nf">tqdm</span><span class="p">(</span><span class="n">noop</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">noop</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">def</span> <span class="nf">tqdm</span><span class="p">(</span><span class="n">noop</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">noop</span>
+
+        <span class="n">zero_in</span> <span class="o">=</span> <span class="p">(</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">target_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">current_n_subtrees</span><span class="p">,</span> <span class="n">current_labels</span> <span class="o">=</span> <span class="n">cg</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span>
+            <span class="n">MSF</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">best_deletion</span> <span class="o">=</span> <span class="n">deletion</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">in_node</span><span class="p">,</span> <span class="n">out_node</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">MSF</span><span class="o">.</span><span class="n">nonzero</span><span class="p">())</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;finding cut...&quot;</span>
+        <span class="p">):</span>  <span class="c1"># iterate over MSF edges</span>
+            <span class="k">if</span> <span class="n">zero_in</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">labels</span><span class="p">[</span><span class="n">in_node</span><span class="p">]</span> <span class="o">!=</span> <span class="n">target_label</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+            <span class="n">local_MSF</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">MSF</span><span class="p">)</span>
+
+            <span class="c1"># delete a candidate edge</span>
+            <span class="n">local_MSF</span><span class="p">[</span><span class="n">in_node</span><span class="p">,</span> <span class="n">out_node</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">local_MSF</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
+
+            <span class="c1"># get the connected components</span>
+            <span class="n">local_n_subtrees</span><span class="p">,</span> <span class="n">local_labels</span> <span class="o">=</span> <span class="n">cg</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span>
+                <span class="n">local_MSF</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">local_n_subtrees</span> <span class="o">&lt;=</span> <span class="n">current_n_subtrees</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Malformed MSF!&quot;</span><span class="p">)</span>
+
+            <span class="c1"># compute the score of these components</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">local_labels</span><span class="p">,</span> <span class="n">quorum</span><span class="o">=</span><span class="n">quorum</span><span class="p">)</span>
+
+            <span class="c1"># if the score is lower than the best score and quorum is met</span>
+            <span class="k">if</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="n">best_deletion</span><span class="o">.</span><span class="n">score</span><span class="p">:</span>
+                <span class="n">best_deletion</span> <span class="o">=</span> <span class="n">deletion</span><span class="p">(</span><span class="n">in_node</span><span class="p">,</span> <span class="n">out_node</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">make</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_cut</span><span class="p">(</span><span class="o">*</span><span class="n">best_deletion</span><span class="p">,</span> <span class="n">MSF</span><span class="o">=</span><span class="n">MSF</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">best_deletion</span>
+
+    <span class="k">def</span> <span class="nf">make_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_node</span><span class="p">,</span> <span class="n">out_node</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">MSF</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make a cut on the MSF inplace, provided the in_node, out_node, MSF, and score. </span>
+<span class="sd">        in_node: int, ID of the source node for the edge to be cut</span>
+<span class="sd">        out_node: int, ID of the destination node for the edge to be cut</span>
+<span class="sd">        score: float, the value of the score being cut. if the score is infinite, the cut is not made. </span>
+<span class="sd">        MSF: the spanning forest to use when making the cut. If not provided,</span>
+<span class="sd">             uses the defualt tree in self.minimum_spanning_forest_</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">MSF</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">MSF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimum_spanning_forest_</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">score</span><span class="p">):</span>
+            <span class="n">MSF</span><span class="p">[</span><span class="n">in_node</span><span class="p">,</span> <span class="n">out_node</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">MSF</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">MSF</span><span class="p">,</span> <span class="o">*</span><span class="n">cg</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">MSF</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">OptimizeWarning</span><span class="p">(</span>
+            <span class="s2">&quot;Score of the (</span><span class="si">{}</span><span class="s2">,</span><span class="si">{}</span><span class="s2">) cut is inf, the quorum is likely not met!&quot;</span>
+        <span class="p">)</span>
+
+
+<div class="viewcode-block" id="Skater"><a class="viewcode-back" href="../../../generated/spopt.region.skater.Skater.html#spopt.region.skater.Skater">[docs]</a><span class="k">class</span> <span class="nc">Skater</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Skater is a spatial regionalization algorithm based on spanning tree pruning</span>
+<span class="sd">        </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        gdf : geopandas.GeoDataFrame, required</span>
+<span class="sd">            Geodataframe containing original data.</span>
+
+<span class="sd">        w : libpysal.weights.W, required</span>
+<span class="sd">            Weights object created from given data.</span>
+
+<span class="sd">        attrs_name : list, required</span>
+<span class="sd">            Strings for attribute names (cols of ``geopandas.GeoDataFrame``).</span>
+<span class="sd">        </span>
+<span class="sd">        n_clusters : int, optional, default: 5</span>
+<span class="sd">            The number of clusters to form.</span>
+
+<span class="sd">        floor: floor on the size of regions, default: -inf</span>
+
+<span class="sd">        trace: bool denoting whether to store intermediate, default: False</span>
+<span class="sd">               labelings as the tree gets pruned.</span>
+<span class="sd">               </span>
+<span class="sd">        islands: string describing what to do with islands, default: &quot;increase&quot;</span>
+<span class="sd">                 If &quot;ignore&quot;, will discover `n_clusters` regions, treating islands as their own regions.</span>
+<span class="sd">                 If &quot;increase&quot;, will discover `n_clusters` regions, treating islands as separate from n_clusters. </span>
+
+
+<span class="sd">        spanning_forest_kwds include:</span>
+
+<span class="sd">        dissimilarity :</span>
+<span class="sd">            A callable distance metric.</span>
+
+<span class="sd">        affinity : an callable affinity metric between 0,1 </span>
+<span class="sd">            Will be inverted to provide a dissimilarity metric.</span>
+
+<span class="sd">        reduction: </span>
+<span class="sd">            The reduction applied over all clusters to provide the map score.</span>
+
+<span class="sd">        center:  </span>
+<span class="sd">            A way to compute the center of each region in attribute space.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        labels_ : numpy.array</span>
+<span class="sd">            Region IDs for observations.</span>
+
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; import libpysal</span>
+<span class="sd">        &gt;&gt;&gt; import geopandas as gpd</span>
+<span class="sd">        &gt;&gt;&gt; from spopt.region.skater import Skater</span>
+<span class="sd">        &gt;&gt;&gt; from sklearn.metrics import pairwise as skm</span>
+
+<span class="sd">        Read the data.</span>
+
+<span class="sd">        &gt;&gt;&gt; pth = libpysal.examples.get_path(&#39;airbnb_Chicago 2015.shp&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; chicago = gpd.read_file(pth)</span>
+
+<span class="sd">        Initialize the parameters.</span>
+
+<span class="sd">        &gt;&gt;&gt; w = libpysal.weights.Queen.from_dataframe(chicago)</span>
+<span class="sd">        &gt;&gt;&gt; attrs_name = [&#39;num_spots&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; n_clusters = 10</span>
+<span class="sd">        &gt;&gt;&gt; floor = 3</span>
+<span class="sd">        &gt;&gt;&gt; trace = False</span>
+<span class="sd">        &gt;&gt;&gt; islands = &quot;increase&quot;</span>
+<span class="sd">        &gt;&gt;&gt; spanning_forest_kwds = dict(dissimilarity=skm.manhattan_distances, affinity=None, reduction=np.sum, center=np.mean)</span>
+
+<span class="sd">        Run the skater algorithm.</span>
+
+<span class="sd">        &gt;&gt;&gt; model = Skater(chicago, w, attrs_name, n_clusters, floor, trace, islands, spanning_forest_kwds)</span>
+<span class="sd">        &gt;&gt;&gt; model.solve()</span>
+
+<span class="sd">        Get the region IDs for unit areas.</span>
+
+<span class="sd">        &gt;&gt;&gt; model.labels_</span>
+<span class="sd">        </span>
+<span class="sd">        Show the clustering results.</span>
+
+<span class="sd">        &gt;&gt;&gt; chicago[&#39;skater_new&#39;] = model.labels_</span>
+<span class="sd">        &gt;&gt;&gt; chicago.plot(column=&#39;skater_new&#39;, categorical=True, figsize=(12,8), edgecolor=&#39;w&#39;)</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="Skater.__init__"><a class="viewcode-back" href="../../../generated/spopt.region.skater.Skater.html#spopt.region.skater.Skater.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">gdf</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">,</span>
+        <span class="n">attrs_name</span><span class="p">,</span>
+        <span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">floor</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+        <span class="n">trace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">islands</span><span class="o">=</span><span class="s2">&quot;increase&quot;</span><span class="p">,</span>
+        <span class="n">spanning_forest_kwds</span><span class="o">=</span><span class="nb">dict</span><span class="p">()</span>
+    <span class="p">):</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span> <span class="o">=</span> <span class="n">attrs_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">n_clusters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">floor</span> <span class="o">=</span> <span class="n">floor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trace</span> <span class="o">=</span> <span class="n">trace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">islands</span> <span class="o">=</span> <span class="n">islands</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spanning_forest_kwds</span> <span class="o">=</span> <span class="n">spanning_forest_kwds</span></div>
+
+<div class="viewcode-block" id="Skater.solve"><a class="viewcode-back" href="../../../generated/spopt.region.skater.Skater.html#spopt.region.skater.Skater.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">SpanningForest</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">spanning_forest_kwds</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">quorum</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">floor</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trace</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">current_labels_</span></div></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+﻿spopt.region.ward.WardSpatial
+=============================
+
+.. currentmodule:: spopt.region.ward
+
+.. autoclass:: WardSpatial
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~WardSpatial.__init__
+      ~WardSpatial.solve
+   
+   
+
+   
+   
+   
