@@ -1,3 +1,5 @@
+# Openshaw, S. and Rao, L. (1995). Algorithms for reengineering 1991 census geography. Environment and Planning A, 27(3):425-446.
+
 from ..BaseClass import BaseSpOptHeuristicSolver
 import abc
 from collections import deque
@@ -20,6 +22,83 @@ from spopt.region.util import array_from_df_col, array_from_dict_values, \
 
 
 class AZP(BaseSpOptHeuristicSolver):
+    """ Class offering the implementation of the AZP algorithm.
+    
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame, required
+            Geodataframe containing original data
+
+        w : libpysal.weights.W, required
+            Weights object created from given data
+
+        attrs_name : list, required
+            Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
+        
+        n_clusters : int, optional, default: 5
+            The number of clusters to form.
+
+        allow_move_strategy : None or :class:`AllowMoveStrategy`, default: None
+            For a different behavior for allowing moves an AllowMoveStrategy
+            instance can be passed as argument.
+
+        random_state : None, int, str, bytes, or bytearray, default: None
+            Random seed.
+
+        initial_labels : :class:`numpy.ndarray` or None, default: None
+            One-dimensional array of labels at the beginning of the algorithm.
+            If None, then a random initial clustering will be generated.
+            
+        objective_func : : class:`spopt.region.objective_function.ObjectiveFunction`, default: ObjectiveFunctionPairwise()
+            The objective function to use.
+
+
+        Attributes
+        ----------
+        labels_ : :class:`numpy.ndarray`
+            Each element is a region label specifying to which region the
+            corresponding area was assigned to by the last run of a fit-method.
+
+
+        Examples
+        --------
+
+        >>> import numpy as np
+        >>> import libpysal
+        >>> import geopandas as gpd
+        >>> from spopt import AZP
+
+        Read the data.
+
+        >>> pth = libpysal.examples.get_path('mexicojoin.shp')
+        >>> mexico = gpd.read_file(pth)
+
+        Initialize the parameters.
+
+        >>> attrs_name = [f'PCGDP{year}' for year in range(1950,2010, 10)]
+        >>> w = libpysal.weights.Queen.from_dataframe(mexico)
+        >>> n_clusters = 8
+        >>> floor = 3
+        >>> allow_move_strategy = None
+        >>> random_state = 12345
+
+        Run the skater algorithm.
+
+        >>> model = AZP(mexico, w, attrs_name, n_clusters, allow_move_strategy, random_state)
+        >>> model.solve()
+
+        Get the region IDs for unit areas.
+
+        >>> model.labels_
+        
+        Show the clustering results.
+
+        >>> mexico['azp_new'] = model.labels_
+        >>> mexico.plot(column='azp_new', categorical=True, figsize=(12,8), edgecolor='w')
+
+    """
+
+    
     def __init__(
         self, 
         gdf, 
@@ -31,22 +110,7 @@ class AZP(BaseSpOptHeuristicSolver):
         initial_labels=None,
         objective_func=ObjectiveFunctionPairwise()
         ):
-        """
-        Parameters
-        ----------
 
-        gdf : geopandas.GeoDataFrame
-
-        w : libpywal.weights.W instance
-        spatial weights matrix
-
-        attrs_name : list
-        Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
-
-        n_clusters : int, optional, default: 5
-        The number of clusters to form.
-
-        """
         self.gdf = gdf
         self.w = w
         self.attrs_name = attrs_name
@@ -57,10 +121,10 @@ class AZP(BaseSpOptHeuristicSolver):
         self.objective_func = objective_func
 
     def solve(self):
-        """Solve the spenc"""
+        """Solve the azp"""
         data = self.gdf
         X = data[self.attrs_name].values
-        #_import_tryer("spenc", "SPENC", "spenc")
+        
         ##########
         model = AZP_orig(self.allow_move_strategy, self.random_state)
         model.fit_from_w( self.w, X, self.n_clusters, \
@@ -70,7 +134,7 @@ class AZP(BaseSpOptHeuristicSolver):
 
 class AZP_orig:
     """
-    Class offering the implementation of the AZP algorithm (see [OR1995]_).
+    Class offering the implementation of the AZP algorithm.
 
     Attributes
     ----------
