@@ -22,6 +22,9 @@
             os: windows-latest
           - environment-file: ci/38.yaml
             os: ubuntu-latest
+     defaults:
+       run:
+         shell: bash -l {0}
      steps:
        - uses: actions/checkout@v2
        - uses: conda-incubator/setup-miniconda@v2
@@ -31,17 +34,11 @@
             auto-activate-base: false
             environment-file: ${{ matrix.environment-file }}
             activate-environment: test
-       - shell: bash -l {0}
-         run: conda info --all
-       - shell: bash -l {0}
-         run: conda list
-       - shell: bash -l {0}
-         run: conda config --show-sources
-       - shell: bash -l {0}
-         run: conda config --show
-       - shell: bash -l {0}
-         run: |
-           pytest -v spopt --cov=spopt --cov-report=xml
+       - run: conda info --all
+       - run: conda list
+       - run: conda config --show-sources
+       - run: conda config --show
+       - run: pytest -v spopt --cov=spopt --cov-report=xml
        - name: codecov (${{ matrix.os }}, ${{ matrix.environment-file }})
          uses: codecov/codecov-action@v1
          with:
