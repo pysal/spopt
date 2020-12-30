@@ -5,6 +5,8 @@
    pull_request:
      branches:
      - '*'
+   schedule:
+     - cron: '59 23 * * *'
 
  jobs:
    unittests:
