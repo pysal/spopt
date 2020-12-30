@@ -5,6 +5,8 @@
    pull_request:
      branches:
      - '*'
+   schedule:
+     - cron: '59 23 * * *'
 
  jobs:
    unittests:
@@ -20,26 +22,33 @@
             os: windows-latest
           - environment-file: ci/38.yaml
             os: ubuntu-latest
+     defaults:
+       run:
+         shell: bash -l {0}
      steps:
        - uses: actions/checkout@v2
+       - uses: actions/cache@v2
+         env:
+           CACHE_NUMBER: 0
+         with:
+           path: ~/conda_pkgs_dir
+           key: ${{ matrix.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles(matrix.environment-file) }}
        - uses: conda-incubator/setup-miniconda@v2
          with:
             miniconda-version: 'latest'
-            auto-update-conda: true
+            mamba-version: '*'
+            channels: conda-forge
+            channel-priority: true
+            auto-update-conda: false
             auto-activate-base: false
             environment-file: ${{ matrix.environment-file }}
             activate-environment: test
-       - shell: bash -l {0}
-         run: conda info --all
-       - shell: bash -l {0}
-         run: conda list
-       - shell: bash -l {0}
-         run: conda config --show-sources
-       - shell: bash -l {0}
-         run: conda config --show
-       - shell: bash -l {0}
-         run: |
-           pytest -v spopt --cov=spopt --cov-report=xml
+            use-only-tar-bz2: true
+       - run: mamba info --all
+       - run: mamba list
+       - run: conda config --show-sources
+       - run: conda config --show
+       - run: pytest -v spopt --cov=spopt --cov-report=xml
        - name: codecov (${{ matrix.os }}, ${{ matrix.environment-file }})
          uses: codecov/codecov-action@v1
          with:
