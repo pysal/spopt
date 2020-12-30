@@ -27,13 +27,21 @@
          shell: bash -l {0}
      steps:
        - uses: actions/checkout@v2
+       - uses: actions/cache@v2
+         env:
+           CACHE_NUMBER: 0
+         with:
+           path: ~/conda_pkgs_dir
+           key: ${{ matrix.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles(matrix.environment-file) }}
        - uses: conda-incubator/setup-miniconda@v2
          with:
             miniconda-version: 'latest'
+            channels: conda-forge
             auto-update-conda: true
             auto-activate-base: false
             environment-file: ${{ matrix.environment-file }}
             activate-environment: test
+            use-only-tar-bz2: true
        - run: conda info --all
        - run: conda list
        - run: conda config --show-sources
