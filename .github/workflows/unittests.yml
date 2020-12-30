@@ -36,14 +36,16 @@
        - uses: conda-incubator/setup-miniconda@v2
          with:
             miniconda-version: 'latest'
+            mamba-version: '*'
             channels: conda-forge
-            auto-update-conda: true
+            channel-priority: true
+            auto-update-conda: false
             auto-activate-base: false
             environment-file: ${{ matrix.environment-file }}
             activate-environment: test
             use-only-tar-bz2: true
-       - run: conda info --all
-       - run: conda list
+       - run: mamba info --all
+       - run: mamba list
        - run: conda config --show-sources
        - run: conda config --show
        - run: pytest -v spopt --cov=spopt --cov-report=xml
