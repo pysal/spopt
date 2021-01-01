@@ -237,43 +237,44 @@
 
 
 <div class="viewcode-block" id="RegionKMeansHeuristic"><a class="viewcode-back" href="../../../generated/spopt.region.region_k_means.RegionKMeansHeuristic.html#spopt.region.region_k_means.RegionKMeansHeuristic">[docs]</a><span class="k">class</span> <span class="nc">RegionKMeansHeuristic</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;...Needs a short description...&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Solve the region-K-means problem, the K-means with the constraint</span>
+<span class="sd">    that each cluster forms a spatially connected component.</span>
 
-<div class="viewcode-block" id="RegionKMeansHeuristic.__init__"><a class="viewcode-back" href="../../../generated/spopt.region.region_k_means.RegionKMeansHeuristic.html#spopt.region.region_k_means.RegionKMeansHeuristic.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        </span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        </span>
-<span class="sd">        data : </span>
-<span class="sd">            ...</span>
-<span class="sd">        </span>
-<span class="sd">        k : </span>
-<span class="sd">            ...</span>
-<span class="sd">        </span>
-<span class="sd">        w : </span>
-<span class="sd">            ...</span>
-<span class="sd">        </span>
-<span class="sd">        Attributes</span>
-<span class="sd">        ----------</span>
-<span class="sd">        </span>
-<span class="sd">        labels_ : </span>
-<span class="sd">            ...</span>
-<span class="sd">        </span>
-<span class="sd">        centroids_ : </span>
-<span class="sd">            ...</span>
-<span class="sd">        </span>
-<span class="sd">        iters_ : </span>
-<span class="sd">            ...</span>
-<span class="sd">        </span>
-<span class="sd">        &quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : {numpy.ndarray, list}, required</span>
+<span class="sd">        The observations to cluster shaped ``(n_samples, n_features)``.</span>
+
+<span class="sd">    n_clusters : int</span>
+<span class="sd">        The number of clusters to form.</span>
+
+<span class="sd">    w : libpysal.weights.W, required</span>
+<span class="sd">        Weights object created from given data.</span>
+
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    labels_ : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    centroids_ : </span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    iters_ : </span>
+<span class="sd">        ...</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RegionKMeansHeuristic.__init__"><a class="viewcode-back" href="../../../generated/spopt.region.region_k_means.RegionKMeansHeuristic.html#spopt.region.region_k_means.RegionKMeansHeuristic.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">n_clusters</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">n_clusters</span></div>
 
 <div class="viewcode-block" id="RegionKMeansHeuristic.solve"><a class="viewcode-back" href="../../../generated/spopt.region.region_k_means.RegionKMeansHeuristic.html#spopt.region.region_k_means.RegionKMeansHeuristic.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Solve the region k-means heuristic.&quot;&quot;&quot;</span>
-        <span class="n">centroid</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">iters</span> <span class="o">=</span> <span class="n">region_k_means</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">centroid</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">iters</span> <span class="o">=</span> <span class="n">region_k_means</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="n">label</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">centroids_</span> <span class="o">=</span> <span class="n">centroid</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">iters_</span> <span class="o">=</span> <span class="n">iters</span></div></div>

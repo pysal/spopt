@@ -128,19 +128,17 @@
 <h1>spopt.region.region_k_means.RegionKMeansHeuristic<a class="headerlink" href="#spopt-region-region-k-means-regionkmeansheuristic" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="spopt.region.region_k_means.RegionKMeansHeuristic">
-<em class="property">class </em><code class="sig-prename descclassname">spopt.region.region_k_means.</code><code class="sig-name descname">RegionKMeansHeuristic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">w</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/region_k_means.html#RegionKMeansHeuristic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spopt.region.region_k_means.RegionKMeansHeuristic" title="Permalink to this definition">¶</a></dt>
-<dd><p>…Needs a short description…</p>
-<dl class="py method">
-<dt id="spopt.region.region_k_means.RegionKMeansHeuristic.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">w</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/region_k_means.html#RegionKMeansHeuristic.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spopt.region.region_k_means.RegionKMeansHeuristic.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<em class="property">class </em><code class="sig-prename descclassname">spopt.region.region_k_means.</code><code class="sig-name descname">RegionKMeansHeuristic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">n_clusters</span></em>, <em class="sig-param"><span class="n">w</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/region_k_means.html#RegionKMeansHeuristic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spopt.region.region_k_means.RegionKMeansHeuristic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve the region-K-means problem, the K-means with the constraint
+that each cluster forms a spatially connected component.</p>
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data :</strong></dt><dd><p>…</p>
+<dd class="field-odd"><dl>
+<dt><strong>data</strong><span class="classifier">{<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a>}, <code class="xref py py-obj docutils literal notranslate"><span class="pre">required</span></code></span></dt><dd><p>The observations to cluster shaped <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
 </dd>
-<dt><strong>k :</strong></dt><dd><p>…</p>
+<dt><strong>n_clusters</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>The number of clusters to form.</p>
 </dd>
-<dt><strong>w :</strong></dt><dd><p>…</p>
+<dt><strong>w</strong><span class="classifier"><a class="reference external" href="https://pysal.org/libpysal/generated/libpysal.weights.W.html#libpysal.weights.W" title="(in libpysal v4.3.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">required</span></code></span></dt><dd><p>Weights object created from given data.</p>
 </dd>
 </dl>
 </dd>
@@ -155,6 +153,10 @@
 </dl>
 </dd>
 </dl>
+<dl class="py method">
+<dt id="spopt.region.region_k_means.RegionKMeansHeuristic.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">n_clusters</span></em>, <em class="sig-param"><span class="n">w</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/region_k_means.html#RegionKMeansHeuristic.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spopt.region.region_k_means.RegionKMeansHeuristic.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
@@ -164,12 +166,8 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.region.region_k_means.RegionKMeansHeuristic.__init__" title="spopt.region.region_k_means.RegionKMeansHeuristic.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(data, k, w)</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
-</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.region.region_k_means.RegionKMeansHeuristic.__init__" title="spopt.region.region_k_means.RegionKMeansHeuristic.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(data, n_clusters, w)</p></td>
+<td><p>Initialize self.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#spopt.region.region_k_means.RegionKMeansHeuristic.solve" title="spopt.region.region_k_means.RegionKMeansHeuristic.solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve</span></code></a>()</p></td>
 <td><p>Solve the region k-means heuristic.</p></td>
