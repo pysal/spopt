@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spopt: Spatial Optimization &#8212; spopt v0.1.0 Manual</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pysal-styles.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="tutorial.html">Tutorial</a></li>
+                <li><a href="api.html">API</a></li>
+                <li><a href="references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/maxp.html">Maxp Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/azp.html">AZP algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/skater.html">Skater</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/reg-k-means.html">Region K Means</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#region-methods">Region Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">spopt: Spatial Optimization</a><ul>
+<li><a class="reference internal" href="#regionalization-facility-location-and-transportation-oriented-modeling">Regionalization, facility location, and transportation-oriented modeling</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#development">Development</a></li>
+<li><a class="reference internal" href="#getting-involved">Getting Involved</a></li>
+<li><a class="reference internal" href="#bug-reports">Bug reports</a></li>
+<li><a class="reference internal" href="#citing-spopt">Citing spopt</a></li>
+<li><a class="reference internal" href="#license-information">License information</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="spopt-spatial-optimization">
+<h1>spopt: Spatial Optimization<a class="headerlink" href="#spopt-spatial-optimization" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="regionalization-facility-location-and-transportation-oriented-modeling">
+<h2>Regionalization, facility location, and transportation-oriented modeling<a class="headerlink" href="#regionalization-facility-location-and-transportation-oriented-modeling" title="Permalink to this headline">¶</a></h2>
+<p>Spopt is an open-source Python library for solving optimization problem with spatial data. Originating from the region module in <a class="reference external" href="http://pysal.org">PySAL (Python Spatial Analysis Library)</a>, it is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions.</p>
+<div class="container-fluid">
+  <div class="row equal-height">
+    <div class="col-sm-1 col-xs-hidden">
+    </div>
+    <div class="col-md-3 col-xs-12">
+        <a
+        href="https://pysal.org/spopt/notebooks/maxp.html" class="thumbnail">
+            <img src="_static/images/notebooks_maxp_12_1.png" class="img-responsive center-block">
+            <div class="caption text-center">
+            <h6>Mexican State Regional Income Clustering</h6>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-3 col-xs-12">
+        <a href="https://pysal.org/spopt/notebooks/skater.ipynb" class="thumbnail">
+            <img src="_static/images/notebooks_skater_12_1.png" class="img-responsive center-block">
+            <div class="caption text-center">
+            <h6>Airbnb Spots Clustering in Chicago</h6>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-3 col-xs-12">
+        <a href="https://pysal.org/spopt/notebooks/reg-k-means.ipynb" class="thumbnail">
+            <img src="_static/images/notebooks_reg-k-means_15_1.png"
+            class="img-responsive center-block">
+            <div class="caption text-center">
+            <h6>Grid Clustering
+            </h6>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-2 col-xs-hidden">
+    </div>
+  </div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="section" id="introduction">
+<h3>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h3>
+<p><strong>spopt</strong> implements models for regionalization, location, and routing and is part of the  <a class="reference external" href="https://pysal.org">PySAL family</a></p>
+<p>Details are available in the <a class="reference external" href="api.html">spopt api</a>.</p>
+</div>
+<div class="section" id="development">
+<h3>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h3>
+<p>spopt development is hosted on <a class="reference external" href="https://github.com/pysal/spopt">github</a>.</p>
+<p>Discussions of development occurs on the
+<a class="reference external" href="http://groups.google.com/group/pysal-dev">developer list</a>
+as well as <a class="reference external" href="https://gitter.im/pysal/pysal?">gitter</a>.</p>
+</div>
+<div class="section" id="getting-involved">
+<h3>Getting Involved<a class="headerlink" href="#getting-involved" title="Permalink to this headline">¶</a></h3>
+<p>If you are interested in contributing to PySAL please see our
+<a class="reference external" href="https://github.com/pysal/pysal/wiki">development guidelines</a>.</p>
+</div>
+<div class="section" id="bug-reports">
+<h3>Bug reports<a class="headerlink" href="#bug-reports" title="Permalink to this headline">¶</a></h3>
+<p>To search for or report bugs, please see spopt’s <a class="reference external" href="http://github.com/pysal/spopt/issues">issues</a>.</p>
+</div>
+<div class="section" id="citing-spopt">
+<h3>Citing spopt<a class="headerlink" href="#citing-spopt" title="Permalink to this headline">¶</a></h3>
+<p>If you use PySAL-spopt in a scientific publication, we would appreciate citations to the following paper:</p>
+</div>
+<div class="section" id="license-information">
+<h3>License information<a class="headerlink" href="#license-information" title="Permalink to this headline">¶</a></h3>
+<p>See the file “LICENSE.txt” for information on the history of this
+software, terms &amp; conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.</p>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/index.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
