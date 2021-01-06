@@ -25,7 +25,7 @@ Spopt is an open-source Python library for solving optimization problem with spa
             </a>
         </div>
         <div class="col-sm-3 col-xs-12">
-            <a href="https://pysal.org/spopt/notebooks/skater.ipynb" class="thumbnail">
+            <a href="https://pysal.org/spopt/notebooks/skater.html" class="thumbnail">
                 <img src="_static/images/notebooks_skater_12_1.png" class="img-responsive center-block">
                 <div class="caption text-center">
                 <h6>Airbnb Spots Clustering in Chicago</h6>
@@ -33,7 +33,7 @@ Spopt is an open-source Python library for solving optimization problem with spa
             </a>
         </div>
         <div class="col-sm-3 col-xs-12">
-            <a href="https://pysal.org/spopt/notebooks/reg-k-means.ipynb" class="thumbnail">
+            <a href="https://pysal.org/spopt/notebooks/reg-k-means.html" class="thumbnail">
                 <img src="_static/images/notebooks_reg-k-means_15_1.png"
                 class="img-responsive center-block">
                 <div class="caption text-center">
