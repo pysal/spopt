@@ -115,43 +115,44 @@ def region_k_means(X, n_clusters, w):
 
 
 class RegionKMeansHeuristic(BaseSpOptHeuristicSolver):
-    """...Needs a short description..."""
+    """Solve the region-K-means problem, the K-means with the constraint
+    that each cluster forms a spatially connected component.
 
-    def __init__(self, data, k, w):
-        """
-        
-        Parameters
-        ----------
-        
-        data : 
-            ...
-        
-        k : 
-            ...
-        
-        w : 
-            ...
-        
-        Attributes
-        ----------
-        
-        labels_ : 
-            ...
-        
-        centroids_ : 
-            ...
-        
-        iters_ : 
-            ...
-        
-        """
+
+    Parameters
+    ----------
+    data : {numpy.ndarray, list}, required
+        The observations to cluster shaped ``(n_samples, n_features)``.
+
+    n_clusters : int
+        The number of clusters to form.
+
+    w : libpysal.weights.W, required
+        Weights object created from given data.
+
+
+    Attributes
+    ----------
+    
+    labels_ : 
+        ...
+    
+    centroids_ : 
+        ...
+    
+    iters_ : 
+        ...
+
+    """
+
+    def __init__(self, data, n_clusters, w):
         self.data = data
         self.w = w
-        self.k = k
+        self.n_clusters = n_clusters
 
     def solve(self):
         """Solve the region k-means heuristic."""
-        centroid, label, iters = region_k_means(self.data, self.k, self.w)
+        centroid, label, iters = region_k_means(self.data, self.n_clusters, self.w)
         self.labels_ = label
         self.centroids_ = centroid
         self.iters_ = iters

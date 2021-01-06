@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API reference &#8212; spopt v0.1.0 Manual</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pysal-styles.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="spopt.region.maxp.MaxPHeuristic" href="generated/spopt.region.maxp.MaxPHeuristic.html" />
+    <link rel="prev" title="Region K Means" href="notebooks/reg-k-means.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="tutorial.html">Tutorial</a></li>
+                <li><a href="#">API</a></li>
+                <li><a href="references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/maxp.html">Maxp Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/azp.html">AZP algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/skater.html">Skater</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/reg-k-means.html">Region K Means</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#region-methods">Region Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">API reference</a><ul>
+<li><a class="reference internal" href="#region-methods">Region Methods</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="api-reference">
+<span id="api-ref"></span><h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="region-methods">
+<span id="data-api"></span><h2>Region Methods<a class="headerlink" href="#region-methods" title="Permalink to this headline">¶</a></h2>
+<p>Model based approaches aggregate larger amount of small areas into less number of large regions for certain purposes.</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/spopt.region.maxp.MaxPHeuristic.html#spopt.region.maxp.MaxPHeuristic" title="spopt.region.maxp.MaxPHeuristic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.maxp.MaxPHeuristic</span></code></a>(gdf, w, …[, …])</p></td>
+<td><p>The max-p-regions involves the aggregation of n areas into an unknown maximum number of  homogeneous regions, while ensuring that each region is contiguious and satisfies a minimum threshold value imposed on a predefined spatially extensive attribute.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/spopt.region.ward.WardSpatial.html#spopt.region.ward.WardSpatial" title="spopt.region.ward.WardSpatial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.ward.WardSpatial</span></code></a>(gdf, w, attrs_name)</p></td>
+<td><p>Agglomerative clustering using Ward linkage with a spatial connectivity constraint.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/spopt.region.skater.Skater.html#spopt.region.skater.Skater" title="spopt.region.skater.Skater"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.skater.Skater</span></code></a>(gdf, w, attrs_name[, …])</p></td>
+<td><p>Skater is a spatial regionalization algorithm based on spanning tree pruning</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/spopt.region.azp.AZP.html#spopt.region.azp.AZP" title="spopt.region.azp.AZP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.azp.AZP</span></code></a>(gdf, w, attrs_name[, …])</p></td>
+<td><p>AZP involves class offering the implementation of the automatic zoning procedure algorithm.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/spopt.region.region_k_means.RegionKMeansHeuristic.html#spopt.region.region_k_means.RegionKMeansHeuristic" title="spopt.region.region_k_means.RegionKMeansHeuristic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.region_k_means.RegionKMeansHeuristic</span></code></a>(…)</p></td>
+<td><p>Solve the region-K-means problem, the K-means with the constraint that each cluster forms a spatially connected component.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/spopt.region.spenc.Spenc.html#spopt.region.spenc.Spenc" title="spopt.region.spenc.Spenc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.spenc.Spenc</span></code></a>(gdf, w, attrs_name[, …])</p></td>
+<td><p>Spatially encouraged spectral clustering.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/api.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

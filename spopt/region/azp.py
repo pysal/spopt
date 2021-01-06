@@ -22,7 +22,7 @@ from spopt.region.util import array_from_df_col, array_from_dict_values, \
 
 
 class AZP(BaseSpOptHeuristicSolver):
-    """ Class offering the implementation of the AZP algorithm.
+    """ AZP involves class offering the implementation of the automatic zoning procedure algorithm.
     
         Parameters
         ----------
