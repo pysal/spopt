@@ -48,11 +48,17 @@ Coming Soon.
 
 ## Requirements
 [scipy](http://scipy.github.io/devdocs/)
+
 [numpy](https://numpy.org/devdocs/)
+
 [pandas](https://pysal.org/libpysal/)
+
 [networkx](https://networkx.org/)
+
 [libpysal](https://pysal.org/spaghetti/)
+
 [scilit-learn](https://scikit-learn.org/stable/)
+
 [geopandas](https://geopandas.org/)
 
 ## Installation
