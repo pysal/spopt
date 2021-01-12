@@ -1,46 +1,47 @@
 from ..BaseClass import BaseSpOptHeuristicSolver
-import numpy as np
-from warnings import warn
-from spenc import SPENC
+from .spenclib import SPENC
 
 
 class Spenc(BaseSpOptHeuristicSolver):
-	"""
-	Spatially encouraged spectral clustering.
-	:cite:`wolf2018`
-	"""
-	def __init__(self, gdf, w, attrs_name, n_clusters=5, random_state=None, gamma=1):
-		"""
+    """
+    Spatially encouraged spectral clustering.
+    :cite:`wolf2018`
+    """
 
-		Parameters
-		----------
+    def __init__(self, gdf, w, attrs_name, n_clusters=5, random_state=None,
+                 gamma=1):
+        """
 
-		gdf : geopandas.GeoDataFrame
+        Parameters
+        ----------
 
-		w : libpywal.weights.W instance
-		spatial weights matrix
+        gdf : geopandas.GeoDataFrame
 
-		attrs_name : list
-		Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
+        w : libpywal.weights.W instance
+        spatial weights matrix
 
-		n_clusters : int, optional, default: 5
-		The number of clusters to form.
+        attrs_name : list
+        Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
 
-		gamma: int, default:1
+        n_clusters : int, optional, default: 5
+        The number of clusters to form.
 
-		"""
-		self.gdf = gdf
-		self.w = w
-		self.attrs_name = attrs_name
-		self.n_clusters = n_clusters
-		self.gamma = gamma
-		self.random_state = random_state
-	
-	def solve(self):
-		"""Solve the spenc"""
-		data = self.gdf
-		X = data[self.attrs_name].values
-		#_import_tryer("spenc", "SPENC", "spenc")
-		model = SPENC(n_clusters=self.n_clusters, random_state=self.random_state, gamma=self.gamma)
-		model.fit(X, self.w.sparse)
-		self.labels_ = model.labels_
+        gamma: int, default:1
+
+        """
+        self.gdf = gdf
+        self.w = w
+        self.attrs_name = attrs_name
+        self.n_clusters = n_clusters
+        self.gamma = gamma
+        self.random_state = random_state
+
+    def solve(self):
+        """Solve the spenc"""
+        data = self.gdf
+        X = data[self.attrs_name].values
+        model = SPENC(n_clusters=self.n_clusters,
+                      random_state=self.random_state,
+                      gamma=self.gamma)
+        model.fit(X, self.w.sparse)
+        self.labels_ = model.labels_
