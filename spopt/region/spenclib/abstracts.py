@@ -454,7 +454,7 @@ class SPENC(clust.SpectralClustering):
 
 
     def score(self, X, W, labels=None, delta=.5,
-              attribute_score=skm.calinski_harabaz_score,
+              attribute_score=skm.calinski_harabasz_score,
               spatial_score=boundary_fraction,
               attribute_kw = dict(),
               spatial_kw = dict()):
@@ -478,7 +478,7 @@ class SPENC(clust.SpectralClustering):
         attribute_score : callable
                           function to use to evaluate attribute homogeneity
                           Must have signature attribute_score(X,labels,**params)
-                          Default: sklearn.metrics.calinski_harabaz_score
+                          Default: sklearn.metrics.calinski_harabasz_score
                                    (within/between deviation ratio)
         spatial_score   : callable
                           function to use to evaluate spatial regularity/contiguity.
