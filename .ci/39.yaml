@@ -17,7 +17,3 @@ dependencies:
   - pulp
   - coverage
   - coveralls
-  - pip
-  - pip:
-    - ortools
-
