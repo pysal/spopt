@@ -16,11 +16,11 @@
      strategy:
        matrix:
          os: ['macos-latest', 'ubuntu-latest', 'windows-latest']
-         environment-file: [ci/36.yaml, ci/37.yaml, ci/38.yaml]
+         environment-file: [.ci/37.yaml, .ci/38.yaml, .ci/39.yaml]
          exclude:
-          - environment-file: ci/36.yaml
+          - environment-file: .ci/39.yaml
             os: windows-latest
-          - environment-file: ci/38.yaml
+          - environment-file: .ci/38.yaml
             os: ubuntu-latest
      defaults:
        run:
