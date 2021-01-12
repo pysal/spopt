@@ -60,7 +60,7 @@ If you have any suggestions, feature requests, or bug reports, please open new [
 
 
 ## Support
-
+"If you are having trouble, please [create an issue](https://github.com/pysal/spopt/issues), [start a discussion](https://github.com/pysal/spopt/discussions), or talk to us in the [gitter room](https://gitter.im/pysal/spopt).
 
 ## Code of Conduct
 
