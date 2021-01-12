@@ -10,7 +10,7 @@ dependencies:
   - libpysal
   - geopandas>=0.7.0
   - matplotlib
-  - scikit-learn=0.22
+  - scikit-learn>=0.22
   - spenc
   - pytest
   - pytest-cov
