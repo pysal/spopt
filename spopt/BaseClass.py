@@ -57,10 +57,3 @@ class BaseSpOptHeuristicSolver(BaseSpOptSolver):
     def solve(self):
         """Solve the optimization model."""
         pass
-
-
-if __name__ != "__main__":
-    # hs = BaseSpOptHeuristicSolver()
-    # hs.solve()
-    es = BaseSpOptExactSolver("tests")
-    es.solve()
