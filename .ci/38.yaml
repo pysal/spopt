@@ -17,7 +17,9 @@ dependencies:
   - pulp
   - coverage
   - coveralls
-  - pip
-  - pip:
-    - ortools
-
+  - sphinx>=1.4.3
+  - sphinxcontrib-bibtex==1.0.0
+  - sphinx_bootstrap_theme
+  - numpydoc
+  - nbsphinx
+  
