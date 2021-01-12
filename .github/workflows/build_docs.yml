@@ -13,7 +13,7 @@
      strategy:
        matrix:
          os: ['ubuntu-latest']
-         environment-file: [.ci/39.yml]
+         environment-file: [.ci/39.yaml]
          experimental: [false]
      steps:
        - uses: actions/checkout@v2
