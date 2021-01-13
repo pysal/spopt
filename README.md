@@ -44,6 +44,10 @@ Coming Soon.
 
 
 ## Examples
+More examples can be found in the [Tutorials](https://pysal.org/spopt/tutorial.html) section of the documentation. 
+- [Max-p-regions problem](https://pysal.org/spopt/notebooks/maxp.html)
+- [Skater](https://pysal.org/spopt/notebooks/skater.html)
+- [Region K means](https://pysal.org/spopt/notebooks/reg-k-means.html)
 
 
 ## Requirements
@@ -66,7 +70,7 @@ If you have any suggestions, feature requests, or bug reports, please open new [
 
 
 ## Support
-"If you are having trouble, please [create an issue](https://github.com/pysal/spopt/issues), [start a discussion](https://github.com/pysal/spopt/discussions), or talk to us in the [gitter room](https://gitter.im/pysal/spopt).
+If you are having trouble, please [create an issue](https://github.com/pysal/spopt/issues), [start a discussion](https://github.com/pysal/spopt/discussions), or talk to us in the [gitter room](https://gitter.im/pysal/spopt).
 
 ## Code of Conduct
 
