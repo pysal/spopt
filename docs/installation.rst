@@ -3,7 +3,7 @@
 Installation
 ============
 
-spopt supports Python `>=XXX`. Please make sure that you are
+spopt supports Python 3.6, 3.7, and 3.8. Please make sure that you are
 operating in a Python 3 environment.
 
 Installing released version
