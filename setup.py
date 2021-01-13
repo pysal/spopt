@@ -25,6 +25,8 @@ def setup_package():
     _groups_files = {
         "base": "requirements.txt",  # basic requirements
         "docs": "requirements_docs.txt",  # requirements for building docs
+        "dev": "requirements_dev.txt",  # requirements for development
+        "tests": "requirements_tests.txt",  # requirements for testing
     }
     reqs = _get_requirements_from_files(_groups_files)
     install_reqs = reqs.pop("base")
@@ -36,7 +38,7 @@ def setup_package():
         description="Spatial Optimization in PySAL",
         url="https://github.com/pysal/" + package,  # github repo
         maintainer="PySAL Developers",
-        maintainer_email="xin.feng@ucr.edu,jgaboardi@gmail.com",
+        maintainer_email="xin.feng@ucr.edu, jgaboardi@gmail.com",
         keywords="spatial optimization",
         classifiers=[
             "Development Status :: 4 - Beta",
@@ -47,17 +49,18 @@ def setup_package():
             "Topic :: Scientific/Engineering :: GIS",
             "License :: OSI Approved :: BSD License",
             "Programming Language :: Python",
-            "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3.9",
         ],
         license="3-Clause BSD",
         packages=[package],
+        py_modules=[package],
         install_requires=install_reqs,
         extras_require=extras_reqs,
         zip_safe=False,
         cmdclass={"build.py": build_py},
-        python_requires=">=3.6",
+        python_requires=">=3.7",
     )
 
 

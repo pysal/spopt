@@ -1,0 +1,1 @@
+include LICENSE.txt MANIFEST.in requirements.txt requirements_docs.txt requirements_dev.txt requirements_tests.txt
