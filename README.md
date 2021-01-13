@@ -54,10 +54,10 @@ More examples can be found in the [Tutorials](https://pysal.org/spopt/tutorial.h
 ## Requirements
 - [scipy](http://scipy.github.io/devdocs/)
 - [numpy](https://numpy.org/devdocs/)
-- [pandas](https://pysal.org/libpysal/)
+- [pandas](https://pandas.pydata.org/docs/)
 - [networkx](https://networkx.org/)
-- [libpysal](https://pysal.org/spaghetti/)
-- [scilit-learn](https://scikit-learn.org/stable/)
+- [libpysal](https://pysal.org/libpysal/)
+- [scikit-learn](https://scikit-learn.org/stable/)
 - [geopandas](https://geopandas.org/)
 
 ## Installation
