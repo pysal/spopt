@@ -32,10 +32,6 @@ Installing development version
 ------------------------------
 
 Potentially, you might want to use the newest features in the development
-version of Installing development version
-------------------------------
-
-Potentially, you might want to use the newest features in the development
 version of spopt on github - `pysal/spopt`_ while have not been incorporated
 in the Pypi released version. You can achieve that by installing `pysal/spopt`_
 by running the following from a command shell::
