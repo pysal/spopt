@@ -2,17 +2,20 @@ name: spopt
 channels:
   - conda-forge
 dependencies: 
-  - python=3.8
-  - scipy>=1.0
+  - python=3.9
+  - geopandas>=0.7.0
+  - libpysal
+  - matplotlib
+  - networkx
   - numpy>=1.3
   - pandas>=1
-  - networkx
-  - libpysal
-  - geopandas>=0.7.0
-  - matplotlib
+  - pulp
   - scikit-learn>=0.22
+  - scipy>=1.0
+  # testing, etc.
+  - black
+  - codecov
+  - coverage
+  - pre-commit
   - pytest
   - pytest-cov
-  - pulp
-  - coverage
-  - coveralls
