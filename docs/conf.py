@@ -31,7 +31,7 @@ extensions = [  #'sphinx_gallery.gen_gallery',
     "sphinx.ext.intersphinx",
     "numpydoc",
     "matplotlib.sphinxext.plot_directive",
-    "nbsphinx"
+    "nbsphinx",
 ]
 
 
@@ -102,7 +102,7 @@ html_favicon = "_static/images/pysal_favicon.ico"
 #
 html_theme_options = {
     # Navigation bar title. (Default: ``project`` value)
-    "navbar_title": "spopt",  # string of your project name, for example, 'spopt'
+    "navbar_title": project,  # string of your project name, for example, 'spopt'
     # Render the next and previous page links in navbar. (Default: true)
     "navbar_sidebarrel": False,
     # Render the current pages TOC in the navbar. (Default: true)
@@ -161,7 +161,7 @@ html_static_path = ["_static"]
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename =  "spoptdoc"
+htmlhelp_basename = "%sdoc" % project
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -186,10 +186,10 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (
-        master_doc, 
-        "spoptdoc.tex", 
-        u"spopt Documentation", 
-        u"spopt developers",
+        master_doc,
+        "%sdoc.tex" % project,
+        u"%s Documentation" % project,
+        u"%s developers" % project,
         "manual",
     )
 ]
@@ -199,7 +199,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "spopt", u"spopt Documentation", [author], 1)]
+man_pages = [(master_doc, project, u"%s Documentation" % project, [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -210,10 +210,10 @@ man_pages = [(master_doc, "spopt", u"spopt Documentation", [author], 1)]
 texinfo_documents = [
     (
         master_doc,
-        "spopt",
-        u"spopt Documentation",
+        project,
+        u"%s Documentation" % project,
         author,
-        "spopt",
+        project,
         "Spatial Optimization with PySAL",
         "Miscellaneous",
     ),
@@ -247,30 +247,41 @@ def setup(app):
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', None),
-    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
-    'numpy': ('https://docs.scipy.org/doc/numpy', None),
-    'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
-    'geopandas': ('https://geopandas.readthedocs.io/en/latest/', None),
-    'sklearn': ('https://scikit-learn.org/stable/', None),
-    'giddy': ('https://giddy.readthedocs.io/en/latest/', None),
-    'libpysal': ('https://pysal.org/libpysal/', None),
-    'esda': ('https://esda.readthedocs.io/en/latest/', None),
-    'region': ('https://region.readthedocs.io/en/latest/', None),
-    'hdbscan': ('https://hdbscan.readthedocs.io/en/latest/', None)
-
+    "python": ("https://docs.python.org/3/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+    "numpy": ("https://docs.scipy.org/doc/numpy", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "geopandas": ("https://geopandas.readthedocs.io/en/latest/", None),
+    "sklearn": ("https://scikit-learn.org/stable/", None),
+    "giddy": ("https://giddy.readthedocs.io/en/latest/", None),
+    "libpysal": ("https://pysal.org/libpysal/", None),
+    "esda": ("https://esda.readthedocs.io/en/latest/", None),
+    "region": ("https://region.readthedocs.io/en/latest/", None),
+    "hdbscan": ("https://hdbscan.readthedocs.io/en/latest/", None),
 }
 
-numpydoc_xref_ignore = {'type', 'optional', 'default', 'shape', 'fitted', 'instance',
-                        'cluster', 'of', 'or', 'if', 'using', 'otherwise', 'required',
-                        'from'}
-
+numpydoc_xref_ignore = {
+    "type",
+    "optional",
+    "default",
+    "shape",
+    "fitted",
+    "instance",
+    "cluster",
+    "of",
+    "or",
+    "if",
+    "using",
+    "otherwise",
+    "required",
+    "from",
+}
 
 
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
-{% set docname = env.doc2path(env.docname, base=None).replace("nblink","ipynb") %}
-{% set fullpath = env.doc2path(env.docname, base='tree/master/notebooks/').replace("nblink","ipynb") %}
+{% set docname = env.doc2path(env.docname, base='').replace('nblink','ipynb') %}
+{% set fullpath = env.doc2path(env.docname, base='tree/main/').replace('nblink','ipynb') %}
 
 .. only:: html
 
@@ -281,7 +292,7 @@ nbsphinx_prolog = r"""
 
         This page was generated from `{{ docname }}`__.
         Interactive online version:
-        :raw-html:`<a href="https://mybinder.org/v2/gh/pysal/spopt/master?filepath={{ docname }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`
+        :raw-html:`<a href="https://mybinder.org/v2/gh/pysal/spopt/main?filepath={{ docname }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`
 
     __ https://github.com/pysal/spopt/{{ fullpath }}
 
@@ -308,5 +319,5 @@ nbsphinx_execute_arguments = [
 ]
 
 mathjax_config = {
-    'TeX': {'equationNumbers': {'autoNumber': 'AMS', 'useLabelIds': True}},
+    "TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": True}},
 }
