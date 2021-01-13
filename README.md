@@ -45,7 +45,7 @@ Coming Soon.
 
 
 ## Examples
-More examples can be found in the [Tutorials](https://pysal.org/spopt/tutorial.html) section of the documentation
+More examples can be found in the [Tutorials](https://pysal.org/spopt/tutorial.html) section of the documentation.
 - [Max-p-regions problem](https://pysal.org/spopt/notebooks/maxp.html)
 - [Skater](https://pysal.org/spopt/notebooks/skater.html)
 - [Region K means](https://pysal.org/spopt/notebooks/reg-k-means.html)
