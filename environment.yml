@@ -13,9 +13,5 @@ dependencies:
   - scikit-learn>=0.22
   - scipy>=1.0
   # testing, etc.
-  - black
-  - codecov
-  - coverage
-  - pre-commit
   - pytest
   - pytest-cov
