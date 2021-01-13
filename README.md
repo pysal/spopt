@@ -45,11 +45,12 @@ Coming Soon.
 
 
 ## Examples
-More examples can be found in the [Tutorials](https://pysal.org/spopt/tutorial.html) section of the documentation. 
+More examples can be found in the [Tutorials](https://pysal.org/spopt/tutorial.html) section of the documentation
 - [Max-p-regions problem](https://pysal.org/spopt/notebooks/maxp.html)
 - [Skater](https://pysal.org/spopt/notebooks/skater.html)
 - [Region K means](https://pysal.org/spopt/notebooks/reg-k-means.html)
 
+All examples can be run interactively by launching this repository as a [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pysal/spopt/main).
 
 ## Requirements
 - [scipy](http://scipy.github.io/devdocs/)
