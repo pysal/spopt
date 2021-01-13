@@ -61,7 +61,18 @@ More examples can be found in the [Tutorials](https://pysal.org/spopt/tutorial.h
 - [geopandas](https://geopandas.org/)
 
 ## Installation
-
+spopt is available on the [Python Package Index](https://pypi.org/). Therefore, you can either install directly with pip from the command line:
+```
+$ pip install -U spopt
+```
+or download the source distribution (.tar.gz) and decompress it to your selected destination. Open a command shell and navigate to the decompressed folder. Type:
+```
+$ pip install .
+```
+You may also install the latest stable spopt via conda-forge channel by running:
+```
+$ conda install --channel conda-forge spopt
+```
 
 ## Contribute
 
