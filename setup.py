@@ -9,6 +9,11 @@ with open("%s/__init__.py" % package, "r") as f:
     exec(f.readline())
 
 
+# Fetch README.md for the `long_description`
+with open("README.md", "r", encoding="utf-8") as file:
+    long_description = file.read()
+
+
 def _get_requirements_from_files(groups_files):
     groups_reqlist = {}
 
@@ -36,7 +41,10 @@ def setup_package():
         name=package,
         version=__version__,
         description="Spatial Optimization in PySAL",
+        long_description=long_description,
+        long_description_content_type="text/markdown",
         url="https://github.com/pysal/" + package,  # github repo
+        download_url="https://pypi.org/project/" + package,
         maintainer="PySAL Developers",
         maintainer_email="xin.feng@ucr.edu, jgaboardi@gmail.com",
         keywords="spatial optimization",
