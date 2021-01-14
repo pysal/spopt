@@ -2,7 +2,6 @@
  on:
    push:
      branches:
-     - master
      - main
  jobs:
    docs:
@@ -15,27 +14,25 @@
          os: ['ubuntu-latest']
          environment-file: [.ci/39.yaml]
          experimental: [false]
+     defaults:
+       run:
+         shell: bash -l {0}
      steps:
        - uses: actions/checkout@v2
        - uses: conda-incubator/setup-miniconda@v2
          with:
             miniconda-version: 'latest'
-            auto-update-conda: true
+            channels: conda-forge
+            channel-priority: true
+            auto-update-conda: false
             auto-activate-base: false
             environment-file: ${{ matrix.environment-file }}
             activate-environment: test
-       - shell: bash -l {0}
-         run: conda info --all
-       - shell: bash -l {0}
-         run: conda list
-       - shell: bash -l {0}
-         run: conda config --show-sources
-       - shell: bash -l {0}
-         run: conda config --show
-       - shell: bash -l {0}
-         run: pip install -e . --no-deps --force-reinstall
-       - shell: bash -l {0}
-         run: cd docs; make html
+       - run: conda info --all
+       - run: conda list
+       - run: conda config --show-sources
+       - run: conda config --show
+       - run: cd docs; make html
        - name: Commit documentation changes
          run: |
            git clone https://github.com/ammaraskar/sphinx-action-test.git --branch gh-pages --single-branch gh-pages
