@@ -106,6 +106,15 @@ Citing spopt
 
 If you use PySAL-spopt in a scientific publication, we would appreciate citations to the following paper:
 
+  @misc{Gaboardi2018,
+    author    = {Feng, Xin, and Gaboardi, James D. and Knaap, Eli and Rey, Sergio and Wei, Ran},
+    month     = {jan},
+    year      = {2021},
+    title     = {pysal/spopt},
+    url       = {https://github.com/pysal/spopt},
+    doi       = {10.5281/zenodo.4444156},
+    keywords  = {python,regionalization,spatial-optimization,location-modeling}
+  }
 
 
 *******************
