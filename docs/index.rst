@@ -8,7 +8,7 @@ spopt: Spatial Optimization
 Regionalization, facility location, and transportation-oriented modeling
 ------------------------------------------------------------------------
 
-**spopt** is an open-source Python library for solving optimization problem with spatial data. Originating from the region module in `PySAL (Python Spatial Analysis Library) <http://pysal.org>`_, it is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions.
+**spopt** is an open-source Python library for solving optimization problems with spatial data. Originating from the **region** module in `PySAL (Python Spatial Analysis Library) <http://pysal.org>`_, it is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions.
 
 
 .. raw:: html
