@@ -40,13 +40,13 @@ def maxp(
     max_iterations_sa=ITERSA,
     verbose=False,
 ):
-    """The max-p-regions involves the aggregation of n areas into an unknown maximum number of 
-    homogeneous regions, while ensuring that each region is contiguous and satisfies a minimum 
+    """The max-p-regions involves the aggregation of n areas into an unknown maximum number of
+    homogeneous regions, while ensuring that each region is contiguous and satisfies a minimum
     threshold value imposed on a predefined spatially extensive attribute.
-    
+
     Parameters
     ----------
-    
+
     gdf : geopandas.GeoDataFrame, required
         Geodataframe containing original data
 
@@ -83,10 +83,12 @@ def maxp(
 
     labels : numpy.array
         Region IDs for observations.
-    
+
     """
 
-    attr = gdf[attrs_name].values
+    attr = np.atleast_2d(gdf[attrs_name].values)
+    if attr.shape[0] == 1:
+        attr = attr.T
     threshold_array = gdf[threshold_name].values
     distance_matrix = squareform(pdist(attr, metric="cityblock"))
     n, k = attr.shape
@@ -157,41 +159,41 @@ def construction_phase(
     random_assign_choice,
     max_it=999,
 ):
-    """Construct feasible solutions for max-p-regions. 
-    
+    """Construct feasible solutions for max-p-regions.
+
     Parameters
     ----------
-    
+
     arr : array, required
         An array of index of area units.
-    
+
     attr : array, required
         An array of the values of the attributes.
-    
+
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
-    
+
     distance_matrix : array, required
         A square-form distance matrix for the attributes.
-    
+
     weight : libpysal.weights.W, required
         Weights object created from given data.
-    
+
     spatialThre : {int, float}, required
         The threshold value.
-    
+
     random_assign_choice : int, required
         The number of top candidate regions to consider for enclave assignment.
-    
+
     max_it : int
         Maximum number of iterations. Default is 999.
-    
+
     Returns
     -------
-    
+
     real_values : list
         ``realmaxpv``, ``realLabelsList``
-    
+
     """
 
     labels_list = []
@@ -212,7 +214,6 @@ def construction_phase(
         labeledID = []
 
         for arr_index in range(0, len(threshold_array)):
-
             P = arr[arr_index]
             if not (labels[P] == 0):
                 continue
@@ -268,38 +269,38 @@ def construction_phase(
 def growClusterForPoly(
     labels, threshold_array, P, NeighborPolys, C, weight, spatialThre
 ):
-    """Grow one region from current area unit until threshold constraint is satisified 
-    
+    """Grow one region from current area unit until threshold constraint is satisified
+
     Parameters
     ----------
-    
+
     labels : list, required
         A list of current region labels
-    
+
     threshold_array : array, required
-        An array of the values of the spatial extensive attribute. 
-    
+        An array of the values of the spatial extensive attribute.
+
     P : int, required
         The index of current area unit
-    
+
     NeighborPolys : list, required
         The neighbors of current area unit
-    
+
     C : int, required
         The index of current region
-    
+
     weight : libpysal.weights.W, required
         Weights object created from given data
-    
+
     spatialThre : {int, float}, required
         The threshold value.
-    
+
     Returns
     -------
-    
+
     cluster_info : tuple
         ``labeledID``, ``spatialAttrTotal``
-    
+
     """
     labels[P] = C
     labeledID = [P]
@@ -339,40 +340,40 @@ def assignEnclave(
     random_assign=1,
 ):
     """Assign the enclaves to the regions identified in the region growth phase
-    
+
     Parameters
     ----------
-    
+
     enclave : list, required
         A list of enclaves.
-    
+
     labels : list, required
         A list of region labels for area units.
-    
+
     regionList : dict, required
         A dictionary with key as region ID and value as a list of area units assigned to the region.
-    
+
     regionSpatialAttr : dict, required
         A dictionary with key as region ID and value as the total spatial extensive attribute of the region.
-    
+
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
-        
+
     weight : libpysal.weights.W, required
         Weights object created from given data
-    
+
     distance_matrix : array, required
         A square-form distance matrix for the attributes.
-    
+
     random_assign : int, required
         The number of top candidate regions to consider for enclave assignment.
-    
+
     Returns
     -------
-    
+
     region_info : list
         Deep copies of ``labels``, ``regionList``, and ``regionSpatialAttr``
-    
+
     """
     enclave_index = 0
     while len(enclave) > 0:
@@ -410,22 +411,22 @@ def assignEnclave(
 
 def calculateWithinRegionDistance(regionList, distance_matrix):
     """calculate total wthin-region distance/dissimilarity
-    
+
     Parameters
     ----------
-    
+
     regionList : dict, required
         A dictionary with key as region ID and value as a list of area units assigned to the region.
-        
+
     distance_matrix : array, required
         A square-form distance matrix for the attributes.
-    
+
     Returns
     -------
-    
+
     totalWithinRegionDistance : {int, float}
         the total within-region distance
-    
+
     """
 
     totalWithinRegionDistance = 0
@@ -447,34 +448,34 @@ def pickMoveArea(
     threshold,
 ):
     """pick a spatial unit that can move from one region to another without violating threshold and contiguity constraints
-    
+
     Parameters
     ----------
-    
+
     labels : list, required
         A list of current region labels
-    
+
     regionLists : dict, required
         A dictionary with key as region ID and value as a list of area units assigned to the region.
-    
+
     regionSpatialAttrs : dict, required
         A dictionary with key as region ID and value as the total spatial extensive attribute of the region.
-    
+
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
-    
+
     weight :libpysal.weights.W, required
         Weights object created from given data
-    
+
     threshold : {int, float}, required
         The threshold value.
-    
+
     Returns
     -------
-    
+
     potentialAreas : list
         a list of area units that can move without violating contiguity and threshold constraints
-    
+
     """
 
     potentialAreas = []
@@ -501,37 +502,37 @@ def checkMove(
     poa, labels, regionLists, threshold_array, weight, distance_matrix, threshold
 ):
     """calculate the dissimilarity increase/decrease from one potential move
-    
+
     Parameters
     ----------
-    
+
     poa : int, required
         The index of current area unit that can potentially move
-    
+
     labels : list, required
-        A list of current region labels 
-    
+        A list of current region labels
+
     regionLists : dict, required
         A dictionary with key as region ID and value as a list of area units assigned to the region.
-    
+
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
-    
+
     weight : libpysal.weights.W, required
         Weights object created from given data
-    
+
     distance_matrix : array, required
         A square-form distance matrix for the attributes.
-    
+
     threshold : {int, float}, required
         The threshold value.
-    
+
     Returns
     -------
-    
+
     move_info : list
         ``lostDistance``, ``minAddedDistance``, and ``potentialMove``.
-    
+
     """
 
     poaNeighbor = weight.neighbors[poa]
@@ -569,47 +570,47 @@ def performSA(
     max_no_move,
 ):
     """perform the tabu list integrated simulated annealing algorithm
-        
+
     Parameters
     ----------
-    
+
     initLabels : list, required
         A list of initial region labels before SA
-    
+
     initRegionList : dict, required
         A dictionary with key as region ID and value as a list of area units assigned to the region before SA.
-    
+
     initRegionSpatialAttr : dict, required
         A dictionary with key as region ID and value as the total spatial extensive attribute of the region before SA.
-    
+
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
-    
+
     weight : libpysal.weights.W, required
         Weights object created from given data.
-    
+
     distance_matrix : array, required
         A square-form distance matrix for the attributes.
-    
+
     threshold : {int, float}, required
         The threshold value.
-    
+
     alpha : float between 0 and 1, required
         Temperature cooling rate
-    
+
     tabuLength : int, required
         Max length of a tabuList
-    
+
     max_no_move : int, required
         Max number of none improving movements
-    
+
     Returns
     -------
-    
+
     sa_res : list
         The results from simulated annealing including ``labels``,
         ``regionLists``, and ``regionSpatialAttrs``.
-    
+
     """
 
     t = 1
@@ -692,13 +693,13 @@ def performSA(
 
 
 class MaxPHeuristic(BaseSpOptHeuristicSolver):
-    """The max-p-regions involves the aggregation of n areas into an unknown maximum number of 
+    """The max-p-regions involves the aggregation of n areas into an unknown maximum number of
     homogeneous regions, while ensuring that each region is contiguious and satisfies a minimum
     threshold value imposed on a predefined spatially extensive attribute.
 
     Parameters
     ----------
-    
+
     gdf : geopandas.GeoDataFrame, required
         Geodataframe containing original data.
 
@@ -738,12 +739,12 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
 
     Examples
     --------
-      
+
     >>> import numpy
     >>> import libpysal
     >>> import geopandas as gpd
     >>> from spopt.region.maxp import MaxPHeuristic
-  
+
     Read the data.
 
     >>> pth = libpysal.examples.get_path("mexicojoin.shp")
@@ -753,11 +754,11 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
     Create the weight.
 
     >>> w = libpysal.weights.Queen.from_dataframe(mexico)
-    
+
     Define the collumns of ``geopandas.GeoDataFrame`` to be spatially extensive attribute.
 
     >>> attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
-    
+
     Define the spatial extensive attribute variable and the threshold value.
 
     >>> threshold_name = "count"
@@ -776,7 +777,7 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
     Show the regionalization results.
 
     >>> mexico["maxp"] = model.labels_
-    >>> mexico.plot(column="maxp", categorical=True, figsize=(12,8), cmap='plasma') 
+    >>> mexico.plot(column="maxp", categorical=True, figsize=(12,8), cmap='plasma')
 
     """
 
