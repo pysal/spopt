@@ -21,6 +21,5 @@ Model based approaches for aggregating a large set of geographic units (with sma
     region.Skater
     region.Spenc
     region.WardSpatial
-    
-    
+
 

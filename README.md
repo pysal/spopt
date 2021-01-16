@@ -88,7 +88,7 @@ If you are having trouble, please [create an issue](https://github.com/pysal/spo
 
 ## Code of Conduct
 
-As a PySAL-federated project, `spopt` follows the [Code of Conduct](https://github.com/pysal/governance/blob/master/conduct/code_of_conduct.rst) under the [PySAL governance model](https://github.com/pysal/governance).
+As a PySAL-federated project, `spopt` follows the [Code of Conduct](https://github.com/pysal/governance/blob/main/conduct/code_of_conduct.rst) under the [PySAL governance model](https://github.com/pysal/governance).
 
 
 ## License
@@ -102,7 +102,7 @@ If you use PySAL-spopt in a scientific publication, we would appreciate using th
 
 ```
 @misc{spopt2021,
-    author    = {Feng, Xin, and Gaboardi, James D. and Knaap, Eli and Rey, Sergio and Wei, Ran},
+    author    = {Feng, Xin, and Gaboardi, James D. and Knaap, Elijah and Rey, Sergio J. and Wei, Ran},
     month     = {jan},
     year      = {2021},
     title     = {pysal/spopt},
