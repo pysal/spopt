@@ -16,3 +16,6 @@ dependencies:
   - pulp
   - coverage
   - coveralls
+  - descartes
+  - mapclassify
+  - jupyterlab
