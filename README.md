@@ -15,7 +15,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4444156.svg)](https://doi.org/10.5281/zenodo.4444156)
 
-Spopt is an open-source Python library for solving optimization problem with spatial data. Originating from the `region` module in [PySAL (Python Spatial Analysis Library)](http://pysal.org), it is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions. 
+Spopt is an open-source Python library for solving optimization problems with spatial data. Originating from the `region` module in [PySAL (Python Spatial Analysis Library)](http://pysal.org), it is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions. 
 
 ### Regionalization
 
@@ -88,7 +88,7 @@ If you are having trouble, please [create an issue](https://github.com/pysal/spo
 
 ## Code of Conduct
 
-As a PySAL-federated project, `spopt` follows the [Code of Conduct](https://github.com/pysal/governance/blob/master/conduct/code_of_conduct.rst) under the [PySAL governance model](https://github.com/pysal/governance).
+As a PySAL-federated project, `spopt` follows the [Code of Conduct](https://github.com/pysal/governance/blob/main/conduct/code_of_conduct.rst) under the [PySAL governance model](https://github.com/pysal/governance).
 
 
 ## License
@@ -102,7 +102,7 @@ If you use PySAL-spopt in a scientific publication, we would appreciate using th
 
 ```
 @misc{spopt2021,
-    author    = {Feng, Xin, and Gaboardi, James D. and Knaap, Eli and Rey, Sergio and Wei, Ran},
+    author    = {Feng, Xin, and Gaboardi, James D. and Knaap, Elijah and Rey, Sergio J. and Wei, Ran},
     month     = {jan},
     year      = {2021},
     title     = {pysal/spopt},
@@ -116,6 +116,6 @@ If you use PySAL-spopt in a scientific publication, we would appreciate using th
 
 This project is/was partially funded through:
 
-[<img align="middle" src="docs/_static/images/nsf_logo.png" width="150">](https://www.nsf.gov/index.jsp) National Science Foundation Award #1831615: [RIDIR: Scalable Geospatial Analytics for Social Science Research](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1831615)
+[<img align="middle" src="docs/_static/images/nsf_logo.png" width="75">](https://www.nsf.gov/index.jsp) National Science Foundation Award #1831615: [RIDIR: Scalable Geospatial Analytics for Social Science Research](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1831615)
 
 <!-- [<img align="middle" src="docs/_static/image/IMAGE2.png" width="150">](link2) Some text2: [Project title 2](another_link2) -->

@@ -1,12 +1,14 @@
 .. documentation master file
 
 spopt: Spatial Optimization
-=======================================
+===========================
+
+
 
 Regionalization, facility location, and transportation-oriented modeling
 ------------------------------------------------------------------------
 
-Spopt is an open-source Python library for solving optimization problem with spatial data. Originating from the region module in `PySAL (Python Spatial Analysis Library) <http://pysal.org>`_, it is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions.
+**spopt** is an open-source Python library for solving optimization problems with spatial data. Originating from the **region** module in `PySAL (Python Spatial Analysis Library) <http://pysal.org>`_, it is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions.
 
 
 .. raw:: html
@@ -46,68 +48,24 @@ Spopt is an open-source Python library for solving optimization problem with spa
         </div>
       </div>
     </div>
+    
 
 
-.. toctree::
-   :hidden:
-   :maxdepth: 3
-   :caption: Contents:
 
-   Installation <installation>
-   Tutorial <tutorial>
-   API <api>
-   References <references>
-
-
-.. _PySAL: https://github.com/pysal/pysal
-
-************
-Introduction
-************
-
-**spopt** implements models for regionalization, location, and routing and is part of the  `PySAL family <https://pysal.org>`_
-
-Details are available in the `spopt api <api.html>`_.
-
-***********
 Development
-***********
+-----------
 
-spopt development is hosted on github_.
-
-.. _github : https://github.com/pysal/spopt
-
-Discussions of development occurs on the
-`developer list <http://groups.google.com/group/pysal-dev>`_
-as well as gitter_.
-
-.. _gitter : https://gitter.im/pysal/pysal?
-
-****************
-Getting Involved
-****************
-
-If you are interested in contributing to PySAL please see our
-`development guidelines <https://github.com/pysal/pysal/wiki>`_.
+**spopt** development is hosted on github_.
 
 
-***********
-Bug reports
-***********
 
-To search for or report bugs, please see spopt's issues_.
+Citing **spopt**
+----------------
 
-.. _issues :  http://github.com/pysal/spopt/issues
-
-
-************
-Citing spopt
-************
-
-If you use PySAL-spopt in a scientific publication, we would appreciate citations to the following paper:
+If you use **PySAL-spopt** in a scientific publication, we would appreciate citations to the following paper::
 
   @misc{Gaboardi2018,
-    author    = {Feng, Xin, and Gaboardi, James D. and Knaap, Eli and Rey, Sergio and Wei, Ran},
+    author    = {Feng, Xin, and Gaboardi, James D. and Knaap, Elijah and Rey, Sergio J. and Wei, Ran},
     month     = {jan},
     year      = {2021},
     title     = {pysal/spopt},
@@ -117,14 +75,44 @@ If you use PySAL-spopt in a scientific publication, we would appreciate citation
   }
 
 
-*******************
-License information
-*******************
 
-See the file "LICENSE.txt" for information on the history of this
-software, terms & conditions for usage, and a DISCLAIMER OF ALL
-WARRANTIES.
+Funding
+-------
+
+This project is/was partially funded through:
 
 
+.. figure:: _static/images/nsf_logo.png
+    :target: https://www.nsf.gov/index.jsp
+    :width: 100
+    :align: left
+
+    National Science Foundation Award #1831615: `RIDIR: Scalable Geospatial Analytics for Social Science Research <https://www.nsf.gov/awardsearch/showAward?AWD_ID=1831615>`_
 
 
+.. raw:: html
+
+    <img 
+        src="_static/images/pysal_banner.svg" 
+        class="img-responsive center-block" 
+        alt="PySAL Logo" 
+        width="370" 
+        height="200"
+    >
+
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: 3
+   :caption: Contents:
+
+   Installation <installation>
+   Tutorials <tutorials>
+   API <api>
+   References <references>
+
+
+
+.. _PySAL: https://github.com/pysal/pysal
+.. _github : https://github.com/pysal/spopt
