@@ -13,3 +13,9 @@ dependencies:
   - pulp
   - scikit-learn>=0.22
   - scipy>=1.0
+  - coverage
+  - coveralls
+  - descartes
+  - mapclassify
+  - jupyterlab
+  - watermark
