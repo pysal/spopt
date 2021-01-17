@@ -18,7 +18,6 @@ from .base import (
     is_neighbor,
 )
 
-import matplotlib.pyplot as plt
 from scipy.spatial.distance import pdist, squareform
 import geopandas as gp
 import numpy as np
