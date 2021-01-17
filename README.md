@@ -36,14 +36,6 @@ mexico.plot(column="maxp_new", categorical=True, figsize=(12,8), ec="w");
 <img src="docs/_static/images/maxp.svg" height="350" />
 </p>
 
-### Facility Location
-
-Coming Soon.
-
-### Transportation & Routing
-
-Coming Soon.
-
 
 ## Examples
 More examples can be found in the [Tutorials](https://pysal.org/spopt/tutorial.html) section of the documentation.
