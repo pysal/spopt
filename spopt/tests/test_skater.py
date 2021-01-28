@@ -1,7 +1,7 @@
 import numpy as np
 import libpysal
 import geopandas as gpd
-from .. import Skater
+from spopt.region import Skater
 import unittest
 
 class TestSkater(unittest.TestCase):
