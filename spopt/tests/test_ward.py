@@ -3,7 +3,7 @@ import libpysal
 import geopandas as gpd
 import os
 import sys
-from .. import WardSpatial
+from spopt.region import WardSpatial
 import unittest
 
 
