@@ -5,3 +5,4 @@ from .skater import Skater
 from .ward import WardSpatial
 from .spenc import Spenc
 from .azp import AZP
+from .random_region import RandomRegion, RandomRegions
