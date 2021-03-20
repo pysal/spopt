@@ -17,6 +17,8 @@ Model based approaches for aggregating a large set of geographic units (with sma
 
     region.AZP
     region.MaxPHeuristic
+    region.RandomRegion
+    region.RandomRegions
     region.RegionKMeansHeuristic
     region.Skater
     region.Spenc
