@@ -19,7 +19,7 @@
          shell: bash -l {0}
      steps:
        - uses: actions/checkout@v2
-       - uses: conda-incubator/setup-miniconda@v2
+       - uses: conda-incubator/setup-miniconda@v2.1.1
          with:
             miniconda-version: 'latest'
             channels: conda-forge

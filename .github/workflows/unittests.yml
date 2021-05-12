@@ -33,7 +33,7 @@
          with:
            path: ~/conda_pkgs_dir
            key: ${{ matrix.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles(matrix.environment-file) }}
-       - uses: conda-incubator/setup-miniconda@v2
+       - uses: conda-incubator/setup-miniconda@v2.1.1
          with:
             miniconda-version: 'latest'
             mamba-version: '*'
