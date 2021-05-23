@@ -13,6 +13,7 @@
 [![Documentation](https://img.shields.io/static/v1.svg?label=docs&message=current&color=9cf)](http://pysal.org/spopt/)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![status](https://joss.theoj.org/papers/1413cf2c0cf3c561386949f2e1208563/status.svg)](https://joss.theoj.org/papers/1413cf2c0cf3c561386949f2e1208563)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4444156.svg)](https://doi.org/10.5281/zenodo.4444156)
 
 Spopt is an open-source Python library for solving optimization problems with spatial data. Originating from the `region` module in [PySAL (Python Spatial Analysis Library)](http://pysal.org), it is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions. 

@@ -17,7 +17,7 @@ authors:
   - name: Ran Wei
     affiliation: 1
   - name: Sergio Rey
-     orcid: 0000-0001-5857-9762
+    orcid: 0000-0001-5857-9762
     affiliation: 1
 affiliations:
  - name: Center for Geospatial Sciences, University of California Riverside
