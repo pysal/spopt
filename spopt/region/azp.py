@@ -66,7 +66,7 @@ class AZP(BaseSpOptHeuristicSolver):
         >>> import numpy as np
         >>> import libpysal
         >>> import geopandas as gpd
-        >>> from spopt import AZP
+        >>> from spopt.region import AZP
 
         Read the data.
 

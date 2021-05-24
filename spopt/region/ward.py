@@ -42,7 +42,7 @@ class WardSpatial(BaseSpOptHeuristicSolver):
         >>> import numpy as np
         >>> import libpysal
         >>> import geopandas as gpd
-        >>> from spopt import WardSpatial
+        >>> from spopt.region import WardSpatial
 
         Read the data.
 

@@ -56,7 +56,7 @@ Originating from the region module in PySAL, spopt is under active development f
 Take the functionality of Max-p-regions as an example. Other methods can be applied in a similar process, including importing the needed packages, imputing and reading data, defining the parameters, solving the model, and plotting the solution. 
 
 ```python
-from spopt import MaxPHeuristic as MaxP
+from spopt.region import MaxPHeuristic as MaxP
 import matplotlib.pyplot as plt
 import geopandas as gpd
 import libpysal
