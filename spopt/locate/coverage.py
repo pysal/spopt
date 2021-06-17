@@ -76,6 +76,8 @@ class LSCP(LocateSolver):
             raise Exception("not possible to solve")
         elif self.problem.status == pulp.constants.LpSolutionInfeasible:
             raise Exception("infeasible solution")
+        elif self.problem.status == pulp.constants.LpSolutionOptimal:
+            return 1
 
 
 class MCLP(LocateSolver):
@@ -102,11 +104,12 @@ class MCLP(LocateSolver):
         mclp = MCLP(name, model)
 
         FacilityModelBuilder.add_facility_integer_variable(mclp, r_fac)
+        FacilityModelBuilder.add_client_integer_variable(mclp, r_cli)
 
         aij = np.zeros(cost_matrix.shape)
         aij[cost_matrix <= max_coverage] = 1
 
-        FacilityModelBuilder.add_set_covering_constraint(
+        FacilityModelBuilder.add_maximal_coverage_constraint(
             mclp, mclp.problem, aij, r_fac, r_cli
         )
         FacilityModelBuilder.add_facility_constraint(mclp, mclp.problem, p_facilities)
@@ -159,3 +162,5 @@ class MCLP(LocateSolver):
             raise Exception("not possible to solve")
         elif self.problem.status == pulp.constants.LpSolutionInfeasible:
             raise Exception("infeasible solution")
+        elif self.problem.status == pulp.constants.LpSolutionOptimal:
+            return 1

@@ -43,10 +43,9 @@ class FacilityModelBuilder(object):
     ):
         try:
             fac_vars = getattr(obj, "fac_vars")
-            for i in range_facility:
+            for i in range_client:
                 model += (
-                    pulp.lpSum([ni[i][j] * fac_vars[j] for j in range_client]) >= 1,
-                    "set covering constraint",
+                    pulp.lpSum([ni[i][j] * fac_vars[j] for j in range_facility]) >= 1
                 )
         except AttributeError:
             raise Exception("before setting constraints must set facility variable")
