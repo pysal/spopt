@@ -33,7 +33,7 @@
            environment-file: ${{ matrix.environment-file }}
            micromamba-version: 'latest'
     
-      - name: run tests - bash
+       - name: run tests - bash
          shell: bash -l {0}
          run: pytest -v spopt --cov=spopt --cov-report=xml
          if: matrix.os != 'windows-latest'
