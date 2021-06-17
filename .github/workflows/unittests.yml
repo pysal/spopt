@@ -23,7 +23,7 @@
            - environment-file: .ci/38.yaml
              os: ubuntu-latest
          include:
-           - environment-file: ci/39-DEV.yaml
+           - environment-file: .ci/39-DEV.yaml
              os: ubuntu-latest
     
      steps:
