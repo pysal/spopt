@@ -8,8 +8,6 @@ import unittest
 
 
 class TestWard(unittest.TestCase):
-
-
     def setUp(self):
         self.pth = libpysal.examples.get_path("mexicojoin.shp")
         self.mexico = gpd.read_file(self.pth)
@@ -19,7 +17,6 @@ class TestWard(unittest.TestCase):
         np.random.seed(123456)
         self.model = WardSpatial(gdf=self.mexico, w=self.w, attrs_name=self.attrs_name)
         self.model.solve()
-
 
     def test_labels_(self):
         observed_labels = self.model.labels_
@@ -31,7 +28,7 @@ class TestWard(unittest.TestCase):
                 0,
                 0,
                 0,
-                0,                
+                0,
                 0,
                 0,
                 0,

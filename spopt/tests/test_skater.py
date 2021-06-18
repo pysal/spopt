@@ -4,8 +4,8 @@ import geopandas as gpd
 from spopt.region import Skater
 import unittest
 
-class TestSkater(unittest.TestCase):
 
+class TestSkater(unittest.TestCase):
     def setUp(self):
         self.pth = libpysal.examples.get_path("mexicojoin.shp")
         self.mexico = gpd.read_file(self.pth)
