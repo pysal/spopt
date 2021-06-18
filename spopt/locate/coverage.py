@@ -30,13 +30,14 @@ class LSCP(LocateSolver):
         aij = np.zeros(cost_matrix.shape)
         aij[cost_matrix <= max_coverage] = 1
 
+        lscp.__add_obj()
         FacilityModelBuilder.add_set_covering_constraint(
             lscp, lscp.problem, aij, r_fac, r_cli
         )
-        lscp.__add_obj()
 
         return lscp
 
+    @classmethod
     def from_geodataframe(
         cls,
         gdf_demand: GeoDataFrame,
@@ -65,7 +66,7 @@ class LSCP(LocateSolver):
         else:
             raise ValueError("distance metric is not supported")
 
-        return LSCP.from_cost_matrix(distances, max_coverage)
+        return cls.from_cost_matrix(distances, max_coverage)
 
     def solve(self, solver: pulp.LpSolver):
         self.problem.solve(solver)
@@ -109,14 +110,15 @@ class MCLP(LocateSolver):
         aij = np.zeros(cost_matrix.shape)
         aij[cost_matrix <= max_coverage] = 1
 
+        mclp.__add_obj(ai, r_cli)
         FacilityModelBuilder.add_maximal_coverage_constraint(
             mclp, mclp.problem, aij, r_fac, r_cli
         )
         FacilityModelBuilder.add_facility_constraint(mclp, mclp.problem, p_facilities)
-        mclp.__add_obj(ai, r_cli)
 
         return mclp
 
+    @classmethod
     def from_geodataframe(
         cls,
         gdf_demand: GeoDataFrame,
@@ -149,9 +151,7 @@ class MCLP(LocateSolver):
         else:
             raise ValueError("distance metric is not supported")
 
-        return MCLP.from_cost_matrix(
-            distances, service_load, max_coverage, p_facilities
-        )
+        return cls.from_cost_matrix(distances, service_load, max_coverage, p_facilities)
 
     def solve(self, solver: pulp.LpSolver):
         self.problem.solve(solver)
