@@ -152,7 +152,7 @@ class AllowMoveAZPMaxPRegions(AllowMoveStrategy):
 
         Parameters
         ----------
-        spatially_extensive_attr : numpy.ndarray`
+        spatially_extensive_attr : numpy.ndarray
             See corresponding argument in
             ``region.max_p_regions.heuristics.MaxPRegionsHeu.fit_from_scipy_sparse_matrix``.
         threshold : numbers.Real or numpy.ndarray
