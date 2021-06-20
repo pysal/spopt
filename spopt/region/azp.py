@@ -801,7 +801,7 @@ class AZPSimulatedAnnealing:
         """
         if not (0 < cooling_factor < 1):
             raise ValueError(
-                "The cooling_factor argument must be greater " "than 0 and less than 1"
+                "The cooling_factor argument must be greater than 0 and less than 1"
             )
         if attr.ndim == 1:
             attr = attr.reshape(adj.shape[0], -1)
