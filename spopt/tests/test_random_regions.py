@@ -25,6 +25,7 @@ class TestRandomRegionEmpirical(unittest.TestCase):
         self.mexico = MEXICO.copy()
         self.cards = self.mexico.groupby(by="HANSON03").count().NAME.values.tolist()
         self.ids = self.mexico.index.values.tolist()
+        self.w = libpysal.weights.Queen.from_dataframe(self.mexico)
 
     def test_random_region_6_card(self):
         known_regions = [
@@ -37,6 +38,26 @@ class TestRandomRegionEmpirical(unittest.TestCase):
         ]
         numpy.random.seed(RANDOM_STATE)
         kwargs = {"num_regions": 6, "cardinality": self.cards}
+        model = RandomRegion(self.ids, **kwargs)
+
+        numpy.testing.assert_array_equal(known_regions, model.regions)
+
+    def test_random_region_6_card_contig_compact(self):
+        known_regions = [
+            [27, 29, 5, 26, 3, 24, 4, 30, 23, 2],
+            [12, 31, 7, 15, 18, 10, 17],
+            [8, 11],
+            [21, 19, 20, 14, 13, 16],
+            [0, 22, 1, 25],
+            [28, 6, 9],
+        ]
+        numpy.random.seed(RANDOM_STATE)
+        kwargs = {
+            "num_regions": 6,
+            "cardinality": self.cards,
+            "contiguity": self.w,
+            "compact": True,
+        }
         model = RandomRegion(self.ids, **kwargs)
 
         numpy.testing.assert_array_equal(known_regions, model.regions)
