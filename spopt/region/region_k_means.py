@@ -133,14 +133,14 @@ class RegionKMeansHeuristic(BaseSpOptHeuristicSolver):
 
     Attributes
     ----------
-    
-    labels_ : 
+
+    labels_ :
         ...
-    
-    centroids_ : 
+
+    centroids_ :
         ...
-    
-    iters_ : 
+
+    iters_ :
         ...
 
     """
