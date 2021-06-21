@@ -132,3 +132,86 @@ class TestRandomRegionSynthetic(unittest.TestCase):
         numpy.random.seed(60)
         model = RandomRegion(self.ids, **kwargs)
         self.assertEqual(known_region_0, model.regions[0])
+
+
+class TestRandomRegionsSynthetic(unittest.TestCase):
+    def setUp(self):
+
+        self.nregs = N_REGIONS
+        self.cards = SYNTH_CARDS
+        self.w = SYNTH_W
+        self.ids = SYNTH_W.id_order
+        self.permutations = 5
+
+    def test_random_region_unconstrained(self):
+        known_region_0 = [19, 14, 43, 37, 66, 3, 79, 41, 38, 68, 2, 1, 60]
+        numpy.random.seed(10)
+        kwargs = {"permutations": self.permutations}
+        model = RandomRegions(self.ids, **kwargs)
+        self.assertEqual(known_region_0, model.solutions[0].regions[0])
+
+    def test_random_region_exo_regions(self):
+        known_region_0 = [37, 62, 26, 41, 35, 25, 36]
+        numpy.random.seed(100)
+        kwargs = {"num_regions": self.nregs, "permutations": self.permutations}
+        model = RandomRegions(self.ids, **kwargs)
+        self.assertEqual(known_region_0, model.solutions[0].regions[0])
+
+    def test_random_region_endo_regions_constrained_card(self):
+        known_region_0 = [37, 62]
+        numpy.random.seed(100)
+        kwargs = {"cardinality": self.cards, "permutations": self.permutations}
+        model = RandomRegions(self.ids, **kwargs)
+        self.assertEqual(known_region_0, model.solutions[0].regions[0])
+
+    def test_random_region_exo_regions_constrained_card(self):
+        known_region_0 = [37, 62]
+        numpy.random.seed(100)
+        kwargs = {
+            "num_regions": self.nregs,
+            "cardinality": self.cards,
+            "permutations": self.permutations,
+        }
+        model = RandomRegions(self.ids, **kwargs)
+        self.assertEqual(known_region_0, model.solutions[0].regions[0])
+
+    def test_random_region_endo_regions_constrained_contig(self):
+        known_region_5 = [33, 43, 32, 31]
+        numpy.random.seed(100)
+        kwargs = {"contiguity": self.w, "permutations": self.permutations}
+        model = RandomRegions(self.ids, **kwargs)
+        self.assertEqual(known_region_5, model.solutions[0].regions[5])
+
+    def test_random_region_exo_regions_constrained_contig(self):
+        known_region_5 = [92, 93, 91, 81, 71, 70, 90, 80]
+        numpy.random.seed(100)
+        kwargs = {
+            "num_regions": self.nregs,
+            "contiguity": self.w,
+            "permutations": self.permutations,
+        }
+        model = RandomRegions(self.ids, **kwargs)
+        self.assertEqual(known_region_5, model.solutions[0].regions[5])
+
+    def test_random_region_exo_regions_constrained_card_contig(self):
+        known_region_0 = [62, 61, 81, 71, 64, 90, 72, 51, 80, 63, 50, 73, 52]
+        kwargs = {
+            "num_regions": self.nregs,
+            "cardinality": self.cards,
+            "contiguity": self.w,
+            "permutations": self.permutations,
+        }
+        numpy.random.seed(60)
+        model = RandomRegions(self.ids, **kwargs)
+        self.assertEqual(known_region_0, model.solutions[0].regions[0])
+
+    def test_random_region_endo_regions_constrained_card_contig(self):
+        known_region_0 = [62, 61, 81, 71, 64, 90, 72, 51, 80, 63, 50, 73, 52]
+        kwargs = {
+            "cardinality": self.cards,
+            "contiguity": self.w,
+            "permutations": self.permutations,
+        }
+        numpy.random.seed(60)
+        model = RandomRegions(self.ids, **kwargs)
+        self.assertEqual(known_region_0, model.solutions[0].regions[0])
