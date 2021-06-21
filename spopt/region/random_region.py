@@ -327,15 +327,20 @@ class RandomRegion:
         if cardinality:
             if self.n != sum(cardinality):
                 self.feasible = False
-                raise Exception("number of areas does not match cardinality")
+                msg = f"Number of areas ({self.n}) does not match "
+                msg += f"'cardinality' ({sum(cardinality)})."
+                raise ValueError(msg)
         if contiguity:
             if area_ids != contiguity.id_order:
                 self.feasible = False
-                raise Exception("order of area_ids must match order in contiguity")
+                msg = "Order of 'area_ids' must match order in 'contiguity'."
+                raise ValueError(msg)
         if num_regions and cardinality:
             if num_regions != len(cardinality):
                 self.feasible = False
-                raise Exception("number of regions does not match cardinality")
+                msg = f"Number of regions ({num_regions}) does not match "
+                msg += f"'cardinality' ({sum(cardinality)})."
+                raise ValueError(msg)
 
         # dispatches the appropriate algorithm
         if num_regions and cardinality and contiguity:

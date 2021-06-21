@@ -154,6 +154,23 @@ class TestRandomRegionSynthetic(unittest.TestCase):
         model = RandomRegion(self.ids, **kwargs)
         self.assertEqual(known_region_0, model.regions[0])
 
+    def test_random_regions_error_card(self):
+        with self.assertRaises(ValueError):
+            RandomRegion([0, 1], cardinality=[4])
+
+    def test_random_regions_error_contig(self):
+        with self.assertRaises(ValueError):
+
+            class _shell_w_:
+                def __init__(self):
+                    self.id_order = [1, 0]
+
+            RandomRegion([0, 1], contiguity=_shell_w_())
+
+    def test_random_regions_error_nregs(self):
+        with self.assertRaises(ValueError):
+            RandomRegion([0, 1, 2, 3, 4, 5], num_regions=2, cardinality=[1, 2, 3])
+
 
 class TestRandomRegionsSynthetic(unittest.TestCase):
     def setUp(self):
