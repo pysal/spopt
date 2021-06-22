@@ -544,9 +544,9 @@ def distribute_regions_among_components(component_labels, n_regions):
     component_labels : list
         Each element specifies to which connected component an area belongs.
         An example would be [0, 0, 1, 0, 0, 1] for the following two islands:
-        
+
         ::
-        
+
           island one        island two
           .-------.         .---.
           | 0 | 1 |         | 2 |
@@ -903,10 +903,10 @@ def check_solver(solver):
 
 def get_solver_instance(solver_string):
     solver = {
-        "cbc": pulp.solvers.PULP_CBC_CMD,
-        "cplex": pulp.solvers.CPLEX,
-        "glpk": pulp.solvers.GLPK,
-        "gurobi": pulp.solvers.GUROBI,
+        "cbc": pulp.PULP_CBC_CMD,
+        "cplex": pulp.CPLEX,
+        "glpk": pulp.GLPK,
+        "gurobi": pulp.GUROBI,
     }[solver_string.lower()]
     solver_instance = solver()
     return solver_instance
