@@ -19,27 +19,10 @@ class TestWard(unittest.TestCase):
         self.mexico["count"] = 1
         self.attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
         self.w = libpysal.weights.Queen.from_dataframe(self.mexico)
-        self.known_labels = [
-            2,
-            2,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            3,
-            0,
-            0,
-            1,
-            4,
-            0,
-        ]
+        self.known_labels = [2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 4, 0]
         self.known_labels += [1, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2, 2, 0]
 
-    def test_labels_(self):
+    def test_ward_default(self):
         numpy.random.seed(RANDOM_STATE)
         model = WardSpatial(gdf=self.mexico, w=self.w, attrs_name=self.attrs_name)
         model.solve()
