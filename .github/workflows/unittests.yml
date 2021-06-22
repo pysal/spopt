@@ -48,11 +48,6 @@
        - run: mamba list
        - run: conda config --show-sources
        - run: conda config --show
-       - name: install glpk
-         if: matrix.os == 'ubuntu-latest'
-         run: |
-           sudo apt-get update -qq
-           sudo apt-get install -qq glpk-utils
        - run: pytest -v spopt --cov=spopt --cov-report=xml
        - name: codecov (${{ matrix.os }}, ${{ matrix.environment-file }})
          uses: codecov/codecov-action@v1
