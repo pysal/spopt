@@ -44,6 +44,7 @@
             environment-file: ${{ matrix.environment-file }}
             activate-environment: test
             use-only-tar-bz2: true
+       - run: pip install pulp
        - run: mamba info --all
        - run: mamba list
        - run: conda config --show-sources
