@@ -22,7 +22,7 @@ class TestWard(unittest.TestCase):
         self.known_labels = [2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 4, 0]
         self.known_labels += [1, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2, 2, 0]
 
-    def test_ward_default(self):
+    def test_ward_defaults(self):
         numpy.random.seed(RANDOM_STATE)
         model = WardSpatial(gdf=self.mexico, w=self.w, attrs_name=self.attrs_name)
         model.solve()
