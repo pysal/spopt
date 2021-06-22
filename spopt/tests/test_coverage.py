@@ -59,12 +59,12 @@ class TestLSCP(unittest.TestCase):
 
     def test_lscp_solve(self):
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 10)
-        status = lscp.solve(pulp.COIN_CMD())
+        status = lscp.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(status, 1)
 
     def test_mclp_solve(self):
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix, self.ai, max_coverage=7, p_facilities=4
         )
-        status = mclp.solve(pulp.COIN_CMD())
+        status = mclp.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(status, 1)
