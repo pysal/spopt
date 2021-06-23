@@ -42,13 +42,15 @@ class TestLSCP(unittest.TestCase):
         client_count = 100
         facility_count = 5
 
-        client_points = simulated_geo_points(street, needed=client_count, seed=5)
-        facility_points = simulated_geo_points(street, needed=facility_count, seed=6)
+        self.client_points = simulated_geo_points(street, needed=client_count, seed=5)
+        self.facility_points = simulated_geo_points(
+            street, needed=facility_count, seed=6
+        )
 
         ntw = spaghetti.Network(in_data=lattice)
 
-        ntw.snapobservations(client_points, "clients", attribute=True)
-        ntw.snapobservations(facility_points, "facilities", attribute=True)
+        ntw.snapobservations(self.client_points, "clients", attribute=True)
+        ntw.snapobservations(self.facility_points, "facilities", attribute=True)
 
         self.cost_matrix = ntw.allneighbordistances(
             sourcepattern=ntw.pointpatterns["clients"],
@@ -57,14 +59,35 @@ class TestLSCP(unittest.TestCase):
 
         self.ai = numpy.random.randint(1, 12, client_count)
 
-    def test_lscp_solve(self):
+    def test_lscp_from_cost_matrix(self):
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 10)
         status = lscp.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(status, 1)
 
-    def test_mclp_solve(self):
+    def test_lscp_from_geodataframe(self):
+        lscp = LSCP.from_geodataframe(
+            self.client_points, self.facility_points, "geometry", "geometry", 10
+        )
+        status = lscp.solve(pulp.PULP_CBC_CMD())
+        self.assertEqual(status, 1)
+
+    def test_mclp_from_cost_matrix(self):
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix, self.ai, max_coverage=7, p_facilities=4
+        )
+        status = mclp.solve(pulp.PULP_CBC_CMD())
+        self.assertEqual(status, 1)
+
+    def test_mclp_from_geodataframe(self):
+        self.client_points["weights"] = self.ai
+        mclp = MCLP.from_geodataframe(
+            self.client_points,
+            self.facility_points,
+            "geometry",
+            "geometry",
+            "weights",
+            max_coverage=7,
+            p_facilities=4,
         )
         status = mclp.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(status, 1)

@@ -47,7 +47,7 @@ class LSCP(LocateSolver):
         max_coverage: float,
         distance_metric: str = "euclidean",
     ):
-        distances = np.array()
+        distances = np.array([])
         if gdf_demand.crs != gdf_fac.crs:
             raise ValueError(
                 f"geodataframes crs are different: gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
@@ -130,8 +130,8 @@ class MCLP(LocateSolver):
         p_facilities: int,
         distance_metric: str = "euclidean",
     ):
-        service_load = gdf_fac[weights_cols].to_numpy()
-        distances = np.array()
+        service_load = gdf_demand[weights_cols].to_numpy()
+        distances = np.array([])
 
         if gdf_demand.crs != gdf_fac.crs:
             raise ValueError(
