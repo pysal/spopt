@@ -70,6 +70,10 @@ class TestRegionUtil(unittest.TestCase):
         numpy.testing.assert_array_equal(observed.todense(), desired)
 
     def test_dict_from_graph_attr(self):
+        desired = {0: [1]}
+        observed = util.dict_from_graph_attr(None, desired)
+        self.assertEqual(observed, desired)
+
         edges = [(0, 1), (1, 2), (0, 3), (1, 4), (2, 5), (3, 4), (4, 5)]
         graph = networkx.Graph(edges)
         data_dict = {node: 10 * node for node in graph}
@@ -77,6 +81,12 @@ class TestRegionUtil(unittest.TestCase):
 
         desired = {key: [value] for key, value in data_dict.items()}
         observed = util.dict_from_graph_attr(graph, "test_data")
+        self.assertEqual(observed, desired)
+
+        desired_array = dict()
+        for node in data_dict:
+            desired_array[node] = numpy.array(data_dict[node])
+        observed = util.dict_from_graph_attr(graph, "test_data", array_values=True)
         self.assertEqual(observed, desired)
 
     def test_check_solver(self):
