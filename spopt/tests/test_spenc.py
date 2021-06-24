@@ -20,8 +20,8 @@ class TestSpenc(unittest.TestCase):
         self.mexico = MEXICO.copy()
         self.w_mexico = libpysal.weights.Queen.from_dataframe(self.mexico)
         self.default_attrs_mexico = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
-        self.default_mexico = [3, 0, 3, 4, 4, 3, 4, 1, 4, 2, 1, 1, 1, 3, 3, 3]
-        self.default_mexico += [0, 2, 0, 2, 2, 0, 0, 0, 0, 0, 3, 4, 1, 2, 0, 3]
+        self.default_mexico = [3, 1, 4, 1, 1, 3, 1, 4, 1, 1, 0, 0, 0, 3, 3, 3]
+        self.default_mexico += [1, 0, 1, 0, 0, 1, 1, 2, 1, 1, 3, 2, 4, 1, 1, 3]
 
         self.non_default_mexico = [0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2]
         self.non_default_mexico += [1, 2, 2, 2, 1, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2]
@@ -29,12 +29,7 @@ class TestSpenc(unittest.TestCase):
     def test_spenc_defaults(self):
         self.mexico["count"] = 1
         numpy.random.seed(RANDOM_STATE)
-        model = Spenc(
-            self.mexico,
-            self.w_mexico,
-            self.default_attrs_mexico,
-            random_state=RANDOM_STATE,
-        )
+        model = Spenc(self.mexico, self.w_mexico, self.default_attrs_mexico,)
         model.solve()
 
         numpy.testing.assert_equal(model.labels_, self.default_mexico)
