@@ -20,8 +20,8 @@
          exclude:
            - environment-file: .ci/39.yaml
              os: windows-latest
-           - environment-file: .ci/38.yaml
-             os: ubuntu-latest
+           #- environment-file: .ci/38.yaml
+           #  os: ubuntu-latest
          include:
            - environment-file: .ci/39-DEV.yaml
              os: ubuntu-latest
