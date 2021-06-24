@@ -1,5 +1,6 @@
 import libpysal
 import geopandas
+import networkx
 import numpy
 import pulp
 import unittest
@@ -19,6 +20,65 @@ class TestRegionUtil(unittest.TestCase):
 
         pass
 
+    def test_array_from_dict_values(self):
+        dict_flat = {0: 0, 1: 10}
+        dict_it = {0: [0], 1: [10]}
+        desired_flat = numpy.array([0, 10])
+        desired_2d = numpy.array([[0], [10]])
+
+        observed = util.array_from_dict_values(dict_flat, flat_output=True)
+        numpy.testing.assert_array_equal(observed, desired_flat)
+
+        observed = util.array_from_dict_values(dict_flat)
+        numpy.testing.assert_array_equal(observed, desired_2d)
+
+        observed = util.array_from_dict_values(dict_it, flat_output=True)
+        numpy.testing.assert_array_equal(observed, desired_flat)
+
+        observed = util.array_from_dict_values(dict_it)
+        numpy.testing.assert_array_equal(observed, desired_2d)
+
+    def test_scipy_sparse_matrix_from_dict(self):
+        neighbors = {
+            0: {1, 3},
+            1: {0, 2, 4},
+            2: {1, 5},
+            3: {0, 4},
+            4: {1, 3, 5},
+            5: {2, 4},
+        }
+        desired = numpy.array(
+            [
+                [0, 1, 0, 1, 0, 0],
+                [1, 0, 1, 0, 1, 0],
+                [0, 1, 0, 0, 0, 1],
+                [1, 0, 0, 0, 1, 0],
+                [0, 1, 0, 1, 0, 1],
+                [0, 0, 1, 0, 1, 0],
+            ]
+        )
+        observed = util.scipy_sparse_matrix_from_dict(neighbors)
+        numpy.testing.assert_array_equal(observed.todense(), desired)
+
+        neighbors = {
+            "left": {"middle"},
+            "middle": {"left", "right"},
+            "right": {"middle"},
+        }
+        desired = numpy.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]])
+        observed = util.scipy_sparse_matrix_from_dict(neighbors)
+        numpy.testing.assert_array_equal(observed.todense(), desired)
+
+    def test_dict_from_graph_attr(self):
+        edges = [(0, 1), (1, 2), (0, 3), (1, 4), (2, 5), (3, 4), (4, 5)]
+        graph = networkx.Graph(edges)
+        data_dict = {node: 10 * node for node in graph}
+        networkx.set_node_attributes(graph, data_dict, "test_data")
+
+        desired = {key: [value] for key, value in data_dict.items()}
+        observed = util.dict_from_graph_attr(graph, "test_data")
+        self.assertEqual(observed, desired)
+
     def test_check_solver(self):
         util.check_solver("cbc")
         with self.assertRaises(ValueError):
@@ -28,3 +88,8 @@ class TestRegionUtil(unittest.TestCase):
         known_name = "PULP_CBC_CMD"
         observed_name = util.get_solver_instance("cbc").name
         self.assertEqual(known_name, observed_name)
+
+
+"""
+
+"""
