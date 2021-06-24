@@ -28,6 +28,7 @@ class TestSpenc(unittest.TestCase):
 
     def test_spenc_defaults(self):
         self.mexico["count"] = 1
+        numpy.random.seed(RANDOM_STATE)
         model = Spenc(
             self.mexico,
             self.w_mexico,
@@ -40,6 +41,7 @@ class TestSpenc(unittest.TestCase):
 
     def test_spenc_non_defaults(self):
         self.mexico["count"] = 1
+        numpy.random.seed(RANDOM_STATE)
         model = Spenc(
             self.mexico,
             self.w_mexico,
