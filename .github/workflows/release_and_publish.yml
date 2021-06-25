@@ -34,23 +34,23 @@ jobs:
       env:
         TEXT: ${{ steps.changetxt.outputs.text }}
     
-   - name: Get the tag name
-     run: echo "TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
-  
-   - name: Release
-     uses: softprops/action-gh-release@v1
-     with:
-       body: ${{ steps.changetxt.outputs.text }}
-       body_path: ${{ steps.changetxt.outputs.path }}
-       name: Release ${{ env.TAG }}
-     env:
-       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
-   - name: Publish distribution 📦 to PyPI
-     uses: pypa/gh-action-pypi-publish@master
-     with:
-       user: __token__
-       password: ${{ secrets.pypi_password }}
+    - name: Get the tag name
+      run: echo "TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+   
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        body: ${{ steps.changetxt.outputs.text }}
+        body_path: ${{ steps.changetxt.outputs.path }}
+        name: Release ${{ env.TAG }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.pypi_password }}
       
       
       
