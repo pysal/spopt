@@ -19,21 +19,25 @@ class SpanningForest(object):
         affinity=None,
         reduction=np.sum,
         center=np.mean,
+        verbose=False,
     ):
         """
         Initialize the SKATER algorithm.
 
         dissimilarity : a callable distance metric
-        affinity : an callable affinity metric between 0,1. 
-                   Will be inverted to provide a 
+        affinity : an callable affinity metric between 0,1.
+                   Will be inverted to provide a
                    dissimilarity metric.
         reduction: the reduction applied over all clusters
                    to provide the map score.
         center:    way to compute the center of each region in attribute space
-        
+
+        verbose: bool/int describing how much output to provide to the user,
+                 in terms of print statements or progressbars.
+
         NOTE: Optimization occurs with respect to a *dissimilarity* metric, so the reduction should
-              yield some kind of score where larger values are *less desirable* than smaller values. 
-              Typically, this means we use addition. 
+              yield some kind of score where larger values are *less desirable* than smaller values.
+              Typically, this means we use addition.
         """
         if affinity is not None:
             # invert the 0,1 affinity to
@@ -44,6 +48,7 @@ class SpanningForest(object):
         self.metric = metric
         self.reduction = reduction
         self.center = center
+        self.verbose = verbose
 
     def __repr__(self):
         return "Minimum_Spanning_Tree_Pruning(metric = {}, reduction = {}, center = {})".format(
@@ -51,32 +56,22 @@ class SpanningForest(object):
         )
 
     def fit(
-        self,
-        n_clusters,
-        W,
-        data=None,
-        quorum=-np.inf,
-        trace=False,
-        islands="increase",
-        verbose=False,
+        self, n_clusters, W, data=None, quorum=-np.inf, trace=False, islands="increase",
     ):
         """
         n_clusters : int of clusters wanted
-        W : pysal W object expressing the neighbor relationships between observations. 
+        W : pysal W object expressing the neighbor relationships between observations.
             Should be symmetric and binary, so Queen/Rook, DistanceBand, or a symmetrized KNN.
         data: np.ndarray of (N,P) shape with N observations and P features
         quorum: floor on the size of regions.
         trace: bool denoting whether to store intermediate
                labelings as the tree gets pruned
-        islands: string describing what to do with islands. 
+        islands: string describing what to do with islands.
                  If "ignore", will discover `n_clusters` regions, treating islands as their own regions.
-                 If "increase", will discover `n_clusters` regions, treating islands as separate from n_clusters. 
+                 If "increase", will discover `n_clusters` regions, treating islands as separate from n_clusters.
 
-        verbose: bool/int describing how much output to provide to the user, 
-                 in terms of print statements or progressbars.
-        
-        NOTE: Optimization occurs with respect to a *dissimilarity* metric, so the problem *minimizes* 
-              the map dissimilarity. So, lower scores are better. 
+        NOTE: Optimization occurs with respect to a *dissimilarity* metric, so the problem *minimizes*
+              the map dissimilarity. So, lower scores are better.
         """
         if trace:
             self._trace = []
@@ -89,7 +84,7 @@ class SpanningForest(object):
         W = W.sparse
         start = time.time()
 
-        super_verbose = verbose > 1
+        super_verbose = self.verbose > 1
         start_W = time.time()
         dissim = W.multiply(attribute_kernel)
         dissim.eliminate_zeros()
@@ -143,16 +138,11 @@ class SpanningForest(object):
                 )
         if trace:
             self._trace.append((current_labels, deletion(np.nan, np.nan, np.inf)))
-        if super_verbose:
-            print(self._trace[-1])
+            if super_verbose:
+                print(self._trace[-1])
         while current_n_subtrees < n_clusters:  # while we don't have enough regions
             best_deletion = self.find_cut(
-                MSF,
-                data,
-                quorum=quorum,
-                labels=None,
-                target_label=None,
-                verbose=verbose,
+                MSF, data, quorum=quorum, labels=None, target_label=None,
             )
 
             if np.isfinite(best_deletion.score):  # if our search succeeds
@@ -189,19 +179,19 @@ class SpanningForest(object):
     def score(self, data, labels=None, quorum=-np.inf):
         """
         This yields a score for the data, given the labels provided. If no labels are provided,
-        and the object has been fit, then the labels discovered from the previous fit are used. 
-        
-        If a quorum is not passed, it is assumed to be irrelevant. 
-        
-        If a quorum is passed and the labels do not meet quorum, the score is inf. 
-       
+        and the object has been fit, then the labels discovered from the previous fit are used.
+
+        If a quorum is not passed, it is assumed to be irrelevant.
+
+        If a quorum is passed and the labels do not meet quorum, the score is inf.
+
         data    :   (N,P) array of data on which to compute the score of the regions expressed in labels
         labels  :   (N,) array of labels expressing the classification of each observation into a region.
-        quorum  :   int expressing the minimum size of regions. Can be -inf if there is no lower bound. 
+        quorum  :   int expressing the minimum size of regions. Can be -inf if there is no lower bound.
                     Any region below quorum makes the score inf.
-        
-        NOTE: Optimization occurs with respect to a *dissimilarity* metric, so the problem *minimizes* 
-              the map dissimilarity. So, lower scores are better. 
+
+        NOTE: Optimization occurs with respect to a *dissimilarity* metric, so the problem *minimizes*
+              the map dissimilarity. So, lower scores are better.
         """
         if labels is None:
             try:
@@ -237,26 +227,23 @@ class SpanningForest(object):
         labels=None,
         target_label=None,
         make=False,
-        verbose=False,
     ):
         """
         Find the best cut from the MSF.
-        
-        MSF: (N,N) scipy sparse matrix with zero elements removed. 
-             Represents the adjacency matrix for the minimum spanning forest. 
-             Constructed from sparse.csgraph.sparse_from_dense or using MSF.eliminate_zeros(). 
-             You MUST remove zero entries for this to work, otherwise they are considered no-cost paths. 
-        data: (N,p) attribute matrix. If not provided, replaced with (N,1) vector of ones. 
+
+        MSF: (N,N) scipy sparse matrix with zero elements removed.
+             Represents the adjacency matrix for the minimum spanning forest.
+             Constructed from sparse.csgraph.sparse_from_dense or using MSF.eliminate_zeros().
+             You MUST remove zero entries for this to work, otherwise they are considered no-cost paths.
+        data: (N,p) attribute matrix. If not provided, replaced with (N,1) vector of ones.
         quorum: int denoting the minimum number of elements in the region
-        labels: (N,) flat vector of labels for each point. Represents the "cluster labels" 
-                for disconnected components of the graph. 
+        labels: (N,) flat vector of labels for each point. Represents the "cluster labels"
+                for disconnected components of the graph.
         target_label: int from the labels array to subset the MSF. If passed along with `labels`, then a cut
                       will be found that is restricted to that subset of the MSF.
-        make: bool, whether or not to modify the input MSF in order to make the best cut that was found. 
-        verbose: bool/int, denoting how much output to provide to the user, in terms
-                 of print statements or progressbars
-                      
-        Returns a namedtuple with in_node, out_node, and score. 
+        make: bool, whether or not to modify the input MSF in order to make the best cut that was found.
+
+        Returns a namedtuple with in_node, out_node, and score.
         """
         if data is None:
             data = np.ones(MSF.shape)
@@ -267,7 +254,7 @@ class SpanningForest(object):
                     ["labels", "target_label"][int(target_label is None)]
                 )
             )
-        if verbose:
+        if self.verbose:
             try:
                 from tqdm import tqdm
             except ImportError:
@@ -318,10 +305,10 @@ class SpanningForest(object):
 
     def make_cut(self, in_node, out_node, score, MSF=None):
         """
-        make a cut on the MSF inplace, provided the in_node, out_node, MSF, and score. 
+        make a cut on the MSF inplace, provided the in_node, out_node, MSF, and score.
         in_node: int, ID of the source node for the edge to be cut
         out_node: int, ID of the destination node for the edge to be cut
-        score: float, the value of the score being cut. if the score is infinite, the cut is not made. 
+        score: float, the value of the score being cut. if the score is infinite, the cut is not made.
         MSF: the spanning forest to use when making the cut. If not provided,
              uses the defualt tree in self.minimum_spanning_forest_
         """
@@ -338,94 +325,93 @@ class SpanningForest(object):
 
 class Skater(BaseSpOptHeuristicSolver):
     """Skater is a spatial regionalization algorithm based on spanning tree pruning
-        
-
-        Parameters
-        ----------
-        
-        gdf : geopandas.GeoDataFrame, required
-            Geodataframe containing original data.
-
-        w : libpysal.weights.W, required
-            Weights object created from given data.
-
-        attrs_name : list, required
-            Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
-        
-        n_clusters : int, optional, default: 5
-            The number of clusters to form.
-
-        floor: floor on the size of regions, default: -inf
-
-        trace: bool denoting whether to store intermediate, default: False
-               labelings as the tree gets pruned.
-               
-        islands: string describing what to do with islands, default: "increase"
-                 If "ignore", will discover `n_clusters` regions, treating islands as their own regions.
-                 If "increase", will discover `n_clusters` regions, treating islands as separate from n_clusters. 
 
 
-        spanning_forest_kwds include:
+    Parameters
+    ----------
 
-        dissimilarity :
-            A callable distance metric.
+    gdf : geopandas.GeoDataFrame, required
+        Geodataframe containing original data.
 
-        affinity : an callable affinity metric between 0,1 
-            Will be inverted to provide a dissimilarity metric.
+    w : libpysal.weights.W, required
+        Weights object created from given data.
 
-        reduction: 
-            The reduction applied over all clusters to provide the map score.
+    attrs_name : list, required
+        Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
 
-        center:  
-            A way to compute the center of each region in attribute space.
+    n_clusters : int, optional, default: 5
+        The number of clusters to form.
 
-        Attributes
-        -------
+    floor: floor on the size of regions, default: -inf
 
-        labels_ : numpy.array
-            Region IDs for observations.
+    trace: bool denoting whether to store intermediate, default: False
+           labelings as the tree gets pruned.
+
+    islands: string describing what to do with islands, default: "increase"
+             If "ignore", will discover `n_clusters` regions, treating islands as their own regions.
+             If "increase", will discover `n_clusters` regions, treating islands as separate from n_clusters.
 
 
-        Examples
-        --------
+    spanning_forest_kwds include:
 
-        >>> import numpy as np
-        >>> import libpysal
-        >>> import geopandas as gpd
-        >>> from spopt.region.skater import Skater
-        >>> from sklearn.metrics import pairwise as skm
+    dissimilarity :
+        A callable distance metric.
 
-        Read the data.
+    affinity : an callable affinity metric between 0,1
+        Will be inverted to provide a dissimilarity metric.
 
-        >>> pth = libpysal.examples.get_path('airbnb_Chicago 2015.shp')
-        >>> chicago = gpd.read_file(pth)
+    reduction:
+        The reduction applied over all clusters to provide the map score.
 
-        Initialize the parameters.
+    center:
+        A way to compute the center of each region in attribute space.
 
-        >>> w = libpysal.weights.Queen.from_dataframe(chicago)
-        >>> attrs_name = ['num_spots']
-        >>> n_clusters = 10
-        >>> floor = 3
-        >>> trace = False
-        >>> islands = "increase"
-        >>> spanning_forest_kwds = dict(dissimilarity=skm.manhattan_distances, affinity=None, reduction=np.sum, center=np.mean)
+    Attributes
+    -------
 
-        Run the skater algorithm.
+    labels_ : numpy.array
+        Region IDs for observations.
 
-        >>> model = Skater(chicago, w, attrs_name, n_clusters, floor, trace, islands, spanning_forest_kwds)
-        >>> model.solve()
 
-        Get the region IDs for unit areas.
+    Examples
+    --------
 
-        >>> model.labels_
-        
-        Show the clustering results.
+    >>> import numpy as np
+    >>> import libpysal
+    >>> import geopandas as gpd
+    >>> from spopt.region.skater import Skater
+    >>> from sklearn.metrics import pairwise as skm
 
-        >>> chicago['skater_new'] = model.labels_
-        >>> chicago.plot(column='skater_new', categorical=True, figsize=(12,8), edgecolor='w')
-        
-        """
+    Read the data.
 
+    >>> pth = libpysal.examples.get_path('airbnb_Chicago 2015.shp')
+    >>> chicago = gpd.read_file(pth)
+
+    Initialize the parameters.
+
+    >>> w = libpysal.weights.Queen.from_dataframe(chicago)
+    >>> attrs_name = ['num_spots']
+    >>> n_clusters = 10
+    >>> floor = 3
+    >>> trace = False
+    >>> islands = "increase"
+    >>> spanning_forest_kwds = dict(dissimilarity=skm.manhattan_distances, affinity=None, reduction=np.sum, center=np.mean)
+
+    Run the skater algorithm.
+
+    >>> model = Skater(chicago, w, attrs_name, n_clusters, floor, trace, islands, spanning_forest_kwds)
+    >>> model.solve()
+
+    Get the region IDs for unit areas.
+
+    >>> model.labels_
+
+    Show the clustering results.
+
+    >>> chicago['skater_new'] = model.labels_
+    >>> chicago.plot(column='skater_new', categorical=True, figsize=(12,8), edgecolor='w')
+
+    """
 
     def __init__(
         self,
@@ -436,8 +422,8 @@ class Skater(BaseSpOptHeuristicSolver):
         floor=-np.inf,
         trace=False,
         islands="increase",
-        spanning_forest_kwds=dict()
-    ):    
+        spanning_forest_kwds=dict(),
+    ):
         self.gdf = gdf
         self.w = w
         self.attrs_name = attrs_name
