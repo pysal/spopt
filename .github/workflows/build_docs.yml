@@ -1,39 +1,44 @@
  name: Build Docs
+ 
  on:
    push:
-     branches:
-     - main
+     # Sequence of patterns matched against refs/tags
+     tags:
+       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+   workflow_dispatch:
+     inputs:
+       version:
+         description: Manual Doc Build Reason
+         default: test
+         required: false
  jobs:
    docs:
-     name: CI (${{ matrix.os }}-${{ matrix.environment-file }})
+     name: build & push docs
      runs-on: ${{ matrix.os }}
-     continue-on-error: ${{ matrix.experimental }}
      timeout-minutes: 90
      strategy:
        matrix:
          os: ['ubuntu-latest']
-         environment-file: [.ci/39.yaml]
+         environment-file: [ci/39.yaml]
          experimental: [false]
      defaults:
        run:
          shell: bash -l {0}
+     
      steps:
-       - uses: actions/checkout@v2
-       - uses: conda-incubator/setup-miniconda@v2
+       - name: checkout repo
+         uses: actions/checkout@v2
+       
+       - name: setup micromamba
+         uses: mamba-org/provision-with-micromamba@main
          with:
-            miniconda-version: 'latest'
-            channels: conda-forge
-            channel-priority: true
-            auto-update-conda: false
-            auto-activate-base: false
-            environment-file: ${{ matrix.environment-file }}
-            activate-environment: test
-       - run: conda info --all
-       - run: conda list
-       - run: conda config --show-sources
-       - run: conda config --show
-       - run: cd docs; make html
-       - name: Commit documentation changes
+           environment-file: ${{ matrix.environment-file }}
+           micromamba-version: 'latest'
+       
+       - name: make docs
+         run: cd docs; make html
+       
+       - name: commit docs
          run: |
            git clone https://github.com/ammaraskar/sphinx-action-test.git --branch gh-pages --single-branch gh-pages
            cp -r docs/_build/html/* gh-pages/
@@ -42,9 +47,10 @@
            git config --local user.name "GitHub Action"
            git add .
            git commit -m "Update documentation" -a || true
-           # The above command will fail if no changes were present, so we ignore
-           # the return code.
-       - name: Push changes
+           # The above command will fail if no changes were present,
+           # so we ignore the return code.
+       
+       - name: push to gh-pages
          uses: ad-m/github-push-action@master
          with:
             branch: gh-pages
