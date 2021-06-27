@@ -281,7 +281,7 @@ numpydoc_xref_ignore = {
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
 {% set docname = env.doc2path(env.docname, base='') %}
-{% set fullpath = env.doc2path(env.docname, base='tree/main/') %}
+{% set fullpath = env.doc2path(env.docname, base='blob/main/') %}
 
 .. only:: html
 
