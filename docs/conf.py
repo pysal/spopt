@@ -281,7 +281,6 @@ numpydoc_xref_ignore = {
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
 {% set docname = env.doc2path(env.docname, base=None) %}
-{% set fullpath = env.doc2path(env.docname, base='tree/main/') %}
 
 .. only:: html
 
@@ -294,7 +293,7 @@ nbsphinx_prolog = r"""
         Interactive online version:
         :raw-html:`<a href="https://mybinder.org/v2/gh/pysal/spopt/main?filepath={{ docname }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`
 
-    __ https://github.com/pysal/spopt/{{ fullpath }}
+    __ https://github.com/pysal/spopt/blob/main/{{ docname }}
 
 .. raw:: latex
 
