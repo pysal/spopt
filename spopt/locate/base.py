@@ -20,18 +20,22 @@ class FacilityModelBuilder(object):
     """
 
     @staticmethod
-    def add_facility_integer_variable(obj: T_FacModel, range_facility):
+    def add_facility_integer_variable(obj: T_FacModel, range_facility, var_name):
         fac_vars = [
-            pulp.LpVariable(f"x[{i}]", lowBound=0, upBound=1, cat=pulp.LpInteger)
+            pulp.LpVariable(
+                var_name.format(i=i), lowBound=0, upBound=1, cat=pulp.LpInteger
+            )
             for i in range_facility
         ]
 
         setattr(obj, "fac_vars", fac_vars)
 
     @staticmethod
-    def add_client_integer_variable(obj: T_FacModel, range_client):
+    def add_client_integer_variable(obj: T_FacModel, range_client, var_name):
         cli_vars = [
-            pulp.LpVariable(f"y[{i}]", lowBound=0, upBound=1, cat="Integer")
+            pulp.LpVariable(
+                var_name.format(i=i), lowBound=0, upBound=1, cat=pulp.LpInteger
+            )
             for i in range_client
         ]
 
