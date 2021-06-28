@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Regional-k-means &#8212; spopt v0.1.2 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Random Regions" href="randomregion.html" />
+    <link rel="prev" title="Ward" href="ward.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skater.html">Skater</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ward.html">Ward</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="randomregion.html">Random Regions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Regional-k-means</a><ul>
+<li><a class="reference internal" href="#1.-Small-synthetic-example">1. Small synthetic example</a><ul>
+<li><a class="reference internal" href="#Create-synthetic-data">Create synthetic data</a></li>
+<li><a class="reference internal" href="#Regionalization">Regionalization</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#2.-Large-synthetic-example">2. Large synthetic example</a><ul>
+<li><a class="reference internal" href="#id2">Create synthetic data</a></li>
+<li><a class="reference internal" href="#id3">Regionalization</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#3.-Empirical-example-(empircal-geographies-&amp;-synthetic-atttributes)">3. Empirical example (empircal geographies &amp; synthetic atttributes)</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/spopt/blob/main/notebooks/reg-k-means.ipynb">notebooks/reg-k-means.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/spopt/main?filepath=notebooks/reg-k-means.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Regional-k-means">
+<h1>Regional-k-means<a class="headerlink" href="#Regional-k-means" title="Permalink to this headline">¶</a></h1>
+<p><strong>Authors:</strong> <a class="reference external" href="https://github.com/sjsrey">Sergio Rey</a><strong>,</strong> <a class="reference external" href="https://github.com/xf37">Xin Feng</a><strong>,</strong> <a class="reference external" href="https://github.com/jGaboardi">James Gaboardi</a></p>
+<p>Regional-k-means is K-means with the constraint that each cluster forms a spatially connected component. The algorithm is developed by <a class="reference external" href="https://github.com/sjsrey">Sergio Rey</a>. This tutorial goes through the following:</p>
+<ol class="arabic simple">
+<li><p>a small synthetic example (10x10 lattice)</p></li>
+<li><p>a large synthetic example (50x50 lattice)</p></li>
+<li><p>an empirical example (Rio Grande do Sul, Brasil)</p></li>
+</ol>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>from spopt.region import RegionKMeansHeuristic
+
+import geopandas
+import libpysal
+import numpy
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+<section id="1.-Small-synthetic-example">
+<h2>1. Small synthetic example<a class="headerlink" href="#1.-Small-synthetic-example" title="Permalink to this headline">¶</a></h2>
+<section id="Create-synthetic-data">
+<h3>Create synthetic data<a class="headerlink" href="#Create-synthetic-data" title="Permalink to this headline">¶</a></h3>
+<p>Create a <a class="reference external" href="https://pysal.org/libpysal/tutorial.html">spatial weights object</a> for a 10*10 regular lattice.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>dim = 10
+w = libpysal.weights.lat2W(dim, dim)
+w.n
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+100
+</pre></div></div>
+</div>
+<p>Draw 100 random samples (the given shape is (100, 3)) from a normal (Gaussian) distribution. Then, there are three values for each lattice. They are variables in the dataframe that will be used to measure regional homogeneity.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>RANDOM_SEED = 12345
+numpy.random.seed(RANDOM_SEED)
+data = numpy.random.normal(size=(w.n, 3))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>data
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[-2.04707659e-01,  4.78943338e-01, -5.19438715e-01],
+       [-5.55730304e-01,  1.96578057e+00,  1.39340583e+00],
+       [ 9.29078767e-02,  2.81746153e-01,  7.69022568e-01],
+       [ 1.24643474e+00,  1.00718936e+00, -1.29622111e+00],
+       [ 2.74991633e-01,  2.28912879e-01,  1.35291684e+00],
+       [ 8.86429341e-01, -2.00163731e+00, -3.71842537e-01],
+       [ 1.66902531e+00, -4.38569736e-01, -5.39741446e-01],
+       [ 4.76985010e-01,  3.24894392e+00, -1.02122752e+00],
+       [-5.77087303e-01,  1.24121276e-01,  3.02613562e-01],
+       [ 5.23772068e-01,  9.40277775e-04,  1.34380979e+00],
+       [-7.13543985e-01, -8.31153539e-01, -2.37023165e+00],
+       [-1.86076079e+00, -8.60757398e-01,  5.60145293e-01],
+       [-1.26593449e+00,  1.19827125e-01, -1.06351245e+00],
+       [ 3.32882716e-01, -2.35941881e+00, -1.99542955e-01],
+       [-1.54199553e+00, -9.70735912e-01, -1.30703025e+00],
+       [ 2.86349747e-01,  3.77984111e-01, -7.53886535e-01],
+       [ 3.31285650e-01,  1.34974221e+00,  6.98766888e-02],
+       [ 2.46674110e-01, -1.18616011e-02,  1.00481159e+00],
+       [ 1.32719461e+00, -9.19261558e-01, -1.54910644e+00],
+       [ 2.21845987e-02,  7.58363145e-01, -6.60524328e-01],
+       [ 8.62580083e-01, -1.00319021e-02,  5.00093559e-02],
+       [ 6.70215594e-01,  8.52965032e-01, -9.55868852e-01],
+       [-2.34933207e-02, -2.30423388e+00, -6.52468841e-01],
+       [-1.21830198e+00, -1.33260971e+00,  1.07462269e+00],
+       [ 7.23641505e-01,  6.90001853e-01,  1.00154344e+00],
+       [-5.03087391e-01, -6.22274225e-01, -9.21168608e-01],
+       [-7.26213493e-01,  2.22895546e-01,  5.13161009e-02],
+       [-1.15771947e+00,  8.16706936e-01,  4.33609606e-01],
+       [ 1.01073695e+00,  1.82487521e+00, -9.97518248e-01],
+       [ 8.50591099e-01, -1.31577601e-01,  9.12414152e-01],
+       [ 1.88210680e-01,  2.16946144e+00, -1.14928205e-01],
+       [ 2.00369736e+00,  2.96101523e-02,  7.95253156e-01],
+       [ 1.18109754e-01, -7.48531548e-01,  5.84969738e-01],
+       [ 1.52676573e-01, -1.56565729e+00, -5.62540188e-01],
+       [-3.26641392e-02, -9.29006202e-01, -4.82572646e-01],
+       [-3.62638461e-02,  1.09539006e+00,  9.80928477e-01],
+       [-5.89487686e-01,  1.58170009e+00, -5.28734826e-01],
+       [ 4.57001871e-01,  9.29968759e-01, -1.56927061e+00],
+       [-1.02248698e+00, -4.02826924e-01,  2.20486863e-01],
+       [-1.93401108e-01,  6.69158336e-01, -1.64898482e+00],
+       [-2.25279725e+00, -1.16683222e+00,  3.53607102e-01],
+       [ 7.02110171e-01, -2.74569205e-01, -1.39142188e-01],
+       [ 1.07657222e-01, -6.06545125e-01, -4.17064408e-01],
+       [-1.70070368e-02, -1.22414528e+00, -1.80083991e+00],
+       [ 1.63473620e+00,  9.89008302e-01,  4.57940143e-01],
+       [ 5.55154410e-01,  1.30671972e+00, -4.40553570e-01],
+       [-3.01350280e-01,  4.98791490e-01, -8.23991040e-01],
+       [ 1.32056584e+00,  5.07964786e-01, -6.53437675e-01],
+       [ 1.86979514e-01, -3.91725249e-01, -2.72292975e-01],
+       [-1.71414356e-02,  6.80320749e-01,  6.35512357e-01],
+       [-7.57176502e-01,  7.18085834e-01, -3.04273076e-01],
+       [-1.67779025e+00,  4.26986085e-01, -1.56373985e+00],
+       [-3.67487521e-01,  1.04591253e+00,  1.21995436e+00],
+       [-2.47699116e-01, -4.16232132e-01, -1.16747004e-01],
+       [-1.84478762e+00,  2.06870785e+00, -7.76967474e-01],
+       [ 1.44016687e+00, -1.10557360e-01,  1.22738699e+00],
+       [ 1.92078426e+00,  7.46433038e-01,  2.22465959e+00],
+       [-6.79400410e-01,  7.27368782e-01, -8.68730734e-01],
+       [-1.21385091e+00, -4.70630931e-01, -9.19241697e-01],
+       [-8.38826689e-01,  4.35155305e-01, -5.57804717e-01],
+       [-5.67454871e-01, -3.72641553e-01, -9.26556901e-01],
+       [ 1.75510839e+00,  1.20980999e+00,  1.27002473e+00],
+       [-9.74378127e-01, -6.34709255e-01, -3.95700752e-01],
+       [-2.89435900e-01, -7.34297072e-01, -7.28504679e-01],
+       [ 8.38775073e-01,  2.66893213e-01,  7.21194339e-01],
+       [ 9.10982642e-01, -1.02090261e+00, -1.41341604e+00],
+       [ 1.29660784e+00,  2.52275209e-01,  1.12748110e+00],
+       [-5.68363447e-01,  3.09362168e-01, -5.77385473e-01],
+       [-1.16863407e+00, -8.25019972e-01, -2.64440949e+00],
+       [-1.52985803e-01, -7.51921003e-01, -1.32609252e-01],
+       [ 1.45729970e+00,  6.09511845e-01, -4.93779257e-01],
+       [ 1.23997988e+00, -1.35722140e-01,  1.43004181e+00],
+       [-8.46852451e-01,  6.03282130e-01,  1.26357226e+00],
+       [-2.55490556e-01, -4.45688380e-01,  4.68366681e-01],
+       [-9.61603924e-01, -1.82450454e+00,  6.25428156e-01],
+       [ 1.02287238e+00,  1.10742460e+00,  9.09370895e-02],
+       [-3.50108657e-01,  2.17957016e-01, -8.94813130e-01],
+       [-1.74149395e+00, -1.05225574e+00,  1.43660279e+00],
+       [-5.76207386e-01, -2.42029443e+00, -1.06232963e+00],
+       [ 2.37372262e-01,  9.57369064e-04,  6.52531808e-02],
+       [-1.36752411e+00, -3.02800519e-02,  9.40489321e-01],
+       [-6.42436751e-01,  1.04017925e+00, -1.08292226e+00],
+       [ 4.29213588e-01, -2.36223669e-01,  6.41817816e-01],
+       [-3.31660557e-01,  1.39407223e+00, -1.07674194e+00],
+       [-1.92465982e-01, -8.71187651e-01,  4.20851997e-01],
+       [-1.21141107e+00, -2.58866912e-01, -5.81646850e-01],
+       [-1.26042063e+00,  4.64574793e-01, -1.07024091e+00],
+       [ 8.04222698e-01, -1.56735508e-01,  2.01039001e+00],
+       [-8.87104430e-01, -9.77936232e-01, -2.67217350e-01],
+       [ 4.83337822e-01, -4.00332733e-01,  4.49880415e-01],
+       [ 3.99593953e-01, -1.51574804e-01, -2.55793406e+00],
+       [ 1.60806841e-01,  7.65250677e-02, -2.97204166e-01],
+       [-1.29427402e+00, -8.85180013e-01, -1.87496526e-01],
+       [-4.93560000e-01, -1.15412964e-01, -3.50744607e-01],
+       [ 4.46973764e-02, -8.97756316e-01,  8.90873502e-01],
+       [-1.15118516e+00, -2.61230270e+00,  1.14125019e+00],
+       [-8.67135525e-01,  3.83583258e-01, -4.37030164e-01],
+       [ 3.47488810e-01, -1.23017904e+00,  5.71078139e-01],
+       [ 6.00612128e-02, -2.25523994e-01,  1.34972614e+00],
+       [ 1.35029973e+00, -3.86653322e-01,  8.65989542e-01]])
+</pre></div></div>
+</div>
+<p>The neighbors of each lattice can be checked by:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>w.neighbors
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{0: [10, 1],
+ 10: [0, 20, 11],
+ 1: [0, 11, 2],
+ 11: [1, 10, 21, 12],
+ 2: [1, 12, 3],
+ 12: [2, 11, 22, 13],
+ 3: [2, 13, 4],
+ 13: [3, 12, 23, 14],
+ 4: [3, 14, 5],
+ 14: [4, 13, 24, 15],
+ 5: [4, 15, 6],
+ 15: [5, 14, 25, 16],
+ 6: [5, 16, 7],
+ 16: [6, 15, 26, 17],
+ 7: [6, 17, 8],
+ 17: [7, 16, 27, 18],
+ 8: [7, 18, 9],
+ 18: [8, 17, 28, 19],
+ 9: [8, 19],
+ 19: [9, 18, 29],
+ 20: [10, 30, 21],
+ 21: [11, 20, 31, 22],
+ 22: [12, 21, 32, 23],
+ 23: [13, 22, 33, 24],
+ 24: [14, 23, 34, 25],
+ 25: [15, 24, 35, 26],
+ 26: [16, 25, 36, 27],
+ 27: [17, 26, 37, 28],
+ 28: [18, 27, 38, 29],
+ 29: [19, 28, 39],
+ 30: [20, 40, 31],
+ 31: [21, 30, 41, 32],
+ 32: [22, 31, 42, 33],
+ 33: [23, 32, 43, 34],
+ 34: [24, 33, 44, 35],
+ 35: [25, 34, 45, 36],
+ 36: [26, 35, 46, 37],
+ 37: [27, 36, 47, 38],
+ 38: [28, 37, 48, 39],
+ 39: [29, 38, 49],
+ 40: [30, 50, 41],
+ 41: [31, 40, 51, 42],
+ 42: [32, 41, 52, 43],
+ 43: [33, 42, 53, 44],
+ 44: [34, 43, 54, 45],
+ 45: [35, 44, 55, 46],
+ 46: [36, 45, 56, 47],
+ 47: [37, 46, 57, 48],
+ 48: [38, 47, 58, 49],
+ 49: [39, 48, 59],
+ 50: [40, 60, 51],
+ 51: [41, 50, 61, 52],
+ 52: [42, 51, 62, 53],
+ 53: [43, 52, 63, 54],
+ 54: [44, 53, 64, 55],
+ 55: [45, 54, 65, 56],
+ 56: [46, 55, 66, 57],
+ 57: [47, 56, 67, 58],
+ 58: [48, 57, 68, 59],
+ 59: [49, 58, 69],
+ 60: [50, 70, 61],
+ 61: [51, 60, 71, 62],
+ 62: [52, 61, 72, 63],
+ 63: [53, 62, 73, 64],
+ 64: [54, 63, 74, 65],
+ 65: [55, 64, 75, 66],
+ 66: [56, 65, 76, 67],
+ 67: [57, 66, 77, 68],
+ 68: [58, 67, 78, 69],
+ 69: [59, 68, 79],
+ 70: [60, 80, 71],
+ 71: [61, 70, 81, 72],
+ 72: [62, 71, 82, 73],
+ 73: [63, 72, 83, 74],
+ 74: [64, 73, 84, 75],
+ 75: [65, 74, 85, 76],
+ 76: [66, 75, 86, 77],
+ 77: [67, 76, 87, 78],
+ 78: [68, 77, 88, 79],
+ 79: [69, 78, 89],
+ 80: [70, 90, 81],
+ 81: [71, 80, 91, 82],
+ 82: [72, 81, 92, 83],
+ 83: [73, 82, 93, 84],
+ 84: [74, 83, 94, 85],
+ 85: [75, 84, 95, 86],
+ 86: [76, 85, 96, 87],
+ 87: [77, 86, 97, 88],
+ 88: [78, 87, 98, 89],
+ 89: [79, 88, 99],
+ 90: [80, 91],
+ 91: [81, 90, 92],
+ 92: [82, 91, 93],
+ 93: [83, 92, 94],
+ 94: [84, 93, 95],
+ 95: [85, 94, 96],
+ 96: [86, 95, 97],
+ 97: [87, 96, 98],
+ 98: [88, 97, 99],
+ 99: [89, 98]}
+</pre></div></div>
+</div>
+<p>We first explore the simulated data by building a 10*10 lattice shapefile.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>libpysal.weights.build_lattice_shapefile(dim, dim, &quot;lattice.shp&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>gdf = geopandas.read_file(&quot;lattice.shp&quot;)
+gdf.plot(column=&quot;ID&quot;);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_reg-k-means_11_0.png" class="no-scaled-link" src="../_images/notebooks_reg-k-means_11_0.png" style="width: 251px; height: 248px;" />
+</div>
+</div>
+</section>
+<section id="Regionalization">
+<h3>Regionalization<a class="headerlink" href="#Regionalization" title="Permalink to this headline">¶</a></h3>
+<p>With <code class="docutils literal notranslate"><span class="pre">reg-k-means</span></code>, we aggregate 100 simulated lattices into 20 regions.</p>
+<p>The model can then be solved:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>model = RegionKMeansHeuristic(data, 20, w)
+model.solve()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>model.labels_
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([12,  3,  3,  3,  3,  3, 19, 19, 17, 11, 12,  9,  9,  7,  7,  2,  2,
+        2, 17, 11, 12, 15,  9,  7, 18,  2, 13, 13,  6,  6, 15, 15,  9, 18,
+       18,  2, 13, 13,  0,  6, 15,  1,  1, 18, 18, 13, 13, 13,  0,  6,  1,
+        1,  4,  4, 18, 18,  0,  0,  0,  0,  1, 16,  4,  4,  4, 10, 10, 14,
+        5,  5, 16, 16, 16,  4,  8, 10, 10, 14,  5,  5, 16,  8, 16,  8,  8,
+       10, 10, 14,  5, 14,  8,  8,  8,  8,  8, 10, 10, 14, 14, 14])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>gdf[&quot;region&quot;] = model.labels_
+gdf.plot(column=&quot;region&quot;);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_reg-k-means_15_0.png" class="no-scaled-link" src="../_images/notebooks_reg-k-means_15_0.png" style="width: 251px; height: 248px;" />
+</div>
+</div>
+<p>The model solution results in 20 spatially connected regions. We can summarize which lattice belongs to which region:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>areas = numpy.arange(dim * dim)
+regions = [areas[model.labels_ == region] for region in range(20)]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>regions
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[array([38, 48, 56, 57, 58, 59]),
+ array([41, 42, 50, 51, 60]),
+ array([15, 16, 17, 25, 35]),
+ array([1, 2, 3, 4, 5]),
+ array([52, 53, 62, 63, 64, 73]),
+ array([68, 69, 78, 79, 88]),
+ array([28, 29, 39, 49]),
+ array([13, 14, 23]),
+ array([74, 81, 83, 84, 90, 91, 92, 93, 94]),
+ array([11, 12, 22, 32]),
+ array([65, 66, 75, 76, 85, 86, 95, 96]),
+ array([ 9, 19]),
+ array([ 0, 10, 20]),
+ array([26, 27, 36, 37, 45, 46, 47]),
+ array([67, 77, 87, 89, 97, 98, 99]),
+ array([21, 30, 31, 40]),
+ array([61, 70, 71, 72, 80, 82]),
+ array([ 8, 18]),
+ array([24, 33, 34, 43, 44, 54, 55]),
+ array([6, 7])]
+</pre></div></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="2.-Large-synthetic-example">
+<h2>2. Large synthetic example<a class="headerlink" href="#2.-Large-synthetic-example" title="Permalink to this headline">¶</a></h2>
+<section id="id2">
+<h3>Create synthetic data<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Generate a 50 x 50 lattice with <code class="docutils literal notranslate"><span class="pre">spenc</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>from spopt.region.spenclib.utils import lattice
+hori, vert = 50, 50
+n_polys = hori * vert
+gdf = lattice(hori, vert)
+gdf.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POLYGON ((0.00000 0.00000, 1.00000 0.00000, 1....</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POLYGON ((0.00000 1.00000, 1.00000 1.00000, 1....</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POLYGON ((0.00000 2.00000, 1.00000 2.00000, 1....</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POLYGON ((0.00000 3.00000, 1.00000 3.00000, 1....</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POLYGON ((0.00000 4.00000, 1.00000 4.00000, 1....</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Generate some random attribute data values</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>numpy.random.seed(RANDOM_SEED)
+gdf[&quot;data_values_1&quot;] = numpy.random.random(n_polys)
+gdf[&quot;data_values_2&quot;] = numpy.random.random(n_polys)
+vals = [&quot;data_values_1&quot;, &quot;data_values_2&quot;]
+gdf.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>data_values_1</th>
+      <th>data_values_2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POLYGON ((0.00000 0.00000, 1.00000 0.00000, 1....</td>
+      <td>0.929616</td>
+      <td>0.510240</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POLYGON ((0.00000 1.00000, 1.00000 1.00000, 1....</td>
+      <td>0.316376</td>
+      <td>0.483683</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POLYGON ((0.00000 2.00000, 1.00000 2.00000, 1....</td>
+      <td>0.183919</td>
+      <td>0.686935</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POLYGON ((0.00000 3.00000, 1.00000 3.00000, 1....</td>
+      <td>0.204560</td>
+      <td>0.441431</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POLYGON ((0.00000 4.00000, 1.00000 4.00000, 1....</td>
+      <td>0.567725</td>
+      <td>0.242545</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Split into 2 artifical islands</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>gdf = gdf[:1300].append(gdf[1500:])
+w = libpysal.weights.Rook.from_dataframe(gdf)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/the-gaboardi/miniconda3/envs/py39_spopt/lib/python3.9/site-packages/libpysal/weights/weights.py:172: UserWarning: The weights matrix is not fully connected:
+ There are 2 disconnected components.
+  warnings.warn(message)
+</pre></div></div>
+</div>
+</section>
+<section id="id3">
+<h3>Regionalization<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>Partition into 8 regions</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>numpy.random.seed(RANDOM_SEED)
+model = RegionKMeansHeuristic(gdf[vals].values, 8, w)
+model.solve()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>gdf[&quot;reg_k_mean&quot;] = model.labels_
+gdf.plot(
+    column=&quot;reg_k_mean&quot;,
+    categorical=True,
+    cmap=&quot;tab20&quot;,
+    figsize=(12,12),
+    edgecolor=&quot;w&quot;
+);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_reg-k-means_27_0.png" class="no-scaled-link" src="../_images/notebooks_reg-k-means_27_0.png" style="width: 686px; height: 683px;" />
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="3.-Empirical-example-(empircal-geographies-&amp;-synthetic-atttributes)">
+<h2>3. Empirical example (empircal geographies &amp; synthetic atttributes)<a class="headerlink" href="#3.-Empirical-example-(empircal-geographies-&-synthetic-atttributes)" title="Permalink to this headline">¶</a></h2>
+<p>Read in Rio Grande do Sul, Brasil dataset</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>rsbr = libpysal.examples.get_path(&quot;map_RS_BR.shp&quot;)
+rsbr_gdf = geopandas.read_file(rsbr)
+rsbr_gdf.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>NM_MUNICIP</th>
+      <th>CD_GEOCMU</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>ACEGUÁ</td>
+      <td>4300034</td>
+      <td>POLYGON ((-54.10940 -31.43316, -54.10889 -31.4...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>ÁGUA SANTA</td>
+      <td>4300059</td>
+      <td>POLYGON ((-51.98932 -28.12943, -51.98901 -28.1...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>AGUDO</td>
+      <td>4300109</td>
+      <td>POLYGON ((-53.13696 -29.49483, -53.13481 -29.4...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>AJURICABA</td>
+      <td>4300208</td>
+      <td>POLYGON ((-53.61993 -28.14569, -53.62100 -28.1...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ALECRIM</td>
+      <td>4300307</td>
+      <td>POLYGON ((-54.77813 -27.58372, -54.77307 -27.5...</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Generate some random attribute data values</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>n_polys = rsbr_gdf.shape[0]
+numpy.random.seed(RANDOM_SEED)
+attr_cols = [&quot;attr_1&quot;, &quot;attr_2&quot;, &quot;attr_3&quot;, &quot;attr_4&quot;]
+for attr_col in attr_cols:
+    rsbr_gdf[attr_col] = numpy.random.random(n_polys)
+rsbr_gdf.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>NM_MUNICIP</th>
+      <th>CD_GEOCMU</th>
+      <th>geometry</th>
+      <th>attr_1</th>
+      <th>attr_2</th>
+      <th>attr_3</th>
+      <th>attr_4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>ACEGUÁ</td>
+      <td>4300034</td>
+      <td>POLYGON ((-54.10940 -31.43316, -54.10889 -31.4...</td>
+      <td>0.929616</td>
+      <td>0.990111</td>
+      <td>0.978448</td>
+      <td>0.194226</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>ÁGUA SANTA</td>
+      <td>4300059</td>
+      <td>POLYGON ((-51.98932 -28.12943, -51.98901 -28.1...</td>
+      <td>0.316376</td>
+      <td>0.126155</td>
+      <td>0.004249</td>
+      <td>0.245969</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>AGUDO</td>
+      <td>4300109</td>
+      <td>POLYGON ((-53.13696 -29.49483, -53.13481 -29.4...</td>
+      <td>0.183919</td>
+      <td>0.976601</td>
+      <td>0.559856</td>
+      <td>0.018801</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>AJURICABA</td>
+      <td>4300208</td>
+      <td>POLYGON ((-53.61993 -28.14569, -53.62100 -28.1...</td>
+      <td>0.204560</td>
+      <td>0.229106</td>
+      <td>0.751780</td>
+      <td>0.427996</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ALECRIM</td>
+      <td>4300307</td>
+      <td>POLYGON ((-54.77813 -27.58372, -54.77307 -27.5...</td>
+      <td>0.567725</td>
+      <td>0.186056</td>
+      <td>0.390045</td>
+      <td>0.179598</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Enforce fuzzy contiguity due to <a class="reference external" href="https://pysal.org/libpysal/notebooks/weights.html#Handling-nonplanar-geometries">nonplanar-geometries</a></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>rsbr_w = libpysal.weights.fuzzy_contiguity(rsbr_gdf)
+</pre></div>
+</div>
+</div>
+<p>Partition into 2 regions</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>numpy.random.seed(RANDOM_SEED)
+model = RegionKMeansHeuristic(rsbr_gdf[attr_cols].values, 2, rsbr_w)
+model.solve()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>rsbr_gdf[&quot;reg_k_mean&quot;] = model.labels_
+rsbr_gdf.plot(
+    column=&quot;reg_k_mean&quot;,
+    categorical=True,
+    cmap=&quot;tab20&quot;,
+    figsize=(12,12),
+    edgecolor=&quot;w&quot;
+);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_reg-k-means_36_0.png" class="no-scaled-link" src="../_images/notebooks_reg-k-means_36_0.png" style="width: 712px; height: 681px;" />
+</div>
+</div>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/reg-k-means.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
