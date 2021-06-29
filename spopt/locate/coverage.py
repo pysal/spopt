@@ -1,9 +1,7 @@
 import numpy as np
 
-from spopt.locate.base import LocateSolver
 import pulp
 from geopandas import GeoDataFrame
-from abc import ABC, abstractmethod
 from spopt.locate.base import LocateSolver, FacilityModelBuilder
 from scipy.spatial import distance_matrix
 
@@ -141,6 +139,7 @@ class MCLP(LocateSolver, Coverage):
 
     def __add_obj(self, ai: np.array, range_clients: range):
         dem_vars = getattr(self, "cli_vars")
+
         self.problem += (
             pulp.lpSum([ai.flatten()[i] * dem_vars[i] for i in range_clients]),
             "objective function",
@@ -162,6 +161,7 @@ class MCLP(LocateSolver, Coverage):
 
         mclp.aij = np.zeros(cost_matrix.shape)
         mclp.aij[cost_matrix <= max_coverage] = 1
+        ai = np.reshape(ai, (cost_matrix.shape[0], 1))
 
         mclp.__add_obj(ai, r_cli)
         FacilityModelBuilder.add_maximal_coverage_constraint(

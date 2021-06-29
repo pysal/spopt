@@ -3,7 +3,7 @@ import geopandas
 import pulp
 import spaghetti
 from shapely.geometry import Point
-from spopt.locate import LSCP, MCLP
+from spopt.locate import LSCP, MCLP, PCenter, PMedian
 import unittest
 
 
@@ -28,7 +28,7 @@ def simulated_geo_points(in_data, needed=20, seed=0, to_file=None):
     return sim_pts
 
 
-class TestLSCP(unittest.TestCase):
+class TestLocate(unittest.TestCase):
     def setUp(self) -> None:
         lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         ntw = spaghetti.Network(in_data=lattice)
@@ -90,4 +90,46 @@ class TestLSCP(unittest.TestCase):
             p_facilities=4,
         )
         status = mclp.solve(pulp.PULP_CBC_CMD())
+        self.assertEqual(status, 1)
+
+    def test_p_median_from_cost_matrix(self):
+        p_median = PMedian.from_cost_matrix(
+            self.cost_matrix, self.ai, max_coverage=7, p_facilities=4
+        )
+        status = p_median.solve(pulp.PULP_CBC_CMD())
+        self.assertEqual(status, 1)
+
+    def test_p_median_from_geodataframe(self):
+        self.client_points["weights"] = self.ai
+        p_median = PMedian.from_geodataframe(
+            self.client_points,
+            self.facility_points,
+            "geometry",
+            "geometry",
+            "weights",
+            max_coverage=7,
+            p_facilities=4,
+        )
+        status = p_median.solve(pulp.PULP_CBC_CMD())
+        self.assertEqual(status, 1)
+
+    def test_p_center_from_cost_matrix(self):
+        p_center = PCenter.from_cost_matrix(
+            self.cost_matrix, self.ai, max_coverage=7, p_facilities=4
+        )
+        status = p_center.solve(pulp.PULP_CBC_CMD())
+        self.assertEqual(status, 1)
+
+    def test_p_center_from_geodataframe(self):
+        self.client_points["weights"] = self.ai
+        p_center = PCenter.from_geodataframe(
+            self.client_points,
+            self.facility_points,
+            "geometry",
+            "geometry",
+            "weights",
+            max_coverage=7,
+            p_facilities=4,
+        )
+        status = p_center.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(status, 1)
