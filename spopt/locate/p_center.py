@@ -2,8 +2,10 @@ import numpy as np
 
 import pulp
 from geopandas import GeoDataFrame
+
+import spopt.locate
 from spopt.locate.base import LocateSolver, FacilityModelBuilder
-from scipy.spatial import distance_matrix
+from scipy.spatial.distance import cdist
 
 
 class PCenter(LocateSolver):
@@ -15,7 +17,7 @@ class PCenter(LocateSolver):
         self.sij = sij
         self.zij = zij
 
-    def __add_obj(self, range_clients: range, range_facility: range):
+    def __add_obj(self) -> None:
         weight = getattr(self, "weight_var")
 
         self.problem += weight, "objective function"
@@ -44,7 +46,7 @@ class PCenter(LocateSolver):
         )
         FacilityModelBuilder.add_weight_continuous_variable(p_center)
 
-        p_center.__add_obj(r_cli, r_fac)
+        p_center.__add_obj()
 
         FacilityModelBuilder.add_facility_constraint(
             p_center, p_center.problem, p_facilities
@@ -88,12 +90,7 @@ class PCenter(LocateSolver):
                 f"geodataframes crs are different: gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
             )
 
-        if distance_metric == "manhattan":
-            distances = distance_matrix(dem_data, fac_data, p=1)
-        elif distance_metric == "euclidean":
-            distances = distance_matrix(dem_data, fac_data, p=2)
-        else:
-            raise ValueError("distance metric is not supported")
+        distances = cdist(dem_data, fac_data, distance_metric)
 
         return cls.from_cost_matrix(distances, service_load, max_coverage, p_facilities)
 
@@ -107,4 +104,4 @@ class PCenter(LocateSolver):
         elif self.problem.status == pulp.constants.LpSolutionInfeasible:
             raise Exception("infeasible solution")
         elif self.problem.status == pulp.constants.LpSolutionOptimal:
-            return 1
+            return self

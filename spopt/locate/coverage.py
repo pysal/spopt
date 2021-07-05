@@ -2,8 +2,10 @@ import numpy as np
 
 import pulp
 from geopandas import GeoDataFrame
+
+import spopt.locate
 from spopt.locate.base import LocateSolver, FacilityModelBuilder
-from scipy.spatial import distance_matrix
+from scipy.spatial.distance import cdist
 
 
 class Coverage:
@@ -12,10 +14,10 @@ class Coverage:
         self.problem = problem
         self.aij = np.array([[]])
 
-    def uncovered_clients_dict(self):
+    def uncovered_clients_dict(self) -> None:
         self.n_cli_uncov = self.aij.shape[0] - len(self.cli2iloc.keys())
 
-    def client_facility_dict(self):
+    def client_facility_dict(self) -> None:
         self.cli2fac = {}
         for cv in list(self.cli2iloc.keys()):
             self.cli2fac[cv] = []
@@ -23,7 +25,7 @@ class Coverage:
                 if cv in v:
                     self.cli2fac[cv].append(k)
 
-    def cov_dict(self):
+    def cov_dict(self) -> None:
         self.cli2ncov = {}
         for c, fs in self.cli2fac.items():
             self.cli2ncov[c] = len(fs)
@@ -44,7 +46,7 @@ class LSCP(LocateSolver, Coverage):
     def __init__(self, name: str, problem: pulp.LpProblem):
         super().__init__(name, problem)
 
-    def __add_obj(self):
+    def __add_obj(self) -> None:
         fac_vars = getattr(self, "fac_vars")
         self.problem += pulp.lpSum(fac_vars), "objective function"
 
@@ -92,12 +94,7 @@ class LSCP(LocateSolver, Coverage):
                 f"geodataframes crs are different: gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
             )
 
-        if distance_metric == "manhattan":
-            distances = distance_matrix(dem_data, fac_data, p=1)
-        elif distance_metric == "euclidean":
-            distances = distance_matrix(dem_data, fac_data, p=2)
-        else:
-            raise ValueError("distance metric is not supported")
+        distances = cdist(dem_data, fac_data, distance_metric)
 
         return cls.from_cost_matrix(distances, max_coverage)
 
@@ -130,14 +127,14 @@ class LSCP(LocateSolver, Coverage):
         elif self.problem.status == pulp.constants.LpSolutionInfeasible:
             raise Exception("infeasible solution")
         elif self.problem.status == pulp.constants.LpSolutionOptimal:
-            return 1
+            return self
 
 
 class MCLP(LocateSolver, Coverage):
     def __init__(self, name: str, problem: pulp.LpProblem):
         super().__init__(name, problem)
 
-    def __add_obj(self, ai: np.array, range_clients: range):
+    def __add_obj(self, ai: np.array, range_clients: range) -> None:
         dem_vars = getattr(self, "cli_vars")
 
         self.problem += (
@@ -197,12 +194,7 @@ class MCLP(LocateSolver, Coverage):
                 f"geodataframes crs are different: gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
             )
 
-        if distance_metric == "manhattan":
-            distances = distance_matrix(dem_data, fac_data, p=1)
-        elif distance_metric == "euclidean":
-            distances = distance_matrix(dem_data, fac_data, p=2)
-        else:
-            raise ValueError("distance metric is not supported")
+        distances = cdist(dem_data, fac_data, distance_metric)
 
         return cls.from_cost_matrix(distances, service_load, max_coverage, p_facilities)
 
@@ -216,7 +208,7 @@ class MCLP(LocateSolver, Coverage):
         elif self.problem.status == pulp.constants.LpSolutionInfeasible:
             raise Exception("infeasible solution")
         elif self.problem.status == pulp.constants.LpSolutionOptimal:
-            return 1
+            return self
 
     def record_decisions(self):
         fac_vars = getattr(self, "fac_vars")

@@ -2,8 +2,10 @@ import numpy as np
 
 import pulp
 from geopandas import GeoDataFrame
+
+import spopt.locate
 from spopt.locate.base import LocateSolver, FacilityModelBuilder
-from scipy.spatial import distance_matrix
+from scipy.spatial.distance import cdist
 
 
 class PMedian(LocateSolver):
@@ -15,7 +17,7 @@ class PMedian(LocateSolver):
         self.name = name
         self.problem = problem
 
-    def __add_obj(self, range_clients: range, range_facility: range):
+    def __add_obj(self, range_clients: range, range_facility: range) -> None:
         cli_assgn_vars = getattr(self, "cli_assgn_vars")
 
         self.problem += (
@@ -93,12 +95,7 @@ class PMedian(LocateSolver):
                 f"geodataframes crs are different: gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
             )
 
-        if distance_metric == "manhattan":
-            distances = distance_matrix(dem_data, fac_data, p=1)
-        elif distance_metric == "euclidean":
-            distances = distance_matrix(dem_data, fac_data, p=2)
-        else:
-            raise ValueError("distance metric is not supported")
+        distances = cdist(dem_data, fac_data, distance_metric)
 
         return cls.from_cost_matrix(distances, service_load, max_coverage, p_facilities)
 
@@ -112,4 +109,4 @@ class PMedian(LocateSolver):
         elif self.problem.status == pulp.constants.LpSolutionInfeasible:
             raise Exception("infeasible solution")
         elif self.problem.status == pulp.constants.LpSolutionOptimal:
-            return 1
+            return self

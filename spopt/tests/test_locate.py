@@ -3,6 +3,8 @@ import geopandas
 import pulp
 import spaghetti
 from shapely.geometry import Point
+
+import spopt.locate
 from spopt.locate import LSCP, MCLP, PCenter, PMedian
 import unittest
 
@@ -61,22 +63,22 @@ class TestLocate(unittest.TestCase):
 
     def test_lscp_from_cost_matrix(self):
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 10)
-        status = lscp.solve(pulp.PULP_CBC_CMD())
-        self.assertEqual(status, 1)
+        result = lscp.solve(pulp.PULP_CBC_CMD())
+        self.assertIsInstance(result, LSCP)
 
     def test_lscp_from_geodataframe(self):
         lscp = LSCP.from_geodataframe(
             self.client_points, self.facility_points, "geometry", "geometry", 10
         )
-        status = lscp.solve(pulp.PULP_CBC_CMD())
-        self.assertEqual(status, 1)
+        result = lscp.solve(pulp.PULP_CBC_CMD())
+        self.assertIsInstance(result, LSCP)
 
     def test_mclp_from_cost_matrix(self):
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix, self.ai, max_coverage=7, p_facilities=4
         )
-        status = mclp.solve(pulp.PULP_CBC_CMD())
-        self.assertEqual(status, 1)
+        result = mclp.solve(pulp.PULP_CBC_CMD())
+        self.assertIsInstance(result, MCLP)
 
     def test_mclp_from_geodataframe(self):
         self.client_points["weights"] = self.ai
@@ -89,15 +91,15 @@ class TestLocate(unittest.TestCase):
             max_coverage=7,
             p_facilities=4,
         )
-        status = mclp.solve(pulp.PULP_CBC_CMD())
-        self.assertEqual(status, 1)
+        result = mclp.solve(pulp.PULP_CBC_CMD())
+        self.assertIsInstance(result, MCLP)
 
     def test_p_median_from_cost_matrix(self):
         p_median = PMedian.from_cost_matrix(
             self.cost_matrix, self.ai, max_coverage=7, p_facilities=4
         )
-        status = p_median.solve(pulp.PULP_CBC_CMD())
-        self.assertEqual(status, 1)
+        result = p_median.solve(pulp.PULP_CBC_CMD())
+        self.assertIsInstance(result, PMedian)
 
     def test_p_median_from_geodataframe(self):
         self.client_points["weights"] = self.ai
@@ -110,15 +112,15 @@ class TestLocate(unittest.TestCase):
             max_coverage=7,
             p_facilities=4,
         )
-        status = p_median.solve(pulp.PULP_CBC_CMD())
-        self.assertEqual(status, 1)
+        result = p_median.solve(pulp.PULP_CBC_CMD())
+        self.assertIsInstance(result, PMedian)
 
     def test_p_center_from_cost_matrix(self):
         p_center = PCenter.from_cost_matrix(
             self.cost_matrix, self.ai, max_coverage=7, p_facilities=4
         )
-        status = p_center.solve(pulp.PULP_CBC_CMD())
-        self.assertEqual(status, 1)
+        result = p_center.solve(pulp.PULP_CBC_CMD())
+        self.assertIsInstance(result, PCenter)
 
     def test_p_center_from_geodataframe(self):
         self.client_points["weights"] = self.ai
@@ -131,5 +133,5 @@ class TestLocate(unittest.TestCase):
             max_coverage=7,
             p_facilities=4,
         )
-        status = p_center.solve(pulp.PULP_CBC_CMD())
-        self.assertEqual(status, 1)
+        result = p_center.solve(pulp.PULP_CBC_CMD())
+        self.assertIsInstance(result, PCenter)
