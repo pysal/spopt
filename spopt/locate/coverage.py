@@ -3,7 +3,6 @@ import numpy as np
 import pulp
 from geopandas import GeoDataFrame
 
-import spopt.locate
 from spopt.locate.base import LocateSolver, FacilityModelBuilder
 from scipy.spatial.distance import cdist
 
@@ -43,19 +42,57 @@ class Coverage:
 
 
 class LSCP(LocateSolver, Coverage):
+    """
+    LSCP class implements Location Set Covering optimization model and solve it.
+
+    Parameters
+    ----------
+    name: str
+        Problem name
+    problem: pulp.LpProblem
+        Pulp instance of optimization model that contains constraints, variables and objective function.
+
+    """
+
     def __init__(self, name: str, problem: pulp.LpProblem):
         super().__init__(name, problem)
 
     def __add_obj(self) -> None:
+        """
+        Add objective function to model:
+        x1 + x2 + x3 + x4 + x5 + ... + xj
+
+        Returns
+        -------
+        None
+        """
         fac_vars = getattr(self, "fac_vars")
         self.problem += pulp.lpSum(fac_vars), "objective function"
 
     @classmethod
-    def from_cost_matrix(cls, cost_matrix: np.array, max_coverage: float):
+    def from_cost_matrix(
+        cls, cost_matrix: np.array, max_coverage: float, name: str = "LSCP"
+    ):
+        """
+        Create a LSCP object based on cost matrix.
+
+        Parameters
+        ----------
+        cost_matrix: np.array
+            two-dimensional distance array between facility points and demand point
+        max_coverage: float
+            maximum acceptable service distance by problem
+        name: str, default="LSCP"
+            name of the problem
+
+        Returns
+        -------
+        LSCP object
+        """
+
         r_fac = range(cost_matrix.shape[1])
         r_cli = range(cost_matrix.shape[0])
 
-        name = "LSCP"
         model = pulp.LpProblem(name, pulp.LpMinimize)
         lscp = LSCP(name, model)
 
@@ -80,7 +117,34 @@ class LSCP(LocateSolver, Coverage):
         facility_col: str,
         max_coverage: float,
         distance_metric: str = "euclidean",
+        name: str = "LSCP",
     ):
+        """
+        Create a LSCP object based on geodataframes. Calculates the cost matrix between demand and facility,
+        and then uses from_cost_matrix method.
+
+        Parameters
+        ----------
+        gdf_demand: geopandas.GeoDataFrame
+            demand geodataframe with point geometry
+        gdf_fac: geopandas.GeoDataframe
+            facility geodataframe with point geometry
+        demand_col: str
+            demand geometry column name
+        facility_col: str
+            facility candidate sites geometry column name
+        max_coverage: float
+            maximum acceptable service distance by problem
+        distance_metric: str, default="euclidean"
+            metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
+        name: str, default="LSCP"
+            name of the problem
+
+        Returns
+        -------
+        LSCP object
+        """
+
         dem = gdf_demand[demand_col]
         fac = gdf_fac[facility_col]
 
@@ -96,7 +160,7 @@ class LSCP(LocateSolver, Coverage):
 
         distances = cdist(dem_data, fac_data, distance_metric)
 
-        return cls.from_cost_matrix(distances, max_coverage)
+        return cls.from_cost_matrix(distances, max_coverage, name)
 
     def record_decisions(self):
         fac_vars = getattr(self, "fac_vars")
@@ -118,6 +182,18 @@ class LSCP(LocateSolver, Coverage):
         self.cov_dict()
 
     def solve(self, solver: pulp.LpSolver):
+        """
+        Solve the LSCP model
+
+        Parameters
+        ----------
+        solver: pulp.LpSolver
+            solver supported by pulp package
+
+        Returns
+        -------
+        LSCP object
+        """
         self.problem.solve(solver)
 
         if self.problem.status == pulp.constants.LpStatusUnbounded:
@@ -131,10 +207,30 @@ class LSCP(LocateSolver, Coverage):
 
 
 class MCLP(LocateSolver, Coverage):
+    """
+    MCLP class implements Maximal Coverage Location optimization model and solve it.
+
+    Parameters
+    ----------
+    name: str
+        Problem name
+    problem: pulp.LpProblem
+        Pulp instance of optimization model that contains constraints, variables and objective function.
+
+    """
+
     def __init__(self, name: str, problem: pulp.LpProblem):
         super().__init__(name, problem)
 
     def __add_obj(self, ai: np.array, range_clients: range) -> None:
+        """
+        Add objective function to model:
+        a1 * y1 + a2 * y2 +  ... + ai * yi
+
+        Returns
+        -------
+        None
+        """
         dem_vars = getattr(self, "cli_vars")
 
         self.problem += (
@@ -144,12 +240,36 @@ class MCLP(LocateSolver, Coverage):
 
     @classmethod
     def from_cost_matrix(
-        cls, cost_matrix: np.array, ai: np.array, max_coverage: float, p_facilities: int
+        cls,
+        cost_matrix: np.array,
+        ai: np.array,
+        max_coverage: float,
+        p_facilities: int,
+        name: str = "MCLP",
     ):
+        """
+        Create a MCLP object based on cost matrix.
+
+        Parameters
+        ----------
+        cost_matrix: np.array
+            two-dimensional distance array between facility points and demand point
+        ai: np.array
+            one-dimensional service load or population demand array
+        max_coverage: float
+            maximum acceptable service distance by problem
+        p_facilities: int
+            number of facilities to be located
+        name: str, default="MCLP"
+            name of the problem
+
+        Returns
+        -------
+        MCLP object
+        """
         r_fac = range(cost_matrix.shape[1])
         r_cli = range(cost_matrix.shape[0])
 
-        name = "MCLP"
         model = pulp.LpProblem(name, pulp.LpMaximize)
         mclp = MCLP(name, model)
 
@@ -179,7 +299,35 @@ class MCLP(LocateSolver, Coverage):
         max_coverage: float,
         p_facilities: int,
         distance_metric: str = "euclidean",
+        name: str = "MCLP",
     ):
+        """
+        Create a MCLP object based on geodataframes. Calculates the cost matrix between demand and facility,
+        and then uses from_cost_matrix method.
+
+        Parameters
+        ----------
+        gdf_demand: geopandas.GeoDataFrame
+            demand geodataframe with point geometry
+        gdf_fac: geopandas.GeoDataframe
+            facility geodataframe with point geometry
+        demand_col: str
+            demand geometry column name
+        facility_col: str
+            facility candidate sites geometry column name
+        weights_cols: str
+            weight column name representing service load or demand
+        max_coverage: float
+            maximum acceptable service distance by problem
+        distance_metric: str, default="euclidean"
+            metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
+        name: str, default="MCLP"
+            name of the problem
+
+        Returns
+        -------
+        MCLP object
+        """
         service_load = gdf_demand[weights_cols].to_numpy()
         dem = gdf_demand[demand_col]
         fac = gdf_fac[facility_col]
@@ -196,9 +344,23 @@ class MCLP(LocateSolver, Coverage):
 
         distances = cdist(dem_data, fac_data, distance_metric)
 
-        return cls.from_cost_matrix(distances, service_load, max_coverage, p_facilities)
+        return cls.from_cost_matrix(
+            distances, service_load, max_coverage, p_facilities, name
+        )
 
     def solve(self, solver: pulp.LpSolver):
+        """
+        Solve the MCLP model
+
+        Parameters
+        ----------
+        solver: pulp.LpSolver
+            solver supported by pulp package
+
+        Returns
+        -------
+        MCLP object
+        """
         self.problem.solve(solver)
 
         if self.problem.status == pulp.constants.LpStatusUnbounded:
