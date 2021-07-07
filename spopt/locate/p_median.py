@@ -3,21 +3,46 @@ import numpy as np
 import pulp
 from geopandas import GeoDataFrame
 
-import spopt.locate
 from spopt.locate.base import LocateSolver, FacilityModelBuilder
 from scipy.spatial.distance import cdist
 
 
 class PMedian(LocateSolver):
-    def __init__(
-        self, name: str, problem: pulp.LpProblem, zij: np.array, sij: np.array
-    ):
-        self.zij = zij
+    """
+    PMedian class implements P-Median optimization model and solve it.
+
+    Parameters
+    ----------
+    name: str
+        problem name
+    problem: pulp.LpProblem
+        pulp instance of optimization model that contains constraints, variables and objective function.
+    sij: np.array
+        two-dimensional array product of service load/population demand and distance matrix between facility and demand.
+
+    """
+
+    def __init__(self, name: str, problem: pulp.LpProblem, sij: np.array):
         self.sij = sij
         self.name = name
         self.problem = problem
 
     def __add_obj(self, range_clients: range, range_facility: range) -> None:
+        """
+        Add objective function to model
+        Minimize s1_1 * z1_1 + s1_2 * z1_2 + ... + si_j * zi_j
+
+        Parameters
+        ----------
+        range_clients: range
+            range of demand points quantity
+        range_facility: range
+            range of demand facility quantity
+
+        Returns
+        -------
+        None
+        """
         cli_assgn_vars = getattr(self, "cli_assgn_vars")
 
         self.problem += (
@@ -33,21 +58,39 @@ class PMedian(LocateSolver):
 
     @classmethod
     def from_cost_matrix(
-        cls, cost_matrix: np.array, ai: np.array, max_coverage: float, p_facilities: int
+        cls,
+        cost_matrix: np.array,
+        ai: np.array,
+        p_facilities: int,
+        name: str = "p-median",
     ):
+        """
+        Create PMedian object based on cost matrix
+
+        Parameters
+        ----------
+        cost_matrix: np.array
+            two-dimensional distance array between facility points and demand point
+        ai: np.array
+            one-dimensional service load or population demand
+        p_facilities: int
+            number of facilities to be located
+        name: str, default="p-median"
+            name of the problem
+
+        Returns
+        -------
+        PMedian object
+        """
         r_cli = range(cost_matrix.shape[0])
         r_fac = range(cost_matrix.shape[1])
 
-        name = "p-median"
         model = pulp.LpProblem(name, pulp.LpMinimize)
-
-        aij = np.zeros(cost_matrix.shape)
-        aij[cost_matrix <= max_coverage] = 1.0
 
         ai = np.reshape(ai, (cost_matrix.shape[0], 1))
         sij = ai * cost_matrix
 
-        p_median = PMedian(name, model, aij, sij)
+        p_median = PMedian(name, model, sij)
 
         FacilityModelBuilder.add_facility_integer_variable(p_median, r_fac, "y[{i}]")
         FacilityModelBuilder.add_client_assign_integer_variable(
@@ -76,10 +119,37 @@ class PMedian(LocateSolver):
         demand_col: str,
         facility_col: str,
         weights_cols: str,
-        max_coverage: float,
         p_facilities: int,
         distance_metric: str = "euclidean",
+        name: str = "p-median",
     ):
+        """
+        Create a PMedian object based on geodataframes. Calculate the cost matrix between demand and facility,
+        and then use from_cost_matrix method.
+
+        Parameters
+        ----------
+        gdf_demand: geopandas.GeoDataFrame
+            demand geodataframe with point geometry
+        gdf_fac: geopandas.GeoDataframe
+            facility geodataframe with point geometry
+        demand_col: str
+            demand geometry column name
+        facility_col: str
+            facility candidate sites geometry column name
+        weights_cols: str
+            weight column name representing service load or demand
+        p_facilities: int
+            number of facilities to be located
+        distance_metric: str, default="euclidean"
+            metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
+        name: str, default="p-median"
+            name of the problem
+
+        Returns
+        -------
+        PMedian object
+        """
 
         service_load = gdf_demand[weights_cols].to_numpy()
         dem = gdf_demand[demand_col]
@@ -97,9 +167,21 @@ class PMedian(LocateSolver):
 
         distances = cdist(dem_data, fac_data, distance_metric)
 
-        return cls.from_cost_matrix(distances, service_load, max_coverage, p_facilities)
+        return cls.from_cost_matrix(distances, service_load, p_facilities, name)
 
     def solve(self, solver: pulp.LpSolver):
+        """
+        Solve the PMedian model
+
+        Parameters
+        ----------
+        solver: pulp.LpSolver
+            solver supported by pulp package
+
+        Returns
+        -------
+        PMedian object
+        """
         self.problem.solve(solver)
 
         if self.problem.status == pulp.constants.LpStatusUnbounded:

@@ -60,7 +60,7 @@ class LSCP(LocateSolver, Coverage):
     def __add_obj(self) -> None:
         """
         Add objective function to model:
-        x1 + x2 + x3 + x4 + x5 + ... + xj
+        Minimize x1 + x2 + x3 + x4 + x5 + ... + xj
 
         Returns
         -------
@@ -120,8 +120,8 @@ class LSCP(LocateSolver, Coverage):
         name: str = "LSCP",
     ):
         """
-        Create a LSCP object based on geodataframes. Calculates the cost matrix between demand and facility,
-        and then uses from_cost_matrix method.
+        Create a LSCP object based on geodataframes. Calculate the cost matrix between demand and facility,
+        and then use from_cost_matrix method.
 
         Parameters
         ----------
@@ -225,7 +225,7 @@ class MCLP(LocateSolver, Coverage):
     def __add_obj(self, ai: np.array, range_clients: range) -> None:
         """
         Add objective function to model:
-        a1 * y1 + a2 * y2 +  ... + ai * yi
+        Maximize a1 * y1 + a2 * y2 +  ... + ai * yi
 
         Returns
         -------
@@ -255,7 +255,7 @@ class MCLP(LocateSolver, Coverage):
         cost_matrix: np.array
             two-dimensional distance array between facility points and demand point
         ai: np.array
-            one-dimensional service load or population demand array
+            one-dimensional service load or population demand
         max_coverage: float
             maximum acceptable service distance by problem
         p_facilities: int
@@ -302,8 +302,8 @@ class MCLP(LocateSolver, Coverage):
         name: str = "MCLP",
     ):
         """
-        Create a MCLP object based on geodataframes. Calculates the cost matrix between demand and facility,
-        and then uses from_cost_matrix method.
+        Create a MCLP object based on geodataframes. Calculate the cost matrix between demand and facility,
+        and then use from_cost_matrix method.
 
         Parameters
         ----------
@@ -319,6 +319,8 @@ class MCLP(LocateSolver, Coverage):
             weight column name representing service load or demand
         max_coverage: float
             maximum acceptable service distance by problem
+        p_facilities: int
+            number of facilities to be located
         distance_metric: str, default="euclidean"
             metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
         name: str, default="MCLP"

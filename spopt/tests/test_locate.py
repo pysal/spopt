@@ -95,9 +95,7 @@ class TestLocate(unittest.TestCase):
         self.assertIsInstance(result, MCLP)
 
     def test_p_median_from_cost_matrix(self):
-        p_median = PMedian.from_cost_matrix(
-            self.cost_matrix, self.ai, max_coverage=7, p_facilities=4
-        )
+        p_median = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
         result = p_median.solve(pulp.PULP_CBC_CMD())
         self.assertIsInstance(result, PMedian)
 
@@ -109,16 +107,13 @@ class TestLocate(unittest.TestCase):
             "geometry",
             "geometry",
             "weights",
-            max_coverage=7,
             p_facilities=4,
         )
         result = p_median.solve(pulp.PULP_CBC_CMD())
         self.assertIsInstance(result, PMedian)
 
     def test_p_center_from_cost_matrix(self):
-        p_center = PCenter.from_cost_matrix(
-            self.cost_matrix, self.ai, max_coverage=7, p_facilities=4
-        )
+        p_center = PCenter.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
         result = p_center.solve(pulp.PULP_CBC_CMD())
         self.assertIsInstance(result, PCenter)
 
@@ -130,7 +125,6 @@ class TestLocate(unittest.TestCase):
             "geometry",
             "geometry",
             "weights",
-            max_coverage=7,
             p_facilities=4,
         )
         result = p_center.solve(pulp.PULP_CBC_CMD())

@@ -9,36 +9,73 @@ from scipy.spatial.distance import cdist
 
 
 class PCenter(LocateSolver):
-    def __init__(
-        self, name: str, problem: pulp.LpProblem, zij: np.array, sij: np.array
-    ):
+    """
+    PCenter class implements P-Center optimization model and solve it.
+
+    Parameters
+    ----------
+    name: str
+        problem name
+    problem: pulp.LpProblem
+        pulp instance of optimization model that contains constraints, variables and objective function.
+    sij: np.array
+        two-dimensional array product of service load/population demand and distance matrix between facility and demand.
+
+    """
+
+    def __init__(self, name: str, problem: pulp.LpProblem, sij: np.array):
         self.problem = problem
         self.name = name
         self.sij = sij
-        self.zij = zij
 
     def __add_obj(self) -> None:
+        """
+        Add objective function to the model:
+        Minimize W
+
+        Returns
+        -------
+        None
+        """
         weight = getattr(self, "weight_var")
 
         self.problem += weight, "objective function"
 
     @classmethod
     def from_cost_matrix(
-        cls, cost_matrix: np.array, ai: np.array, max_coverage: float, p_facilities: int
+        cls,
+        cost_matrix: np.array,
+        ai: np.array,
+        p_facilities: int,
+        name: str = "p-center",
     ):
+        """
+        Create PCenter object based on cost matrix
+
+        Parameters
+        ----------
+        cost_matrix: np.array
+            two-dimensional distance array between facility points and demand point
+        ai: np.array
+            one-dimensional service load or population demand
+        p_facilities: int
+            number of facilities to be located
+        name: str, default="p-center"
+            name of the problem
+
+        Returns
+        -------
+        PCenter object
+        """
         r_cli = range(cost_matrix.shape[0])
         r_fac = range(cost_matrix.shape[1])
 
-        name = "p-center"
         model = pulp.LpProblem(name, pulp.LpMinimize)
-
-        aij = np.zeros(cost_matrix.shape)
-        aij[cost_matrix <= max_coverage] = 1.0
 
         ai = np.reshape(ai, (cost_matrix.shape[0], 1))
         sij = ai * cost_matrix
 
-        p_center = PCenter(name, model, aij, sij)
+        p_center = PCenter(name, model, sij)
 
         FacilityModelBuilder.add_facility_integer_variable(p_center, r_fac, "y[{i}]")
         FacilityModelBuilder.add_client_assign_integer_variable(
@@ -71,10 +108,37 @@ class PCenter(LocateSolver):
         demand_col: str,
         facility_col: str,
         weights_cols: str,
-        max_coverage: float,
         p_facilities: int,
         distance_metric: str = "euclidean",
+        name: str = "p-center",
     ):
+        """
+        Create a PCenter object based on geodataframes. Calculate the cost matrix between demand and facility,
+        and then use from_cost_matrix method.
+
+        Parameters
+        ----------
+        gdf_demand: geopandas.GeoDataFrame
+            demand geodataframe with point geometry
+        gdf_fac: geopandas.GeoDataframe
+            facility geodataframe with point geometry
+        demand_col: str
+            demand geometry column name
+        facility_col: str
+            facility candidate sites geometry column name
+        weights_cols: str
+            weight column name representing service load or demand
+        p_facilities: int
+            number of facilities to be located
+        distance_metric: str, default="euclidean"
+            metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
+        name: str, default="p-median"
+            name of the problem
+
+        Returns
+        -------
+        PCenter object
+        """
 
         service_load = gdf_demand[weights_cols].to_numpy()
         dem = gdf_demand[demand_col]
@@ -92,9 +156,21 @@ class PCenter(LocateSolver):
 
         distances = cdist(dem_data, fac_data, distance_metric)
 
-        return cls.from_cost_matrix(distances, service_load, max_coverage, p_facilities)
+        return cls.from_cost_matrix(distances, service_load, p_facilities, name)
 
     def solve(self, solver: pulp.LpSolver):
+        """
+        Solve the PCenter model
+
+        Parameters
+        ----------
+        solver: pulp.LpSolver
+            solver supported by pulp package
+
+        Returns
+        -------
+        PCenter object
+        """
         self.problem.solve(solver)
 
         if self.problem.status == pulp.constants.LpStatusUnbounded:
