@@ -1,11 +1,13 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+
+from spopt.BaseClass import BaseSpOptSolver
 from typing import TypeVar
 
 import numpy as np
 import pulp
 
 
-class LocateSolver(ABC):
+class LocateSolver(BaseSpOptSolver):
     """
     Base Class for locate package
     """
