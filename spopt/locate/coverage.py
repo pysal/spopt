@@ -195,15 +195,7 @@ class LSCP(LocateSolver, Coverage):
         LSCP object
         """
         self.problem.solve(solver)
-
-        if self.problem.status == pulp.constants.LpStatusUnbounded:
-            raise Exception("unbounded solution")
-        elif self.problem.status == pulp.constants.LpStatusNotSolved:
-            raise Exception("not possible to solve")
-        elif self.problem.status == pulp.constants.LpSolutionInfeasible:
-            raise Exception("infeasible solution")
-        elif self.problem.status == pulp.constants.LpSolutionOptimal:
-            return self
+        return self
 
 
 class MCLP(LocateSolver, Coverage):
@@ -364,15 +356,7 @@ class MCLP(LocateSolver, Coverage):
         MCLP object
         """
         self.problem.solve(solver)
-
-        if self.problem.status == pulp.constants.LpStatusUnbounded:
-            raise Exception("unbounded solution")
-        elif self.problem.status == pulp.constants.LpStatusNotSolved:
-            raise Exception("not possible to solve")
-        elif self.problem.status == pulp.constants.LpSolutionInfeasible:
-            raise Exception("infeasible solution")
-        elif self.problem.status == pulp.constants.LpSolutionOptimal:
-            return self
+        return self
 
     def record_decisions(self):
         fac_vars = getattr(self, "fac_vars")

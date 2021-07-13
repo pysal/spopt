@@ -183,12 +183,4 @@ class PMedian(LocateSolver):
         PMedian object
         """
         self.problem.solve(solver)
-
-        if self.problem.status == pulp.constants.LpStatusUnbounded:
-            raise Exception("unbounded solution")
-        elif self.problem.status == pulp.constants.LpStatusNotSolved:
-            raise Exception("not possible to solve")
-        elif self.problem.status == pulp.constants.LpSolutionInfeasible:
-            raise Exception("infeasible solution")
-        elif self.problem.status == pulp.constants.LpSolutionOptimal:
-            return self
+        return self
