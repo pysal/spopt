@@ -6,6 +6,8 @@ from geopandas import GeoDataFrame
 from spopt.locate.base import LocateSolver, FacilityModelBuilder
 from scipy.spatial.distance import cdist
 
+import warnings
+
 
 class Coverage:
     def __init__(self, name: str, problem: pulp.LpProblem):
@@ -147,6 +149,23 @@ class LSCP(LocateSolver, Coverage):
 
         dem = gdf_demand[demand_col]
         fac = gdf_fac[facility_col]
+
+        dem_type_geom = dem.geom_type.unique()
+        fac_type_geom = fac.geom_type.unique()
+
+        if len(dem_type_geom) > 1 or not "Point" in dem_type_geom:
+            warnings.warn(
+                "Demand geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
+                Warning,
+            )
+            dem = dem.centroid
+
+        if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
+            warnings.warn(
+                "Facility geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
+                Warning,
+            )
+            fac = fac.centroid
 
         dem_data = np.array([dem.x.to_numpy(), dem.y.to_numpy()]).T
         fac_data = np.array([fac.x.to_numpy(), fac.y.to_numpy()]).T
@@ -325,6 +344,21 @@ class MCLP(LocateSolver, Coverage):
         service_load = gdf_demand[weights_cols].to_numpy()
         dem = gdf_demand[demand_col]
         fac = gdf_fac[facility_col]
+
+        dem_type_geom = dem.geom_type.unique()
+        fac_type_geom = fac.geom_type.unique()
+
+        if len(dem_type_geom) > 1 or not "Point" in dem_type_geom:
+            raise Warning(
+                "Demand geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results."
+            )
+            dem = dem.centroid
+
+        if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
+            raise Warning(
+                "Facility geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results."
+            )
+            fac = fac.centroid
 
         dem_data = np.array([dem.x.to_numpy(), dem.y.to_numpy()]).T
         fac_data = np.array([fac.x.to_numpy(), fac.y.to_numpy()]).T
