@@ -167,13 +167,19 @@ class TestOptimalLocate(unittest.TestCase):
         self.p_facility = 4
         self.ai = demand_name.sort_values(by=["DestinationName"])["demand"].to_numpy()
 
-    def test_lscp_from_cost_matrix(self):
+    def test_optimality_lscp_from_cost_matrix(self):
         lscp = LSCP.from_cost_matrix(self.cost_matrix, self.service_dist)
         lscp = lscp.solve(pulp.PULP_CBC_CMD())
 
         self.assertEqual(lscp.problem.status, pulp.LpStatusOptimal)
 
-    def test_lscp_from_geodataframe(self):
+    def test_infeasibility_lscp_from_cost_matrix(self):
+        lscp = LSCP.from_cost_matrix(self.cost_matrix, 20)
+        lscp = lscp.solve(pulp.PULP_CBC_CMD())
+
+        self.assertEqual(lscp.problem.status, pulp.LpStatusInfeasible)
+
+    def test_optimality_lscp_from_geodataframe(self):
         lscp = LSCP.from_geodataframe(
             self.demand_points_gdf,
             self.facility_points_gdf,
@@ -182,9 +188,21 @@ class TestOptimalLocate(unittest.TestCase):
             self.service_dist,
         )
         lscp = lscp.solve(pulp.PULP_CBC_CMD())
+
         self.assertEqual(lscp.problem.status, pulp.LpStatusOptimal)
 
-    def test_mclp_from_cost_matrix(self):
+    def test_infeasibility_lscp_from_geodataframe(self):
+        lscp = LSCP.from_geodataframe(
+            self.demand_points_gdf,
+            self.facility_points_gdf,
+            "geometry",
+            "geometry",
+            0,
+        )
+        lscp = lscp.solve(pulp.PULP_CBC_CMD())
+        self.assertEqual(lscp.problem.status, pulp.LpStatusInfeasible)
+
+    def test_optimality_mclp_from_cost_matrix(self):
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix,
             self.ai,
@@ -194,7 +212,17 @@ class TestOptimalLocate(unittest.TestCase):
         mclp = mclp.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(mclp.problem.status, pulp.LpStatusOptimal)
 
-    def test_mclp_from_geodataframe(self):
+    def test_infeasibility_mclp_from_cost_matrix(self):
+        mclp = MCLP.from_cost_matrix(
+            self.cost_matrix,
+            self.ai,
+            max_coverage=self.service_dist,
+            p_facilities=1000,
+        )
+        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        self.assertEqual(mclp.problem.status, pulp.LpStatusInfeasible)
+
+    def test_optimality_mclp_from_geodataframe(self):
         mclp = MCLP.from_geodataframe(
             self.demand_points_gdf,
             self.facility_points_gdf,
@@ -207,14 +235,32 @@ class TestOptimalLocate(unittest.TestCase):
         mclp = mclp.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(mclp.problem.status, pulp.LpStatusOptimal)
 
-    def test_pcenter_from_cost_matrix(self):
+    def test_infeasibility_mclp_from_geodataframe(self):
+        mclp = MCLP.from_geodataframe(
+            self.demand_points_gdf,
+            self.facility_points_gdf,
+            "geometry",
+            "geometry",
+            "POP2000",
+            max_coverage=self.service_dist,
+            p_facilities=1000,
+        )
+        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        self.assertEqual(mclp.problem.status, pulp.LpStatusInfeasible)
+
+    def test_optimality_pcenter_from_cost_matrix(self):
         pcenter = PCenter.from_cost_matrix(
             self.cost_matrix, self.ai, p_facilities=self.p_facility
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(pcenter.problem.status, pulp.LpStatusOptimal)
 
-    def test_pcenter_from_geodataframe(self):
+    def test_infeasibility_pcenter_from_cost_matrix(self):
+        pcenter = PCenter.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=0)
+        pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
+        self.assertEqual(pcenter.problem.status, pulp.LpStatusInfeasible)
+
+    def test_optimality_pcenter_from_geodataframe(self):
         pcenter = PCenter.from_geodataframe(
             self.demand_points_gdf,
             self.facility_points_gdf,
@@ -226,14 +272,31 @@ class TestOptimalLocate(unittest.TestCase):
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(pcenter.problem.status, pulp.LpStatusOptimal)
 
-    def test_pmedian_from_cost_matrix(self):
+    def test_infeasibility_pcenter_from_geodataframe(self):
+        pcenter = PCenter.from_geodataframe(
+            self.demand_points_gdf,
+            self.facility_points_gdf,
+            "geometry",
+            "geometry",
+            "POP2000",
+            p_facilities=0,
+        )
+        pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
+        self.assertEqual(pcenter.problem.status, pulp.LpStatusInfeasible)
+
+    def test_optimality_pmedian_from_cost_matrix(self):
         pmedian = PMedian.from_cost_matrix(
             self.cost_matrix, self.ai, p_facilities=self.p_facility
         )
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(pmedian.problem.status, pulp.LpStatusOptimal)
 
-    def test_pmedian_from_geodataframe(self):
+    def test_infeasibility_pmedian_from_cost_matrix(self):
+        pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=0)
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
+        self.assertEqual(pmedian.problem.status, pulp.LpStatusInfeasible)
+
+    def test_optimality_pmedian_from_geodataframe(self):
         pmedian = PMedian.from_geodataframe(
             self.demand_points_gdf,
             self.facility_points_gdf,
@@ -244,3 +307,15 @@ class TestOptimalLocate(unittest.TestCase):
         )
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(pmedian.problem.status, pulp.LpStatusOptimal)
+
+    def test_infeasibility_pmedian_from_geodataframe(self):
+        pmedian = PMedian.from_geodataframe(
+            self.demand_points_gdf,
+            self.facility_points_gdf,
+            "geometry",
+            "geometry",
+            "POP2000",
+            p_facilities=0,
+        )
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
+        self.assertEqual(pmedian.problem.status, pulp.LpStatusInfeasible)
