@@ -65,7 +65,11 @@ Citing **spopt**
 If you use **PySAL-spopt** in a scientific publication, we would appreciate citations to the following paper::
 
   @misc{spopt2021,
-    author    = {Feng, Xin, and Gaboardi, James D. and Knaap, Elijah and Rey, Sergio J. and Wei, Ran},
+    author    = {Feng, Xin, and 
+                 Gaboardi, James D. and 
+                 Knaap, Elijah and 
+                 Rey, Sergio J. and 
+                 Wei, Ran},
     month     = {jan},
     year      = {2021},
     title     = {pysal/spopt},
