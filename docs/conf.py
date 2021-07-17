@@ -29,9 +29,9 @@ extensions = [  #'sphinx_gallery.gen_gallery',
     "sphinx.ext.mathjax",
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
+    "nbsphinx",
     "numpydoc",
     "matplotlib.sphinxext.plot_directive",
-    "nbsphinx",
 ]
 
 
@@ -49,7 +49,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "spopt"
-copyright = "2020, pysal developers"
+copyright = "2020-, pysal developers"
 author = "pysal developers"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -247,17 +247,18 @@ def setup(app):
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3/", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+    "esda": ("https://esda.readthedocs.io/en/latest/", None),
+    "geopandas": ("https://geopandas.readthedocs.io/en/latest/", None),
+    "giddy": ("https://giddy.readthedocs.io/en/latest/", None),
+    "hdbscan": ("https://hdbscan.readthedocs.io/en/latest/", None),
+    "libpysal": ("https://pysal.org/libpysal/", None),
     "numpy": ("https://docs.scipy.org/doc/numpy", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
-    "geopandas": ("https://geopandas.readthedocs.io/en/latest/", None),
-    "sklearn": ("https://scikit-learn.org/stable/", None),
-    "giddy": ("https://giddy.readthedocs.io/en/latest/", None),
-    "libpysal": ("https://pysal.org/libpysal/", None),
-    "esda": ("https://esda.readthedocs.io/en/latest/", None),
+    "pulp": ("https://coin-or.github.io/pulp/", None),
+    "python": ("https://docs.python.org/3.9/", None),
     "region": ("https://region.readthedocs.io/en/latest/", None),
-    "hdbscan": ("https://hdbscan.readthedocs.io/en/latest/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+    "sklearn": ("https://scikit-learn.org/stable/", None),
 }
 
 numpydoc_xref_ignore = {
