@@ -255,7 +255,7 @@ intersphinx_mapping = {
     "numpy": ("https://docs.scipy.org/doc/numpy", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "pulp": ("https://coin-or.github.io/pulp/", None),
-    "python": ("https://docs.python.org/3/", None),
+    "python": ("https://docs.python.org/3.9/", None),
     "region": ("https://region.readthedocs.io/en/latest/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
     "sklearn": ("https://scikit-learn.org/stable/", None),
