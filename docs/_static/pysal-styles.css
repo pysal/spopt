@@ -1,12 +1,12 @@
 /* Make thumbnails with equal heights */
-@media only screen and (min-width : 481px) {
+@media only screen and (min-width : 500px) {
     .row.equal-height {
         display: flex;
         flex-wrap: wrap;
     }
     .row.equal-height > [class*='col-'] {
         display: flex;
-        flex-direction: column;
+        flex-direction: row, column;
     }
     .row.equal-height.row:after,
     .row.equal-height.row:before {
@@ -16,15 +16,15 @@
     .row.equal-height > [class*='col-'] > .thumbnail,
     .row.equal-height > [class*='col-'] > .thumbnail > .caption {
         display: flex;
-        flex: 1 0 auto;
+        flex: .9 .1 auto;
         flex-direction: column;
     }
     .row.equal-height > [class*='col-'] > .thumbnail > .caption > .flex-text {
         flex-grow: 1;
     }
     .row.equal-height > [class*='col-'] > .thumbnail > img {
-        width: 100%;
-        height: 200px; /* force image's height */
+        width: 400px;
+        height: 100%; /* force image's height */
 
         /* force image fit inside it's "box" */
         -webkit-object-fit: cover;
@@ -69,10 +69,22 @@
 
 
 /* Table with a scrollbar */
-.bodycontainer { max-height: 600px; width: 100%; margin: 0; overflow-y: auto; }
+.bodycontainer { max-height: 800px; width: 100%; margin: 0; padding: 0; overflow-y: auto; }
 .table-scrollable { margin: 0; padding: 0; }
+  
+   .label {
+      color: #E74C3C;
+      font-size: 100%;
+      font-weight: bold;
+      width: 125px;
+      text-align: left;
+      vertical-align: middle;
+}
 
-.label {
-    color: #222222;
-    font-size: 100%;
+  div.body {
+     max-width: 1080px;
+ }
+
+table.longtable.align-default{
+    text-align: left;
 }
