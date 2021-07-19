@@ -23,8 +23,9 @@
         flex-grow: 1;
     }
     .row.equal-height > [class*='col-'] > .thumbnail > img {
-        width: 400px;
-        height: 100%; /* force image's height */
+        width: 300px;
+        height: 300px; /* force image's height */
+        /* fheight: 100%; */
 
         /* force image fit inside it's "box" */
         -webkit-object-fit: cover;
