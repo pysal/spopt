@@ -33,7 +33,7 @@ extensions = [  #'sphinx_gallery.gen_gallery',
     "numpydoc",
     "matplotlib.sphinxext.plot_directive",
 ]
-
+bibtex_bibfiles = ["_static/references.bib"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -247,7 +247,7 @@ def setup(app):
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "esda": ("https://esda.readthedocs.io/en/latest/", None),
+    "esda": ("https://pysal.org/esda/", None),
     "geopandas": ("https://geopandas.readthedocs.io/en/latest/", None),
     "giddy": ("https://giddy.readthedocs.io/en/latest/", None),
     "hdbscan": ("https://hdbscan.readthedocs.io/en/latest/", None),
