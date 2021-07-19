@@ -55,6 +55,14 @@ class TestGlobalLocate(unittest.TestCase):
         ntw.snapobservations(self.client_points, "clients", attribute=True)
         ntw.snapobservations(self.facility_points, "facilities", attribute=True)
 
+        self.clients_snapped = spaghetti.element_as_gdf(
+            ntw, pp_name="clients", snapped=True
+        )
+
+        self.facilities_snapped = spaghetti.element_as_gdf(
+            ntw, pp_name="clients", snapped=True
+        )
+
         self.cost_matrix = ntw.allneighbordistances(
             sourcepattern=ntw.pointpatterns["clients"],
             destpattern=ntw.pointpatterns["facilities"],
@@ -69,7 +77,7 @@ class TestGlobalLocate(unittest.TestCase):
 
     def test_lscp_from_geodataframe(self):
         lscp = LSCP.from_geodataframe(
-            self.client_points, self.facility_points, "geometry", "geometry", 10
+            self.clients_snapped, self.facilities_snapped, "geometry", "geometry", 10
         )
         result = lscp.solve(pulp.PULP_CBC_CMD())
         self.assertIsInstance(result, LSCP)
@@ -82,10 +90,10 @@ class TestGlobalLocate(unittest.TestCase):
         self.assertIsInstance(result, MCLP)
 
     def test_mclp_from_geodataframe(self):
-        self.client_points["weights"] = self.ai
+        self.clients_snapped["weights"] = self.ai
         mclp = MCLP.from_geodataframe(
-            self.client_points,
-            self.facility_points,
+            self.clients_snapped,
+            self.facilities_snapped,
             "geometry",
             "geometry",
             "weights",
@@ -101,10 +109,10 @@ class TestGlobalLocate(unittest.TestCase):
         self.assertIsInstance(result, PMedian)
 
     def test_p_median_from_geodataframe(self):
-        self.client_points["weights"] = self.ai
+        self.clients_snapped["weights"] = self.ai
         p_median = PMedian.from_geodataframe(
-            self.client_points,
-            self.facility_points,
+            self.clients_snapped,
+            self.facilities_snapped,
             "geometry",
             "geometry",
             "weights",
@@ -119,10 +127,10 @@ class TestGlobalLocate(unittest.TestCase):
         self.assertIsInstance(result, PCenter)
 
     def test_p_center_from_geodataframe(self):
-        self.client_points["weights"] = self.ai
+        self.clients_snapped["weights"] = self.ai
         p_center = PCenter.from_geodataframe(
-            self.client_points,
-            self.facility_points,
+            self.clients_snapped,
+            self.facilities_snapped,
             "geometry",
             "geometry",
             "weights",
