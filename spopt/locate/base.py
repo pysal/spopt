@@ -12,6 +12,22 @@ class LocateSolver(BaseSpOptSolver):
     Base Class for locate package
     """
 
+    def __init__(self, name: str, problem: pulp.LpProblem):
+        self.name = name
+        self.problem = problem
+        self.aij = np.array([[]])
+
+    def client_facility_dict(self) -> None:
+        self.cli2fac = {}
+        for cv in list(self.cli2iloc.keys()):
+            self.cli2fac[cv] = []
+            for k, v in self.fac2cli.items():
+                if cv in v:
+                    self.cli2fac[cv].append(k)
+
+    def uncovered_clients_dict(self) -> None:
+        self.n_cli_uncov = self.aij.shape[0] - len(self.cli2iloc.keys())
+
     @abstractmethod
     def solve(self, solver: pulp.LpSolver):
         """

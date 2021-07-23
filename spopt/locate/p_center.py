@@ -176,6 +176,25 @@ class PCenter(LocateSolver):
 
         return cls.from_cost_matrix(distances, service_load, p_facilities, name)
 
+    def get_results(self):
+        fac_vars = getattr(self, "fac_vars")
+        cli_vars = getattr(self, "cli_assgn_vars")
+        self.cli2iloc = {}
+        self.fac2cli = {}
+
+        for j in range(len(fac_vars)):
+            if fac_vars[j].value() > 0:
+                fac_var_name = fac_vars[j].name
+                self.fac2cli[fac_var_name] = []
+                for i in range(cli_vars.shape[0]):
+                    if cli_vars[i][j].value() > 0:
+                        cli_var_name = cli_vars[i][j].name
+                        self.fac2cli[fac_var_name].append(cli_var_name)
+                        self.cli2iloc[cli_var_name] = i
+
+        self.client_facility_dict()
+        self.uncovered_clients_dict()
+
     def solve(self, solver: pulp.LpSolver):
         """
         Solve the PCenter model

@@ -9,23 +9,7 @@ from scipy.spatial.distance import cdist
 import warnings
 
 
-class Coverage:
-    def __init__(self, name: str, problem: pulp.LpProblem):
-        self.name = name
-        self.problem = problem
-        self.aij = np.array([[]])
-
-    def uncovered_clients_dict(self) -> None:
-        self.n_cli_uncov = self.aij.shape[0] - len(self.cli2iloc.keys())
-
-    def client_facility_dict(self) -> None:
-        self.cli2fac = {}
-        for cv in list(self.cli2iloc.keys()):
-            self.cli2fac[cv] = []
-            for k, v in self.fac2cli.items():
-                if cv in v:
-                    self.cli2fac[cv].append(k)
-
+class Coverage(LocateSolver):
     def cov_dict(self) -> None:
         self.cli2ncov = {}
         for c, fs in self.cli2fac.items():
@@ -43,7 +27,7 @@ class Coverage:
                         self.ncov2ncli[cov_count] += 1
 
 
-class LSCP(LocateSolver, Coverage):
+class LSCP(Coverage):
     """
     LSCP class implements Location Set Covering optimization model and solve it.
 
@@ -181,7 +165,7 @@ class LSCP(LocateSolver, Coverage):
 
         return cls.from_cost_matrix(distances, max_coverage, name)
 
-    def record_decisions(self):
+    def get_results(self):
         fac_vars = getattr(self, "fac_vars")
         self.cli2iloc = {}
         self.fac2cli = {}
@@ -217,7 +201,7 @@ class LSCP(LocateSolver, Coverage):
         return self
 
 
-class MCLP(LocateSolver, Coverage):
+class MCLP(Coverage):
     """
     MCLP class implements Maximal Coverage Location optimization model and solve it.
 
@@ -376,23 +360,7 @@ class MCLP(LocateSolver, Coverage):
             distances, service_load, max_coverage, p_facilities, name
         )
 
-    def solve(self, solver: pulp.LpSolver):
-        """
-        Solve the MCLP model
-
-        Parameters
-        ----------
-        solver: pulp.LpSolver
-            solver supported by pulp package
-
-        Returns
-        -------
-        MCLP object
-        """
-        self.problem.solve(solver)
-        return self
-
-    def record_decisions(self):
+    def get_results(self):
         fac_vars = getattr(self, "fac_vars")
         cli_vars = getattr(self, "cli_vars")
         self.cli2iloc = {}
@@ -412,3 +380,19 @@ class MCLP(LocateSolver, Coverage):
         self.client_facility_dict()
         self.uncovered_clients_dict()
         self.cov_dict()
+
+    def solve(self, solver: pulp.LpSolver):
+        """
+        Solve the MCLP model
+
+        Parameters
+        ----------
+        solver: pulp.LpSolver
+            solver supported by pulp package
+
+        Returns
+        -------
+        MCLP object
+        """
+        self.problem.solve(solver)
+        return self
