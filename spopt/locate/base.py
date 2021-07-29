@@ -17,17 +17,6 @@ class LocateSolver(BaseSpOptSolver):
         self.problem = problem
         self.aij = np.array([[]])
 
-    def client_facility_dict(self) -> None:
-        self.cli2fac = {}
-        for cv in list(self.cli2iloc.keys()):
-            self.cli2fac[cv] = []
-            for k, v in self.fac2cli.items():
-                if cv in v:
-                    self.cli2fac[cv].append(k)
-
-    def uncovered_clients_dict(self) -> None:
-        self.n_cli_uncov = self.aij.shape[0] - len(self.cli2iloc.keys())
-
     @abstractmethod
     def solve(self, solver: pulp.LpSolver):
         """
@@ -45,10 +34,37 @@ class LocateSolver(BaseSpOptSolver):
         pass
 
 
+class BaseOutputMixin:
+    def client_facility_array(self) -> None:
+        if hasattr(self, "fac2cli"):
+            self.cli2fac = [[] for i in range(self.aij.shape[0])]
+
+            for i in range(len(self.fac2cli)):
+                for fac_site in self.fac2cli[i]:
+                    self.cli2fac[fac_site].append(i)
+
+    def uncovered_clients_dict(self) -> None:
+        set_cov = set()
+        for i in range(len(self.fac2cli)):
+            set_cov |= set(self.fac2cli[i])
+
+        self.n_cli_uncov = self.aij.shape[0] - len(set_cov)
+
+
+class CoveragePercentageMixin:
+    def get_percentage(self):
+        self.percentage = 1 - (self.n_cli_uncov / self.aij.shape[0])
+
+
+class MeanDistanceMixin:
+    def get_mean_distance(self, weight: np.array):
+        self.mean_dist = self.problem.objective.value() / weight.sum()
+
+
 T_FacModel = TypeVar("T_FacModel", bound=LocateSolver)
 
 
-class FacilityModelBuilder(object):
+class FacilityModelBuilder:
     """
     Set facility locations' variables and constraints
     """

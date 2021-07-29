@@ -3,13 +3,13 @@ import numpy as np
 import pulp
 from geopandas import GeoDataFrame
 
-from spopt.locate.base import LocateSolver, FacilityModelBuilder
+from spopt.locate.base import BaseOutputMixin, LocateSolver, FacilityModelBuilder
 from scipy.spatial.distance import cdist
 
 import warnings
 
 
-class PCenter(LocateSolver):
+class PCenter(LocateSolver, BaseOutputMixin):
     """
     PCenter class implements P-Center optimization model and solve it.
 
@@ -46,7 +46,7 @@ class PCenter(LocateSolver):
     def from_cost_matrix(
         cls,
         cost_matrix: np.array,
-        ai: np.array,
+        weights: np.array,
         p_facilities: int,
         name: str = "p-center",
     ):
@@ -57,7 +57,7 @@ class PCenter(LocateSolver):
         ----------
         cost_matrix: np.array
             two-dimensional distance array between facility points and demand point
-        ai: np.array
+        weights: np.array
             one-dimensional service load or population demand
         p_facilities: int
             number of facilities to be located
@@ -73,8 +73,8 @@ class PCenter(LocateSolver):
 
         model = pulp.LpProblem(name, pulp.LpMinimize)
 
-        ai = np.reshape(ai, (cost_matrix.shape[0], 1))
-        sij = ai * cost_matrix
+        weights = np.reshape(weights, (cost_matrix.shape[0], 1))
+        sij = weights * cost_matrix
 
         p_center = PCenter(name, model, sij)
 
@@ -176,24 +176,21 @@ class PCenter(LocateSolver):
 
         return cls.from_cost_matrix(distances, service_load, p_facilities, name)
 
-    def get_results(self):
+    def facility_client_array(self) -> None:
         fac_vars = getattr(self, "fac_vars")
         cli_vars = getattr(self, "cli_assgn_vars")
-        self.cli2iloc = {}
-        self.fac2cli = {}
+        len_fac_vars = len(fac_vars)
 
-        for j in range(len(fac_vars)):
+        self.fac2cli = []
+
+        for j in range(len_fac_vars):
+            array_cli = []
             if fac_vars[j].value() > 0:
-                fac_var_name = fac_vars[j].name
-                self.fac2cli[fac_var_name] = []
-                for i in range(cli_vars.shape[0]):
+                for i in range(len(cli_vars)):
                     if cli_vars[i][j].value() > 0:
-                        cli_var_name = cli_vars[i][j].name
-                        self.fac2cli[fac_var_name].append(cli_var_name)
-                        self.cli2iloc[cli_var_name] = i
+                        array_cli.append(i)
 
-        self.client_facility_dict()
-        self.uncovered_clients_dict()
+            self.fac2cli.append(array_cli)
 
     def solve(self, solver: pulp.LpSolver):
         """

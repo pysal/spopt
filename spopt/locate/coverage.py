@@ -3,31 +3,18 @@ import numpy as np
 import pulp
 from geopandas import GeoDataFrame
 
-from spopt.locate.base import LocateSolver, FacilityModelBuilder
+from spopt.locate.base import (
+    BaseOutputMixin,
+    CoveragePercentageMixin,
+    LocateSolver,
+    FacilityModelBuilder,
+)
 from scipy.spatial.distance import cdist
 
 import warnings
 
 
-class Coverage(LocateSolver):
-    def cov_dict(self) -> None:
-        self.cli2ncov = {}
-        for c, fs in self.cli2fac.items():
-            self.cli2ncov[c] = len(fs)
-            most_coverage = max(self.cli2ncov.values())
-            self.ncov2ncli = {}
-            for cov_count in range(most_coverage + 1):
-                if cov_count == 0:
-                    self.ncov2ncli[cov_count] = self.n_cli_uncov
-                    continue
-                if not cov_count in list(self.cli2ncov.keys()):
-                    self.ncov2ncli[cov_count] = 0
-                for c, ncov in self.cli2ncov.items():
-                    if ncov >= cov_count:
-                        self.ncov2ncli[cov_count] += 1
-
-
-class LSCP(Coverage):
+class LSCP(LocateSolver, BaseOutputMixin):
     """
     LSCP class implements Location Set Covering optimization model and solve it.
 
@@ -165,24 +152,20 @@ class LSCP(Coverage):
 
         return cls.from_cost_matrix(distances, max_coverage, name)
 
-    def get_results(self):
+    def facility_client_array(self) -> None:
         fac_vars = getattr(self, "fac_vars")
-        self.cli2iloc = {}
-        self.fac2cli = {}
+        len_fac_vars = len(fac_vars)
 
-        for j in range(len(fac_vars)):
+        self.fac2cli = []
+
+        for j in range(len_fac_vars):
+            array_cli = []
             if fac_vars[j].value() > 0:
-                fac_var_name = fac_vars[j].name
-                self.fac2cli[fac_var_name] = []
                 for i in range(self.aij.shape[0]):
                     if self.aij[i][j] > 0:
-                        cli_var_name = f"N[{i}]"
-                        self.fac2cli[fac_var_name].append(cli_var_name)
-                        self.cli2iloc[cli_var_name] = i
+                        array_cli.append(i)
 
-        self.client_facility_dict()
-        self.uncovered_clients_dict()
-        self.cov_dict()
+            self.fac2cli.append(array_cli)
 
     def solve(self, solver: pulp.LpSolver):
         """
@@ -201,7 +184,7 @@ class LSCP(Coverage):
         return self
 
 
-class MCLP(Coverage):
+class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
     """
     MCLP class implements Maximal Coverage Location optimization model and solve it.
 
@@ -217,10 +200,10 @@ class MCLP(Coverage):
     def __init__(self, name: str, problem: pulp.LpProblem):
         super().__init__(name, problem)
 
-    def __add_obj(self, ai: np.array, range_clients: range) -> None:
+    def __add_obj(self, weights: np.array, range_clients: range) -> None:
         """
         Add objective function to model:
-        Maximize a1 * y1 + a2 * y2 +  ... + ai * yi
+        Maximize w1 * y1 + w2 * y2 +  ... + wi * yi
 
         Returns
         -------
@@ -229,7 +212,7 @@ class MCLP(Coverage):
         dem_vars = getattr(self, "cli_vars")
 
         self.problem += (
-            pulp.lpSum([ai.flatten()[i] * dem_vars[i] for i in range_clients]),
+            pulp.lpSum([weights.flatten()[i] * dem_vars[i] for i in range_clients]),
             "objective function",
         )
 
@@ -237,7 +220,7 @@ class MCLP(Coverage):
     def from_cost_matrix(
         cls,
         cost_matrix: np.array,
-        ai: np.array,
+        weights: np.array,
         max_coverage: float,
         p_facilities: int,
         name: str = "MCLP",
@@ -249,7 +232,7 @@ class MCLP(Coverage):
         ----------
         cost_matrix: np.array
             two-dimensional distance array between facility points and demand point
-        ai: np.array
+        weights: np.array
             one-dimensional service load or population demand
         max_coverage: float
             maximum acceptable service distance by problem
@@ -273,9 +256,9 @@ class MCLP(Coverage):
 
         mclp.aij = np.zeros(cost_matrix.shape)
         mclp.aij[cost_matrix <= max_coverage] = 1
-        ai = np.reshape(ai, (cost_matrix.shape[0], 1))
+        weights = np.reshape(weights, (cost_matrix.shape[0], 1))
 
-        mclp.__add_obj(ai, r_cli)
+        mclp.__add_obj(weights, r_cli)
         FacilityModelBuilder.add_maximal_coverage_constraint(
             mclp, mclp.problem, mclp.aij, r_fac, r_cli
         )
@@ -360,26 +343,22 @@ class MCLP(Coverage):
             distances, service_load, max_coverage, p_facilities, name
         )
 
-    def get_results(self):
+    def facility_client_array(self) -> None:
         fac_vars = getattr(self, "fac_vars")
         cli_vars = getattr(self, "cli_vars")
-        self.cli2iloc = {}
-        self.fac2cli = {}
+        len_fac_vars = len(fac_vars)
 
-        for j in range(len(fac_vars)):
+        self.fac2cli = []
+
+        for j in range(len_fac_vars):
+            array_cli = []
             if fac_vars[j].value() > 0:
-                fac_var_name = fac_vars[j].name
-                self.fac2cli[fac_var_name] = []
                 for i in range(self.aij.shape[0]):
                     if cli_vars[i].value() > 0:
                         if self.aij[i][j] > 0:
-                            cli_var_name = cli_vars[i].name
-                            self.fac2cli[fac_var_name].append(cli_var_name)
-                            self.cli2iloc[cli_var_name] = i
+                            array_cli.append(i)
 
-        self.client_facility_dict()
-        self.uncovered_clients_dict()
-        self.cov_dict()
+            self.fac2cli.append(array_cli)
 
     def solve(self, solver: pulp.LpSolver):
         """
