@@ -177,6 +177,13 @@ class PCenter(LocateSolver, BaseOutputMixin):
         return cls.from_cost_matrix(distances, service_load, p_facilities, name)
 
     def facility_client_array(self) -> None:
+        """
+        Create an array 2d $m$ x $n$, where m is number of facilities and n is number of clients. Each row represent a facility and has an array containing clients index meaning that the $facility_0$ cover the entire array.
+
+        Returns
+        -------
+        None
+        """
         fac_vars = getattr(self, "fac_vars")
         cli_vars = getattr(self, "cli_assgn_vars")
         len_fac_vars = len(fac_vars)

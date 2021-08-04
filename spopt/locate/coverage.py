@@ -153,6 +153,14 @@ class LSCP(LocateSolver, BaseOutputMixin):
         return cls.from_cost_matrix(distances, max_coverage, name)
 
     def facility_client_array(self) -> None:
+        """
+        Create an array 2d $m$ x $n$, where m is number of facilities and n is number of clients. Each row represent a facility and has an array containing clients index meaning that the $facility_0$ cover the entire array.
+
+        Returns
+        -------
+        None
+        """
+
         fac_vars = getattr(self, "fac_vars")
         len_fac_vars = len(fac_vars)
 
@@ -316,14 +324,16 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         fac_type_geom = fac.geom_type.unique()
 
         if len(dem_type_geom) > 1 or not "Point" in dem_type_geom:
-            raise Warning(
-                "Demand geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results."
+            warnings.warn(
+                "Demand geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
+                Warning,
             )
             dem = dem.centroid
 
         if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
-            raise Warning(
-                "Facility geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results."
+            warnings.warn(
+                "Facility geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
+                Warning,
             )
             fac = fac.centroid
 
@@ -344,6 +354,14 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         )
 
     def facility_client_array(self) -> None:
+        """
+        Create an array 2d $m$ x $n$, where m is number of facilities and n is number of clients. Each row represent a facility and has an array containing clients index meaning that the $facility_0$ cover the entire array.
+
+        Returns
+        -------
+        None
+        """
+
         fac_vars = getattr(self, "fac_vars")
         cli_vars = getattr(self, "cli_vars")
         len_fac_vars = len(fac_vars)

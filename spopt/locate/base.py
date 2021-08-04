@@ -35,7 +35,14 @@ class LocateSolver(BaseSpOptSolver):
 
 
 class BaseOutputMixin:
+    """
+    Base Mixin used by all models
+    """
+
     def client_facility_array(self) -> None:
+        """
+        Create an array 2d $m$ x $n$, where m is number of clients and n is number of facilities.
+        """
         if hasattr(self, "fac2cli"):
             self.cli2fac = [[] for i in range(self.aij.shape[0])]
 
@@ -44,6 +51,9 @@ class BaseOutputMixin:
                     self.cli2fac[fac_site].append(i)
 
     def uncovered_clients_dict(self) -> None:
+        """
+        Calculate how many clients points are not covered
+        """
         set_cov = set()
         for i in range(len(self.fac2cli)):
             set_cov |= set(self.fac2cli[i])
@@ -52,7 +62,14 @@ class BaseOutputMixin:
 
 
 class CoveragePercentageMixin:
+    """
+    Mixin for calculate the percentage of area covered
+    """
+
     def get_percentage(self):
+        """
+        Calculate the percentage
+        """
         self.percentage = 1 - (self.n_cli_uncov / self.aij.shape[0])
 
 
