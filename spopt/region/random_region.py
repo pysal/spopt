@@ -5,7 +5,7 @@ Randomly form regions given various types of constraints on cardinality and
 composition.
 """
 
-__author__ = "David Folch dfolch@fsu.edu, Serge Rey srey@asu.edu"
+__author__ = "David Folch David.Folch@nau.edu, Serge Rey sergio.rey@ucr.edu"
 
 import numpy as np
 import copy
@@ -143,14 +143,32 @@ class RandomRegions:
     [62, 61, 71, 63]
 
     """
+
     def __init__(
-        self, area_ids, num_regions=None, cardinality=None, contiguity=None,
-        maxiter=100, compact=False, max_swaps=1000000, permutations=99):
+        self,
+        area_ids,
+        num_regions=None,
+        cardinality=None,
+        contiguity=None,
+        maxiter=100,
+        compact=False,
+        max_swaps=1000000,
+        permutations=99,
+    ):
 
         solutions = []
         for i in range(permutations):
-            solutions.append(RandomRegion(area_ids, num_regions, cardinality,
-                                           contiguity, maxiter, compact, max_swaps))
+            solutions.append(
+                RandomRegion(
+                    area_ids,
+                    num_regions,
+                    cardinality,
+                    contiguity,
+                    maxiter,
+                    compact,
+                    max_swaps,
+                )
+            )
         self.solutions = solutions
         self.solutions_feas = []
         for i in solutions:
@@ -286,9 +304,17 @@ class RandomRegion:
     [37, 36, 38, 39]
 
     """
+
     def __init__(
-        self, area_ids, num_regions=None, cardinality=None, contiguity=None,
-                    maxiter=1000, compact=False, max_swaps=1000000):
+        self,
+        area_ids,
+        num_regions=None,
+        cardinality=None,
+        contiguity=None,
+        maxiter=1000,
+        compact=False,
+        max_swaps=1000000,
+    ):
 
         self.n = len(area_ids)
         ids = copy.copy(area_ids)
@@ -301,21 +327,27 @@ class RandomRegion:
         if cardinality:
             if self.n != sum(cardinality):
                 self.feasible = False
-                raise Exception('number of areas does not match cardinality')
+                msg = f"Number of areas ({self.n}) does not match "
+                msg += f"'cardinality' ({sum(cardinality)})."
+                raise ValueError(msg)
         if contiguity:
             if area_ids != contiguity.id_order:
                 self.feasible = False
-                raise Exception('order of area_ids must match order in contiguity')
+                msg = "Order of 'area_ids' must match order in 'contiguity'."
+                raise ValueError(msg)
         if num_regions and cardinality:
             if num_regions != len(cardinality):
                 self.feasible = False
-                raise Exception('number of regions does not match cardinality')
+                msg = f"Number of regions ({num_regions}) does not match "
+                msg += f"'cardinality' ({sum(cardinality)})."
+                raise ValueError(msg)
 
         # dispatches the appropriate algorithm
         if num_regions and cardinality and contiguity:
             # conditioning on cardinality and contiguity (number of regions implied)
-            self.build_contig_regions(num_regions, cardinality, contiguity,
-                                      maxiter, compact, max_swaps)
+            self.build_contig_regions(
+                num_regions, cardinality, contiguity, maxiter, compact, max_swaps
+            )
         elif num_regions and cardinality:
             # conditioning on cardinality (number of regions implied)
             region_breaks = self.cards2breaks(cardinality)
@@ -323,13 +355,15 @@ class RandomRegion:
         elif num_regions and contiguity:
             # conditioning on number of regions and contiguity
             cards = self.get_cards(num_regions)
-            self.build_contig_regions(num_regions, cards, contiguity,
-                                      maxiter, compact, max_swaps)
+            self.build_contig_regions(
+                num_regions, cards, contiguity, maxiter, compact, max_swaps
+            )
         elif cardinality and contiguity:
             # conditioning on cardinality and contiguity
             num_regions = len(cardinality)
-            self.build_contig_regions(num_regions, cardinality, contiguity,
-                                      maxiter, compact, max_swaps)
+            self.build_contig_regions(
+                num_regions, cardinality, contiguity, maxiter, compact, max_swaps
+            )
         elif num_regions:
             # conditioning on number of regions only
             region_breaks = self.get_region_breaks(num_regions)
@@ -343,8 +377,9 @@ class RandomRegion:
             # conditioning on number of contiguity only
             num_regions = self.get_num_regions()
             cards = self.get_cards(num_regions)
-            self.build_contig_regions(num_regions, cards, contiguity,
-                                      maxiter, compact, max_swaps)
+            self.build_contig_regions(
+                num_regions, cards, contiguity, maxiter, compact, max_swaps
+            )
         else:
             # unconditioned
             num_regions = self.get_num_regions()
@@ -400,10 +435,13 @@ class RandomRegion:
             potential.remove(add_area)
             add_areas.append(add_area)
         for i in add_areas:
-            potential.extend([j for j in w.neighbors[i]
-                                 if j not in region and
-                                    j not in potential and
-                                    j in candidates])
+            potential.extend(
+                [
+                    j
+                    for j in w.neighbors[i]
+                    if j not in region and j not in potential and j in candidates
+                ]
+            )
         return region, candidates, potential
 
     def grow_free(self, w, test_card, region, candidates, potential):
@@ -414,14 +452,18 @@ class RandomRegion:
         region.append(add_area)
         candidates.remove(add_area)
         potential.remove(add_area)
-        potential.extend([i for i in w.neighbors[add_area]
-                             if i not in region and
-                                i not in potential and
-                                i in candidates])
+        potential.extend(
+            [
+                i
+                for i in w.neighbors[add_area]
+                if i not in region and i not in potential and i in candidates
+            ]
+        )
         return region, candidates, potential
 
-    def build_contig_regions(self, num_regions, cardinality, w,
-                                maxiter, compact, max_swaps):
+    def build_contig_regions(
+        self, num_regions, cardinality, w, maxiter, compact, max_swaps
+    ):
         if compact:
             grow_region = self.grow_compact
         else:
@@ -453,7 +495,7 @@ class RandomRegion:
 
                     # start swapping
                     # swapping simply changes the candidate list
-                    swap_in = None   # area to become new candidate
+                    swap_in = None  # area to become new candidate
                     while swap_in is None:  # PEP8 E711
                         swap_count += 1
                         swap_out = candidates.pop(0)  # area to remove from candidates
@@ -495,8 +537,8 @@ class RandomRegion:
                 while building and len(region) < test_card:
                     if potential:
                         region, candidates, potential = grow_region(
-                            w, test_card,
-                                        region, candidates, potential)
+                            w, test_card, region, candidates, potential
+                        )
                     else:
                         # not enough potential neighbors to reach test_card size
                         building = False
@@ -514,7 +556,7 @@ class RandomRegion:
                     regions.append(region)
                     region_index = len(regions) - 1
                     for i in region:
-                        area2region[i] = region_index   # area2region needed for swapping
+                        area2region[i] = region_index  # area2region needed for swapping
             # handling of regionalization result
             if len(regions) < num_regions:
                 # regionalization failed
@@ -526,4 +568,3 @@ class RandomRegion:
                 self.feasible = True
                 iter = maxiter
         self.regions = regions
-

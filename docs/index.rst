@@ -15,9 +15,9 @@ Regionalization, facility location, and transportation-oriented modeling
 
     <div class="container-fluid">
       <div class="row equal-height">
-        <div class="col-sm-1 col-xs-hidden">
+        <div class="col-sm-.5 col-xs-hidden">
         </div>
-        <div class="col-md-3 col-xs-12">
+        <div class="col-md-4 col-xs-14">
             <a 
             href="https://pysal.org/spopt/notebooks/maxp.html" class="thumbnail">
                 <img src="_static/images/notebooks_maxp_12_1.png" class="img-responsive center-block">
@@ -26,7 +26,7 @@ Regionalization, facility location, and transportation-oriented modeling
                 </div>
             </a>
         </div>
-        <div class="col-sm-3 col-xs-12">
+        <div class="col-sm-4 col-xs-14">
             <a href="https://pysal.org/spopt/notebooks/skater.html" class="thumbnail">
                 <img src="_static/images/notebooks_skater_12_1.png" class="img-responsive center-block">
                 <div class="caption text-center">
@@ -34,7 +34,7 @@ Regionalization, facility location, and transportation-oriented modeling
                 </div>
             </a>
         </div>
-        <div class="col-sm-3 col-xs-12">
+        <div class="col-sm-4 col-xs-14">
             <a href="https://pysal.org/spopt/notebooks/reg-k-means.html" class="thumbnail">
                 <img src="_static/images/notebooks_reg-k-means_15_1.png"
                 class="img-responsive center-block">
@@ -44,7 +44,7 @@ Regionalization, facility location, and transportation-oriented modeling
                 </div>
             </a>
         </div>
-        <div class="col-sm-2 col-xs-hidden">
+        <div class="col-sm-.5 col-xs-hidden">
         </div>
       </div>
     </div>
@@ -65,7 +65,11 @@ Citing **spopt**
 If you use **PySAL-spopt** in a scientific publication, we would appreciate citations to the following paper::
 
   @misc{spopt2021,
-    author    = {Feng, Xin, and Gaboardi, James D. and Knaap, Elijah and Rey, Sergio J. and Wei, Ran},
+    author    = {Feng, Xin, and 
+                 Gaboardi, James D. and 
+                 Knaap, Elijah and 
+                 Rey, Sergio J. and 
+                 Wei, Ran},
     month     = {jan},
     year      = {2021},
     title     = {pysal/spopt},

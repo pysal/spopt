@@ -8,25 +8,31 @@ class Spenc(BaseSpOptHeuristicSolver):
     :cite:`wolf2018`
     """
 
-    def __init__(self, gdf, w, attrs_name, n_clusters=5, random_state=None,
-                 gamma=1):
+    def __init__(self, gdf, w, attrs_name, n_clusters=5, random_state=None, gamma=1):
         """
 
         Parameters
         ----------
 
         gdf : geopandas.GeoDataFrame
-
-        w : libpywal.weights.W instance
-        spatial weights matrix
+            Input data.
+            
+        w : libpywal.weights.W
+            Spatial weights matrix.
 
         attrs_name : list
-        Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
+            Strings for attribute names
+            (columns of ``geopandas.GeoDataFrame``).
 
-        n_clusters : int, optional, default: 5
-        The number of clusters to form.
-
-        gamma: int, default:1
+        n_clusters : int
+            The number of clusters to form. Default is ``5``.
+        
+        random_state : int
+            Random seed to set for reproducible results.
+            Default is ``None``.
+            
+        gamma: int
+            Default is ``1``.
 
         """
         self.gdf = gdf
@@ -40,8 +46,8 @@ class Spenc(BaseSpOptHeuristicSolver):
         """Solve the spenc"""
         data = self.gdf
         X = data[self.attrs_name].values
-        model = SPENC(n_clusters=self.n_clusters,
-                      random_state=self.random_state,
-                      gamma=self.gamma)
+        model = SPENC(
+            n_clusters=self.n_clusters, random_state=self.random_state, gamma=self.gamma
+        )
         model.fit(X, self.w.sparse)
         self.labels_ = model.labels_

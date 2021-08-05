@@ -14,11 +14,24 @@ import scipy.sparse as spar
 from scipy.sparse import csgraph as cg, linalg as la
 from warnings import warn as Warn
 
+
 class SPENC(clust.SpectralClustering):
-    def __init__(self, n_clusters=8, eigen_solver=None, random_state=None,
-                 n_init=10, gamma=1., affinity='rbf', n_neighbors=10,
-                 eigen_tol=1e-9, assign_labels='discretize', degree=3, coef0=1,
-                 kernel_params=None, n_jobs=1):
+    def __init__(
+        self,
+        n_clusters=8,
+        eigen_solver=None,
+        random_state=None,
+        n_init=10,
+        gamma=1.0,
+        affinity="rbf",
+        n_neighbors=10,
+        eigen_tol=1e-9,
+        assign_labels="discretize",
+        degree=3,
+        coef0=1,
+        kernel_params=None,
+        n_jobs=1,
+    ):
         """
         Apply clustering to a projection of the normalized laplacian, using
         spatial information to constrain the clustering.
@@ -176,8 +189,19 @@ class SPENC(clust.SpectralClustering):
         self.kernel_params = kernel_params
         self.n_jobs = n_jobs
 
-    def fit(self, X, W=None, y=None, shift_invert=True, breakme=False, check_W=True,
-            grid_resolution = 100, floor=0, floor_weights=None, cut_method='gridsearch'):
+    def fit(
+        self,
+        X,
+        W=None,
+        y=None,
+        shift_invert=True,
+        breakme=False,
+        check_W=True,
+        grid_resolution=100,
+        floor=0,
+        floor_weights=None,
+        cut_method="gridsearch",
+    ):
         """Creates an affinity matrix for X using the selected affinity,
         applies W to the affinity elementwise, and then applies spectral clustering
         to the affinity matrix.
@@ -241,56 +265,69 @@ class SPENC(clust.SpectralClustering):
 
         """
         if np.isinf(self.n_clusters):
-            self.assign_labels='hierarchical'
+            self.assign_labels = "hierarchical"
 
         if X is not None:
-            X = check_array(X, accept_sparse = ['csr','coo', 'csc'],
-                        dtype=np.float64, ensure_min_samples=2)
+            X = check_array(
+                X,
+                accept_sparse=["csr", "coo", "csc"],
+                dtype=np.float64,
+                ensure_min_samples=2,
+            )
             if check_W:
                 W = check_weights(W, X)
 
-            if self.affinity == 'nearest_neighbors':
-                connectivity = kneighbors_graph(X, n_neighbors=self.n_neighbors,
-                                                include_self=True, n_jobs=self.n_jobs)
-                self.affinity_matrix_ = .5 * (connectivity + connectivity.T)
-            elif self.affinity == 'precomputed':
+            if self.affinity == "nearest_neighbors":
+                connectivity = kneighbors_graph(
+                    X,
+                    n_neighbors=self.n_neighbors,
+                    include_self=True,
+                    n_jobs=self.n_jobs,
+                )
+                self.affinity_matrix_ = 0.5 * (connectivity + connectivity.T)
+            elif self.affinity == "precomputed":
                 self.affinity_matrix_ = X
             else:
                 params = self.kernel_params
                 if params is None:
                     params = {}
                 if not callable(self.affinity):
-                    params['gamma'] = self.gamma
-                    params['degree'] = self.degree
-                    params['coef0'] = self.coef0
-                self.attribute_affinity_ = pw.pairwise_kernels(X, metric=self.affinity,
-                                                               filter_params=True,
-                                                               **params)
+                    params["gamma"] = self.gamma
+                    params["degree"] = self.degree
+                    params["coef0"] = self.coef0
+                self.attribute_affinity_ = pw.pairwise_kernels(
+                    X, metric=self.affinity, filter_params=True, **params
+                )
                 self.spatial_affinity_ = W
                 self.affinity_matrix_ = W.multiply(self.attribute_affinity_)
         else:
             self.affinity_matrix_ = W
-        if breakme: ##sklearn/issues/8129
+        if breakme:  ##sklearn/issues/8129
             self.affinity_ = self.affinity
-            self.affinity = 'precomputed'
+            self.affinity = "precomputed"
             super().fit(self.affinity_matrix_)
 
             self.affinity = self.affinity_
             del self.affinity_
             return self
 
-        if self.assign_labels == 'hierarchical':
-            self.labels_ = self._spectral_bipartition(grid_resolution=grid_resolution,
-                                                      shift_invert=shift_invert, floor=floor,
-                                                      floor_weights=floor_weights)
+        if self.assign_labels == "hierarchical":
+            self.labels_ = self._spectral_bipartition(
+                grid_resolution=grid_resolution,
+                shift_invert=shift_invert,
+                floor=floor,
+                floor_weights=floor_weights,
+            )
             return self
 
         embedding = self._embed(self.affinity_matrix_, shift_invert=shift_invert)
         self.embedding_ = embedding.T
         random_state = check_random_state(self.random_state)
 
-        if self.assign_labels == 'kmeans':
-            self.labels_ = clust.KMeans(n_clusters=self.n_clusters).fit(self.embedding_).labels_
+        if self.assign_labels == "kmeans":
+            self.labels_ = (
+                clust.KMeans(n_clusters=self.n_clusters).fit(self.embedding_).labels_
+            )
         else:
             self.labels_ = _discretize(self.embedding_, random_state=random_state)
         return self
@@ -307,28 +344,38 @@ class SPENC(clust.SpectralClustering):
                         whether or not to use the shift-invert eigenvector search
                         trick useful for finding sparse eigenvectors.
         """
-        laplacian, orig_d = cg.laplacian(affinity,
-                                         normed=True, return_diag=True)
-        laplacian *=-1
+        laplacian, orig_d = cg.laplacian(affinity, normed=True, return_diag=True)
+        laplacian *= -1
         random_state = check_random_state(self.random_state)
-        v0 = random_state.uniform(-1,1,laplacian.shape[0])
+        v0 = random_state.uniform(-1, 1, laplacian.shape[0])
 
         if not shift_invert:
-            ev, spectrum = la.eigsh(laplacian, which='LA', k=self.n_clusters, v0=v0,
-                                    tol=self.eigen_tol)
+            ev, spectrum = la.eigsh(
+                laplacian, which="LA", k=self.n_clusters, v0=v0, tol=self.eigen_tol
+            )
         else:
-            ev, spectrum = la.eigsh(laplacian, which='LM', sigma=1, k=self.n_clusters, v0=v0,
-                                    tol=self.eigen_tol)
+            ev, spectrum = la.eigsh(
+                laplacian,
+                which="LM",
+                sigma=1,
+                k=self.n_clusters,
+                v0=v0,
+                tol=self.eigen_tol,
+            )
 
-        embedding = spectrum.T[self.n_clusters::-1] #sklearn/issues/8129
+        embedding = spectrum.T[self.n_clusters :: -1]  # sklearn/issues/8129
         embedding = embedding / orig_d
         embedding = _deterministic_vector_sign_flip(embedding)
         return embedding
 
-    def _spectral_bipartition(self, grid_resolution=100,
-                              shift_invert=True, floor=0,
-                              floor_weights = None,
-                              cut_method='gridsearch'):
+    def _spectral_bipartition(
+        self,
+        grid_resolution=100,
+        shift_invert=True,
+        floor=0,
+        floor_weights=None,
+        cut_method="gridsearch",
+    ):
         """
         Implements the recursive spectral bipartitioning of shi and malik (2000)
         If n_clusters = np.inf and floor > 0, then will find
@@ -373,28 +420,34 @@ class SPENC(clust.SpectralClustering):
             self.affinity_matrix_ = self.affinity_matrix_.tocsr()
         threshold = self.n_clusters
         self.n_clusters = 2
-        discovered=1
+        discovered = 1
         this_cut = np.ones((self.affinity_matrix_.shape[0],)).astype(bool)
         cuts = []
         accepted_cuts = []
         while discovered < threshold:
-            current_affinity = self.affinity_matrix_[this_cut,:][:,this_cut]
-            embedding = self._embed(current_affinity, shift_invert = shift_invert)
+            current_affinity = self.affinity_matrix_[this_cut, :][:, this_cut]
+            embedding = self._embed(current_affinity, shift_invert=shift_invert)
             second_eigenvector = embedding[1]
-            new_cut, score_of_cut = self._make_hierarchical_cut(second_eigenvector,
-                                                                current_affinity,
-                                                                grid_resolution,
-                                                                cut_method=cut_method,
-                                                                floor=floor)
+            new_cut, score_of_cut = self._make_hierarchical_cut(
+                second_eigenvector,
+                current_affinity,
+                grid_resolution,
+                cut_method=cut_method,
+                floor=floor,
+            )
             left_cut = this_cut.copy()
             left_cut[left_cut] *= new_cut
             right_cut = this_cut.copy()
             right_cut[right_cut] *= ~new_cut
-            assert len(this_cut) == len(left_cut) == len(right_cut), "Indexing Error in cutting!"
-            if (((left_cut*floor_weights).sum() > floor)
-             & ((right_cut*floor_weights).sum() > floor)):
-                if ((tuple(left_cut) not in accepted_cuts)
-                 & (tuple(right_cut) not in accepted_cuts)):
+            assert (
+                len(this_cut) == len(left_cut) == len(right_cut)
+            ), "Indexing Error in cutting!"
+            if ((left_cut * floor_weights).sum() > floor) & (
+                (right_cut * floor_weights).sum() > floor
+            ):
+                if (tuple(left_cut) not in accepted_cuts) & (
+                    tuple(right_cut) not in accepted_cuts
+                ):
                     cuts.append(left_cut)
                     accepted_cuts.append(tuple(left_cut))
                     cuts.append(right_cut)
@@ -405,46 +458,52 @@ class SPENC(clust.SpectralClustering):
             except IndexError:
                 break
         accepted_cuts = np.vstack(accepted_cuts)
-        labels = np.ones((accepted_cuts[0].shape[0],))*-1.0
-        for i,k in enumerate(np.flipud(accepted_cuts)):
+        labels = np.ones((accepted_cuts[0].shape[0],)) * -1.0
+        for i, k in enumerate(np.flipud(accepted_cuts)):
             unassigned = labels == -1
-            should_assign = (unassigned & k)
+            should_assign = unassigned & k
             labels[should_assign] = i
         return LabelEncoder().fit_transform(labels)
 
-    def _make_hierarchical_cut(self, second_eigenvector,
-                               affinity_matrix,
-                               grid_resolution,
-                               cut_method='median',
-                               floor=0):
+    def _make_hierarchical_cut(
+        self,
+        second_eigenvector,
+        affinity_matrix,
+        grid_resolution,
+        cut_method="median",
+        floor=0,
+    ):
         """Compute a single hierarchical cut using one of the methods described in
         Shi and Malik (2000).
         """
+
         def mkobjective(second_eigenvector):
             """This makes a closure around the objective function given an eigenvector"""
+
             def objective(cutpoint):
                 cut = second_eigenvector <= cutpoint
                 assocA = affinity_matrix[cut].sum(axis=1).sum()
                 assocB = affinity_matrix[~cut].sum(axis=1).sum()
-                cutAB = affinity_matrix[cut,:][:,~cut].sum(axis=1).sum() * 2
-                score = cutAB/assocA + cutAB/assocB
+                cutAB = affinity_matrix[cut, :][:, ~cut].sum(axis=1).sum() * 2
+                score = cutAB / assocA + cutAB / assocB
                 if np.isnan(score):
                     score = np.inf
                 return score
+
             return objective
 
         objective = mkobjective(second_eigenvector)
 
-        if cut_method == 'gridsearch':
-            support = np.linspace(*np.percentile(second_eigenvector, q=(2,98)),
-                                  num=grid_resolution)
-
+        if cut_method == "gridsearch":
+            support = np.linspace(
+                *np.percentile(second_eigenvector, q=(2, 98)), num=grid_resolution
+            )
 
             objective_surface = [objective(cutpoint) for cutpoint in support]
             cutpoint = support[np.argmin(objective_surface)]
             cut = second_eigenvector <= cutpoint
-            return cut,np.min(objective_surface)
-        elif cut_method == 'median':
+            return cut, np.min(objective_surface)
+        elif cut_method == "median":
             median = np.median(second_eigenvector)
             score = objective(median)
             return second_eigenvector < median, score
@@ -452,12 +511,17 @@ class SPENC(clust.SpectralClustering):
             score = objective(0)
             return second_eigenvector < 0, score
 
-
-    def score(self, X, W, labels=None, delta=.5,
-              attribute_score=skm.calinski_harabasz_score,
-              spatial_score=boundary_fraction,
-              attribute_kw = dict(),
-              spatial_kw = dict()):
+    def score(
+        self,
+        X,
+        W,
+        labels=None,
+        delta=0.5,
+        attribute_score=skm.calinski_harabasz_score,
+        spatial_score=boundary_fraction,
+        attribute_kw=dict(),
+        spatial_kw=dict(),
+    ):
         """
         Computes the score of the given label vector on data in X using convex
         combination weight in delta.
@@ -486,17 +550,15 @@ class SPENC(clust.SpectralClustering):
                           Default: boundary_ratio(W,X,labels,**spatial_kw)
         """
         if labels is None:
-            if not hasattr(self, 'labels_'):
-                raise Exception('Object must be fit in order to avoid passing labels.')
+            if not hasattr(self, "labels_"):
+                raise Exception("Object must be fit in order to avoid passing labels.")
             labels = self.labels_
         labels = np.asarray(labels).flatten()
-        attribute_score = attribute_score(X,labels, **attribute_kw)
-        spatial_score = spatial_score(W,labels, X=X,**spatial_kw)
-        return delta * attribute_score + (1 - delta)*spatial_score
+        attribute_score = attribute_score(X, labels, **attribute_kw)
+        spatial_score = spatial_score(W, labels, X=X, **spatial_kw)
+        return delta * attribute_score + (1 - delta) * spatial_score
 
-    def _sample_gen(self, W, n_samples=1,
-                            affinity='rbf',
-                            distribution=None, **fit_kw):
+    def _sample_gen(self, W, n_samples=1, affinity="rbf", distribution=None, **fit_kw):
         """
         NOTE: this is the lazy generator version of sample
         Compute random clusters using random eigenvector decomposition.
@@ -520,16 +582,15 @@ class SPENC(clust.SpectralClustering):
                            extra arguments passed down to the SPENC class for further customization.
         """
         if distribution is None:
-            distribution = lambda : np.random.normal(0,1,size=(W.shape[0], 1))
+            distribution = lambda: np.random.normal(0, 1, size=(W.shape[0], 1))
         else:
-            assert callable(distribution), 'distribution is not callable!'
+            assert callable(distribution), "distribution is not callable!"
         for _ in range(n_samples):
             randomweights = distribution()
             fitted = self.fit(randomweights, W, **fit_kw)
             yield fitted.labels_
 
-    def sample(self, W, n_samples=1,
-               distribution=None, **fit_kw):
+    def sample(self, W, n_samples=1, distribution=None, **fit_kw):
         """
         Compute random clusters using random eigenvector decomposition.
         This uses random weights in spectral decomposition to generate approximately-evenly populated
@@ -554,51 +615,62 @@ class SPENC(clust.SpectralClustering):
         -------
         labels corresponding to the input W that are generated at random.
         """
-        result = np.vstack([labels for labels in
-                            self._sample_gen(W, n_samples=n_samples,
-                            distribution=distribution, **fit_kw)])
+        result = np.vstack(
+            [
+                labels
+                for labels in self._sample_gen(
+                    W, n_samples=n_samples, distribution=distribution, **fit_kw
+                )
+            ]
+        )
         if n_samples == 1:
             result = result.flatten()
         return result
 
-class AgglomerativeClustering(clust.AgglomerativeClustering):
 
+class AgglomerativeClustering(clust.AgglomerativeClustering):
     def _sample_gen(self, n_samples=25, distribution=None):
         """
         sample random clusters with agglomerative clustering using random weights.
         """
         if distribution is None:
-            distribution = lambda : np.random.normal(0,1,size=(self.connectivity.shape[0],1))
+            distribution = lambda: np.random.normal(
+                0, 1, size=(self.connectivity.shape[0], 1)
+            )
         else:
-            assert callable(distribution), 'distribution is not callable!'
+            assert callable(distribution), "distribution is not callable!"
         for _ in range(n_samples):
             randomweights = distribution()
             fitted = self.fit(randomweights)
             yield fitted.labels_
 
-    def sample(self, n_samples=1,
-               distribution=None):
-      """
-      Compute random clusters using randomly-weighted agglomerative clustering.
-      This uses random weights in agglomerative clustering decomposition to generate
-      random subgraphs from W.
+    def sample(self, n_samples=1, distribution=None):
+        """
+        Compute random clusters using randomly-weighted agglomerative clustering.
+        This uses random weights in agglomerative clustering decomposition to generate
+        random subgraphs from W.
 
-      Arguments
-      ---------
-      W                : np.ndarray or scipy.sparse matrix
-                         matrix encoding the spatial relationships between observations in the frame.
-                         Must be strictly binary & connected to result in connected graphs correct behavior.
-                         Mathematical properties of randomregions are undefined if not.
-      n_samples        : int
-                         integer describing how many samples to construct
-      distribution     : callable (default: np.random.normal(0,1))
-                         a function that, when called with no arguments, returns the weights
-                         used as fake data to randomize the graph.
+        Arguments
+        ---------
+        W                : np.ndarray or scipy.sparse matrix
+                           matrix encoding the spatial relationships between observations in the frame.
+                           Must be strictly binary & connected to result in connected graphs correct behavior.
+                           Mathematical properties of randomregions are undefined if not.
+        n_samples        : int
+                           integer describing how many samples to construct
+        distribution     : callable (default: np.random.normal(0,1))
+                           a function that, when called with no arguments, returns the weights
+                           used as fake data to randomize the graph.
 
-      Returns
-      -------
-      labels corresponding to the input W that are generated at random.
-      """
-      return np.vstack([labels for labels in
-                        self._sample_gen(n_samples=n_samples,
-                                         distribution=distribution)])
+        Returns
+        -------
+        labels corresponding to the input W that are generated at random.
+        """
+        return np.vstack(
+            [
+                labels
+                for labels in self._sample_gen(
+                    n_samples=n_samples, distribution=distribution
+                )
+            ]
+        )

@@ -1,17 +1,57 @@
-import numpy as np
 import libpysal
-import geopandas as gpd
+import geopandas
+import numpy
+import unittest
+
+import spopt
 from spopt.region import AZP
 
-def test_azp():
-    pth = libpysal.examples.get_path("mexicojoin.shp")
-    mexico = gpd.read_file(pth)
-    mexico["count"] = 1
-    attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
-    w = libpysal.weights.Queen.from_dataframe(mexico)
-    np.random.seed(123456)
-    model = AZP(mexico, w, attrs_name, n_clusters=5)
-    model.solve()
-    labels = np.array(
-        [0, 0, 2, 1, 1, 2, 2, 2, 3, 3, 3, 1, 2, 4, 4, 2, 4, 3, 3, 3, 4, 3, 0, 0, 2, 2, 2, 1, 2, 1, 1, 4])
-    return np.array_equal(model.labels_, labels)
+
+RANDOM_STATE = 123456
+
+# Mexican states
+pth = libpysal.examples.get_path("mexicojoin.shp")
+MEXICO = geopandas.read_file(pth)
+
+
+class TestAZP(unittest.TestCase):
+    def setUp(self):
+
+        self.mexico = MEXICO.copy()
+
+        # labels for from_w:
+        # n_clusters=3, basic AZP
+        self.basic_from_w_labels = [0, 0, 2, 0, 0, 2, 2, 1, 1, 2, 2, 1, 2, 1, 1, 2]
+        self.basic_from_w_labels += [1, 1, 1, 1, 1, 1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1]
+
+        # labels for:
+        # n_clusters=3, simulated annealing AZP variant
+        # self.simann_from_w_labels = [0, 0, 0, 0, 0, 1, 2, 1, 1, 2, 2, 0, 2, 1, 1, 1, 1]
+        # self.simann_from_w_labels += [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2]
+
+    def test_azp_basic_from_w(self):
+        w = libpysal.weights.Queen.from_dataframe(self.mexico)
+        attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
+        args = (self.mexico, w, attrs_name)
+        kwargs = {"n_clusters": 3, "random_state": RANDOM_STATE}
+        model = AZP(*args, **kwargs)
+        model.solve()
+
+        numpy.testing.assert_array_equal(model.labels_, self.basic_from_w_labels)
+
+    # def test_azp_sim_anneal_from_w(self):
+    #    w = libpysal.weights.Queen.from_dataframe(self.mexico)
+    #    attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
+    #    sim_ann = spopt.region.azp_util.AllowMoveAZPSimulatedAnnealing(
+    #        10, sa_moves_term=10
+    #    )
+    #    args = (self.mexico, w, attrs_name)
+    #    kwargs = {
+    #        "n_clusters": 3,
+    #        "random_state": RANDOM_STATE,
+    #        "allow_move_strategy": sim_ann,
+    #    }
+    #    model = AZP(*args, **kwargs)
+    #    model.solve()
+    #
+    #    numpy.testing.assert_array_equal(model.labels_, self.simann_from_w_labels)

@@ -29,11 +29,11 @@ extensions = [  #'sphinx_gallery.gen_gallery',
     "sphinx.ext.mathjax",
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
+    "nbsphinx",
     "numpydoc",
     "matplotlib.sphinxext.plot_directive",
-    "nbsphinx",
 ]
-
+bibtex_bibfiles = ["_static/references.bib"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -49,7 +49,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "spopt"
-copyright = "2020, pysal developers"
+copyright = "2020-, pysal developers"
 author = "pysal developers"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -247,17 +247,18 @@ def setup(app):
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3/", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+    "esda": ("https://pysal.org/esda/", None),
+    "geopandas": ("https://geopandas.readthedocs.io/en/latest/", None),
+    "giddy": ("https://giddy.readthedocs.io/en/latest/", None),
+    "hdbscan": ("https://hdbscan.readthedocs.io/en/latest/", None),
+    "libpysal": ("https://pysal.org/libpysal/", None),
     "numpy": ("https://docs.scipy.org/doc/numpy", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
-    "geopandas": ("https://geopandas.readthedocs.io/en/latest/", None),
-    "sklearn": ("https://scikit-learn.org/stable/", None),
-    "giddy": ("https://giddy.readthedocs.io/en/latest/", None),
-    "libpysal": ("https://pysal.org/libpysal/", None),
-    "esda": ("https://esda.readthedocs.io/en/latest/", None),
+    "pulp": ("https://coin-or.github.io/pulp/", None),
+    "python": ("https://docs.python.org/3.9/", None),
     "region": ("https://region.readthedocs.io/en/latest/", None),
-    "hdbscan": ("https://hdbscan.readthedocs.io/en/latest/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+    "sklearn": ("https://scikit-learn.org/stable/", None),
 }
 
 numpydoc_xref_ignore = {
@@ -280,8 +281,7 @@ numpydoc_xref_ignore = {
 
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
-{% set docname = env.doc2path(env.docname, base='').replace('nblink','ipynb') %}
-{% set fullpath = env.doc2path(env.docname, base='tree/main/').replace('nblink','ipynb') %}
+{% set docname = env.doc2path(env.docname, base=None) %}
 
 .. only:: html
 
@@ -294,7 +294,7 @@ nbsphinx_prolog = r"""
         Interactive online version:
         :raw-html:`<a href="https://mybinder.org/v2/gh/pysal/spopt/main?filepath={{ docname }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`
 
-    __ https://github.com/pysal/spopt/{{ fullpath }}
+    __ https://github.com/pysal/spopt/blob/main/{{ docname }}
 
 .. raw:: latex
 

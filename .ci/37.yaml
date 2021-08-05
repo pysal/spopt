@@ -14,13 +14,8 @@ dependencies:
   - shapely
   - spenc
   - spaghetti
-  # testing, docs, etc.
+  # testing
   - codecov
   - coverage
-  - nbsphinx
-  - numpydoc
   - pytest
   - pytest-cov
-  - sphinx>=1.4.3
-  - sphinxcontrib-bibtex==1.0.0
-  - sphinx_bootstrap_theme

@@ -7,24 +7,23 @@ import numpy as np
 
 
 class AllowMoveStrategy(abc.ABC):
-    def start_new_component(self, initial_labels, attr, objective_func,
-                            comp_idx):
+    def start_new_component(self, initial_labels, attr, objective_func, comp_idx):
         """
         This method should be called whenever a new connected component is
         clustered.
 
         Parameters
         ----------
-        initial_labels : :class:`numpy.ndarray`
+        initial_labels : numpy.ndarray
             The region labels of the areas in the currently considered
             connected component.
             Shape: number of areas in the currently considered component.
-        attr : :class:`numpy.ndarray`
+        attr : numpy.ndarray
             The areas' attributes.
             Shape: number of areas in the currently considered component.
-        objective_func : :class:`region.objective_function.ObjectiveFunction`
+        objective_func : region.objective_function.ObjectiveFunction
             The objective function to use.
-        comp_idx : :class:`numpy.ndarray`
+        comp_idx : numpy.ndarray
             The indices of those areas belonging to the component clustered
             next.
         """
@@ -44,24 +43,23 @@ class AllowMoveStrategy(abc.ABC):
         moving_area : int
             Area involved in a potential move.
         new_region : int
-            Region to which the area `moving_area` is moved if the move is
+            Region to which the area ``moving_area`` is moved if the move is
             allowed.
-        labels : :class:`numpy.ndarray`
+        labels : numpy.ndarray
             Region labels of areas in the currently considered connected
             component.
 
         Returns
         -------
-        is_allowed : `bool`
-            `True` if area `moving_area` is allowed to move to `new_region`.
-            `False` otherwise.
+        is_allowed : bool
+            ``True`` if area ``moving_area`` is allowed to move to ``new_region``.
+            ``False`` otherwise.
         """
 
 
 class AllowMoveAZP(AllowMoveStrategy):
     def __call__(self, moving_area, new_region, labels):
-        diff = self.objective_func.update(moving_area, new_region, labels,
-                                          self.attr)
+        diff = self.objective_func.update(moving_area, new_region, labels, self.attr)
         if diff <= 0:
             self.objective_val += diff
             return True
@@ -75,17 +73,14 @@ class AllowMoveAZPSimulatedAnnealing(AllowMoveStrategy):
         self.observers_min_sa_moves = []
         self.observers_move_made = []
         self.t = init_temperature
-        if not isinstance(sa_moves_term, numbers.Integral) or \
-                sa_moves_term < 1:
-            raise ValueError("The sa_moves_term argument must be a positive "
-                             "integer.")
+        if not isinstance(sa_moves_term, numbers.Integral) or sa_moves_term < 1:
+            raise ValueError("The sa_moves_term argument must be a positive integer.")
         self.sa_moves_term = sa_moves_term
         self.sa = 0  # number of SA-moves
         super().__init__()
 
     def __call__(self, moving_area, new_region, labels):
-        diff = self.objective_func.update(moving_area, new_region, labels,
-                                          self.attr)
+        diff = self.objective_func.update(moving_area, new_region, labels, self.attr)
         if diff <= 0:
             self.objective_val += diff
             self.notify_move_made()
@@ -152,35 +147,31 @@ class AllowMoveAZPMaxPRegions(AllowMoveStrategy):
     spatially extensive attribute.
     """
 
-    def __init__(self, spatially_extensive_attr, threshold,
-                 decorated_strategy):
+    def __init__(self, spatially_extensive_attr, threshold, decorated_strategy):
         """
 
         Parameters
         ----------
-        spatially_extensive_attr : :class:`numpy.ndarray`, default: None
+        spatially_extensive_attr : numpy.ndarray
             See corresponding argument in
-            :meth:`region.max_p_regions.heuristics.MaxPRegionsHeu.fit_from_scipy_sparse_matrix`.
-        threshold : numbers.Real or :class:`numpy.ndarray`
+            ``region.max_p_regions.heuristics.MaxPRegionsHeu.fit_from_scipy_sparse_matrix``.
+        threshold : numbers.Real or numpy.ndarray
             See corresponding argument in
-            :meth:`region.max_p_regions.heuristics.MaxPRegionsHeu.fit_from_scipy_sparse_matrix`
-        decorated_strategy : :class:`AllowMoveStrategy`
-            The :class:`AllowMoveStrategy` related to the algorithms local
-            search.
+            ``region.max_p_regions.heuristics.MaxPRegionsHeu.fit_from_scipy_sparse_matrix``
+        decorated_strategy : AllowMoveStrategy
+            The ``AllowMoveStrategy`` related to the algorithms local search.
         """
         self._decorated_strategy = decorated_strategy
         self.spatially_extensive_attr_all = spatially_extensive_attr
         self.spatially_extensive_attr = None
         self.threshold = threshold
 
-    def start_new_component(self, initial_labels, attr, objective_func,
-                            comp_idx):
-        self.spatially_extensive_attr = self.spatially_extensive_attr_all[
-            comp_idx]
-        super().start_new_component(initial_labels, attr, objective_func,
-                                    comp_idx)
-        self._decorated_strategy.start_new_component(initial_labels, attr,
-                                                     objective_func, comp_idx)
+    def start_new_component(self, initial_labels, attr, objective_func, comp_idx):
+        self.spatially_extensive_attr = self.spatially_extensive_attr_all[comp_idx]
+        super().start_new_component(initial_labels, attr, objective_func, comp_idx)
+        self._decorated_strategy.start_new_component(
+            initial_labels, attr, objective_func, comp_idx
+        )
 
     def __call__(self, moving_area, new_region, labels):
         sp_ext = self.spatially_extensive_attr
@@ -196,8 +187,7 @@ class AllowMoveAZPMaxPRegions(AllowMoveStrategy):
         elif (sp_ext[moving_area]).any() < 0:
             recipient_idx = np.where(labels == new_region)[0]
             recipient_sum = sum(sp_ext[recipient_idx]) + sp_ext[moving_area]
-            threshold_reached_recipient = (recipient_sum >=
-                                           self.threshold).all()
+            threshold_reached_recipient = (recipient_sum >= self.threshold).all()
             if not threshold_reached_recipient:
                 return False
 
@@ -206,6 +196,6 @@ class AllowMoveAZPMaxPRegions(AllowMoveStrategy):
     def __getattr__(self, name):
         """
         Forward calls to unimplemented methods to _decorated_strategy
-        (necessary e.g. for :class:`AllowMoveAZPSimulatedAnnealing`).
+        (necessary e.g. for ``AllowMoveAZPSimulatedAnnealing``).
         """
         return getattr(self._decorated_strategy, name)
