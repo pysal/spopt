@@ -188,7 +188,7 @@ class TestOptimalLocate(unittest.TestCase):
         lscp = lscp.solve(pulp.PULP_CBC_CMD())
         lscp.facility_client_array()
 
-        self.assertCountEqual(lscp.fac2cli, lscp_objective)
+        numpy.testing.assert_array_equal(lscp.fac2cli, lscp_objective)
 
     def test_optimality_lscp_from_geodataframe(self):
         lscp = LSCP.from_geodataframe(
@@ -227,7 +227,7 @@ class TestOptimalLocate(unittest.TestCase):
         lscp = lscp.solve(pulp.PULP_CBC_CMD())
         lscp.facility_client_array()
 
-        self.assertCountEqual(lscp.fac2cli, lscp_objective)
+        numpy.testing.assert_array_equal(lscp.fac2cli, lscp_objective)
 
     def test_optimality_mclp_from_cost_matrix(self):
         mclp = MCLP.from_cost_matrix(
@@ -262,7 +262,7 @@ class TestOptimalLocate(unittest.TestCase):
         mclp = mclp.solve(pulp.PULP_CBC_CMD())
         mclp.facility_client_array()
 
-        self.assertCountEqual(mclp.fac2cli, mclp_objective)
+        numpy.testing.assert_array_equal(mclp.fac2cli, mclp_objective)
 
     def test_mixin_mclp_get_uncovered_clients(self):
         uncovered_cleints_expected = 21
@@ -335,7 +335,7 @@ class TestOptimalLocate(unittest.TestCase):
         mclp = mclp.solve(pulp.PULP_CBC_CMD())
         mclp.facility_client_array()
 
-        self.assertCountEqual(mclp.fac2cli, mclp_objective)
+        numpy.testing.assert_array_equal(mclp.fac2cli, mclp_objective)
 
     def test_optimality_pcenter_from_cost_matrix(self):
         pcenter = PCenter.from_cost_matrix(
@@ -359,7 +359,7 @@ class TestOptimalLocate(unittest.TestCase):
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
         pcenter.facility_client_array()
 
-        self.assertCountEqual(pcenter.fac2cli, pcenter_objective)
+        numpy.testing.assert_array_equal(pcenter.fac2cli, pcenter_objective)
 
     def test_optimality_pcenter_from_geodataframe(self):
         pcenter = PCenter.from_geodataframe(
@@ -400,7 +400,7 @@ class TestOptimalLocate(unittest.TestCase):
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
         pcenter.facility_client_array()
 
-        self.assertCountEqual(pcenter.fac2cli, pcenter_objective)
+        numpy.testing.assert_array_equal(pcenter.fac2cli, pcenter_objective)
 
     def test_optimality_pmedian_from_cost_matrix(self):
         pmedian = PMedian.from_cost_matrix(
@@ -424,7 +424,7 @@ class TestOptimalLocate(unittest.TestCase):
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
         pmedian.facility_client_array()
 
-        self.assertCountEqual(pmedian.fac2cli, pmedian_objective)
+        numpy.testing.assert_array_equal(pmedian.fac2cli, pmedian_objective)
 
     def test_mixin_mean_distance(self):
         mean_distance_expected = 2982.1268579890657
@@ -475,7 +475,7 @@ class TestOptimalLocate(unittest.TestCase):
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
         pmedian.facility_client_array()
 
-        self.assertCountEqual(pmedian.fac2cli, pmedian_objective)
+        numpy.testing.assert_array_equal(pmedian.fac2cli, pmedian_objective)
 
 
 class TestErrors(unittest.TestCase):
