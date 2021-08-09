@@ -50,7 +50,7 @@ class BaseOutputMixin:
                 for fac_site in self.fac2cli[i]:
                     self.cli2fac[fac_site].append(i)
 
-    def uncovered_clients_dict(self) -> None:
+    def uncovered_clients(self) -> None:
         """
         Calculate how many clients points are not covered
         """
@@ -223,14 +223,16 @@ class FacilityModelBuilder:
         None
 
         """
-        try:
+        if hasattr(obj, "fac_vars"):
             fac_vars = getattr(obj, "fac_vars")
             for i in range_client:
                 model += (
                     pulp.lpSum([ni[i][j] * fac_vars[j] for j in range_facility]) >= 1
                 )
-        except AttributeError:
-            raise Exception("before setting constraints must set facility variable")
+        else:
+            raise AttributeError(
+                "before setting constraints must set facility variable"
+            )
 
     @staticmethod
     def add_facility_constraint(
@@ -253,11 +255,13 @@ class FacilityModelBuilder:
         -------
         None
         """
-        try:
+        if hasattr(obj, "fac_vars"):
             fac_vars = getattr(obj, "fac_vars")
             model += pulp.lpSum(fac_vars) == p_facilities
-        except AttributeError:
-            raise Exception("before setting constraints must set facility variable")
+        else:
+            raise AttributeError(
+                "before setting constraints must set facility variable"
+            )
 
     @staticmethod
     def add_maximal_coverage_constraint(
@@ -284,7 +288,7 @@ class FacilityModelBuilder:
         -------
         None
         """
-        try:
+        if hasattr(obj, "fac_vars") and hasattr(obj, "cli_vars"):
             fac_vars = getattr(obj, "fac_vars")
             dem_vars = getattr(obj, "cli_vars")
             for i in range_client:
@@ -292,8 +296,10 @@ class FacilityModelBuilder:
                     pulp.lpSum([ni[i][j] * fac_vars[j] for j in range_facility])
                     >= dem_vars[i]
                 )
-        except AttributeError:
-            raise Exception("before setting constraints must set facility variable")
+        else:
+            raise AttributeError(
+                "before setting constraints must set facility and demand variable"
+            )
 
     @staticmethod
     def add_assignment_constraint(
@@ -318,13 +324,15 @@ class FacilityModelBuilder:
         -------
         None
         """
-        try:
+        if hasattr(obj, "cli_assgn_vars"):
             cli_assgn_vars = getattr(obj, "cli_assgn_vars")
 
             for i in range_client:
                 model += pulp.lpSum([cli_assgn_vars[i][j] for j in range_facility]) == 1
-        except AttributeError:
-            raise Exception("before setting constraints must set facility variable")
+        else:
+            raise AttributeError(
+                "before setting constraints must set client assignment variable"
+            )
 
     @staticmethod
     def add_opening_constraint(
@@ -349,15 +357,17 @@ class FacilityModelBuilder:
         -------
         None
         """
-        try:
+        if hasattr(obj, "cli_assgn_vars"):
             cli_assgn_vars = getattr(obj, "cli_assgn_vars")
             fac_vars = getattr(obj, "fac_vars")
 
             for i in range_client:
                 for j in range_facility:
                     model += fac_vars[j] - cli_assgn_vars[i][j] >= 0
-        except AttributeError:
-            raise Exception("before setting constraints must set facility variable")
+        else:
+            raise AttributeError(
+                "before setting constraints must set client assignment variable"
+            )
 
     @staticmethod
     def add_minimized_maximum_constraint(
@@ -388,7 +398,7 @@ class FacilityModelBuilder:
         -----
         See explanation W variable in ``spopt.locate.base.add_weight_continuous_variable``
         """
-        try:
+        if hasattr(obj, "cli_assgn_vars") and hasattr(obj, "weight_var"):
             cli_assgn_vars = getattr(obj, "cli_assgn_vars")
             weight_var = getattr(obj, "weight_var")
 
@@ -402,5 +412,7 @@ class FacilityModelBuilder:
                     )
                     <= weight_var
                 )
-        except AttributeError:
-            raise Exception("before setting constraints must set facility variable")
+        else:
+            raise AttributeError(
+                "before setting constraints must set weight and client assignment variables"
+            )
