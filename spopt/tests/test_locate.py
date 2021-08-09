@@ -6,29 +6,9 @@ import spaghetti
 from shapely.geometry import Point
 
 from spopt.locate import LSCP, MCLP, PCenter, PMedian
+from spopt.locate.util import simulated_geo_points
 import unittest
 import os
-
-
-def simulated_geo_points(in_data, needed=20, seed=0, to_file=None):
-    geoms = in_data.geometry
-    area = tuple(in_data.total_bounds)
-    simulated_points_list = []
-    simulated_points_all = False
-    numpy.random.seed(seed)
-    while simulated_points_all == False:
-        x = numpy.random.uniform(area[0], area[2], 1)
-        y = numpy.random.uniform(area[1], area[3], 1)
-        point = Point(x, y)
-        if geoms.intersects(point)[0]:
-            simulated_points_list.append(point)
-        if len(simulated_points_list) == needed:
-            simulated_points_all = True
-    sim_pts = geopandas.GeoDataFrame(
-        simulated_points_list, columns=["geometry"], crs=in_data.crs
-    )
-
-    return sim_pts
 
 
 class TestGlobalLocate(unittest.TestCase):
