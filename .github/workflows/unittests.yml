@@ -16,7 +16,7 @@
      strategy:
        matrix:
          os: ['windows-latest'] #['macos-latest', 'ubuntu-latest', 'windows-latest']
-         environment-file: [.ci/37.yaml, .ci/39.yaml] #[.ci/37.yaml, .ci/38.yaml, .ci/39.yaml]
+         environment-file: [.ci/39.yaml] #[.ci/37.yaml, .ci/38.yaml, .ci/39.yaml]
         #  include:
         #    - environment-file: .ci/39-DEV.yaml
         #      os: ubuntu-latest
