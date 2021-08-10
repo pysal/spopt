@@ -24,13 +24,13 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         problem name
     problem: pulp.LpProblem
         pulp instance of optimization model that contains constraints, variables and objective function.
-    sij: np.array
+    aij: np.array
         two-dimensional array product of service load/population demand and distance matrix between facility and demand.
 
     """
 
-    def __init__(self, name: str, problem: pulp.LpProblem, sij: np.array):
-        self.sij = sij
+    def __init__(self, name: str, problem: pulp.LpProblem, aij: np.array):
+        self.aij = aij
         self.name = name
         self.problem = problem
 
@@ -55,7 +55,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         self.problem += (
             pulp.lpSum(
                 [
-                    self.sij[i][j] * cli_assgn_vars[i][j]
+                    self.aij[i][j] * cli_assgn_vars[i][j]
                     for i in range_clients
                     for j in range_facility
                 ]
@@ -95,9 +95,9 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         model = pulp.LpProblem(name, pulp.LpMinimize)
 
         weights = np.reshape(weights, (cost_matrix.shape[0], 1))
-        sij = weights * cost_matrix
+        aij = weights * cost_matrix
 
-        p_median = PMedian(name, model, sij)
+        p_median = PMedian(name, model, aij)
 
         FacilityModelBuilder.add_facility_integer_variable(p_median, r_fac, "y[{i}]")
         FacilityModelBuilder.add_client_assign_integer_variable(

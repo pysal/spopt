@@ -19,15 +19,15 @@ class PCenter(LocateSolver, BaseOutputMixin):
         problem name
     problem: pulp.LpProblem
         pulp instance of optimization model that contains constraints, variables and objective function.
-    sij: np.array
+    aij: np.array
         two-dimensional array product of service load/population demand and distance matrix between facility and demand.
 
     """
 
-    def __init__(self, name: str, problem: pulp.LpProblem, sij: np.array):
+    def __init__(self, name: str, problem: pulp.LpProblem, aij: np.array):
         self.problem = problem
         self.name = name
-        self.sij = sij
+        self.aij = aij
 
     def __add_obj(self) -> None:
         """
@@ -74,9 +74,9 @@ class PCenter(LocateSolver, BaseOutputMixin):
         model = pulp.LpProblem(name, pulp.LpMinimize)
 
         weights = np.reshape(weights, (cost_matrix.shape[0], 1))
-        sij = weights * cost_matrix
+        aij = weights * cost_matrix
 
-        p_center = PCenter(name, model, sij)
+        p_center = PCenter(name, model, aij)
 
         FacilityModelBuilder.add_facility_integer_variable(p_center, r_fac, "y[{i}]")
         FacilityModelBuilder.add_client_assign_integer_variable(

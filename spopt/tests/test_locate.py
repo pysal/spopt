@@ -189,7 +189,7 @@ class TestOptimalLocate(unittest.TestCase):
         self.assertEqual(lscp.problem.status, pulp.LpStatusInfeasible)
 
     def test_lscp_facility_client_array_from_cost_matrix(self):
-        with open(self.dirpath + "lscp_objective.pkl", "rb") as f:
+        with open(self.dirpath + "lscp_fac2cli.pkl", "rb") as f:
             lscp_objective = pickle.load(f)
 
         lscp = LSCP.from_cost_matrix(self.cost_matrix, self.service_dist)
@@ -197,6 +197,17 @@ class TestOptimalLocate(unittest.TestCase):
         lscp.facility_client_array()
 
         numpy.testing.assert_array_equal(lscp.fac2cli, lscp_objective)
+
+    def test_lscp_client_facility_array_from_cost_matrix(self):
+        with open(self.dirpath + "lscp_cli2fac.pkl", "rb") as f:
+            lscp_objective = pickle.load(f)
+
+        lscp = LSCP.from_cost_matrix(self.cost_matrix, self.service_dist)
+        lscp = lscp.solve(pulp.PULP_CBC_CMD())
+        lscp.facility_client_array()
+        lscp.client_facility_array()
+
+        numpy.testing.assert_array_equal(lscp.cli2fac, lscp_objective)
 
     def test_optimality_lscp_from_geodataframe(self):
         lscp = LSCP.from_geodataframe(
@@ -222,7 +233,7 @@ class TestOptimalLocate(unittest.TestCase):
         self.assertEqual(lscp.problem.status, pulp.LpStatusInfeasible)
 
     def test_lscp_facility_client_array_from_geodataframe(self):
-        with open(self.dirpath + "lscp_geodataframe_objective.pkl", "rb") as f:
+        with open(self.dirpath + "lscp_geodataframe_fac2cli.pkl", "rb") as f:
             lscp_objective = pickle.load(f)
 
         lscp = LSCP.from_geodataframe(
@@ -236,6 +247,23 @@ class TestOptimalLocate(unittest.TestCase):
         lscp.facility_client_array()
 
         numpy.testing.assert_array_equal(lscp.fac2cli, lscp_objective)
+
+    def test_lscp_client_facility_array_from_geodataframe(self):
+        with open(self.dirpath + "lscp_geodataframe_cli2fac.pkl", "rb") as f:
+            lscp_objective = pickle.load(f)
+
+        lscp = LSCP.from_geodataframe(
+            self.demand_points_gdf,
+            self.facility_points_gdf,
+            "geometry",
+            "geometry",
+            self.service_dist,
+        )
+        lscp = lscp.solve(pulp.PULP_CBC_CMD())
+        lscp.facility_client_array()
+        lscp.client_facility_array()
+
+        numpy.testing.assert_array_equal(lscp.cli2fac, lscp_objective)
 
     def test_optimality_mclp_from_cost_matrix(self):
         mclp = MCLP.from_cost_matrix(
@@ -258,7 +286,7 @@ class TestOptimalLocate(unittest.TestCase):
         self.assertEqual(mclp.problem.status, pulp.LpStatusInfeasible)
 
     def test_mclp_facility_client_array_from_cost_matrix(self):
-        with open(self.dirpath + "mclp_objective.pkl", "rb") as f:
+        with open(self.dirpath + "mclp_fac2cli.pkl", "rb") as f:
             mclp_objective = pickle.load(f)
 
         mclp = MCLP.from_cost_matrix(
@@ -272,8 +300,24 @@ class TestOptimalLocate(unittest.TestCase):
 
         numpy.testing.assert_array_equal(mclp.fac2cli, mclp_objective)
 
+    def test_mclp_client_facility_array_from_cost_matrix(self):
+        with open(self.dirpath + "mclp_cli2fac.pkl", "rb") as f:
+            mclp_objective = pickle.load(f)
+
+        mclp = MCLP.from_cost_matrix(
+            self.cost_matrix,
+            self.ai,
+            max_coverage=self.service_dist,
+            p_facilities=self.p_facility,
+        )
+        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        mclp.facility_client_array()
+        mclp.client_facility_array()
+
+        numpy.testing.assert_array_equal(mclp.cli2fac, mclp_objective)
+
     def test_mixin_mclp_get_uncovered_clients(self):
-        uncovered_cleints_expected = 21
+        uncovered_clients_expected = 21
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix,
             self.ai,
@@ -284,7 +328,7 @@ class TestOptimalLocate(unittest.TestCase):
         mclp.facility_client_array()
         mclp.uncovered_clients()
 
-        self.assertEqual(mclp.n_cli_uncov, uncovered_cleints_expected)
+        self.assertEqual(mclp.n_cli_uncov, uncovered_clients_expected)
 
     def test_mixin_mclp_get_percentage(self):
         percentage_expected = 0.8975609756097561
@@ -329,7 +373,7 @@ class TestOptimalLocate(unittest.TestCase):
 
     @unittest.skipIf(WINDOWS, "Skipping Windows")
     def test_mclp_facility_client_array_from_geodataframe(self):
-        with open(self.dirpath + "mclp_geodataframe_objective.pkl", "rb") as f:
+        with open(self.dirpath + "mclp_geodataframe_fac2cli.pkl", "rb") as f:
             mclp_objective = pickle.load(f)
 
         mclp = MCLP.from_geodataframe(
@@ -346,6 +390,26 @@ class TestOptimalLocate(unittest.TestCase):
 
         numpy.testing.assert_array_equal(mclp.fac2cli, mclp_objective)
 
+    @unittest.skipIf(WINDOWS, "Skipping Windows")
+    def test_mclp_client_facility_array_from_geodataframe(self):
+        with open(self.dirpath + "mclp_geodataframe_cli2fac.pkl", "rb") as f:
+            mclp_objective = pickle.load(f)
+
+        mclp = MCLP.from_geodataframe(
+            self.demand_points_gdf,
+            self.facility_points_gdf,
+            "geometry",
+            "geometry",
+            "POP2000",
+            max_coverage=self.service_dist,
+            p_facilities=self.p_facility,
+        )
+        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        mclp.facility_client_array()
+        mclp.client_facility_array()
+
+        numpy.testing.assert_array_equal(mclp.cli2fac, mclp_objective)
+
     def test_optimality_pcenter_from_cost_matrix(self):
         pcenter = PCenter.from_cost_matrix(
             self.cost_matrix, self.ai, p_facilities=self.p_facility
@@ -359,7 +423,7 @@ class TestOptimalLocate(unittest.TestCase):
         self.assertEqual(pcenter.problem.status, pulp.LpStatusInfeasible)
 
     def test_pcenter_facility_client_array_from_cost_matrix(self):
-        with open(self.dirpath + "pcenter_objective.pkl", "rb") as f:
+        with open(self.dirpath + "pcenter_fac2cli.pkl", "rb") as f:
             pcenter_objective = pickle.load(f)
 
         pcenter = PCenter.from_cost_matrix(
@@ -369,6 +433,19 @@ class TestOptimalLocate(unittest.TestCase):
         pcenter.facility_client_array()
 
         numpy.testing.assert_array_equal(pcenter.fac2cli, pcenter_objective)
+
+    def test_pcenter_client_facility_array_from_cost_matrix(self):
+        with open(self.dirpath + "pcenter_cli2fac.pkl", "rb") as f:
+            pcenter_objective = pickle.load(f)
+
+        pcenter = PCenter.from_cost_matrix(
+            self.cost_matrix, self.ai, p_facilities=self.p_facility
+        )
+        pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
+        pcenter.facility_client_array()
+        pcenter.client_facility_array()
+
+        numpy.testing.assert_array_equal(pcenter.cli2fac, pcenter_objective)
 
     def test_optimality_pcenter_from_geodataframe(self):
         pcenter = PCenter.from_geodataframe(
@@ -396,7 +473,7 @@ class TestOptimalLocate(unittest.TestCase):
 
     @unittest.skipIf(WINDOWS, "Skipping Windows")
     def test_pcenter_facility_client_array_from_geodataframe(self):
-        with open(self.dirpath + "pcenter_geodataframe_objective.pkl", "rb") as f:
+        with open(self.dirpath + "pcenter_geodataframe_fac2cli.pkl", "rb") as f:
             pcenter_objective = pickle.load(f)
 
         pcenter = PCenter.from_geodataframe(
@@ -412,6 +489,25 @@ class TestOptimalLocate(unittest.TestCase):
 
         numpy.testing.assert_array_equal(pcenter.fac2cli, pcenter_objective)
 
+    @unittest.skipIf(WINDOWS, "Skipping Windows")
+    def test_pcenter_client_facility_array_from_geodataframe(self):
+        with open(self.dirpath + "pcenter_geodataframe_cli2fac.pkl", "rb") as f:
+            pcenter_objective = pickle.load(f)
+
+        pcenter = PCenter.from_geodataframe(
+            self.demand_points_gdf,
+            self.facility_points_gdf,
+            "geometry",
+            "geometry",
+            "POP2000",
+            p_facilities=self.p_facility,
+        )
+        pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
+        pcenter.facility_client_array()
+        pcenter.client_facility_array()
+
+        numpy.testing.assert_array_equal(pcenter.cli2fac, pcenter_objective)
+
     def test_optimality_pmedian_from_cost_matrix(self):
         pmedian = PMedian.from_cost_matrix(
             self.cost_matrix, self.ai, p_facilities=self.p_facility
@@ -425,7 +521,7 @@ class TestOptimalLocate(unittest.TestCase):
         self.assertEqual(pmedian.problem.status, pulp.LpStatusInfeasible)
 
     def test_pmedian_facility_client_array_from_cost_matrix(self):
-        with open(self.dirpath + "pmedian_objective.pkl", "rb") as f:
+        with open(self.dirpath + "pmedian_fac2cli.pkl", "rb") as f:
             pmedian_objective = pickle.load(f)
 
         pmedian = PMedian.from_cost_matrix(
@@ -435,6 +531,19 @@ class TestOptimalLocate(unittest.TestCase):
         pmedian.facility_client_array()
 
         numpy.testing.assert_array_equal(pmedian.fac2cli, pmedian_objective)
+
+    def test_pmedian_client_facility_array_from_cost_matrix(self):
+        with open(self.dirpath + "pmedian_cli2fac.pkl", "rb") as f:
+            pmedian_objective = pickle.load(f)
+
+        pmedian = PMedian.from_cost_matrix(
+            self.cost_matrix, self.ai, p_facilities=self.p_facility
+        )
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
+        pmedian.facility_client_array()
+        pmedian.client_facility_array()
+
+        numpy.testing.assert_array_equal(pmedian.cli2fac, pmedian_objective)
 
     def test_mixin_mean_distance(self):
         mean_distance_expected = 2982.1268579890657
@@ -471,7 +580,7 @@ class TestOptimalLocate(unittest.TestCase):
         self.assertEqual(pmedian.problem.status, pulp.LpStatusInfeasible)
 
     def test_pmedian_facility_client_array_from_geodataframe(self):
-        with open(self.dirpath + "pmedian_geodataframe_objective.pkl", "rb") as f:
+        with open(self.dirpath + "pmedian_geodataframe_fac2cli.pkl", "rb") as f:
             pmedian_objective = pickle.load(f)
 
         pmedian = PMedian.from_geodataframe(
@@ -486,6 +595,24 @@ class TestOptimalLocate(unittest.TestCase):
         pmedian.facility_client_array()
 
         numpy.testing.assert_array_equal(pmedian.fac2cli, pmedian_objective)
+
+    def test_pmedian_client_facility_array_from_geodataframe(self):
+        with open(self.dirpath + "pmedian_geodataframe_cli2fac.pkl", "rb") as f:
+            pmedian_objective = pickle.load(f)
+
+        pmedian = PMedian.from_geodataframe(
+            self.demand_points_gdf,
+            self.facility_points_gdf,
+            "geometry",
+            "geometry",
+            "POP2000",
+            p_facilities=self.p_facility,
+        )
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
+        pmedian.facility_client_array()
+        pmedian.client_facility_array()
+
+        numpy.testing.assert_array_equal(pmedian.cli2fac, pmedian_objective)
 
 
 class TestErrorsWarnings(unittest.TestCase):
