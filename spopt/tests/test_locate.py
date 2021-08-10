@@ -1,10 +1,11 @@
+from pyproj import crs
 from spopt.locate.base import FacilityModelBuilder, LocateSolver, T_FacModel
 import numpy
 import geopandas
 import pandas
 import pulp
 import spaghetti
-from shapely.geometry import Point
+from shapely.geometry import Point, Polygon
 
 from spopt.locate import LSCP, MCLP, PCenter, PMedian
 from spopt.locate.util import simulated_geo_points
@@ -487,7 +488,25 @@ class TestOptimalLocate(unittest.TestCase):
         numpy.testing.assert_array_equal(pmedian.fac2cli, pmedian_objective)
 
 
-class TestErrors(unittest.TestCase):
+class TestErrorsWarnings(unittest.TestCase):
+    def setUp(self) -> None:
+
+        pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
+        pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
+        pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])
+        polygon_dict = {"geometry": [pol1, pol2, pol3]}
+
+        point = Point(10, 10)
+        point_dict = {"weight": 4, "geometry": [point]}
+
+        self.gdf_fac = geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
+        self.gdf_dem = geopandas.GeoDataFrame(point_dict, crs="EPSG:4326")
+
+        self.gdf_dem_crs = self.gdf_dem.to_crs("EPSG:3857")
+
+        self.gdf_dem_buffered = self.gdf_dem.copy()
+        self.gdf_dem_buffered["geometry"] = self.gdf_dem.buffer(2)
+
     def test_attribute_error_add_set_covering_constraint(self):
         with self.assertRaises(AttributeError):
             dummy_class = LSCP("dummy", pulp.LpProblem("name"))
@@ -537,4 +556,82 @@ class TestErrors(unittest.TestCase):
             dummy_range = range(1)
             FacilityModelBuilder.add_minimized_maximum_constraint(
                 dummy_class, dummy_class.problem, dummy_matrix, dummy_range, dummy_range
+            )
+
+    def test_error_lscp_different_crs(self):
+        with self.assertRaises(ValueError):
+            dummy_class = LSCP.from_geodataframe(
+                self.gdf_dem_crs, self.gdf_fac, "geometry", "geometry", 10
+            )
+
+    def test_error_mclp_different_crs(self):
+        with self.assertRaises(ValueError):
+            dummy_class = MCLP.from_geodataframe(
+                self.gdf_dem_crs, self.gdf_fac, "geometry", "geometry", "weight", 10, 2
+            )
+
+    def test_error_pmedian_different_crs(self):
+        with self.assertRaises(ValueError):
+            dummy_class = PMedian.from_geodataframe(
+                self.gdf_dem_crs, self.gdf_fac, "geometry", "geometry", "weight", 2
+            )
+
+    def test_error_pcenter_different_crs(self):
+        with self.assertRaises(ValueError):
+            dummy_class = PMedian.from_geodataframe(
+                self.gdf_dem_crs, self.gdf_fac, "geometry", "geometry", "weight", 2
+            )
+
+    def test_warning_lscp_facility_geodataframe(self):
+        with self.assertWarns(Warning):
+            dummy_class = LSCP.from_geodataframe(
+                self.gdf_dem, self.gdf_fac, "geometry", "geometry", 10
+            )
+
+    def test_warning_lscp_demand_geodataframe(self):
+        with self.assertWarns(Warning):
+            dummy_class = LSCP.from_geodataframe(
+                self.gdf_dem_buffered, self.gdf_fac, "geometry", "geometry", 10
+            )
+
+    def test_warning_mclp_facility_geodataframe(self):
+        with self.assertWarns(Warning):
+            dummy_class = MCLP.from_geodataframe(
+                self.gdf_dem, self.gdf_fac, "geometry", "geometry", "weight", 10, 2
+            )
+
+    def test_warning_mclp_demand_geodataframe(self):
+        with self.assertWarns(Warning):
+            dummy_class = MCLP.from_geodataframe(
+                self.gdf_dem_buffered,
+                self.gdf_fac,
+                "geometry",
+                "geometry",
+                "weight",
+                10,
+                2,
+            )
+
+    def test_warning_pmedian_facility_geodataframe(self):
+        with self.assertWarns(Warning):
+            dummy_class = PMedian.from_geodataframe(
+                self.gdf_dem, self.gdf_fac, "geometry", "geometry", "weight", 2
+            )
+
+    def test_warning_pmedian_demand_geodataframe(self):
+        with self.assertWarns(Warning):
+            dummy_class = PMedian.from_geodataframe(
+                self.gdf_dem_buffered, self.gdf_fac, "geometry", "geometry", "weight", 2
+            )
+
+    def test_warning_pcenter_facility_geodataframe(self):
+        with self.assertWarns(Warning):
+            dummy_class = PCenter.from_geodataframe(
+                self.gdf_dem, self.gdf_fac, "geometry", "geometry", "weight", 2
+            )
+
+    def test_warning_pcenter_demand_geodataframe(self):
+        with self.assertWarns(Warning):
+            dummy_class = PCenter.from_geodataframe(
+                self.gdf_dem_buffered, self.gdf_fac, "geometry", "geometry", "weight", 2
             )
