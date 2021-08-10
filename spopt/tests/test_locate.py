@@ -11,6 +11,12 @@ from spopt.locate.util import simulated_geo_points
 import unittest
 import os
 import pickle
+import platform
+
+if os == "windows":
+    WINDOWS = True
+else:
+    WINDOWS = False
 
 
 class TestGlobalLocate(unittest.TestCase):
@@ -319,6 +325,7 @@ class TestOptimalLocate(unittest.TestCase):
         mclp = mclp.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(mclp.problem.status, pulp.LpStatusInfeasible)
 
+    @unittest.skipIf(WINDOWS, "Skipping Windows")
     def test_mclp_facility_client_array_from_geodataframe(self):
         with open(self.dirpath + "mclp_geodataframe_objective.pkl", "rb") as f:
             mclp_objective = pickle.load(f)
@@ -385,6 +392,7 @@ class TestOptimalLocate(unittest.TestCase):
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(pcenter.problem.status, pulp.LpStatusInfeasible)
 
+    @unittest.skipIf(WINDOWS, "Skipping Windows")
     def test_pcenter_facility_client_array_from_geodataframe(self):
         with open(self.dirpath + "pcenter_geodataframe_objective.pkl", "rb") as f:
             pcenter_objective = pickle.load(f)
