@@ -13,7 +13,8 @@ import os
 import pickle
 import platform
 
-if os == "windows":
+operating_system = platform.platform()[:7].lower()
+if operating_system == "windows":
     WINDOWS = True
 else:
     WINDOWS = False
