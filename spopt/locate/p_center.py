@@ -46,7 +46,6 @@ class PCenter(LocateSolver, BaseOutputMixin):
     def from_cost_matrix(
         cls,
         cost_matrix: np.array,
-        weights: np.array,
         p_facilities: int,
         name: str = "p-center",
     ):
@@ -57,8 +56,6 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ----------
         cost_matrix: np.array
             two-dimensional distance array between facility points and demand point
-        weights: np.array
-            one-dimensional service load or population demand
         p_facilities: int
             number of facilities to be located
         name: str, default="p-center"
@@ -73,10 +70,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         model = pulp.LpProblem(name, pulp.LpMinimize)
 
-        weights = np.reshape(weights, (cost_matrix.shape[0], 1))
-        aij = weights * cost_matrix
-
-        p_center = PCenter(name, model, aij)
+        p_center = PCenter(name, model, cost_matrix)
 
         FacilityModelBuilder.add_facility_integer_variable(p_center, r_fac, "y[{i}]")
         FacilityModelBuilder.add_client_assign_integer_variable(
@@ -108,7 +102,6 @@ class PCenter(LocateSolver, BaseOutputMixin):
         gdf_fac: GeoDataFrame,
         demand_col: str,
         facility_col: str,
-        weights_cols: str,
         p_facilities: int,
         distance_metric: str = "euclidean",
         name: str = "p-center",
@@ -127,8 +120,6 @@ class PCenter(LocateSolver, BaseOutputMixin):
             demand geometry column name
         facility_col: str
             facility candidate sites geometry column name
-        weights_cols: str
-            weight column name representing service load or demand
         p_facilities: int
             number of facilities to be located
         distance_metric: str, default="euclidean"
@@ -141,7 +132,6 @@ class PCenter(LocateSolver, BaseOutputMixin):
         PCenter object
         """
 
-        service_load = gdf_demand[weights_cols].to_numpy()
         dem = gdf_demand[demand_col]
         fac = gdf_fac[facility_col]
 
@@ -165,8 +155,6 @@ class PCenter(LocateSolver, BaseOutputMixin):
         dem_data = np.array([dem.x.to_numpy(), dem.y.to_numpy()]).T
         fac_data = np.array([fac.x.to_numpy(), fac.y.to_numpy()]).T
 
-        distances = np.array([])
-
         if gdf_demand.crs != gdf_fac.crs:
             raise ValueError(
                 f"geodataframes crs are different: gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
@@ -174,7 +162,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         distances = cdist(dem_data, fac_data, distance_metric)
 
-        return cls.from_cost_matrix(distances, service_load, p_facilities, name)
+        return cls.from_cost_matrix(distances, p_facilities, name)
 
     def facility_client_array(self) -> None:
         """

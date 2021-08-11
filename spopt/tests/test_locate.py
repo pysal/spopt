@@ -112,18 +112,16 @@ class TestGlobalLocate(unittest.TestCase):
         self.assertIsInstance(result, PMedian)
 
     def test_p_center_from_cost_matrix(self):
-        p_center = PCenter.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
+        p_center = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
         result = p_center.solve(pulp.PULP_CBC_CMD())
         self.assertIsInstance(result, PCenter)
 
     def test_p_center_from_geodataframe(self):
-        self.clients_snapped["weights"] = self.ai
         p_center = PCenter.from_geodataframe(
             self.clients_snapped,
             self.facilities_snapped,
             "geometry",
             "geometry",
-            "weights",
             p_facilities=4,
         )
         result = p_center.solve(pulp.PULP_CBC_CMD())
@@ -141,7 +139,6 @@ class TestOptimalLocate(unittest.TestCase):
         ntw_dist_piv = network_distance.pivot_table(
             values="distance", index="DestinationName", columns="name"
         )
-        demand_name = network_distance[["DestinationName", "demand"]].drop_duplicates()
 
         self.cost_matrix = ntw_dist_piv.to_numpy()
 
@@ -412,13 +409,13 @@ class TestOptimalLocate(unittest.TestCase):
 
     def test_optimality_pcenter_from_cost_matrix(self):
         pcenter = PCenter.from_cost_matrix(
-            self.cost_matrix, self.ai, p_facilities=self.p_facility
+            self.cost_matrix, p_facilities=self.p_facility
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(pcenter.problem.status, pulp.LpStatusOptimal)
 
     def test_infeasibility_pcenter_from_cost_matrix(self):
-        pcenter = PCenter.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=0)
+        pcenter = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=0)
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
         self.assertEqual(pcenter.problem.status, pulp.LpStatusInfeasible)
 
@@ -427,7 +424,7 @@ class TestOptimalLocate(unittest.TestCase):
             pcenter_objective = pickle.load(f)
 
         pcenter = PCenter.from_cost_matrix(
-            self.cost_matrix, self.ai, p_facilities=self.p_facility
+            self.cost_matrix, p_facilities=self.p_facility
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
         pcenter.facility_client_array()
@@ -439,7 +436,7 @@ class TestOptimalLocate(unittest.TestCase):
             pcenter_objective = pickle.load(f)
 
         pcenter = PCenter.from_cost_matrix(
-            self.cost_matrix, self.ai, p_facilities=self.p_facility
+            self.cost_matrix, p_facilities=self.p_facility
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
         pcenter.facility_client_array()
@@ -453,7 +450,6 @@ class TestOptimalLocate(unittest.TestCase):
             self.facility_points_gdf,
             "geometry",
             "geometry",
-            "POP2000",
             p_facilities=self.p_facility,
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
@@ -465,7 +461,6 @@ class TestOptimalLocate(unittest.TestCase):
             self.facility_points_gdf,
             "geometry",
             "geometry",
-            "POP2000",
             p_facilities=0,
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
@@ -481,7 +476,6 @@ class TestOptimalLocate(unittest.TestCase):
             self.facility_points_gdf,
             "geometry",
             "geometry",
-            "POP2000",
             p_facilities=self.p_facility,
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
@@ -499,7 +493,6 @@ class TestOptimalLocate(unittest.TestCase):
             self.facility_points_gdf,
             "geometry",
             "geometry",
-            "POP2000",
             p_facilities=self.p_facility,
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
@@ -705,8 +698,8 @@ class TestErrorsWarnings(unittest.TestCase):
 
     def test_error_pcenter_different_crs(self):
         with self.assertRaises(ValueError):
-            dummy_class = PMedian.from_geodataframe(
-                self.gdf_dem_crs, self.gdf_fac, "geometry", "geometry", "weight", 2
+            dummy_class = PCenter.from_geodataframe(
+                self.gdf_dem_crs, self.gdf_fac, "geometry", "geometry", 2
             )
 
     def test_warning_lscp_facility_geodataframe(self):
@@ -754,11 +747,11 @@ class TestErrorsWarnings(unittest.TestCase):
     def test_warning_pcenter_facility_geodataframe(self):
         with self.assertWarns(Warning):
             dummy_class = PCenter.from_geodataframe(
-                self.gdf_dem, self.gdf_fac, "geometry", "geometry", "weight", 2
+                self.gdf_dem, self.gdf_fac, "geometry", "geometry", 2
             )
 
     def test_warning_pcenter_demand_geodataframe(self):
         with self.assertWarns(Warning):
             dummy_class = PCenter.from_geodataframe(
-                self.gdf_dem_buffered, self.gdf_fac, "geometry", "geometry", "weight", 2
+                self.gdf_dem_buffered, self.gdf_fac, "geometry", "geometry", 2
             )

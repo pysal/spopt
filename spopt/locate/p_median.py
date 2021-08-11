@@ -182,8 +182,6 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         dem_data = np.array([dem.x.to_numpy(), dem.y.to_numpy()]).T
         fac_data = np.array([fac.x.to_numpy(), fac.y.to_numpy()]).T
 
-        distances = np.array([])
-
         if gdf_demand.crs != gdf_fac.crs:
             raise ValueError(
                 f"geodataframes crs are different: gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
