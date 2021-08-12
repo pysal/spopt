@@ -29,7 +29,7 @@ class SpanningForest(object):
                    Will be inverted to provide a
                    dissimilarity metric.
         reduction: the reduction applied over all clusters
-                   to provide the map score. When center is false, this is like
+                   to provide the map score. When center is None, this is like
                    a linkage condition in an agglomerative clustering. Average
                    linkage can be achieved using reduction=numpy.average, whereas
                    minimum linkage could be achieved using reduction=numpy.min
