@@ -18,19 +18,23 @@ class SpanningForest(object):
         dissimilarity=skm.manhattan_distances,
         affinity=None,
         reduction=np.sum,
-        center=np.mean,
+        center=None,
         verbose=False,
     ):
         """
         Initialize the SKATER algorithm.
 
-        dissimilarity : a callable distance metric
+        dissimilarity : a callable distance metric or "precomputed"
         affinity : an callable affinity metric between 0,1.
                    Will be inverted to provide a
                    dissimilarity metric.
         reduction: the reduction applied over all clusters
-                   to provide the map score.
-        center:    way to compute the center of each region in attribute space
+                   to provide the map score. When center is false, this is like
+                   a linkage condition in an agglomerative clustering. Average
+                   linkage can be achieved using reduction=numpy.average, whereas
+                   minimum linkage could be achieved using reduction=numpy.min
+        center:    way to compute the center of each region in attribute space.
+                   If None, compute score directly from the dissimilarity matrix.
 
         verbose: bool/int describing how much output to provide to the user,
                  in terms of print statements or progressbars.
@@ -40,6 +44,12 @@ class SpanningForest(object):
               Typically, this means we use addition.
         """
         if affinity is not None:
+            warn(
+                "the affinity option will be removed in the next release of spopt. "
+                " the Skater algorithm should be specified directly in terms"
+                " of a dissmilarity metric.",
+                DeprecationWarning,
+            )
             # invert the 0,1 affinity to
             # to an unbounded positive dissimilarity
             metric = lambda x: -np.log(affinity(x))
@@ -47,6 +57,14 @@ class SpanningForest(object):
             metric = dissimilarity
         self.metric = metric
         self.reduction = reduction
+        if metric == "precomputed":
+            if center is not None:
+                raise ValueError(
+                    "if metric is precomputed, then the center method must be None."
+                )
+        else:
+            if center is None:
+                center = np.mean
         self.center = center
         self.verbose = verbose
 
@@ -56,7 +74,13 @@ class SpanningForest(object):
         )
 
     def fit(
-        self, n_clusters, W, data=None, quorum=-np.inf, trace=False, islands="increase",
+        self,
+        n_clusters,
+        W,
+        data=None,
+        quorum=-np.inf,
+        trace=False,
+        islands="increase",
     ):
         """
         n_clusters : int of clusters wanted
@@ -79,14 +103,17 @@ class SpanningForest(object):
             attribute_kernel = np.ones((W.n, W.n))
             data = np.ones((W.n, 1))
         else:
-            attribute_kernel = self.metric(data)
+            if self.metric == "precomputed":
+                attribute_kernel = data
+            else:
+                attribute_kernel = self.metric(data)
         W.transform = "b"
         W = W.sparse
         start = time.time()
 
         super_verbose = self.verbose > 1
         start_W = time.time()
-        dissim = W.multiply(attribute_kernel)
+        dissim = W.multiply(attribute_kernel).tocsc()
         dissim.eliminate_zeros()
         end_W = time.time() - start_W
 
@@ -140,9 +167,17 @@ class SpanningForest(object):
             self._trace.append((current_labels, deletion(np.nan, np.nan, np.inf)))
             if super_verbose:
                 print(self._trace[-1])
+        if self.metric == "precomputed":
+            cutdata = dissim
+        else:
+            cutdata = data
         while current_n_subtrees < n_clusters:  # while we don't have enough regions
             best_deletion = self.find_cut(
-                MSF, data, quorum=quorum, labels=None, target_label=None,
+                MSF,
+                cutdata,
+                quorum=quorum,
+                labels=None,
+                target_label=None,
             )
 
             if np.isfinite(best_deletion.score):  # if our search succeeds
@@ -185,7 +220,8 @@ class SpanningForest(object):
 
         If a quorum is passed and the labels do not meet quorum, the score is inf.
 
-        data    :   (N,P) array of data on which to compute the score of the regions expressed in labels
+        data    :   (N,P) array of data on which to compute the score of the regions expressed in labels,
+                    or the NxN affinity kernel upon which clustering is based.
         labels  :   (N,) array of labels expressing the classification of each observation into a region.
         quorum  :   int expressing the minimum size of regions. Can be -inf if there is no lower bound.
                     Any region below quorum makes the score inf.
@@ -200,23 +236,31 @@ class SpanningForest(object):
                 raise ValueError(
                     "Labels not provided and MSF_Prune object has not been fit to data yet."
                 )
-        assert data.shape[0] == len(labels), (
-            "Length of label array ({}) does not match "
-            "length of data ({})! ".format(labels.shape[0], data.shape[0])
+        assert data.shape[0] == len(
+            labels
+        ), "Length of label array ({}) does not match " "length of data ({})! ".format(
+            labels.shape[0], data.shape[0]
         )
         _, subtree_quorums = np.unique(labels, return_counts=True)
         n_subtrees = len(subtree_quorums)
         if (subtree_quorums < quorum).any():
             return np.inf
-        part_scores = [
-            self.reduction(
-                self.metric(
-                    X=data[labels == l],
-                    Y=self.center(data[labels == l], axis=0).reshape(1, -1),
+        if self.center is not None:
+            part_scores = [
+                self.reduction(
+                    self.metric(
+                        X=data[labels == l],
+                        Y=self.center(data[labels == l], axis=0).reshape(1, -1),
+                    )
                 )
-            )
-            for l in range(n_subtrees)
-        ]
+                for l in range(n_subtrees)
+            ]
+        else:
+            part_scores = []
+            for l in range(n_subtrees):
+                label_data = data[labels == l]
+                values = label_data[label_data.nonzero()]
+                part_scores.append(self.reduction(values))
         return self.reduction(part_scores).item()
 
     def find_cut(
@@ -431,6 +475,7 @@ class Skater(BaseSpOptHeuristicSolver):
         self.floor = floor
         self.trace = trace
         self.islands = islands
+        spanning_forest_kwds.setdefault("center", np.mean)
         self.spanning_forest_kwds = spanning_forest_kwds
 
     def solve(self):
