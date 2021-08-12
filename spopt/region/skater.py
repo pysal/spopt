@@ -168,7 +168,7 @@ class SpanningForest(object):
             if super_verbose:
                 print(self._trace[-1])
         if self.metric == "precomputed":
-            cutdata = dissim
+            cutdata = attribute_kernel
         else:
             cutdata = data
         while current_n_subtrees < n_clusters:  # while we don't have enough regions
@@ -256,11 +256,7 @@ class SpanningForest(object):
                 for l in range(n_subtrees)
             ]
         else:
-            part_scores = []
-            for l in range(n_subtrees):
-                label_data = data[labels == l]
-                values = label_data[label_data.nonzero()]
-                part_scores.append(self.reduction(values))
+            part_scores = [self.reduction(data[labels == l]) for l in range(n_subtrees)]
         return self.reduction(part_scores).item()
 
     def find_cut(
