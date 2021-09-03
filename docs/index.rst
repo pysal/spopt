@@ -44,6 +44,16 @@ Regionalization, facility location, and transportation-oriented modeling
                 </div>
             </a>
         </div>
+        <div class="col-sm-4 col-xs-14">
+            <a href="https://pysal.org/spopt/notebooks/facloc-real-world.html" class="thumbnail">
+                <img src="_static/images/notebooks-facloc-mclp.png"
+                class="img-responsive center-block">
+                <div class="caption text-center">
+                <h6>Locate Store Sites in San Francisco
+                </h6>
+                </div>
+            </a>
+        </div>
         <div class="col-sm-.5 col-xs-hidden">
         </div>
       </div>

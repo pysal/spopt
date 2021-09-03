@@ -37,12 +37,54 @@ mexico.plot(column="maxp_new", categorical=True, figsize=(12,8), ec="w");
 <img src="docs/_static/images/maxp.svg" height="350" />
 </p>
 
+### Locate
+```python
+from spopt.locate.coverage import MCLP
+from spopt.locate.util import simulated_geo_points
+import numpy
+import geopandas
+import pulp
+import spaghetti
+
+solver = pulp.PULP_CBC_CMD(msg=False)
+lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
+ntw = spaghetti.Network(in_data=lattice)
+street = spaghetti.element_as_gdf(ntw, arcs=True)
+street_buffered = geopandas.GeoDataFrame(
+    geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
+    crs=street.crs,
+    columns=["geometry"],
+)
+client_points = simulated_geo_points(street_buffered, needed=CLIENT_COUNT, seed=CLIENT_SEED)
+facility_points = simulated_geo_points(
+    street_buffered, needed=FACILITY_COUNT, seed=FACILITY_SEED
+)
+ntw.snapobservations(client_points, "clients", attribute=True)
+clients_snapped = spaghetti.element_as_gdf(
+    ntw, pp_name="clients", snapped=True
+)
+
+ntw.snapobservations(facility_points, "facilities", attribute=True)
+facilities_snapped = spaghetti.element_as_gdf(
+    ntw, pp_name="facilities", snapped=True
+)
+cost_matrix = ntw.allneighbordistances(
+    sourcepattern=ntw.pointpatterns["clients"],
+    destpattern=ntw.pointpatterns["facilities"],
+)
+mclp_from_cost_matrix = MCLP.from_cost_matrix(cost_matrix, ai, MAX_COVERAGE, p_facilities=P_FACILITIES)
+mclp_from_cost_matrix = mclp_from_cost_matrix.solve(solver)
+```
+<p align="center">
+<img src="docs/_static/images/mclp.svg" height="350" />
+</p>
 
 ## Examples
 More examples can be found in the [Tutorials](https://pysal.org/spopt/tutorials.html) section of the documentation.
 - [Max-p-regions problem](https://pysal.org/spopt/notebooks/maxp.html)
 - [Skater](https://pysal.org/spopt/notebooks/skater.html)
 - [Region K means](https://pysal.org/spopt/notebooks/reg-k-means.html)
+- [Facility Location Real World Problem](https://pysal.org/spopt/notebooks/facloc-real-world.html)
 
 All examples can be run interactively by launching this repository as a [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pysal/spopt/main).
 
@@ -54,6 +96,7 @@ All examples can be run interactively by launching this repository as a [![Binde
 - [libpysal](https://pysal.org/libpysal/)
 - [scikit-learn](https://scikit-learn.org/stable/)
 - [geopandas](https://geopandas.org/)
+- [pulp](https://coin-or.github.io/pulp/)
 
 ## Installation
 spopt is available on the [Python Package Index](https://pypi.org/). Therefore, you can either install directly with pip from the command line:
