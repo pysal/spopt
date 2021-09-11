@@ -1,13 +1,8 @@
 from setuptools import setup, find_packages
 from distutils.command.build_py import build_py
+import versioneer
 
 package = "spopt"  # name of package
-
-# Get __version__ from spopt/__init__.py without importing the package
-# __version__ has to be defined in the first line
-with open("%s/__init__.py" % package, "r") as f:
-    exec(f.readline())
-
 
 # Fetch README.md for the `long_description`
 with open("README.md", "r", encoding="utf-8") as file:
@@ -39,7 +34,8 @@ def setup_package():
 
     setup(
         name=package,
-        version=__version__,
+        version=versioneer.get_version(),
+        cmdclass=versioneer.get_cmdclass({"build_py": build_py}),
         description="Spatial Optimization in PySAL",
         long_description=long_description,
         long_description_content_type="text/markdown",
@@ -67,7 +63,6 @@ def setup_package():
         install_requires=install_reqs,
         extras_require=extras_reqs,
         zip_safe=False,
-        cmdclass={"build.py": build_py},
         python_requires=">=3.7",
     )
 
