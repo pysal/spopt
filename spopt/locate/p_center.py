@@ -64,6 +64,53 @@ class PCenter(LocateSolver, BaseOutputMixin):
         Returns
         -------
         PCenter object
+
+        Examples
+        --------
+
+        >>> from spopt.locate import PCenter
+        >>> from spopt.locate.util import simulated_geo_points
+        >>> import pulp
+        >>> import spaghetti
+
+        Create regular lattice
+
+        >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
+        >>> ntw = spaghetti.Network(in_data=lattice)
+        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> street_buffered = geopandas.GeoDataFrame(
+        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
+        ...                            crs=street.crs,
+        ...                            columns=["geometry"])
+
+        Simulate points belong to lattice
+
+        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+
+        Snap points to the network
+
+        >>> ntw.snapobservations(demand_points, "clients", attribute=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+
+        Calculate the cost matrix
+
+        >>> cost_matrix = ntw.allneighbordistances(
+        ...    sourcepattern=ntw.pointpatterns["clients"],
+        ...    destpattern=ntw.pointpatterns["facilities"])
+
+        Create PCenter instance from cost matrix
+
+        >>> pcenter_from_cost_matrix = PCenter.from_cost_matrix(cost_matrix, p_facilities=4)
+        >>> pcenter_from_cost_matrix = pcenter_from_cost_matrix.solve(pulp.PULP_CBC_CMD(msg=False))
+
+        Get facility lookup demand coverage array
+
+        >>> pcenter_from_cost_matrix.facility_client_array()
+        >>> pcenter_from_cost_matrix.fac2cli
+
         """
         r_cli = range(cost_matrix.shape[0])
         r_fac = range(cost_matrix.shape[1])
@@ -130,6 +177,52 @@ class PCenter(LocateSolver, BaseOutputMixin):
         Returns
         -------
         PCenter object
+
+        Examples
+        --------
+        >>> from spopt.locate import PCenter
+        >>> from spopt.locate.util import simulated_geo_points
+        >>> import pulp
+        >>> import spaghetti
+
+        Create regular lattice
+
+        >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
+        >>> ntw = spaghetti.Network(in_data=lattice)
+        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> street_buffered = geopandas.GeoDataFrame(
+        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
+        ...                            crs=street.crs,
+        ...                            columns=["geometry"])
+
+        Simulate points belong to lattice
+
+        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+
+        Snap points to the network
+
+        >>> ntw.snapobservations(demand_points, "clients", attribute=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+
+        Create PCenter instance from cost matrix
+
+        >>> pcenter_from_geodataframe = PCenter.from_geodataframe(
+        ...                                            clients_snapped,
+        ...                                            facilities_snapped,
+        ...                                            "geometry",
+        ...                                            "geometry",
+        ...                                            p_facilities=P_FACILITIES,
+        ...                                            distance_metric="euclidean"
+        ...                                       )
+        >>> pcenter_from_geodataframe = pcenter_from_geodataframe.solve(pulp.PULP_CBC_CMD(msg=False))
+
+        Get facility lookup demand coverage array
+
+        >>> pcenter_from_geodataframe.facility_client_array()
+        >>> pcenter_from_geodataframe.fac2cli
         """
 
         dem = gdf_demand[demand_col]
@@ -166,7 +259,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
     def facility_client_array(self) -> None:
         """
-        Create an array 2d $m$ x $n$, where m is number of facilities and n is number of clients. Each row represent a facility and has an array containing clients index meaning that the $facility_0$ cover the entire array.
+        Create an array 2d MxN, where m is number of facilities and n is number of clients. Each row represent a facility and has an array containing clients index meaning that the facility-i cover the entire array.
 
         Returns
         -------

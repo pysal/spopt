@@ -41,7 +41,7 @@ class BaseOutputMixin:
 
     def client_facility_array(self) -> None:
         """
-        Create an array 2d $m$ x $n$, where m is number of clients and n is number of facilities.
+        Create an array 2d MxN, where m is number of clients and n is number of facilities.
         """
         if hasattr(self, "fac2cli"):
             self.cli2fac = [[] for i in range(self.aij.shape[0])]
@@ -63,7 +63,7 @@ class BaseOutputMixin:
 
 class CoveragePercentageMixin:
     """
-    Mixin for calculate the percentage of area covered
+    Mixin to calculate the percentage of area covered
     """
 
     def get_percentage(self):
@@ -74,7 +74,22 @@ class CoveragePercentageMixin:
 
 
 class MeanDistanceMixin:
+    """
+    Mixin to calculate the mean distance between demand and facility sites chosen
+    """
+
     def get_mean_distance(self, weight: np.array):
+        """
+        Calculate the mean distance
+        Parameters
+        ----------
+        weight: np.array
+                weight of all demand points
+
+        Returns
+        -------
+        None
+        """
         self.mean_dist = self.problem.objective.value() / weight.sum()
 
 
