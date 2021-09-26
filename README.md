@@ -97,6 +97,7 @@ All examples can be run interactively by launching this repository as a [![Binde
 - [scikit-learn](https://scikit-learn.org/stable/)
 - [geopandas](https://geopandas.org/)
 - [pulp](https://coin-or.github.io/pulp/)
+- [spaghetti](https://github.com/pysal/spaghetti)
 
 ## Installation
 spopt is available on the [Python Package Index](https://pypi.org/). Therefore, you can either install directly with pip from the command line:
