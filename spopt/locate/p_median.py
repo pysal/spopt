@@ -88,6 +88,56 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         Returns
         -------
         PMedian object
+
+        Examples
+        --------
+
+        >>> from spopt.locate import PMedian
+        >>> from spopt.locate.util import simulated_geo_points
+        >>> import pulp
+        >>> import spaghetti
+
+        Create regular lattice
+
+        >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
+        >>> ntw = spaghetti.Network(in_data=lattice)
+        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> street_buffered = geopandas.GeoDataFrame(
+        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
+        ...                            crs=street.crs,
+        ...                            columns=["geometry"])
+
+        Simulate points belong to lattice
+
+        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+
+        Snap points to the network
+
+        >>> ntw.snapobservations(demand_points, "clients", attribute=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+
+        Calculate the cost matrix
+
+        >>> cost_matrix = ntw.allneighbordistances(
+        ...    sourcepattern=ntw.pointpatterns["clients"],
+        ...    destpattern=ntw.pointpatterns["facilities"])
+
+        Simulate demand weights from 1 to 12
+
+        >>> ai = numpy.random.randint(1, 12, 100)
+
+        Create PMedian instance from cost matrix
+
+        >>> pmedian_from_cost_matrix = PMedian.from_cost_matrix(cost_matrix, ai, p_facilities=4)
+        >>> pmedian_from_cost_matrix = pmedian_from_cost_matrix.solve(pulp.PULP_CBC_CMD(msg=False))
+
+        Get facility lookup demand coverage array
+
+        >>> pmedian_from_cost_matrix.facility_client_array()
+        >>> pmedian_from_cost_matrix.fac2cli
         """
         r_cli = range(cost_matrix.shape[0])
         r_fac = range(cost_matrix.shape[1])
@@ -156,6 +206,58 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         Returns
         -------
         PMedian object
+
+        Examples
+        --------
+
+        >>> from spopt.locate import PMedian
+        >>> from spopt.locate.util import simulated_geo_points
+        >>> import pulp
+        >>> import spaghetti
+
+        Create regular lattice
+
+        >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
+        >>> ntw = spaghetti.Network(in_data=lattice)
+        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> street_buffered = geopandas.GeoDataFrame(
+        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
+        ...                            crs=street.crs,
+        ...                            columns=["geometry"])
+
+        Simulate points belong to lattice
+
+        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+
+        Snap points to the network
+
+        >>> ntw.snapobservations(demand_points, "clients", attribute=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+
+        Simulate demand weights from 1 to 12
+
+        >>> ai = numpy.random.randint(1, 12, 100)
+        >>> clients_snapped['weights'] = ai
+
+        Create PMedian instance from cost matrix
+
+        >>> pmedian_from_geodataframe = PMedian.from_geodataframe(
+        ...                                         clients_snapped,
+        ...                                         facilities_snapped,
+        ...                                         "geometry",
+        ...                                         "geometry",
+        ...                                         "weights",
+        ...                                         p_facilities=P_FACILITIES,
+        ...                                         distance_metric="euclidean")
+        >>> pmedian_from_geodataframe = pmedian_from_geodataframe.solve(pulp.PULP_CBC_CMD(msg=False))
+
+        Get facility lookup demand coverage array
+
+        >>> pmedian_from_geodataframe.facility_client_array()
+        >>> pmedian_from_geodataframe.fac2cli
         """
 
         service_load = gdf_demand[weights_cols].to_numpy()
@@ -193,7 +295,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 
     def facility_client_array(self) -> None:
         """
-        Create an array 2d $m$ x $n$, where m is number of facilities and n is number of clients. Each row represent a facility and has an array containing clients index meaning that the $facility_0$ cover the entire array.
+        Create an array 2d MxN, where m is number of facilities and n is number of clients. Each row represent a facility and has an array containing clients index meaning that the facility-i cover the entire array.
 
         Returns
         -------

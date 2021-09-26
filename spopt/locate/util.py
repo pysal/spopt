@@ -20,6 +20,24 @@ def simulated_geo_points(in_data, needed, seed) -> geopandas.GeoDataFrame:
     -------
     geopandas.GeoDataFrame
 
+    Examples
+    --------
+    >>> import spaghetti
+    >>> from spopt.locate.util import simulated_geo_points
+
+    >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
+    >>> ntw = spaghetti.Network(in_data=lattice)
+    >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
+
+    >>> street_buffered = geopandas.GeoDataFrame(
+    ...                            geopandas.GeoSeries(street["geometry"].buffer(0.3).unary_union),
+    ...                            crs=street.crs,
+    ...                            columns=["geometry"])
+
+    >>> points_simulated = simulated_geo_points(street_buffered, needed=10, seed=1)
+    >>> type(points_simulated)
+    <class 'geopandas.geodataframe.GeoDataFrame'>
+
     """
 
     geoms = in_data.geometry

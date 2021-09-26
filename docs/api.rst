@@ -24,4 +24,15 @@ Model based approaches for aggregating a large set of geographic units (with sma
     region.Spenc
     region.WardSpatial
 
+Locate Methods
+--------------
+
+.. autosummary::
+   :toctree: generated/
+
+    locate.coverage.LSCP
+    locate.coverage.MCLP
+    locate.PCenter
+    locate.PMedian
+
 
