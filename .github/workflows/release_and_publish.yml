@@ -29,14 +29,14 @@ jobs:
         python setup.py sdist bdist_wheel
     
     - name: Create Release Notes
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            await github.request(`POST /repos/${{ github.repository }}/releases`, {
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          await github.request(`POST /repos/${{ github.repository }}/releases`, {
               tag_name: "${{ github.ref }}",
               generate_release_notes: true
-            });
+          });
    
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@master
