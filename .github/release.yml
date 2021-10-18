@@ -3,17 +3,23 @@ changelog:
     labels:
       - ignore-for-release
     authors:
-      - octocat
       - dependabot
   categories:
-    - title: Breaking Changes 🛠
+    - title: Bug Fixes
       labels:
-        - Semver-Major
-        - breaking-change
-    - title: Exciting New Features 🎉
+        - bug
+    - title: Enhancements
       labels:
-        - Semver-Minor
         - enhancement
+    - title: Regionalization
+      labels:
+        - region
+    - title: Facility Location
+      labels:
+        - locate
+    - title: Transportation & Routing
+      labels:
+        - transport
     - title: Other Changes
       labels:
         - "*"
