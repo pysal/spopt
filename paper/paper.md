@@ -8,9 +8,12 @@ authors:
   - name: Xin Feng
     orcid: 0000-0001-7253-3154
     affiliation: "1, 2" 
+  - name: Germano Barcelos
+    orcid: xxxx-xxxx-xxxx-xxxx
+    affiliation: 3
   - name: James D. Gaboardi
     orcid: 0000-0002-4776-6826
-    affiliation: 3
+    affiliation: 4
   - name: Elijah Knaap
     orcid: 0000-0001-7520-2238
     affiliation: 1
@@ -24,8 +27,10 @@ affiliations:
    index: 1
  - name: Department of Geography and Environmental Sustainability, University of Oklahoma
    index: 2
- - name: Department of Geography, Pennsylvania State University
+ - name: Germano's school...
    index: 3
+ - name: Oak Ridge National Laboratory
+   index: 4
 date: 29 April 2021
 bibliography: paper.bib
 ---
