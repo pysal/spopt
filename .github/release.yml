@@ -1,0 +1,25 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+    authors:
+      - dependabot
+  categories:
+    - title: Bug Fixes
+      labels:
+        - bug
+    - title: Enhancements
+      labels:
+        - enhancement
+    - title: Regionalization
+      labels:
+        - region
+    - title: Facility Location
+      labels:
+        - locate
+    - title: Transportation & Routing
+      labels:
+        - transport
+    - title: Other Changes
+      labels:
+        - "*"

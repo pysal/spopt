@@ -5,6 +5,12 @@ on:
     # Sequence of patterns matched against refs/tags
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Manual Release
+        default: test
+        required: false
 
 jobs:
   build:
@@ -22,35 +28,18 @@ jobs:
         pip install setuptools wheel twine jupyter urllib3 pandas pyyaml
         python setup.py sdist bdist_wheel
     
-    - name: run Changelog
-      run: |
-        jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=-1 --ExecutePreprocessor.kernel_name=python3 tools/gitcount.ipynb
-    
-    - name: cat Changelog
-      uses: pCYSl5EDgo/cat@master
-      id: changetxt
+    - name: Create Release Notes
+      uses: actions/github-script@v5
       with:
-        path: ./tools/changelog.md
-      env:
-        TEXT: ${{ steps.changetxt.outputs.text }}
-    
-    - name: Get the tag name
-      run: echo "TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
-   
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      with:
-        body: ${{ steps.changetxt.outputs.text }}
-        body_path: ${{ steps.changetxt.outputs.path }}
-        name: Release ${{ env.TAG }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          await github.request(`POST /repos/${{ github.repository }}/releases`, {
+              tag_name: "${{ github.ref }}",
+              generate_release_notes: true
+          });
    
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@master
       with:
         user: __token__
         password: ${{ secrets.pypi_password }}
-      
-      
-      
