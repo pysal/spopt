@@ -19,6 +19,9 @@ authors:
     affiliation: 1
   - name: Ran Wei
     affiliation: 1
+  - name: Qunshan Zhao
+    orcid: 0000-0002-5549-9457
+    affiliation: 5
   - name: Sergio Rey
     orcid: 0000-0001-5857-9762
     affiliation: 1
@@ -31,6 +34,8 @@ affiliations:
    index: 3
  - name: Oak Ridge National Laboratory
    index: 4
+ - name: Urban Big Data Centre, School of Social & Political Sciences, University of Glasgow
+   index: 5
 date: 29 April 2021
 bibliography: paper.bib
 ---
