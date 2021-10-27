@@ -101,14 +101,18 @@ def region_k_means(X, n_clusters, w):
     candidates = areas[closest != label]
     candidates = ok_moves(candidates, regions, label, closest, g, w, areas)
     while candidates:
-        # make moves
-        for area in candidates:
+        area = candidates.pop()
+        # need to check move doesn't breaks component
+        source = areas[label == label[area]]
+        destination = areas[label == closest[area]]
+        if move_ok(area, source, destination, g, w):
+            # make move and update assignments, centroids, closest, candidates
             label[area] = closest[area]
-        regions = [areas[label == r].tolist() for r in range(k)]
-        centroid = _centroid(regions, data)
-        closest = numpy.array(_closest(data, centroid))
-        candidates = areas[closest != label]
-        candidates = ok_moves(candidates, regions, label, closest, g, w, areas)
+            regions = [areas[label == r].tolist() for r in range(k)]
+            centroid = _centroid(regions, data)
+            closest = numpy.array(_closest(data, centroid))
+            candidates = areas[closest != label]
+            candidates = ok_moves(candidates, regions, label, closest, g, w, areas)
         iters += 1
 
     return centroid, label, iters
@@ -133,14 +137,14 @@ class RegionKMeansHeuristic(BaseSpOptHeuristicSolver):
 
     Attributes
     ----------
-
-    labels_ :
+    
+    labels_ : 
         ...
-
-    centroids_ :
+    
+    centroids_ : 
         ...
-
-    iters_ :
+    
+    iters_ : 
         ...
 
     """
