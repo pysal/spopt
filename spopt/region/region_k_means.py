@@ -102,7 +102,7 @@ def region_k_means(X, n_clusters, w):
     candidates = ok_moves(candidates, regions, label, closest, g, w, areas)
     while candidates:
         area = candidates.pop()
-        # need to check move doesn't breaks component
+        # need to check move doesn't break component
         source = areas[label == label[area]]
         destination = areas[label == closest[area]]
         if move_ok(area, source, destination, g, w):
