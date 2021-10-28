@@ -9,19 +9,22 @@ authors:
     orcid: 0000-0001-7253-3154
     affiliation: "1, 2" 
   - name: Germano Barcelos
-    orcid: xxxx-xxxx-xxxx-xxxx
+    orcid: 0000-0002-4758-1776
     affiliation: 3
   - name: James D. Gaboardi
     orcid: 0000-0002-4776-6826
-    affiliation: 4
+    affiliation: "4, 5"
   - name: Elijah Knaap
     orcid: 0000-0001-7520-2238
     affiliation: 1
   - name: Ran Wei
     affiliation: 1
+  - name: Levi Wolf
+    orcid: 0000-0003-0274-599X
+    affiliation: 6
   - name: Qunshan Zhao
     orcid: 0000-0002-5549-9457
-    affiliation: 5
+    affiliation: 7
   - name: Sergio Rey
     orcid: 0000-0001-5857-9762
     affiliation: 1
@@ -30,12 +33,16 @@ affiliations:
    index: 1
  - name: Department of Geography and Environmental Sustainability, University of Oklahoma
    index: 2
- - name: Germano's school...
+ - name: Federal University of Vi\c{c}osa
    index: 3
  - name: Oak Ridge National Laboratory
    index: 4
+ - name: The Peter R. Gould Center for Geography Education and Outreach, Penn State
+   index: 5 
+ - name: University of Bristol
+   index: 6
  - name: Urban Big Data Centre, School of Social & Political Sciences, University of Glasgow
-   index: 5
+   index: 7
 date: 29 April 2021
 bibliography: paper.bib
 ---
