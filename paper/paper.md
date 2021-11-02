@@ -101,7 +101,7 @@ For facility-location, four models, including two coverage models and two locati
 3. P-Median Problem: Locating \textit{p} facilities and allocating the demand served by these facilities so that the total weighted assignment distance or time is minimized [@ReVelle1970]. 
 4. P-Center Problem: Locating \textit{p} facilities and allocating the demand served by these facilities to minimize the maximum assignment distance or time between demands and their allocated facilities [@Hakimi1964].
 
-For example, Maximal Covering Location Model functionality is used to select 4 facilities out of 16 store sites along census tracts belonging to San Francisco, as shown in \autoref{fig: mclp}. Other facility-location methods can be applied in a similar way.
+For example, Maximal Covering Location Model functionality is used to select 4 out of 16 store sites in the San Francisco area to maximize demand coverage, as shown in \autoref{fig: mclp}. Other facility-location methods can be applied in a similar way.
 
 ```python
 from spopt.locate.coverage import MCLP
@@ -110,25 +110,28 @@ import geopandas, numpy, pandas, pulp
 ntw_dist = pandas.read_csv("SF_network_distance_candidateStore_16_censusTract_205_new.csv")
 demand_points = pandas.read_csv("SF_demand_205_centroid_uniform_weight.csv", index_col=0)
 facility_points = pandas.read_csv("SF_store_site_16_longlat.csv", index_col=0)
-tract = geopandas.read_file("ServiceAreas_4.shp")
+study_area = geopandas.read_file("ServiceAreas_4.shp").dissolve()
 # Create a store site to tract centroid distance matrix
 ntw_piv = ntw_dist.pivot_table(values="distance", index="DestinationName", columns="name")
-cost_matrix = ntw_piv.to_numpy()
-ai = demand_points["POP2000"].to_numpy()
-mclp = MCLP.from_cost_matrix(cost_matrix, ai, max_coverage=5000, p_facilities=4)
+cost_matrix, ai, p = ntw_piv.to_numpy(), demand_points["POP2000"].to_numpy(), 4
+mclp = MCLP.from_cost_matrix(cost_matrix, ai, max_coverage=5000, p_facilities=p)
 mclp = mclp.solve(pulp.GLPK(msg=False))
-# Build a facility-demand array for the demand covered by each facility and plot results
+# Build a facility-demand array for demand covered by each facility
 mclp.facility_client_array()
-facility_points_gdf = geopandas.GeoDataFrame(facility_points,
-    geometry=geopandas.points_from_xy(facility_points.long, facility_points.lat),
+fgeom = geopandas.points_from_xy(facility_points.long, facility_points.lat)
+facility_points_gdf = geopandas.GeoDataFrame(
+    facility_points, geometry=fgeom,
 ).sort_values(by=["NAME"]).reset_index()
-demand_points_gdf = geopandas.GeoDataFrame(demand_points,
-    geometry=geopandas.points_from_xy(demand_points.long, demand_points.lat),
+dgeom = geopandas.points_from_xy(demand_points.long, demand_points.lat)
+demand_points_gdf = geopandas.GeoDataFrame(
+    demand_points, geometry=dgeom,
 ).sort_values(by=["NAME"]).reset_index()
-plot_results(mclp, facility_points_gdf, demand_points_gdf, facility_gdf_shape[0], "MCLP")
+# plot results
+n_facilities, title = facility_points_gdf.shape[0], f"MCLP ($p$={p})"
+#plot_results(mclp, facility_points_gdf, demand_points_gdf, n_facilities, title)
 ```
 
-![The solution of MCLP in a case of siting 4 facilities using 5 kilometers as the maximum service distance between facilities and demands.\label{fig: mclp}](figs/mclp.png)
+![The solution of MCLP while siting 4 facilities using 5 kilometers as the maximum service distance between facilities and demand locations. See the "Real World Facility Location" tutorial (https://pysal.org/spopt/notebooks/facloc-real-world.html) for more details.\label{fig: mclp}](figs/mclp.png)
 
 # Planned Enhancements
 
