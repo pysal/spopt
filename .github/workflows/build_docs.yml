@@ -35,6 +35,10 @@
            environment-file: ${{ matrix.environment-file }}
            micromamba-version: 'latest'
        
+       - name: install pulp via pip
+         shell: bash -l {0}
+         run: pip install pulp
+       
        - name: make docs
          run: cd docs; make html
        
