@@ -65,7 +65,7 @@ def array_from_dict_values(dct, sorted_keys=None, flat_output=False, dtype=np.fl
     """
     if sorted_keys is None:
         sorted_keys = sorted(dct)
-    iterable_values = isinstance(dct[sorted_keys[0]], collections.Iterable)
+    iterable_values = isinstance(dct[sorted_keys[0]], collections.abc.Iterable)
     if iterable_values:
         it = itertools.chain.from_iterable(dct[key] for key in sorted_keys)
     else:
