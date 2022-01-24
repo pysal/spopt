@@ -3,8 +3,8 @@
 Installation
 ============
 
-spopt supports Python 3.7, 3.8, and 3.9. Please make sure that you are
-operating in a Python 3 environment.
+spopt supports Python 3.7, 3.8, 3.9, and 3.10. Please make sure that you are
+operating in a Python >= 3.7 environment.
 
 Installing released version
 ---------------------------
