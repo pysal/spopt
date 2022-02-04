@@ -727,8 +727,8 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         Set to ``True`` for reporting solution progress/debugging.
         Default is ``False``.
 
-    Returns
-    -------
+    Attributes
+    ----------
 
     max_p : int
         The number of regions.
