@@ -1,3 +1,14 @@
+"""
+Region k-means
+
+
+K-means with the constraint that all clusters form a spatially connected component.
+"""
+
+__author__ = "Serge Rey"
+__email__ = "sjsrey@gmail.com"
+
+
 from collections import defaultdict
 import numpy
 from ..BaseClass import BaseSpOptHeuristicSolver
@@ -14,7 +25,7 @@ from .base import (
 
 
 def region_k_means(X, n_clusters, w):
-    """Solve the region-K-means problem, the K-means with the constraint
+    """Solve the region-K-means problem with the constraint
     that each cluster forms a spatially connected component.
 
     Parameters
@@ -119,7 +130,7 @@ def region_k_means(X, n_clusters, w):
 
 
 class RegionKMeansHeuristic(BaseSpOptHeuristicSolver):
-    """Solve the region-K-means problem, the K-means with the constraint
+    """Solve the region-K-means problem with the constraint
     that each cluster forms a spatially connected component.
 
 
@@ -138,14 +149,15 @@ class RegionKMeansHeuristic(BaseSpOptHeuristicSolver):
     Attributes
     ----------
     
-    labels_ : 
-        ...
+    labels_ : numpy.array 
+        Region IDs for observations
     
-    centroids_ : 
-        ...
-    
-    iters_ : 
-        ...
+    centroids_ : numpy.ndarray
+       Floating point array of centroids in the shape of ``(k, n_features)``
+       found at the last iteration of ``region_k_means``.
+
+    iters : int
+        The number of iterations for the reassignment phase.
 
     """
 

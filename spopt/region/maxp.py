@@ -6,6 +6,9 @@ regionalization for spatially explicit neighborhood delineation." International
 Journal of Geographical Information Science. Accepted 2020-04-12.
 """
 
+__author__ = ["Ran Wei", "Serge Rey", "Elijah Knaap"]
+__email__ = "sjsrey@gmail.com"
+
 from ..BaseClass import BaseSpOptHeuristicSolver
 from .base import (
     w_to_g,
@@ -727,8 +730,8 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         Set to ``True`` for reporting solution progress/debugging.
         Default is ``False``.
 
-    Returns
-    -------
+    Attributes
+    ----------
 
     max_p : int
         The number of regions.
