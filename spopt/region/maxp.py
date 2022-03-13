@@ -218,7 +218,7 @@ def maxp(
         Region IDs for observations.
 
     """
-    gdf, # Title: Summary, imperative, start upper case, don't end with a periodw = modify_components(gdf, w, threshold_name,
+    gdf, w = modify_components(gdf, w, threshold_name,
                                threshold, policy=policy)
     attr = np.atleast_2d(gdf[attrs_name].values)
     if attr.shape[0] == 1:
