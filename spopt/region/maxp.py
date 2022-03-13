@@ -22,13 +22,136 @@ from .base import (
 )
 
 from scipy.spatial.distance import pdist, squareform
+from scipy.spatial import KDTree
+from scipy.sparse.csgraph import connected_components
+import libpysal
 import geopandas as gp
 import numpy as np
 from copy import deepcopy
-from scipy.sparse.csgraph import connected_components
 
 ITERCONSTRUCT = 999
 ITERSA = 10
+
+
+def infeasible_components(gdf, w, threshold_var, threshold):
+    """Identify infeasible components
+    
+    Parameters
+    ---------- 
+
+    gdf : geopandas.GeoDataFrame, required
+        Geodataframe containing original data
+
+    w : libpysal.weights.W, required
+        Weights object created from given data
+
+    attrs_name : list, required
+        Strings for attribute names to measure similarity (cols of ``geopandas.GeoDataFrame``).
+
+    threshold_var : string, requied
+        The name of the spatial extensive attribute variable.
+
+    threshold : {int, float}, required
+        The threshold value.
+
+    Returns
+    -------
+    list of infeasible components
+    """
+    components = np.unique(w.component_labels)
+    if len(components) > 1:
+        gdf['_components'] = w.component_labels
+        gb = gdf.groupby(by='_components').sum()
+        gdf.drop(columns="_components", inplace=True)
+        if gb[threshold_var].min() < threshold:
+            l = gb[gb[threshold_var]< threshold]
+            return l.index.values.tolist()
+    return []
+
+
+def plot_components(gdf, w):
+    """Helper plot to view components of the W for a gdf
+    
+    Parameters
+    ----------
+    
+    gdf: geopandas.GeoDataframe
+
+    w: libpysal.weights.W defined on gdf
+    
+    Returns
+    -------
+    folium.folium.Map
+
+    """
+    cgdf = gdf.copy()
+    cgdf['component'] = w.component_labels
+    return cgdf.explore(column='component', categorical=True)
+
+
+def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
+    """Modify infeasible components
+    
+    Parameters
+    ---------- 
+
+    gdf : geopandas.GeoDataFrame, required
+        Geodataframe containing original data
+
+    w : libpysal.weights.W, required
+        Weights object created from given data
+
+    attrs_name : list, required
+        Strings for attribute names to measure similarity (cols of ``geopandas.GeoDataFrame``).
+
+    threshold_var : string, requied
+        The name of the spatial extensive attribute variable.
+
+    threshold : {int, float}, required
+        The threshold value.
+    
+    policy: str
+          'attach' will attach areas of infeasible components to
+          nearest neighbor in a feasible component.
+          'keep' keeps infeasible components and attempts to solve.
+
+
+    Returns
+    -------
+    gdf: geopandas.GeoDataFrame
+
+ 
+    w : libpysal.weights.W, required
+        Weights object created from given data
+    """
+
+    ifcs = infeasible_components(gdf, w, threshold_var, threshold)
+
+    if ifcs == np.unique(w.component_labels).tolist():
+        print('No feasible components.')
+        return gdf, w
+    policy = policy.lower()
+    if not ifcs or policy == 'keep':
+        return gdf, w
+    elif policy == 'attach':
+        fcs = [c for c in w.component_labels if c not in ifcs]
+        ifcas = np.where(np.isin(w.component_labels, ifcs))[0]
+        fcas = np.where(~np.isin(w.component_labels, ifcs))[0]
+        tree = KDTree(list(zip(gdf.iloc[fcas].geometry.centroid.x,
+                               gdf.iloc[fcas].geometry.centroid.y)))
+        query_pnts = list(zip(gdf.iloc[ifcas].geometry.centroid.x,
+                              gdf.iloc[ifcas].geometry.centroid.y))
+        dd, jj = tree.query(query_pnts, k=1)
+        jj = [fcas[j] for j in jj]
+        joins = zip(jj, ifcas)
+        original = w.neighbors.copy()
+
+        for left, right in joins:
+            original[left].append(right)
+            original[right].append(left)
+        return gdf, libpysal.weights.W(original)
+    else:
+        print('undefined components policy')
 
 
 def maxp(
@@ -41,6 +164,7 @@ def maxp(
     max_iterations_construction=ITERCONSTRUCT,
     max_iterations_sa=ITERSA,
     verbose=False,
+    policy='attach',
 ):
     """The max-p-regions involves the aggregation of n areas into an unknown maximum number of
     homogeneous regions, while ensuring that each region is contiguous and satisfies a minimum
@@ -76,6 +200,13 @@ def maxp(
     verbose : boolean
         Set to ``True`` for reporting solution progress/debugging.
         Default is ``False``.
+    policy : str
+        Defaults to ``attach`` to attach areas from infeasible
+        components to nearest area in a feasible component. ``keeps``
+        attempts to solve without modification (usefull for
+        debugging).
+
+
 
     Returns
     -------
@@ -87,7 +218,8 @@ def maxp(
         Region IDs for observations.
 
     """
-
+    gdf, # Title: Summary, imperative, start upper case, don't end with a periodw = modify_components(gdf, w, threshold_name,
+                               threshold, policy=policy)
     attr = np.atleast_2d(gdf[attrs_name].values)
     if attr.shape[0] == 1:
         attr = attr.T
@@ -95,6 +227,7 @@ def maxp(
     distance_matrix = squareform(pdist(attr, metric="cityblock"))
     n, k = attr.shape
     arr = np.arange(n)
+
     max_p, rl_list = construction_phase(
         arr,
         attr,
@@ -149,6 +282,54 @@ def maxp(
         print(best_obj_value)
 
     return max_p, best_label
+
+def components_check(
+    arr,
+    attr,
+    threshold_array,
+    distance_matrix,
+    weight,
+    spatialThre,
+    random_assign_choice,
+    max_it=999,
+):
+    """Check for multiple components.
+
+    Parameters
+    ----------
+
+    arr : array, required
+        An array of index of area units.
+
+    attr : array, required
+        An array of the values of the attributes.
+
+    threshold_array : array, required
+        An array of the values of the spatial extensive attribute.
+
+    distance_matrix : array, required
+        A square-form distance matrix for the attributes.
+
+    weight : libpysal.weights.W, required
+        Weights object created from given data.
+
+    spatialThre : {int, float}, required
+        The threshold value.
+
+    random_assign_choice : int, required
+        The number of top candidate regions to consider for enclave assignment.
+
+    max_it : int
+        Maximum number of iterations. Default is 999.
+
+    Returns
+    -------
+
+    real_values : list
+        ``realmaxpv``, ``realLabelsList``
+
+    """
+    pass
 
 
 def construction_phase(
@@ -729,6 +910,13 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
     verbose : boolean
         Set to ``True`` for reporting solution progress/debugging.
         Default is ``False``.
+    
+    policy : str
+          Defaults to 'attach' which will attach areas of infeasible
+          components to nearest neighbor in a feasible
+          component. 'keep' keeps all areas and attempts to solve
+          (useful for debugging).
+    
 
     Attributes
     ----------
@@ -794,6 +982,7 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         max_iterations_construction=99,
         max_iterations_sa=ITERSA,
         verbose=False,
+        policy='attach',
     ):
 
         self.gdf = gdf
@@ -805,6 +994,8 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         self.max_iterations_construction = max_iterations_construction
         self.max_iterations_sa = max_iterations_sa
         self.verbose = verbose
+        self.policy = policy
+        
 
     def solve(self):
         """Solve a max-p-regions problem and get back the results"""
@@ -818,6 +1009,7 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
             self.max_iterations_construction,
             self.max_iterations_sa,
             verbose=self.verbose,
+            policy=self.policy,
         )
         self.labels_ = label
         self.p = max_p
