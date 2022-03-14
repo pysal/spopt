@@ -150,6 +150,18 @@ def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
             original[left].append(right)
             original[right].append(left)
         return gdf, libpysal.weights.W(original)
+    elif policy == 'drop':
+        keep_ids = np.where(~np.isin(w.component_labels, ifcs))[0]
+        gdf = gdf.iloc[keep_ids]
+        cw = libpysal.weights.w_subset(w, keep_ids) 
+        new_neigh = {}
+        old_new = dict([(o, n) for n,o in enumerate(keep_ids)])
+        for old in keep_ids:
+            new_key = old_new[old]
+            new_neigh[new_key] = [ old_new[j] for j in cw.neighbors[old] ]
+        new_w = libpysal.weights.W(new_neigh)
+        gdf.reset_index(inplace=True)
+        return gdf, new_w
     else:
         print('undefined components policy')
 
@@ -202,9 +214,9 @@ def maxp(
         Default is ``False``.
     policy : str
         Defaults to ``attach`` to attach areas from infeasible
-        components to nearest area in a feasible component. ``keeps``
-        attempts to solve without modification (usefull for
-        debugging).
+        components to nearest area in a feasible component. ``keep``
+        attempts to solve without modification (useful for
+        debugging). ``drop`` removes areas in infeasible components before solving.
 
 
 
@@ -280,6 +292,7 @@ def maxp(
     if verbose:
         print("best objective value:")
         print(best_obj_value)
+
 
     return max_p, best_label
 
