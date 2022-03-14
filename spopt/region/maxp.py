@@ -216,7 +216,8 @@ def maxp(
         Defaults to ``attach`` to attach areas from infeasible
         components to nearest area in a feasible component. ``keep``
         attempts to solve without modification (useful for
-        debugging). ``drop`` removes areas in infeasible components before solving.
+        debugging). ``drop`` removes areas in infeasible components
+        before solving.
 
 
 
@@ -923,13 +924,13 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
     verbose : boolean
         Set to ``True`` for reporting solution progress/debugging.
         Default is ``False``.
-    
+
     policy : str
-          Defaults to 'attach' which will attach areas of infeasible
-          components to nearest neighbor in a feasible
-          component. 'keep' keeps all areas and attempts to solve
-          (useful for debugging).
-    
+        Defaults to ``attach`` to attach areas from infeasible
+        components to nearest area in a feasible component. ``keep``
+        attempts to solve without modification (useful for
+        debugging). ``drop`` removes areas in infeasible components
+        before solving.
 
     Attributes
     ----------
