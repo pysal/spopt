@@ -10,22 +10,11 @@ __author__ = ["Ran Wei", "Serge Rey", "Elijah Knaap"]
 __email__ = "sjsrey@gmail.com"
 
 from ..BaseClass import BaseSpOptHeuristicSolver
-from .base import (
-    w_to_g,
-    move_ok,
-    ok_moves,
-    region_neighbors,
-    _centroid,
-    _closest,
-    _seeds,
-    is_neighbor,
-)
 
 from scipy.spatial.distance import pdist, squareform
 from scipy.spatial import KDTree
 from scipy.sparse.csgraph import connected_components
 import libpysal
-import geopandas as gp
 import numpy as np
 from copy import deepcopy
 
@@ -35,9 +24,9 @@ ITERSA = 10
 
 def infeasible_components(gdf, w, threshold_var, threshold):
     """Identify infeasible components
-    
+
     Parameters
-    ---------- 
+    ----------
 
     gdf : geopandas.GeoDataFrame, required
         Geodataframe containing original data
@@ -46,7 +35,8 @@ def infeasible_components(gdf, w, threshold_var, threshold):
         Weights object created from given data
 
     attrs_name : list, required
-        Strings for attribute names to measure similarity (cols of ``geopandas.GeoDataFrame``).
+        Strings for attribute names to measure similarity
+        (cols of ``geopandas.GeoDataFrame``).
 
     threshold_var : string, requied
         The name of the spatial extensive attribute variable.
@@ -71,14 +61,14 @@ def infeasible_components(gdf, w, threshold_var, threshold):
 
 def plot_components(gdf, w):
     """Helper plot to view components of the W for a gdf
-    
+
     Parameters
     ----------
-    
+
     gdf: geopandas.GeoDataframe
 
     w: libpysal.weights.W defined on gdf
-    
+
     Returns
     -------
     folium.folium.Map
@@ -91,9 +81,9 @@ def plot_components(gdf, w):
 
 def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
     """Modify infeasible components
-    
+
     Parameters
-    ---------- 
+    ----------
 
     gdf : geopandas.GeoDataFrame, required
         Geodataframe containing original data
@@ -109,7 +99,7 @@ def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
 
     threshold : {int, float}, required
         The threshold value.
-    
+
     policy: str
           'attach' will attach areas of infeasible components to
           nearest neighbor in a feasible component.
@@ -120,7 +110,6 @@ def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
     -------
     gdf: geopandas.GeoDataFrame
 
- 
     w : libpysal.weights.W, required
         Weights object created from given data
     """
@@ -128,13 +117,11 @@ def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
     ifcs = infeasible_components(gdf, w, threshold_var, threshold)
 
     if ifcs == np.unique(w.component_labels).tolist():
-        print('No feasible components.')
-        return gdf, w
+        raise Exception("No feasible components found in input.")
     policy = policy.lower()
     if not ifcs or policy == 'keep':
         return gdf, w
     elif policy == 'attach':
-        fcs = [c for c in w.component_labels if c not in ifcs]
         ifcas = np.where(np.isin(w.component_labels, ifcs))[0]
         fcas = np.where(~np.isin(w.component_labels, ifcs))[0]
         tree = KDTree(list(zip(gdf.iloc[fcas].geometry.centroid.x,
@@ -155,10 +142,10 @@ def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
         gdf = gdf.iloc[keep_ids]
         cw = libpysal.weights.w_subset(w, keep_ids) 
         new_neigh = {}
-        old_new = dict([(o, n) for n,o in enumerate(keep_ids)])
+        old_new = dict([(o, n) for n, o in enumerate(keep_ids)])
         for old in keep_ids:
             new_key = old_new[old]
-            new_neigh[new_key] = [ old_new[j] for j in cw.neighbors[old] ]
+            new_neigh[new_key] = [old_new[j] for j in cw.neighbors[old]]
         new_w = libpysal.weights.W(new_neigh)
         gdf.reset_index(inplace=True)
         return gdf, new_w
@@ -218,8 +205,6 @@ def maxp(
         attempts to solve without modification (useful for
         debugging). ``drop`` removes areas in infeasible components
         before solving.
-
-
 
     Returns
     -------
@@ -294,8 +279,8 @@ def maxp(
         print("best objective value:")
         print(best_obj_value)
 
-
     return max_p, best_label
+
 
 def components_check(
     arr,
@@ -518,7 +503,7 @@ def growClusterForPoly(
             if spatialAttrTotal < spatialThre:
                 PnNeighborPolys = weight.neighbors[Pn]
                 for pnn in PnNeighborPolys:
-                    if not pnn in NeighborPolys:
+                    if pnn not in NeighborPolys:
                         NeighborPolys.append(pnn)
         i += 1
 
@@ -548,10 +533,12 @@ def assignEnclave(
         A list of region labels for area units.
 
     regionList : dict, required
-        A dictionary with key as region ID and value as a list of area units assigned to the region.
+        A dictionary with key as region ID and value as a list of area
+        units assigned to the region.
 
     regionSpatialAttr : dict, required
-        A dictionary with key as region ID and value as the total spatial extensive attribute of the region.
+        A dictionary with key as region ID and value as the total
+        spatial extensive attribute of the region.
 
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
@@ -576,10 +563,8 @@ def assignEnclave(
     while len(enclave) > 0:
         ec = enclave[enclave_index]
         ecNeighbors = weight.neighbors[ec]
-        minDistance = np.Inf
         assignedRegion = 0
         ecNeighborsList = []
-        ecTopNeighborsList = []
 
         for ecn in ecNeighbors:
             if ecn in enclave:
@@ -613,7 +598,8 @@ def calculateWithinRegionDistance(regionList, distance_matrix):
     ----------
 
     regionList : dict, required
-        A dictionary with key as region ID and value as a list of area units assigned to the region.
+        A dictionary with key as region ID and value as a list of area
+        units assigned to the region.
 
     distance_matrix : array, required
         A square-form distance matrix for the attributes.
@@ -644,7 +630,8 @@ def pickMoveArea(
     distance_matrix,
     threshold,
 ):
-    """pick a spatial unit that can move from one region to another without violating threshold and contiguity constraints
+    """pick a spatial unit that can move from one region to another
+    without violating threshold and contiguity constraints
 
     Parameters
     ----------
@@ -653,10 +640,12 @@ def pickMoveArea(
         A list of current region labels
 
     regionLists : dict, required
-        A dictionary with key as region ID and value as a list of area units assigned to the region.
+        A dictionary with key as region ID and value as a list of area
+        units assigned to the region.
 
     regionSpatialAttrs : dict, required
-        A dictionary with key as region ID and value as the total spatial extensive attribute of the region.
+        A dictionary with key as region ID and value as the total
+        spatial extensive attribute of the region.
 
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
@@ -676,7 +665,6 @@ def pickMoveArea(
     """
 
     potentialAreas = []
-    labels_array = np.array(labels)
     for k, v in regionSpatialAttrs.items():
         rla = np.array(regionLists[k])
         rasa = threshold_array[rla]
@@ -775,10 +763,12 @@ def performSA(
         A list of initial region labels before SA
 
     initRegionList : dict, required
-        A dictionary with key as region ID and value as a list of area units assigned to the region before SA.
+        A dictionary with key as region ID and value as a list of area
+        units assigned to the region before SA.
 
     initRegionSpatialAttr : dict, required
-        A dictionary with key as region ID and value as the total spatial extensive attribute of the region before SA.
+        A dictionary with key as region ID and value as the total
+        spatial extensive attribute of the region before SA.
 
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
@@ -845,7 +835,7 @@ def performSA(
             threshold,
         )
 
-        if potentialMove == None:
+        if potentialMove is None:
             potentialAreas.remove(poa)
             continue
 
@@ -885,14 +875,14 @@ def performSA(
                 potentialAreas.remove(pa)
 
         t = t * alpha
-    sa_res = [labels, regionLists, regionSpatialAttrs]
     return [labels, regionLists, regionSpatialAttrs]
 
 
 class MaxPHeuristic(BaseSpOptHeuristicSolver):
-    """The max-p-regions involves the aggregation of n areas into an unknown maximum number of
-    homogeneous regions, while ensuring that each region is contiguious and satisfies a minimum
-    threshold value imposed on a predefined spatially extensive attribute.
+    """The max-p-regions involves the aggregation of n areas into an
+    unknown maximum number of homogeneous regions, while ensuring that
+    each region is contiguious and satisfies a minimum threshold value
+    imposed on a predefined spatially extensive attribute.
 
     Parameters
     ----------
@@ -959,7 +949,8 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
 
     >>> w = libpysal.weights.Queen.from_dataframe(mexico)
 
-    Define the collumns of ``geopandas.GeoDataFrame`` to be spatially extensive attribute.
+    Define the columns of ``geopandas.GeoDataFrame`` to be spatially
+    extensive attribute.
 
     >>> attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
 
@@ -977,11 +968,6 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
 
     >>> model.p
     >>> model.labels_
-
-    Show the regionalization results.
-
-    >>> mexico["maxp"] = model.labels_
-    >>> mexico.plot(column="maxp", categorical=True, figsize=(12,8), cmap='plasma')
 
     """
 
@@ -1009,7 +995,6 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         self.max_iterations_sa = max_iterations_sa
         self.verbose = verbose
         self.policy = policy
-        
 
     def solve(self):
         """Solve a max-p-regions problem and get back the results"""
