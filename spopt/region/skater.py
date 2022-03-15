@@ -56,7 +56,13 @@ class SpanningForest(object):
         )
 
     def fit(
-        self, n_clusters, W, data=None, quorum=-np.inf, trace=False, islands="increase",
+        self,
+        n_clusters,
+        W,
+        data=None,
+        quorum=-np.inf,
+        trace=False,
+        islands="increase",
     ):
         """
         n_clusters : int of clusters wanted
@@ -142,7 +148,11 @@ class SpanningForest(object):
                 print(self._trace[-1])
         while current_n_subtrees < n_clusters:  # while we don't have enough regions
             best_deletion = self.find_cut(
-                MSF, data, quorum=quorum, labels=None, target_label=None,
+                MSF,
+                data,
+                quorum=quorum,
+                labels=None,
+                target_label=None,
             )
 
             if np.isfinite(best_deletion.score):  # if our search succeeds
@@ -200,9 +210,10 @@ class SpanningForest(object):
                 raise ValueError(
                     "Labels not provided and MSF_Prune object has not been fit to data yet."
                 )
-        assert data.shape[0] == len(labels), (
-            "Length of label array ({}) does not match "
-            "length of data ({})! ".format(labels.shape[0], data.shape[0])
+        assert data.shape[0] == len(
+            labels
+        ), "Length of label array ({}) does not match " "length of data ({})! ".format(
+            labels.shape[0], data.shape[0]
         )
         _, subtree_quorums = np.unique(labels, return_counts=True)
         n_subtrees = len(subtree_quorums)
@@ -437,5 +448,12 @@ class Skater(BaseSpOptHeuristicSolver):
         data = self.gdf
         X = data[self.attrs_name].values
         model = SpanningForest(**self.spanning_forest_kwds)
-        model.fit(self.n_clusters, self.w, data=X, quorum=self.floor, trace=self.trace)
+        model.fit(
+            self.n_clusters,
+            self.w,
+            data=X,
+            quorum=self.floor,
+            trace=self.trace,
+            islands=self.islands,
+        )
         self.labels_ = model.current_labels_
