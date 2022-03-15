@@ -27,8 +27,9 @@ class TestMaxPHeuristic(unittest.TestCase):
 
         # labels for:
         # count=4, threshold=10, top_n=5
-        self.complex_labels = [3, 3, 2, 10, 10, 2, 5, 6, 1, 7, 7, 10, 7, 4, 4]
-        self.complex_labels += [6, 4, 6, 1, 1, 9, 9, 3, 8, 8, 2, 2, 2, 5, 8, 5, 9]
+        self.complex_labels = [2, 2, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 3, 3, 3]
+        self.complex_labels += [1, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 2,
+                                2, 2]
 
         # labels for one variable column:
         # count=1, threshold=5, top_n=5
