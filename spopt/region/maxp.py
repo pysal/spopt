@@ -1,5 +1,4 @@
-"""
-Max-p regions algorithm
+"""Max-p regions algorithm.
 
 Source: Wei, Ran, Sergio J. Rey, and Elijah Knaap (2020) "Efficient
 regionalization for spatially explicit neighborhood delineation." International
@@ -23,11 +22,10 @@ ITERSA = 10
 
 
 def infeasible_components(gdf, w, threshold_var, threshold):
-    """Identify infeasible components
+    """Identify infeasible components.
 
     Parameters
     ----------
-
     gdf : geopandas.GeoDataFrame, required
         Geodataframe containing original data
 
@@ -49,22 +47,20 @@ def infeasible_components(gdf, w, threshold_var, threshold):
     list of infeasible components
     """
     components = np.unique(w.component_labels)
-    if len(components) > 1:
-        gdf['_components'] = w.component_labels
-        gb = gdf.groupby(by='_components').sum()
-        gdf.drop(columns="_components", inplace=True)
-        if gb[threshold_var].min() < threshold:
-            l = gb[gb[threshold_var]< threshold]
-            return l.index.values.tolist()
+    gdf['_components'] = w.component_labels
+    gb = gdf.groupby(by='_components').sum()
+    gdf.drop(columns="_components", inplace=True)
+    if gb[threshold_var].min() < threshold:
+        l = gb[gb[threshold_var]< threshold]
+        return l.index.values.tolist()
     return []
 
 
 def plot_components(gdf, w):
-    """Helper plot to view components of the W for a gdf
+    """Plot to view components of the W for a gdf.
 
     Parameters
     ----------
-
     gdf: geopandas.GeoDataframe
 
     w: libpysal.weights.W defined on gdf
@@ -80,11 +76,10 @@ def plot_components(gdf, w):
 
 
 def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
-    """Modify infeasible components
+    """Modify infeasible components.
 
     Parameters
     ----------
-
     gdf : geopandas.GeoDataFrame, required
         Geodataframe containing original data
 
@@ -92,7 +87,8 @@ def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
         Weights object created from given data
 
     attrs_name : list, required
-        Strings for attribute names to measure similarity (cols of ``geopandas.GeoDataFrame``).
+        Strings for attribute names to measure similarity (cols of
+        ``geopandas.GeoDataFrame``).
 
     threshold_var : string, requied
         The name of the spatial extensive attribute variable.
@@ -113,7 +109,6 @@ def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
     w : libpysal.weights.W, required
         Weights object created from given data
     """
-
     ifcs = infeasible_components(gdf, w, threshold_var, threshold)
 
     if ifcs == np.unique(w.component_labels).tolist():
@@ -171,7 +166,6 @@ def maxp(
 
     Parameters
     ----------
-
     gdf : geopandas.GeoDataFrame, required
         Geodataframe containing original data
 
@@ -208,7 +202,6 @@ def maxp(
 
     Returns
     -------
-
     max_p : int
         The number of regions.
 
@@ -274,61 +267,11 @@ def maxp(
             if totalWithinRegionDistance < best_obj_value:
                 best_obj_value = totalWithinRegionDistance
                 best_label = finalLabel
-                best_fn = irl
     if verbose:
         print("best objective value:")
         print(best_obj_value)
 
     return max_p, best_label
-
-
-def components_check(
-    arr,
-    attr,
-    threshold_array,
-    distance_matrix,
-    weight,
-    spatialThre,
-    random_assign_choice,
-    max_it=999,
-):
-    """Check for multiple components.
-
-    Parameters
-    ----------
-
-    arr : array, required
-        An array of index of area units.
-
-    attr : array, required
-        An array of the values of the attributes.
-
-    threshold_array : array, required
-        An array of the values of the spatial extensive attribute.
-
-    distance_matrix : array, required
-        A square-form distance matrix for the attributes.
-
-    weight : libpysal.weights.W, required
-        Weights object created from given data.
-
-    spatialThre : {int, float}, required
-        The threshold value.
-
-    random_assign_choice : int, required
-        The number of top candidate regions to consider for enclave assignment.
-
-    max_it : int
-        Maximum number of iterations. Default is 999.
-
-    Returns
-    -------
-
-    real_values : list
-        ``realmaxpv``, ``realLabelsList``
-
-    """
-    pass
 
 
 def construction_phase(
@@ -345,7 +288,6 @@ def construction_phase(
 
     Parameters
     ----------
-
     arr : array, required
         An array of index of area units.
 
@@ -372,12 +314,10 @@ def construction_phase(
 
     Returns
     -------
-
     real_values : list
         ``realmaxpv``, ``realLabelsList``
 
     """
-
     labels_list = []
     pv_list = []
     max_p = 0
@@ -451,11 +391,10 @@ def construction_phase(
 def growClusterForPoly(
     labels, threshold_array, P, NeighborPolys, C, weight, spatialThre
 ):
-    """Grow one region from current area unit until threshold constraint is satisified
+    """Grow one region until threshold constraint is satisfied.
 
     Parameters
     ----------
-
     labels : list, required
         A list of current region labels
 
@@ -479,7 +418,6 @@ def growClusterForPoly(
 
     Returns
     -------
-
     cluster_info : tuple
         ``labeledID``, ``spatialAttrTotal``
 
@@ -521,11 +459,10 @@ def assignEnclave(
     distance_matrix,
     random_assign=1,
 ):
-    """Assign the enclaves to the regions identified in the region growth phase
+    """Assign the enclaves to the regions identified in the region growth phase.
 
     Parameters
     ----------
-
     enclave : list, required
         A list of enclaves.
 
@@ -554,7 +491,6 @@ def assignEnclave(
 
     Returns
     -------
-
     region_info : list
         Deep copies of ``labels``, ``regionList``, and ``regionSpatialAttr``
 
@@ -592,11 +528,10 @@ def assignEnclave(
 
 
 def calculateWithinRegionDistance(regionList, distance_matrix):
-    """calculate total wthin-region distance/dissimilarity
+    """Calculate total wthin-region distance/dissimilarity.
 
     Parameters
     ----------
-
     regionList : dict, required
         A dictionary with key as region ID and value as a list of area
         units assigned to the region.
@@ -606,12 +541,10 @@ def calculateWithinRegionDistance(regionList, distance_matrix):
 
     Returns
     -------
-
     totalWithinRegionDistance : {int, float}
         the total within-region distance
 
     """
-
     totalWithinRegionDistance = 0
     for k, v in regionList.items():
         nv = np.array(v)
@@ -630,12 +563,10 @@ def pickMoveArea(
     distance_matrix,
     threshold,
 ):
-    """pick a spatial unit that can move from one region to another
-    without violating threshold and contiguity constraints
+    """Pick a spatial unit that can move from one region to another.
 
     Parameters
     ----------
-
     labels : list, required
         A list of current region labels
 
@@ -658,12 +589,10 @@ def pickMoveArea(
 
     Returns
     -------
-
     potentialAreas : list
         a list of area units that can move without violating contiguity and threshold constraints
 
     """
-
     potentialAreas = []
     for k, v in regionSpatialAttrs.items():
         rla = np.array(regionLists[k])
@@ -686,11 +615,10 @@ def pickMoveArea(
 def checkMove(
     poa, labels, regionLists, threshold_array, weight, distance_matrix, threshold
 ):
-    """calculate the dissimilarity increase/decrease from one potential move
+    """Calculate the dissimilarity increase/decrease from one potential move.
 
     Parameters
     ----------
-
     poa : int, required
         The index of current area unit that can potentially move
 
@@ -714,12 +642,10 @@ def checkMove(
 
     Returns
     -------
-
     move_info : list
         ``lostDistance``, ``minAddedDistance``, and ``potentialMove``.
 
     """
-
     poaNeighbor = weight.neighbors[poa]
     donorRegion = labels[poa]
 
@@ -754,11 +680,10 @@ def performSA(
     tabuLength,
     max_no_move,
 ):
-    """perform the tabu list integrated simulated annealing algorithm
+    """Perform the tabu list integrated simulated annealing algorithm.
 
     Parameters
     ----------
-
     initLabels : list, required
         A list of initial region labels before SA
 
@@ -793,13 +718,11 @@ def performSA(
 
     Returns
     -------
-
     sa_res : list
         The results from simulated annealing including ``labels``,
         ``regionLists``, and ``regionSpatialAttrs``.
 
     """
-
     t = 1
     ni_move_ct = 0
     make_move_flag = False
@@ -886,7 +809,6 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
 
     Parameters
     ----------
-
     gdf : geopandas.GeoDataFrame, required
         Geodataframe containing original data.
 
@@ -924,7 +846,6 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
 
     Attributes
     ----------
-
     max_p : int
         The number of regions.
 
@@ -933,7 +854,6 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
 
     Examples
     --------
-
     >>> import numpy
     >>> import libpysal
     >>> import geopandas as gpd
