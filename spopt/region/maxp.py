@@ -16,136 +16,11 @@ from scipy.sparse.csgraph import connected_components
 import libpysal
 import numpy as np
 from copy import deepcopy
+from .base import (infeasible_components, plot_components,
+                   modify_components)
 
 ITERCONSTRUCT = 999
 ITERSA = 10
-
-
-def infeasible_components(gdf, w, threshold_var, threshold):
-    """Identify infeasible components.
-
-    Parameters
-    ----------
-    gdf : geopandas.GeoDataFrame, required
-        Geodataframe containing original data
-
-    w : libpysal.weights.W, required
-        Weights object created from given data
-
-    attrs_name : list, required
-        Strings for attribute names to measure similarity
-        (cols of ``geopandas.GeoDataFrame``).
-
-    threshold_var : string, requied
-        The name of the spatial extensive attribute variable.
-
-    threshold : {int, float}, required
-        The threshold value.
-
-    Returns
-    -------
-    list of infeasible components
-    """
-    components = np.unique(w.component_labels)
-    gdf['_components'] = w.component_labels
-    gb = gdf.groupby(by='_components').sum()
-    gdf.drop(columns="_components", inplace=True)
-    if gb[threshold_var].min() < threshold:
-        l = gb[gb[threshold_var]< threshold]
-        return l.index.values.tolist()
-    return []
-
-
-def plot_components(gdf, w):
-    """Plot to view components of the W for a gdf.
-
-    Parameters
-    ----------
-    gdf: geopandas.GeoDataframe
-
-    w: libpysal.weights.W defined on gdf
-
-    Returns
-    -------
-    folium.folium.Map
-
-    """
-    cgdf = gdf.copy()
-    cgdf['component'] = w.component_labels
-    return cgdf.explore(column='component', categorical=True)
-
-
-def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
-    """Modify infeasible components.
-
-    Parameters
-    ----------
-    gdf : geopandas.GeoDataFrame, required
-        Geodataframe containing original data
-
-    w : libpysal.weights.W, required
-        Weights object created from given data
-
-    attrs_name : list, required
-        Strings for attribute names to measure similarity (cols of
-        ``geopandas.GeoDataFrame``).
-
-    threshold_var : string, requied
-        The name of the spatial extensive attribute variable.
-
-    threshold : {int, float}, required
-        The threshold value.
-
-    policy: str
-          'attach' will attach areas of infeasible components to
-          nearest neighbor in a feasible component.
-          'keep' keeps infeasible components and attempts to solve.
-
-
-    Returns
-    -------
-    gdf: geopandas.GeoDataFrame
-
-    w : libpysal.weights.W, required
-        Weights object created from given data
-    """
-    ifcs = infeasible_components(gdf, w, threshold_var, threshold)
-
-    if ifcs == np.unique(w.component_labels).tolist():
-        raise Exception("No feasible components found in input.")
-    policy = policy.lower()
-    if not ifcs or policy == 'keep':
-        return gdf, w
-    elif policy == 'attach':
-        ifcas = np.where(np.isin(w.component_labels, ifcs))[0]
-        fcas = np.where(~np.isin(w.component_labels, ifcs))[0]
-        tree = KDTree(list(zip(gdf.iloc[fcas].geometry.centroid.x,
-                               gdf.iloc[fcas].geometry.centroid.y)))
-        query_pnts = list(zip(gdf.iloc[ifcas].geometry.centroid.x,
-                              gdf.iloc[ifcas].geometry.centroid.y))
-        dd, jj = tree.query(query_pnts, k=1)
-        jj = [fcas[j] for j in jj]
-        joins = zip(jj, ifcas)
-        original = w.neighbors.copy()
-
-        for left, right in joins:
-            original[left].append(right)
-            original[right].append(left)
-        return gdf, libpysal.weights.W(original)
-    elif policy == 'drop':
-        keep_ids = np.where(~np.isin(w.component_labels, ifcs))[0]
-        gdf = gdf.iloc[keep_ids]
-        cw = libpysal.weights.w_subset(w, keep_ids) 
-        new_neigh = {}
-        old_new = dict([(o, n) for n, o in enumerate(keep_ids)])
-        for old in keep_ids:
-            new_key = old_new[old]
-            new_neigh[new_key] = [old_new[j] for j in cw.neighbors[old]]
-        new_w = libpysal.weights.W(new_neigh)
-        gdf.reset_index(inplace=True)
-        return gdf, new_w
-    else:
-        print('undefined components policy')
 
 
 def maxp(
@@ -239,7 +114,6 @@ def maxp(
     max_no_move = n
     best_obj_value = np.inf
     best_label = None
-    best_fn = None
 
     for irl, rl in enumerate(rl_list):
         label, regionList, regionSpatialAttr = rl
@@ -590,7 +464,8 @@ def pickMoveArea(
     Returns
     -------
     potentialAreas : list
-        a list of area units that can move without violating contiguity and threshold constraints
+        a list of area units that can move without violating
+        contiguity and threshold constraints
 
     """
     potentialAreas = []
@@ -626,7 +501,8 @@ def checkMove(
         A list of current region labels
 
     regionLists : dict, required
-        A dictionary with key as region ID and value as a list of area units assigned to the region.
+        A dictionary with key as region ID and value as a list of area
+        units assigned to the region.
 
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
@@ -917,7 +793,7 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         self.policy = policy
 
     def solve(self):
-        """Solve a max-p-regions problem and get back the results"""
+        """Solve a max-p-regions problem and get back the results."""
         max_p, label = maxp(
             self.gdf,
             self.w,
