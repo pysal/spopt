@@ -1,8 +1,8 @@
 """Base classes for spopt/region"""
 
-from libpysal.io.fileio import FileIO as psopen
 import libpysal
 import numpy
+import copy
 import networkx
 from scipy.spatial import KDTree
 
@@ -331,7 +331,7 @@ def plot_components(gdf, w):
     return cgdf.explore(column='component', categorical=True)
 
 
-def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
+def modify_components(gdf, w, threshold_var, threshold, policy='single'):
     """Modify infeasible components.
 
     Parameters
@@ -353,9 +353,15 @@ def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
         The threshold value.
 
     policy: str
-          'attach' will attach areas of infeasible components to
-          nearest neighbor in a feasible component.
-          'keep' keeps infeasible components and attempts to solve.
+          'single' will attach an infeasible component to a feasible
+          component based on a single join using the minimum nearest
+          neighbor distance between areas of infeasible components and
+          areas in the largest component. 'multiple' will form a join
+          between each area of an infeasible area and its nearest
+          neighbor area in a feasible component.  'keep' keeps
+          infeasible components and attempts to solve. 'drop' will
+          remove the areas from the smallest components and return a w
+          defined on the feasible components.
 
 
     Returns
@@ -372,22 +378,12 @@ def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
     policy = policy.lower()
     if not ifcs or policy == 'keep':
         return gdf, w
-    elif policy == 'attach':
-        ifcas = numpy.where(numpy.isin(w.component_labels, ifcs))[0]
-        fcas = numpy.where(~numpy.isin(w.component_labels, ifcs))[0]
-        tree = KDTree(list(zip(gdf.iloc[fcas].geometry.centroid.x,
-                               gdf.iloc[fcas].geometry.centroid.y)))
-        query_pnts = list(zip(gdf.iloc[ifcas].geometry.centroid.x,
-                              gdf.iloc[ifcas].geometry.centroid.y))
-        dd, jj = tree.query(query_pnts, k=1)
-        jj = [fcas[j] for j in jj]
-        joins = zip(jj, ifcas)
-        original = w.neighbors.copy()
-
-        for left, right in joins:
-            original[left].append(right)
-            original[right].append(left)
-        return gdf, libpysal.weights.W(original)
+    elif policy == 'single':
+        w = form_single_component(gdf, w, linkage='single')
+        return gdf, w
+    elif policy == 'multiple':
+        w = form_single_component(gdf, w, linkage='multiple')
+        return gdf, w
     elif policy == 'drop':
         keep_ids = numpy.where(~numpy.isin(w.component_labels, ifcs))[0]
         gdf = gdf.iloc[keep_ids]
@@ -401,5 +397,76 @@ def modify_components(gdf, w, threshold_var, threshold, policy='attach'):
         gdf.reset_index(inplace=True)
         return gdf, new_w
     else:
-        print('undefined components policy')
+        raise Exception(f'Undefined components policy: {policy}')
 
+
+def form_single_component(gdf, w, linkage='single'):
+    """Ensure the connectivity forms a signal connected component.
+
+    Parameters
+    ----------
+    gdf : GeoDataFrame
+
+    w   : libysal.weights.W
+
+    linkage : str
+         `single`: a small component will be joined with the largest
+         component by adding a single join based on minimum nearest
+         neighbor relation between areas in the small component and
+         the largest component. 'multiple': joins are added between each
+         area in the small component and their nearest neighbor in the
+         largest component.
+
+    Returns
+    -------
+    w  : libpysal.weights.W
+    """
+    data = numpy.unique(w.component_labels, return_counts=True)
+    if len(data[0])== 1:
+        return w
+    else:
+        # largest component label
+        lcl = data[0][numpy.argmax(data[1])]
+
+        # form tree on largest component
+        wcl = w.component_labels
+        tree = KDTree(list(zip(gdf.iloc[wcl == 1].geometry.centroid.x,
+                               gdf.iloc[wcl == 1].geometry.centroid.y)))
+
+        # small component labels
+        scl = [cl for cl in data[0] if cl != lcl]
+
+        # indices of areas in largest component
+        lcas = numpy.where(~numpy.isin(w.component_labels, scl))
+
+        # for all but the largest component, add joins to largest component
+        joins = []
+        for cl in data[0]:
+            if cl == lcl:
+                continue
+            query_pnts = list(zip(gdf.iloc[wcl == cl].geometry.centroid.x,
+                              gdf.iloc[wcl == cl].geometry.centroid.y))
+            dd, jj = tree.query(query_pnts, k=1)
+            clas = numpy.where(numpy.isin(w.component_labels, [cl]))[0]
+
+            jj = [lcas[0][j] for j in jj]  # map to idx in gdf
+
+            ll = linkage.lower()
+
+            if ll == 'single':
+                min_idx = numpy.argmin(dd)
+                j = jj[min_idx]
+                i = clas[min_idx]
+                joins.append((i,j))
+            elif ll == 'multiple':
+                pairs = zip(clas, jj)
+                joins.extend(list(pairs))
+            else:
+                raise Exception(f'Unknown linkage: {linkage}')
+
+        neighbors = copy.deepcopy(w.neighbors)
+        for join in joins:
+            head, tail = join
+            neighbors[head].append(tail)
+            neighbors[tail].append(head)
+        return libpysal.weights.W(neighbors)
