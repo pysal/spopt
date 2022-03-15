@@ -123,5 +123,16 @@ class TestMaxPHeuristic(unittest.TestCase):
                                      w,
                                      'var',
                                      6,
-                                     policy='attach')
+                                     policy='single')
         assert gdf1.shape[0] == 55
+        assert w1.neighbors[0] != w.neighbors[0]
+        assert w1.neighbors[1] == w.neighbors[1]
+
+        gdf1, w1 = modify_components(self.gdf,
+                                     w,
+                                     'var',
+                                     6,
+                                     policy='multiple')
+        assert gdf1.shape[0] == 55
+        assert w1.neighbors[0] != w.neighbors[0]
+        assert w1.neighbors[1] != w.neighbors[1]
