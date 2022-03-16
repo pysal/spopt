@@ -425,13 +425,13 @@ def form_single_component(gdf, w, linkage='single'):
     if len(data[0])== 1:
         return w
     else:
-        # largest component label
+        # largest component label06037599100
         lcl = data[0][numpy.argmax(data[1])]
 
         # form tree on largest component
         wcl = w.component_labels
-        tree = KDTree(list(zip(gdf.iloc[wcl == 1].geometry.centroid.x,
-                               gdf.iloc[wcl == 1].geometry.centroid.y)))
+        tree = KDTree(list(zip(gdf.iloc[wcl == lcl].geometry.centroid.x,
+                               gdf.iloc[wcl == lcl].geometry.centroid.y)))
 
         # small component labels
         scl = [cl for cl in data[0] if cl != lcl]
