@@ -1,5 +1,4 @@
-"""
-Max-p regions algorithm
+"""Max-p regions algorithm.
 
 Source: Wei, Ran, Sergio J. Rey, and Elijah Knaap (2020) "Efficient
 regionalization for spatially explicit neighborhood delineation." International
@@ -10,22 +9,15 @@ __author__ = ["Ran Wei", "Serge Rey", "Elijah Knaap"]
 __email__ = "sjsrey@gmail.com"
 
 from ..BaseClass import BaseSpOptHeuristicSolver
-from .base import (
-    w_to_g,
-    move_ok,
-    ok_moves,
-    region_neighbors,
-    _centroid,
-    _closest,
-    _seeds,
-    is_neighbor,
-)
 
 from scipy.spatial.distance import pdist, squareform
-import geopandas as gp
+from scipy.spatial import KDTree
+from scipy.sparse.csgraph import connected_components
+import libpysal
 import numpy as np
 from copy import deepcopy
-from scipy.sparse.csgraph import connected_components
+from .base import (infeasible_components, plot_components,
+                   modify_components)
 
 ITERCONSTRUCT = 999
 ITERSA = 10
@@ -41,6 +33,7 @@ def maxp(
     max_iterations_construction=ITERCONSTRUCT,
     max_iterations_sa=ITERSA,
     verbose=False,
+    policy='single',
 ):
     """The max-p-regions involves the aggregation of n areas into an unknown maximum number of
     homogeneous regions, while ensuring that each region is contiguous and satisfies a minimum
@@ -48,7 +41,6 @@ def maxp(
 
     Parameters
     ----------
-
     gdf : geopandas.GeoDataFrame, required
         Geodataframe containing original data
 
@@ -76,10 +68,18 @@ def maxp(
     verbose : boolean
         Set to ``True`` for reporting solution progress/debugging.
         Default is ``False``.
+    policy : str
+        Defaults to ``single`` to attach infeasible components using a
+        single linkage between the area in the infeasible component
+        with the smallest nearest neighbor distance to an area in a
+        feasible component. ``multiple`` adds joins for each area
+        in an infeasible component and their nearest neighbor area in a
+        feasible component. ``keep`` attempts to solve without
+        modification (useful for debugging). ``drop`` removes areas in
+        infeasible components before solving.
 
     Returns
     -------
-
     max_p : int
         The number of regions.
 
@@ -87,7 +87,8 @@ def maxp(
         Region IDs for observations.
 
     """
-
+    gdf, w = modify_components(gdf, w, threshold_name,
+                               threshold, policy=policy)
     attr = np.atleast_2d(gdf[attrs_name].values)
     if attr.shape[0] == 1:
         attr = attr.T
@@ -95,6 +96,7 @@ def maxp(
     distance_matrix = squareform(pdist(attr, metric="cityblock"))
     n, k = attr.shape
     arr = np.arange(n)
+
     max_p, rl_list = construction_phase(
         arr,
         attr,
@@ -115,7 +117,6 @@ def maxp(
     max_no_move = n
     best_obj_value = np.inf
     best_label = None
-    best_fn = None
 
     for irl, rl in enumerate(rl_list):
         label, regionList, regionSpatialAttr = rl
@@ -143,7 +144,6 @@ def maxp(
             if totalWithinRegionDistance < best_obj_value:
                 best_obj_value = totalWithinRegionDistance
                 best_label = finalLabel
-                best_fn = irl
     if verbose:
         print("best objective value:")
         print(best_obj_value)
@@ -165,7 +165,6 @@ def construction_phase(
 
     Parameters
     ----------
-
     arr : array, required
         An array of index of area units.
 
@@ -192,12 +191,10 @@ def construction_phase(
 
     Returns
     -------
-
     real_values : list
         ``realmaxpv``, ``realLabelsList``
 
     """
-
     labels_list = []
     pv_list = []
     max_p = 0
@@ -271,11 +268,10 @@ def construction_phase(
 def growClusterForPoly(
     labels, threshold_array, P, NeighborPolys, C, weight, spatialThre
 ):
-    """Grow one region from current area unit until threshold constraint is satisified
+    """Grow one region until threshold constraint is satisfied.
 
     Parameters
     ----------
-
     labels : list, required
         A list of current region labels
 
@@ -299,7 +295,6 @@ def growClusterForPoly(
 
     Returns
     -------
-
     cluster_info : tuple
         ``labeledID``, ``spatialAttrTotal``
 
@@ -323,7 +318,7 @@ def growClusterForPoly(
             if spatialAttrTotal < spatialThre:
                 PnNeighborPolys = weight.neighbors[Pn]
                 for pnn in PnNeighborPolys:
-                    if not pnn in NeighborPolys:
+                    if pnn not in NeighborPolys:
                         NeighborPolys.append(pnn)
         i += 1
 
@@ -341,11 +336,10 @@ def assignEnclave(
     distance_matrix,
     random_assign=1,
 ):
-    """Assign the enclaves to the regions identified in the region growth phase
+    """Assign the enclaves to the regions identified in the region growth phase.
 
     Parameters
     ----------
-
     enclave : list, required
         A list of enclaves.
 
@@ -353,10 +347,12 @@ def assignEnclave(
         A list of region labels for area units.
 
     regionList : dict, required
-        A dictionary with key as region ID and value as a list of area units assigned to the region.
+        A dictionary with key as region ID and value as a list of area
+        units assigned to the region.
 
     regionSpatialAttr : dict, required
-        A dictionary with key as region ID and value as the total spatial extensive attribute of the region.
+        A dictionary with key as region ID and value as the total
+        spatial extensive attribute of the region.
 
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
@@ -372,7 +368,6 @@ def assignEnclave(
 
     Returns
     -------
-
     region_info : list
         Deep copies of ``labels``, ``regionList``, and ``regionSpatialAttr``
 
@@ -381,10 +376,8 @@ def assignEnclave(
     while len(enclave) > 0:
         ec = enclave[enclave_index]
         ecNeighbors = weight.neighbors[ec]
-        minDistance = np.Inf
         assignedRegion = 0
         ecNeighborsList = []
-        ecTopNeighborsList = []
 
         for ecn in ecNeighbors:
             if ecn in enclave:
@@ -412,25 +405,23 @@ def assignEnclave(
 
 
 def calculateWithinRegionDistance(regionList, distance_matrix):
-    """calculate total wthin-region distance/dissimilarity
+    """Calculate total wthin-region distance/dissimilarity.
 
     Parameters
     ----------
-
     regionList : dict, required
-        A dictionary with key as region ID and value as a list of area units assigned to the region.
+        A dictionary with key as region ID and value as a list of area
+        units assigned to the region.
 
     distance_matrix : array, required
         A square-form distance matrix for the attributes.
 
     Returns
     -------
-
     totalWithinRegionDistance : {int, float}
         the total within-region distance
 
     """
-
     totalWithinRegionDistance = 0
     for k, v in regionList.items():
         nv = np.array(v)
@@ -449,19 +440,20 @@ def pickMoveArea(
     distance_matrix,
     threshold,
 ):
-    """pick a spatial unit that can move from one region to another without violating threshold and contiguity constraints
+    """Pick a spatial unit that can move from one region to another.
 
     Parameters
     ----------
-
     labels : list, required
         A list of current region labels
 
     regionLists : dict, required
-        A dictionary with key as region ID and value as a list of area units assigned to the region.
+        A dictionary with key as region ID and value as a list of area
+        units assigned to the region.
 
     regionSpatialAttrs : dict, required
-        A dictionary with key as region ID and value as the total spatial extensive attribute of the region.
+        A dictionary with key as region ID and value as the total
+        spatial extensive attribute of the region.
 
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
@@ -474,14 +466,12 @@ def pickMoveArea(
 
     Returns
     -------
-
     potentialAreas : list
-        a list of area units that can move without violating contiguity and threshold constraints
+        a list of area units that can move without violating
+        contiguity and threshold constraints
 
     """
-
     potentialAreas = []
-    labels_array = np.array(labels)
     for k, v in regionSpatialAttrs.items():
         rla = np.array(regionLists[k])
         rasa = threshold_array[rla]
@@ -503,11 +493,10 @@ def pickMoveArea(
 def checkMove(
     poa, labels, regionLists, threshold_array, weight, distance_matrix, threshold
 ):
-    """calculate the dissimilarity increase/decrease from one potential move
+    """Calculate the dissimilarity increase/decrease from one potential move.
 
     Parameters
     ----------
-
     poa : int, required
         The index of current area unit that can potentially move
 
@@ -515,7 +504,8 @@ def checkMove(
         A list of current region labels
 
     regionLists : dict, required
-        A dictionary with key as region ID and value as a list of area units assigned to the region.
+        A dictionary with key as region ID and value as a list of area
+        units assigned to the region.
 
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
@@ -531,12 +521,10 @@ def checkMove(
 
     Returns
     -------
-
     move_info : list
         ``lostDistance``, ``minAddedDistance``, and ``potentialMove``.
 
     """
-
     poaNeighbor = weight.neighbors[poa]
     donorRegion = labels[poa]
 
@@ -571,19 +559,20 @@ def performSA(
     tabuLength,
     max_no_move,
 ):
-    """perform the tabu list integrated simulated annealing algorithm
+    """Perform the tabu list integrated simulated annealing algorithm.
 
     Parameters
     ----------
-
     initLabels : list, required
         A list of initial region labels before SA
 
     initRegionList : dict, required
-        A dictionary with key as region ID and value as a list of area units assigned to the region before SA.
+        A dictionary with key as region ID and value as a list of area
+        units assigned to the region before SA.
 
     initRegionSpatialAttr : dict, required
-        A dictionary with key as region ID and value as the total spatial extensive attribute of the region before SA.
+        A dictionary with key as region ID and value as the total
+        spatial extensive attribute of the region before SA.
 
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
@@ -608,13 +597,11 @@ def performSA(
 
     Returns
     -------
-
     sa_res : list
         The results from simulated annealing including ``labels``,
         ``regionLists``, and ``regionSpatialAttrs``.
 
     """
-
     t = 1
     ni_move_ct = 0
     make_move_flag = False
@@ -650,7 +637,7 @@ def performSA(
             threshold,
         )
 
-        if potentialMove == None:
+        if potentialMove is None:
             potentialAreas.remove(poa)
             continue
 
@@ -690,18 +677,17 @@ def performSA(
                 potentialAreas.remove(pa)
 
         t = t * alpha
-    sa_res = [labels, regionLists, regionSpatialAttrs]
     return [labels, regionLists, regionSpatialAttrs]
 
 
 class MaxPHeuristic(BaseSpOptHeuristicSolver):
-    """The max-p-regions involves the aggregation of n areas into an unknown maximum number of
-    homogeneous regions, while ensuring that each region is contiguious and satisfies a minimum
-    threshold value imposed on a predefined spatially extensive attribute.
+    """The max-p-regions involves the aggregation of n areas into an
+    unknown maximum number of homogeneous regions, while ensuring that
+    each region is contiguious and satisfies a minimum threshold value
+    imposed on a predefined spatially extensive attribute.
 
     Parameters
     ----------
-
     gdf : geopandas.GeoDataFrame, required
         Geodataframe containing original data.
 
@@ -730,9 +716,15 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         Set to ``True`` for reporting solution progress/debugging.
         Default is ``False``.
 
+    policy : str
+        Defaults to ``attach`` to attach areas from infeasible
+        components to nearest area in a feasible component. ``keep``
+        attempts to solve without modification (useful for
+        debugging). ``drop`` removes areas in infeasible components
+        before solving.
+
     Attributes
     ----------
-
     max_p : int
         The number of regions.
 
@@ -741,7 +733,6 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
 
     Examples
     --------
-
     >>> import numpy
     >>> import libpysal
     >>> import geopandas as gpd
@@ -757,7 +748,8 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
 
     >>> w = libpysal.weights.Queen.from_dataframe(mexico)
 
-    Define the collumns of ``geopandas.GeoDataFrame`` to be spatially extensive attribute.
+    Define the columns of ``geopandas.GeoDataFrame`` to be spatially
+    extensive attribute.
 
     >>> attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
 
@@ -776,11 +768,6 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
     >>> model.p
     >>> model.labels_
 
-    Show the regionalization results.
-
-    >>> mexico["maxp"] = model.labels_
-    >>> mexico.plot(column="maxp", categorical=True, figsize=(12,8), cmap='plasma')
-
     """
 
     def __init__(
@@ -794,6 +781,7 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         max_iterations_construction=99,
         max_iterations_sa=ITERSA,
         verbose=False,
+        policy='attach',
     ):
 
         self.gdf = gdf
@@ -805,9 +793,10 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         self.max_iterations_construction = max_iterations_construction
         self.max_iterations_sa = max_iterations_sa
         self.verbose = verbose
+        self.policy = policy
 
     def solve(self):
-        """Solve a max-p-regions problem and get back the results"""
+        """Solve a max-p-regions problem and get back the results."""
         max_p, label = maxp(
             self.gdf,
             self.w,
@@ -818,6 +807,7 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
             self.max_iterations_construction,
             self.max_iterations_sa,
             verbose=self.verbose,
+            policy=self.policy,
         )
         self.labels_ = label
         self.p = max_p

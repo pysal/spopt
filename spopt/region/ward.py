@@ -1,12 +1,5 @@
 from ..BaseClass import BaseSpOptHeuristicSolver
-from warnings import warn
-from sklearn.cluster import (
-    AffinityPropagation,
-    AgglomerativeClustering,
-    KMeans,
-    MiniBatchKMeans,
-    SpectralClustering,
-)
+from sklearn.cluster import AgglomerativeClustering
 
 
 class WardSpatial(BaseSpOptHeuristicSolver):
