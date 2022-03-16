@@ -425,7 +425,7 @@ def form_single_component(gdf, w, linkage='single'):
     if len(data[0])== 1:
         return w
     else:
-        # largest component label06037599100
+        # largest component label
         lcl = data[0][numpy.argmax(data[1])]
 
         # form tree on largest component
