@@ -717,11 +717,15 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         Default is ``False``.
 
     policy : str
-        Defaults to ``attach`` to attach areas from infeasible
-        components to nearest area in a feasible component. ``keep``
-        attempts to solve without modification (useful for
-        debugging). ``drop`` removes areas in infeasible components
-        before solving.
+        Defaults to ``single`` to attach infeasible components using a
+        single linkage between the area in the infeasible component
+        with the smallest nearest neighbor distance to an area in a
+        feasible component. ``multiple`` adds joins for each area
+        in an infeasible component and their nearest neighbor area in a
+        feasible component. ``keep`` attempts to solve without
+        modification (useful for debugging). ``drop`` removes areas in
+        infeasible components before solving.
+
 
     Attributes
     ----------
