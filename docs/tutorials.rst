@@ -11,6 +11,7 @@ Tutorials
     notebooks/ward.ipynb
     notebooks/reg-k-means.ipynb
     notebooks/randomregion.ipynb
+    notebooks/component_policy.ipynb
 
     :caption: Locate:
 
