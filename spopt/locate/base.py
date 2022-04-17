@@ -279,6 +279,37 @@ class FacilityModelBuilder:
             )
 
     @staticmethod
+    def add_predefined_facility_constraint(
+        obj: T_FacModel, model: pulp.LpProblem, predefined_fac: np.array
+    ) -> None:
+        """
+        predefined demand constraint
+
+        Parameters
+        ----------
+        obj: T_FacModel
+            bounded type of LocateSolver class
+        model: pulp.LpProblem
+            optimization model problem
+        facility_indexes: np.array
+            facility indexes zeroindexed already located
+
+        Returns
+        -------
+        None
+        """
+        if hasattr(obj, "fac_vars"):
+            fac_vars = getattr(obj, "fac_vars")
+            for ind in range(len(predefined_fac)):
+                if predefined_fac[ind]:
+                    fac_vars[ind].setInitialValue(1)
+                    fac_vars[ind].fixValue()
+        else:
+            raise AttributeError(
+                "before predefined facility must set facility variable"
+            )
+
+    @staticmethod
     def add_maximal_coverage_constraint(
         obj: T_FacModel, model, ni, range_facility, range_client
     ) -> None:
@@ -306,6 +337,7 @@ class FacilityModelBuilder:
         if hasattr(obj, "fac_vars") and hasattr(obj, "cli_vars"):
             fac_vars = getattr(obj, "fac_vars")
             dem_vars = getattr(obj, "cli_vars")
+
             for i in range_client:
                 model += (
                     pulp.lpSum([ni[i][j] * fac_vars[j] for j in range_facility])
