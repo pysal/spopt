@@ -66,7 +66,7 @@ class TestSyntheticLocate(unittest.TestCase):
 
     def test_lscp_from_cost_matrix(self):
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 10)
-        result = lscp.solve(pulp.PULP_CBC_CMD())
+        result = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, LSCP)
 
     def test_lscp_facility_client_array_from_cost_matrix(self):
@@ -74,7 +74,7 @@ class TestSyntheticLocate(unittest.TestCase):
             lscp_objective = pickle.load(f)
 
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 8)
-        lscp = lscp.solve(pulp.PULP_CBC_CMD())
+        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
         lscp.facility_client_array()
 
         numpy.testing.assert_array_equal(lscp.fac2cli, lscp_objective)
@@ -84,7 +84,7 @@ class TestSyntheticLocate(unittest.TestCase):
             lscp_objective = pickle.load(f)
 
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 8)
-        lscp = lscp.solve(pulp.PULP_CBC_CMD())
+        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
         lscp.facility_client_array()
         lscp.client_facility_array()
 
@@ -94,7 +94,7 @@ class TestSyntheticLocate(unittest.TestCase):
         lscp = LSCP.from_geodataframe(
             self.clients_snapped, self.facilities_snapped, "geometry", "geometry", 10
         )
-        result = lscp.solve(pulp.PULP_CBC_CMD())
+        result = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, LSCP)
 
     def test_lscp_facility_client_array_from_geodataframe(self):
@@ -108,7 +108,7 @@ class TestSyntheticLocate(unittest.TestCase):
             "geometry",
             8,
         )
-        lscp = lscp.solve(pulp.PULP_CBC_CMD())
+        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
         lscp.facility_client_array()
 
         numpy.testing.assert_array_equal(lscp.fac2cli, lscp_objective)
@@ -124,17 +124,38 @@ class TestSyntheticLocate(unittest.TestCase):
             "geometry",
             8,
         )
-        lscp = lscp.solve(pulp.PULP_CBC_CMD())
+        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
         lscp.facility_client_array()
         lscp.client_facility_array()
 
         numpy.testing.assert_array_equal(lscp.cli2fac, lscp_objective)
 
+    def test_lscp_preselected_facility_client_array_from_geodataframe(self):
+        with open(self.dirpath + "lscp_preselected_loc_geodataframe_fac2cli.pkl", "rb") as f:
+            lscp_objective = pickle.load(f)
+
+        fac_snapped = self.facilities_snapped.copy()
+
+        fac_snapped['predefined_loc'] = numpy.array([0, 0, 0, 0, 1])
+
+        lscp = LSCP.from_geodataframe(
+            self.clients_snapped,
+            fac_snapped,
+            "geometry",
+            "geometry",
+            predefined_facility_col="predefined_loc",
+            max_coverage=8
+        )
+        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
+        lscp.facility_client_array()
+
+        numpy.testing.assert_array_equal(lscp.fac2cli, lscp_objective)
+
     def test_mclp_from_cost_matrix(self):
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix, self.ai, max_coverage=7, p_facilities=4
         )
-        result = mclp.solve(pulp.PULP_CBC_CMD())
+        result = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, MCLP)
 
     def test_mclp_facility_client_array_from_cost_matrix(self):
@@ -147,7 +168,7 @@ class TestSyntheticLocate(unittest.TestCase):
             max_coverage=7,
             p_facilities=4,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         mclp.facility_client_array()
 
         numpy.testing.assert_array_equal(mclp.fac2cli, mclp_objective)
@@ -162,7 +183,7 @@ class TestSyntheticLocate(unittest.TestCase):
             max_coverage=7,
             p_facilities=4,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         mclp.facility_client_array()
         mclp.client_facility_array()
 
@@ -179,7 +200,7 @@ class TestSyntheticLocate(unittest.TestCase):
             max_coverage=7,
             p_facilities=4,
         )
-        result = mclp.solve(pulp.PULP_CBC_CMD())
+        result = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, MCLP)
 
     def test_mclp_facility_client_array_from_geodataframe(self):
@@ -195,7 +216,30 @@ class TestSyntheticLocate(unittest.TestCase):
             max_coverage=7,
             p_facilities=4,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
+        mclp.facility_client_array()
+
+        numpy.testing.assert_array_equal(mclp.fac2cli, mclp_objective)
+    
+    def test_mclp_preselected_facility_client_array_from_geodataframe(self):
+        with open(self.dirpath + "mclp_preselected_loc_geodataframe_fac2cli.pkl", "rb") as f:
+            mclp_objective = pickle.load(f)
+
+        fac_snapped = self.facilities_snapped.copy()
+
+        fac_snapped['predefined_loc'] = numpy.array([1, 1, 0, 1, 0])
+
+        mclp = MCLP.from_geodataframe(
+            self.clients_snapped,
+            fac_snapped,
+            "geometry",
+            "geometry",
+            "weights",
+            predefined_facility_col="predefined_loc",
+            max_coverage=7,
+            p_facilities=4,
+        )
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
         mclp.facility_client_array()
 
         numpy.testing.assert_array_equal(mclp.fac2cli, mclp_objective)
@@ -213,7 +257,7 @@ class TestSyntheticLocate(unittest.TestCase):
             max_coverage=7,
             p_facilities=4,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         mclp.facility_client_array()
         mclp.client_facility_array()
 
@@ -221,7 +265,7 @@ class TestSyntheticLocate(unittest.TestCase):
 
     def test_p_median_from_cost_matrix(self):
         p_median = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
-        result = p_median.solve(pulp.PULP_CBC_CMD())
+        result = p_median.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, PMedian)
 
     def test_pmedian_facility_client_array_from_cost_matrix(self):
@@ -229,7 +273,7 @@ class TestSyntheticLocate(unittest.TestCase):
             pmedian_objective = pickle.load(f)
 
         pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         pmedian.facility_client_array()
 
         numpy.testing.assert_array_equal(pmedian.fac2cli, pmedian_objective)
@@ -239,7 +283,7 @@ class TestSyntheticLocate(unittest.TestCase):
             pmedian_objective = pickle.load(f)
 
         pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         pmedian.facility_client_array()
         pmedian.client_facility_array()
 
@@ -254,7 +298,7 @@ class TestSyntheticLocate(unittest.TestCase):
             "weights",
             p_facilities=4,
         )
-        result = p_median.solve(pulp.PULP_CBC_CMD())
+        result = p_median.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, PMedian)
 
     def test_pmedian_facility_client_array_from_geodataframe(self):
@@ -269,7 +313,7 @@ class TestSyntheticLocate(unittest.TestCase):
             "weights",
             p_facilities=4,
         )
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         pmedian.facility_client_array()
 
         numpy.testing.assert_array_equal(pmedian.fac2cli, pmedian_objective)
@@ -286,7 +330,7 @@ class TestSyntheticLocate(unittest.TestCase):
             "weights",
             p_facilities=4,
         )
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         pmedian.facility_client_array()
         pmedian.client_facility_array()
 
@@ -294,7 +338,7 @@ class TestSyntheticLocate(unittest.TestCase):
 
     def test_p_center_from_cost_matrix(self):
         p_center = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
-        result = p_center.solve(pulp.PULP_CBC_CMD())
+        result = p_center.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, PCenter)
 
     def test_pcenter_facility_client_array_from_cost_matrix(self):
@@ -302,7 +346,7 @@ class TestSyntheticLocate(unittest.TestCase):
             pcenter_objective = pickle.load(f)
 
         pcenter = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
+        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
         pcenter.facility_client_array()
 
         numpy.testing.assert_array_equal(pcenter.fac2cli, pcenter_objective)
@@ -312,7 +356,7 @@ class TestSyntheticLocate(unittest.TestCase):
             pcenter_objective = pickle.load(f)
 
         pcenter = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
+        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
         pcenter.facility_client_array()
         pcenter.client_facility_array()
 
@@ -326,7 +370,7 @@ class TestSyntheticLocate(unittest.TestCase):
             "geometry",
             p_facilities=4,
         )
-        result = p_center.solve(pulp.PULP_CBC_CMD())
+        result = p_center.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, PCenter)
 
     def test_pcenter_facility_client_array_from_geodataframe(self):
@@ -340,7 +384,7 @@ class TestSyntheticLocate(unittest.TestCase):
             "geometry",
             p_facilities=4,
         )
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
+        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
         pcenter.facility_client_array()
 
         numpy.testing.assert_array_equal(pcenter.fac2cli, pcenter_objective)
@@ -356,7 +400,7 @@ class TestSyntheticLocate(unittest.TestCase):
             "geometry",
             p_facilities=4,
         )
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
+        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
         pcenter.facility_client_array()
         pcenter.client_facility_array()
 
@@ -410,13 +454,13 @@ class TestRealWorldLocate(unittest.TestCase):
 
     def test_optimality_lscp_from_cost_matrix(self):
         lscp = LSCP.from_cost_matrix(self.cost_matrix, self.service_dist)
-        lscp = lscp.solve(pulp.PULP_CBC_CMD())
+        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
 
         self.assertEqual(lscp.problem.status, pulp.LpStatusOptimal)
 
     def test_infeasibility_lscp_from_cost_matrix(self):
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 20)
-        lscp = lscp.solve(pulp.PULP_CBC_CMD())
+        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
 
         self.assertEqual(lscp.problem.status, pulp.LpStatusInfeasible)
 
@@ -428,7 +472,7 @@ class TestRealWorldLocate(unittest.TestCase):
             "geometry",
             self.service_dist,
         )
-        lscp = lscp.solve(pulp.PULP_CBC_CMD())
+        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
 
         self.assertEqual(lscp.problem.status, pulp.LpStatusOptimal)
 
@@ -440,7 +484,7 @@ class TestRealWorldLocate(unittest.TestCase):
             "geometry",
             0,
         )
-        lscp = lscp.solve(pulp.PULP_CBC_CMD())
+        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(lscp.problem.status, pulp.LpStatusInfeasible)
 
     def test_optimality_mclp_from_cost_matrix(self):
@@ -450,7 +494,7 @@ class TestRealWorldLocate(unittest.TestCase):
             max_coverage=self.service_dist,
             p_facilities=self.p_facility,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(mclp.problem.status, pulp.LpStatusOptimal)
 
     def test_infeasibility_mclp_from_cost_matrix(self):
@@ -460,7 +504,7 @@ class TestRealWorldLocate(unittest.TestCase):
             max_coverage=self.service_dist,
             p_facilities=1000,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(mclp.problem.status, pulp.LpStatusInfeasible)
 
     def test_mixin_mclp_get_uncovered_clients(self):
@@ -471,7 +515,7 @@ class TestRealWorldLocate(unittest.TestCase):
             max_coverage=self.service_dist,
             p_facilities=self.p_facility,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         mclp.facility_client_array()
         mclp.uncovered_clients()
 
@@ -485,7 +529,7 @@ class TestRealWorldLocate(unittest.TestCase):
             max_coverage=self.service_dist,
             p_facilities=self.p_facility,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         mclp.facility_client_array()
         mclp.uncovered_clients()
         mclp.get_percentage()
@@ -502,7 +546,7 @@ class TestRealWorldLocate(unittest.TestCase):
             max_coverage=self.service_dist,
             p_facilities=self.p_facility,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(mclp.problem.status, pulp.LpStatusOptimal)
 
     def test_infeasibility_mclp_from_geodataframe(self):
@@ -515,19 +559,19 @@ class TestRealWorldLocate(unittest.TestCase):
             max_coverage=self.service_dist,
             p_facilities=1000,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD())
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(mclp.problem.status, pulp.LpStatusInfeasible)
 
     def test_optimality_pcenter_from_cost_matrix(self):
         pcenter = PCenter.from_cost_matrix(
             self.cost_matrix, p_facilities=self.p_facility
         )
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
+        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(pcenter.problem.status, pulp.LpStatusOptimal)
 
     def test_infeasibility_pcenter_from_cost_matrix(self):
         pcenter = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=0)
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
+        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(pcenter.problem.status, pulp.LpStatusInfeasible)
 
     def test_optimality_pcenter_from_geodataframe(self):
@@ -538,7 +582,7 @@ class TestRealWorldLocate(unittest.TestCase):
             "geometry",
             p_facilities=self.p_facility,
         )
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
+        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(pcenter.problem.status, pulp.LpStatusOptimal)
 
     def test_infeasibility_pcenter_from_geodataframe(self):
@@ -549,19 +593,19 @@ class TestRealWorldLocate(unittest.TestCase):
             "geometry",
             p_facilities=0,
         )
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD())
+        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(pcenter.problem.status, pulp.LpStatusInfeasible)
 
     def test_optimality_pmedian_from_cost_matrix(self):
         pmedian = PMedian.from_cost_matrix(
             self.cost_matrix, self.ai, p_facilities=self.p_facility
         )
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(pmedian.problem.status, pulp.LpStatusOptimal)
 
     def test_infeasibility_pmedian_from_cost_matrix(self):
         pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=0)
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(pmedian.problem.status, pulp.LpStatusInfeasible)
 
     def test_mixin_mean_distance(self):
@@ -569,7 +613,7 @@ class TestRealWorldLocate(unittest.TestCase):
         pmedian = PMedian.from_cost_matrix(
             self.cost_matrix, self.ai, p_facilities=self.p_facility
         )
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         pmedian.get_mean_distance(self.ai)
 
         self.assertEqual(pmedian.mean_dist, mean_distance_expected)
@@ -583,7 +627,7 @@ class TestRealWorldLocate(unittest.TestCase):
             "POP2000",
             p_facilities=self.p_facility,
         )
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(pmedian.problem.status, pulp.LpStatusOptimal)
 
     def test_infeasibility_pmedian_from_geodataframe(self):
@@ -595,7 +639,7 @@ class TestRealWorldLocate(unittest.TestCase):
             "POP2000",
             p_facilities=0,
         )
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD())
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(pmedian.problem.status, pulp.LpStatusInfeasible)
 
 

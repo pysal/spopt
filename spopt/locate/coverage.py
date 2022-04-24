@@ -44,7 +44,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
     @classmethod
     def from_cost_matrix(
-        cls, cost_matrix: np.array, max_coverage: float, name: str = "LSCP"
+        cls, cost_matrix: np.array, max_coverage: float, predefined_facilities_arr: np.array = None, name: str = "LSCP"
     ):
         """
         Create a LSCP object based on cost matrix.
@@ -119,6 +119,9 @@ class LSCP(LocateSolver, BaseOutputMixin):
         lscp.aij = np.zeros(cost_matrix.shape)
         lscp.aij[cost_matrix <= max_coverage] = 1
 
+        if predefined_facilities_arr is not None:
+            FacilityModelBuilder.add_predefined_facility_constraint(lscp, lscp.problem, predefined_facilities_arr)
+
         lscp.__add_obj()
         FacilityModelBuilder.add_set_covering_constraint(
             lscp, lscp.problem, lscp.aij, r_fac, r_cli
@@ -134,6 +137,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         demand_col: str,
         facility_col: str,
         max_coverage: float,
+        predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
         name: str = "LSCP",
     ):
@@ -205,6 +209,10 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         """
 
+        predefined_facilities_arr = None
+        if predefined_facility_col is not None:
+            predefined_facilities_arr = gdf_fac[predefined_facility_col].to_numpy()
+
         dem = gdf_demand[demand_col]
         fac = gdf_fac[facility_col]
 
@@ -235,7 +243,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         distances = cdist(dem_data, fac_data, distance_metric)
 
-        return cls.from_cost_matrix(distances, max_coverage, name)
+        return cls.from_cost_matrix(distances, max_coverage, predefined_facilities_arr, name)
 
     def facility_client_array(self) -> None:
         """
@@ -316,6 +324,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         weights: np.array,
         max_coverage: float,
         p_facilities: int,
+        predefined_facilities_arr: np.array = None,
         name: str = "MCLP",
     ):
         """
@@ -331,6 +340,8 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             maximum acceptable service distance by problem
         p_facilities: int
             number of facilities to be located
+        predefined_facilities_arr: np.array, default=None
+            bool array defining which facilities are already defined
         name: str, default="MCLP"
             name of the problem
 
@@ -402,10 +413,16 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         weights = np.reshape(weights, (cost_matrix.shape[0], 1))
 
         mclp.__add_obj(weights, r_cli)
+        
+        if predefined_facilities_arr is not None:
+            FacilityModelBuilder.add_predefined_facility_constraint(mclp, mclp.problem, predefined_facilities_arr)
+        
         FacilityModelBuilder.add_maximal_coverage_constraint(
             mclp, mclp.problem, mclp.aij, r_fac, r_cli
         )
+        
         FacilityModelBuilder.add_facility_constraint(mclp, mclp.problem, p_facilities)
+
 
         return mclp
 
@@ -419,6 +436,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         weights_cols: str,
         max_coverage: float,
         p_facilities: int,
+        predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
         name: str = "MCLP",
     ):
@@ -442,6 +460,8 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             maximum acceptable service distance by problem
         p_facilities: int
             number of facilities to be located
+        predefined_facility_col: np.array, default=None
+            column name representing facilities are already defined
         distance_metric: str, default="euclidean"
             metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
         name: str, default="MCLP"
@@ -505,6 +525,11 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         >>> mclp_from_geodataframe.facility_client_array()
         >>> mclp_from_geodataframe.fac2cli
         """
+
+        predefined_facilities_arr = None
+        if predefined_facility_col is not None:
+            predefined_facilities_arr = gdf_fac[predefined_facility_col].to_numpy()
+
         service_load = gdf_demand[weights_cols].to_numpy()
         dem = gdf_demand[demand_col]
         fac = gdf_fac[facility_col]
@@ -537,7 +562,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         distances = cdist(dem_data, fac_data, distance_metric)
 
         return cls.from_cost_matrix(
-            distances, service_load, max_coverage, p_facilities, name
+            distances, service_load, max_coverage, p_facilities, predefined_facilities_arr, name
         )
 
     def facility_client_array(self) -> None:
