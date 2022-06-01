@@ -44,7 +44,11 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
     @classmethod
     def from_cost_matrix(
-        cls, cost_matrix: np.array, max_coverage: float, predefined_facilities_arr: np.array = None, name: str = "LSCP"
+        cls,
+        cost_matrix: np.array,
+        max_coverage: float,
+        predefined_facilities_arr: np.array = None,
+        name: str = "LSCP",
     ):
         """
         Create a LSCP object based on cost matrix.
@@ -120,7 +124,9 @@ class LSCP(LocateSolver, BaseOutputMixin):
         lscp.aij[cost_matrix <= max_coverage] = 1
 
         if predefined_facilities_arr is not None:
-            FacilityModelBuilder.add_predefined_facility_constraint(lscp, lscp.problem, predefined_facilities_arr)
+            FacilityModelBuilder.add_predefined_facility_constraint(
+                lscp, lscp.problem, predefined_facilities_arr
+            )
 
         lscp.__add_obj()
         FacilityModelBuilder.add_set_covering_constraint(
@@ -243,7 +249,9 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         distances = cdist(dem_data, fac_data, distance_metric)
 
-        return cls.from_cost_matrix(distances, max_coverage, predefined_facilities_arr, name)
+        return cls.from_cost_matrix(
+            distances, max_coverage, predefined_facilities_arr, name
+        )
 
     def facility_client_array(self) -> None:
         """
@@ -282,6 +290,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         LSCP object
         """
         self.problem.solve(solver)
+        self.check_status()
         return self
 
 
@@ -413,16 +422,17 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         weights = np.reshape(weights, (cost_matrix.shape[0], 1))
 
         mclp.__add_obj(weights, r_cli)
-        
+
         if predefined_facilities_arr is not None:
-            FacilityModelBuilder.add_predefined_facility_constraint(mclp, mclp.problem, predefined_facilities_arr)
-        
+            FacilityModelBuilder.add_predefined_facility_constraint(
+                mclp, mclp.problem, predefined_facilities_arr
+            )
+
         FacilityModelBuilder.add_maximal_coverage_constraint(
             mclp, mclp.problem, mclp.aij, r_fac, r_cli
         )
-        
-        FacilityModelBuilder.add_facility_constraint(mclp, mclp.problem, p_facilities)
 
+        FacilityModelBuilder.add_facility_constraint(mclp, mclp.problem, p_facilities)
 
         return mclp
 
@@ -562,7 +572,12 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         distances = cdist(dem_data, fac_data, distance_metric)
 
         return cls.from_cost_matrix(
-            distances, service_load, max_coverage, p_facilities, predefined_facilities_arr, name
+            distances,
+            service_load,
+            max_coverage,
+            p_facilities,
+            predefined_facilities_arr,
+            name,
         )
 
     def facility_client_array(self) -> None:
@@ -604,4 +619,5 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         MCLP object
         """
         self.problem.solve(solver)
+        self.check_status()
         return self

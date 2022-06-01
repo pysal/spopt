@@ -330,4 +330,5 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         PMedian object
         """
         self.problem.solve(solver)
+        self.check_status()
         return self
