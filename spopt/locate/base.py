@@ -7,6 +7,16 @@ import numpy as np
 import pulp
 
 
+# https://coin-or.github.io/pulp/technical/constants.html#pulp.constants.LpStatus
+STATUS_CODES = {
+    1: "Optimal",
+    0: "Not Solved",
+    -1: "Infeasible",
+    -2: "Unbounded",
+    -3: "Undefined",
+}
+
+
 class LocateSolver(BaseSpOptSolver):
     """
     Base Class for locate package
@@ -32,6 +42,17 @@ class LocateSolver(BaseSpOptSolver):
         None
         """
         pass
+
+    def check_status(self):
+        """Ensure a model is solved."""
+
+        if self.problem.status != 1:
+            status = STATUS_CODES[self.problem.status]
+            msg = (
+                f"Model is not solved: {status}. "
+                "See ``pulp.constants.LpStatus`` for more information."
+            )
+            raise RuntimeError(msg)
 
 
 class BaseOutputMixin:
