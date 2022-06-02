@@ -146,7 +146,7 @@ class TestSyntheticLocate(unittest.TestCase):
             "geometry",
             "geometry",
             predefined_facility_col="predefined_loc",
-            max_coverage=8,
+            service_radius=8,
         )
         lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
         lscp.facility_client_array()
@@ -155,7 +155,7 @@ class TestSyntheticLocate(unittest.TestCase):
 
     def test_mclp_from_cost_matrix(self):
         mclp = MCLP.from_cost_matrix(
-            self.cost_matrix, self.ai, max_coverage=7, p_facilities=4
+            self.cost_matrix, self.ai, service_radius=7, p_facilities=4
         )
         result = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, MCLP)
@@ -167,7 +167,7 @@ class TestSyntheticLocate(unittest.TestCase):
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix,
             self.ai,
-            max_coverage=7,
+            service_radius=7,
             p_facilities=4,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -182,7 +182,7 @@ class TestSyntheticLocate(unittest.TestCase):
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix,
             self.ai,
-            max_coverage=7,
+            service_radius=7,
             p_facilities=4,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -199,7 +199,7 @@ class TestSyntheticLocate(unittest.TestCase):
             "geometry",
             "geometry",
             "weights",
-            max_coverage=7,
+            service_radius=7,
             p_facilities=4,
         )
         result = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -215,7 +215,7 @@ class TestSyntheticLocate(unittest.TestCase):
             "geometry",
             "geometry",
             "weights",
-            max_coverage=7,
+            service_radius=7,
             p_facilities=4,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -240,7 +240,7 @@ class TestSyntheticLocate(unittest.TestCase):
             "geometry",
             "weights",
             predefined_facility_col="predefined_loc",
-            max_coverage=7,
+            service_radius=7,
             p_facilities=4,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
@@ -258,7 +258,7 @@ class TestSyntheticLocate(unittest.TestCase):
             "geometry",
             "geometry",
             "weights",
-            max_coverage=7,
+            service_radius=7,
             p_facilities=4,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -493,7 +493,7 @@ class TestRealWorldLocate(unittest.TestCase):
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix,
             self.ai,
-            max_coverage=self.service_dist,
+            service_radius=self.service_dist,
             p_facilities=self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -503,7 +503,7 @@ class TestRealWorldLocate(unittest.TestCase):
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix,
             self.ai,
-            max_coverage=self.service_dist,
+            service_radius=self.service_dist,
             p_facilities=1000,
         )
         with self.assertRaises(RuntimeError):
@@ -514,7 +514,7 @@ class TestRealWorldLocate(unittest.TestCase):
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix,
             self.ai,
-            max_coverage=self.service_dist,
+            service_radius=self.service_dist,
             p_facilities=self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -528,7 +528,7 @@ class TestRealWorldLocate(unittest.TestCase):
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix,
             self.ai,
-            max_coverage=self.service_dist,
+            service_radius=self.service_dist,
             p_facilities=self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -545,7 +545,7 @@ class TestRealWorldLocate(unittest.TestCase):
             "geometry",
             "geometry",
             "POP2000",
-            max_coverage=self.service_dist,
+            service_radius=self.service_dist,
             p_facilities=self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -558,7 +558,7 @@ class TestRealWorldLocate(unittest.TestCase):
             "geometry",
             "geometry",
             "POP2000",
-            max_coverage=self.service_dist,
+            service_radius=self.service_dist,
             p_facilities=1000,
         )
         with self.assertRaises(RuntimeError):

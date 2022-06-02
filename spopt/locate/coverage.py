@@ -46,7 +46,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
     def from_cost_matrix(
         cls,
         cost_matrix: np.array,
-        max_coverage: float,
+        service_radius: float,
         predefined_facilities_arr: np.array = None,
         name: str = "LSCP",
     ):
@@ -57,7 +57,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         ----------
         cost_matrix: np.array
             two-dimensional distance array between facility points and demand point
-        max_coverage: float
+        service_radius: float
             maximum acceptable service distance by problem
         name: str, default="LSCP"
             name of the problem
@@ -121,7 +121,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         FacilityModelBuilder.add_facility_integer_variable(lscp, r_fac, "x[{i}]")
 
         lscp.aij = np.zeros(cost_matrix.shape)
-        lscp.aij[cost_matrix <= max_coverage] = 1
+        lscp.aij[cost_matrix <= service_radius] = 1
 
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
@@ -142,7 +142,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         gdf_fac: GeoDataFrame,
         demand_col: str,
         facility_col: str,
-        max_coverage: float,
+        service_radius: float,
         predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
         name: str = "LSCP",
@@ -161,7 +161,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
             demand geometry column name
         facility_col: str
             facility candidate sites geometry column name
-        max_coverage: float
+        service_radius: float
             maximum acceptable service distance by problem
         distance_metric: str, default="euclidean"
             metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
@@ -250,7 +250,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         distances = cdist(dem_data, fac_data, distance_metric)
 
         return cls.from_cost_matrix(
-            distances, max_coverage, predefined_facilities_arr, name
+            distances, service_radius, predefined_facilities_arr, name
         )
 
     def facility_client_array(self) -> None:
@@ -331,7 +331,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         cls,
         cost_matrix: np.array,
         weights: np.array,
-        max_coverage: float,
+        service_radius: float,
         p_facilities: int,
         predefined_facilities_arr: np.array = None,
         name: str = "MCLP",
@@ -345,7 +345,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             two-dimensional distance array between facility points and demand point
         weights: np.array
             one-dimensional service load or population demand
-        max_coverage: float
+        service_radius: float
             maximum acceptable service distance by problem
         p_facilities: int
             number of facilities to be located
@@ -418,7 +418,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         FacilityModelBuilder.add_client_integer_variable(mclp, r_cli, "y[{i}]")
 
         mclp.aij = np.zeros(cost_matrix.shape)
-        mclp.aij[cost_matrix <= max_coverage] = 1
+        mclp.aij[cost_matrix <= service_radius] = 1
         weights = np.reshape(weights, (cost_matrix.shape[0], 1))
 
         mclp.__add_obj(weights, r_cli)
@@ -444,7 +444,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         demand_col: str,
         facility_col: str,
         weights_cols: str,
-        max_coverage: float,
+        service_radius: float,
         p_facilities: int,
         predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
@@ -466,7 +466,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             facility candidate sites geometry column name
         weights_cols: str
             weight column name representing service load or demand
-        max_coverage: float
+        service_radius: float
             maximum acceptable service distance by problem
         p_facilities: int
             number of facilities to be located
@@ -574,7 +574,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         return cls.from_cost_matrix(
             distances,
             service_load,
-            max_coverage,
+            service_radius,
             p_facilities,
             predefined_facilities_arr,
             name,
