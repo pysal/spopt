@@ -294,4 +294,5 @@ class PCenter(LocateSolver, BaseOutputMixin):
         PCenter object
         """
         self.problem.solve(solver)
+        self.check_status()
         return self
