@@ -280,7 +280,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
             self.fac2cli.append(array_cli)
 
-    def solve(self, solver: pulp.LpSolver):
+    def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
         Solve the PCenter model
 
@@ -288,6 +288,9 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ----------
         solver: pulp.LpSolver
             solver supported by pulp package
+        
+        results: bool
+            if True it will create metainfo - which facilities cover which demand and vice-versa, and the uncovered demand - about the model results
 
         Returns
         -------
@@ -295,4 +298,10 @@ class PCenter(LocateSolver, BaseOutputMixin):
         """
         self.problem.solve(solver)
         self.check_status()
+
+        if results:
+            self.facility_client_array()
+            self.client_facility_array()
+            self.uncovered_clients()
+
         return self
