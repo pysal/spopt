@@ -25,6 +25,18 @@ class LSCP(LocateSolver, BaseOutputMixin):
     problem: pulp.LpProblem
         Pulp instance of optimization model that contains constraints, variables and objective function.
 
+    Attributes
+    ----------
+    name: str
+        Problem name
+    problem: pulp.LpProblem
+        Pulp instance of optimization model that contains constraints, variables and objective function.
+    fac2cli : np.array
+        2-d array MxN, where m is number of facilities and n is number of clients. Each row represents a facility and has an array containing clients index meaning that the facility-i cover the entire array.
+    cli2fac: np.array
+        2-d MxN, where m is number of clients and n is number of facilities. Each row represent a client and has an array containing facility index meaning that the client is covered by the facility ith.
+    aij: np.array
+        Cost matrix 2-d array 
     """
 
     def __init__(self, name: str, problem: pulp.LpProblem):
@@ -298,7 +310,6 @@ class LSCP(LocateSolver, BaseOutputMixin):
         if results:
             self.facility_client_array()
             self.client_facility_array()
-            self.uncovered_clients()
 
         return self
 
@@ -314,6 +325,20 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
     problem: pulp.LpProblem
         Pulp instance of optimization model that contains constraints, variables and objective function.
 
+    Attributes
+    ----------
+    name: str
+        Problem name
+    problem: pulp.LpProblem
+        Pulp instance of optimization model that contains constraints, variables and objective function.
+    fac2cli : np.array
+        2-d array MxN, where m is number of facilities and n is number of clients. Each row represents a facility and has an array containing clients index meaning that the facility-i cover the entire array.
+    cli2fac: np.array
+        2-d MxN, where m is number of clients and n is number of facilities. Each row represent a client and has an array containing facility index meaning that the client is covered by the facility ith.
+    aij: np.array
+        Cost matrix 2-d array 
+    n_cli_uncov: int
+        Specify how many clients points are not covered.
     """
 
     def __init__(self, name: str, problem: pulp.LpProblem):

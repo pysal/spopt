@@ -77,6 +77,16 @@ class BaseOutputMixin:
         else:
             raise AttributeError("The attribute `fac2cli` is not set. See `facility_client_array` method to set the attribute")
 
+class CoveragePercentageMixin:
+    """
+    Mixin to calculate the percentage of area covered.
+
+    Note
+    ----
+    This Mixin requires `n_cli_uncov` attribute to work properly. This attribute is set using `uncovered_clients` method which is located inside the model classes. When solve method is used with `results=True` it will already set automatically, if not, you have to call the method.
+
+    """
+
     def uncovered_clients(self) -> None:
         """
         Calculate how many clients points are not covered.
@@ -95,16 +105,6 @@ class BaseOutputMixin:
         else:
             raise AttributeError("The attribute `fac2cli` is not set. See `facility_client_array` method to set the attribute")
 
-
-class CoveragePercentageMixin:
-    """
-    Mixin to calculate the percentage of area covered.
-
-    Note
-    ----
-    This Mixin requires `n_cli_uncov` attribute to work properly. This attribute is set using `uncovered_clients` method which is located inside the model classes. When solve method is used with `results=True` it will already set automatically, if not, you have to call the method.
-
-    """
 
     def get_percentage(self):
         """
