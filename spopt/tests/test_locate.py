@@ -643,7 +643,68 @@ class TestRealWorldLocate(unittest.TestCase):
         )
         with self.assertRaises(RuntimeError):
             pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
+    
+    def test_attribute_error_fac2cli_MCLP_facility_client_array(self):
+        mclp = MCLP.from_geodataframe(
+            self.demand_points_gdf,
+            self.facility_points_gdf,
+            "geometry",
+            "geometry",
+            "POP2000",
+            service_radius=self.service_dist,
+            p_facilities=self.p_facility,
+        )
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        
+        with self.assertRaises(AttributeError):
+            _ = self.fac2cli
 
+    def test_attribute_error_cli2fac_MCLP_facility_client_array(self):
+        mclp = MCLP.from_geodataframe(
+            self.demand_points_gdf,
+            self.facility_points_gdf,
+            "geometry",
+            "geometry",
+            "POP2000",
+            service_radius=self.service_dist,
+            p_facilities=self.p_facility,
+        )
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        
+        with self.assertRaises(AttributeError):
+            _ = self.cli2fac
+
+    def test_attribute_error_ncliuncov_MCLP_facility_client_array(self):
+        mclp = MCLP.from_geodataframe(
+            self.demand_points_gdf,
+            self.facility_points_gdf,
+            "geometry",
+            "geometry",
+            "POP2000",
+            service_radius=self.service_dist,
+            p_facilities=self.p_facility,
+        )
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        
+        with self.assertRaises(AttributeError):
+            _ = self.n_cli_uncov
+
+    def test_attribute_error_percentage_MCLP_facility_client_array(self):
+        mclp = MCLP.from_geodataframe(
+            self.demand_points_gdf,
+            self.facility_points_gdf,
+            "geometry",
+            "geometry",
+            "POP2000",
+            service_radius=self.service_dist,
+            p_facilities=self.p_facility,
+        )
+        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        
+        with self.assertRaises(AttributeError):
+            _ = mclp.get_percentage()
+            
+            
 
 class TestErrorsWarnings(unittest.TestCase):
     def setUp(self) -> None:
