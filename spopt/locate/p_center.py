@@ -22,6 +22,19 @@ class PCenter(LocateSolver, BaseOutputMixin):
     aij: np.array
         two-dimensional array product of service load/population demand and distance matrix between facility and demand.
 
+    Attributes
+    ----------
+    name: str
+        Problem name
+    problem: pulp.LpProblem
+        Pulp instance of optimization model that contains constraints, variables and objective function.
+    fac2cli : np.array
+        2-d array MxN, where m is number of facilities and n is number of clients. Each row represents a facility and has an array containing clients index meaning that the facility-i cover the entire array.
+    cli2fac: np.array
+        2-d MxN, where m is number of clients and n is number of facilities. Each row represent a client and has an array containing facility index meaning that the client is covered by the facility ith.
+    aij: np.array
+        Cost matrix 2-d array 
+
     """
 
     def __init__(self, name: str, problem: pulp.LpProblem, aij: np.array):
@@ -280,7 +293,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
             self.fac2cli.append(array_cli)
 
-    def solve(self, solver: pulp.LpSolver):
+    def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
         Solve the PCenter model
 
@@ -288,6 +301,9 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ----------
         solver: pulp.LpSolver
             solver supported by pulp package
+        
+        results: bool
+            if True it will create metainfo - which facilities cover which demand and vice-versa, and the uncovered demand - about the model results
 
         Returns
         -------
@@ -295,4 +311,9 @@ class PCenter(LocateSolver, BaseOutputMixin):
         """
         self.problem.solve(solver)
         self.check_status()
+
+        if results:
+            self.facility_client_array()
+            self.client_facility_array()
+
         return self

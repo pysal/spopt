@@ -63,6 +63,10 @@ class BaseOutputMixin:
     def client_facility_array(self) -> None:
         """
         Create an array 2d MxN, where m is number of clients and n is number of facilities.
+
+        Note
+        ----
+        This functions requires `fac2cli` attribute to work properly. This attribute is set using `facility_client_array` method which is located inside the model classes. When solve method is used with `results=True` it will already set automatically, if not, you have to call the method.
         """
         if hasattr(self, "fac2cli"):
             self.cli2fac = [[] for i in range(self.aij.shape[0])]
@@ -70,29 +74,46 @@ class BaseOutputMixin:
             for i in range(len(self.fac2cli)):
                 for fac_site in self.fac2cli[i]:
                     self.cli2fac[fac_site].append(i)
-
-    def uncovered_clients(self) -> None:
-        """
-        Calculate how many clients points are not covered
-        """
-        set_cov = set()
-        for i in range(len(self.fac2cli)):
-            set_cov |= set(self.fac2cli[i])
-
-        self.n_cli_uncov = self.aij.shape[0] - len(set_cov)
-
+        else:
+            raise AttributeError("The attribute `fac2cli` is not set. See `facility_client_array` method to set the attribute")
 
 class CoveragePercentageMixin:
     """
-    Mixin to calculate the percentage of area covered
+    Mixin to calculate the percentage of area covered.
+
+    Note
+    ----
+    This Mixin requires `n_cli_uncov` attribute to work properly. This attribute is set using `uncovered_clients` method which is located inside the model classes. When solve method is used with `results=True` it will already set automatically, if not, you have to call the method.
+
     """
+
+    def uncovered_clients(self) -> None:
+        """
+        Calculate how many clients points are not covered.
+
+        Note
+        ----
+        This function requires `fac2cli` attribute to work properly. This attribute is set using `facility_client_array` method which is located inside the model classes. When solve method is used with `results=True` it will already set automatically, if not, you have to call the method.
+        """
+
+        if hasattr(self, "fac2cli"):
+            set_cov = set()
+            for i in range(len(self.fac2cli)):
+                set_cov |= set(self.fac2cli[i])
+
+            self.n_cli_uncov = self.aij.shape[0] - len(set_cov)
+        else:
+            raise AttributeError("The attribute `fac2cli` is not set. See `facility_client_array` method to set the attribute")
+
 
     def get_percentage(self):
         """
         Calculate the percentage
         """
-        self.percentage = 1 - (self.n_cli_uncov / self.aij.shape[0])
-
+        if hasattr(self, "n_cli_uncov"):
+            self.percentage = 1 - (self.n_cli_uncov / self.aij.shape[0])
+        else:
+            raise AttributeError("The attribute `n_cli_uncov` is not set. See `uncovered_clients` method to set the attribute.")
 
 class MeanDistanceMixin:
     """
