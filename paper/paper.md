@@ -43,14 +43,14 @@ affiliations:
    index: 6
  - name: Urban Big Data Centre, School of Social & Political Sciences, University of Glasgow
    index: 7
-date: 01 November 2021
+date: 09 June 2022
 bibliography: paper.bib
 ---
 
 
 # Summary
 
-Spatial optimization is a major spatial analytical tool in management and planning, the significance of which cannot be overstated. Spatial optimization models play an important role in designing and managing effective and efficient service systems such as transportation, education, public health, environmental protection, and commercial investment among others. To this end, spopt (\textbf{sp}atial \textbf{opt}imization) is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions.  Spopt is a submodule in the open-source spatial analysis library PySAL (Python Spatial Analysis Library) founded by Dr. Serge Rey and Dr. Luc Anselin in 2005 [@pysal2007;@rey2015open;@Rey2021]. The goal of developing spopt is to provide management and decision-making support to all relevant practitioners and to further promote the appropriate and meaningful application of spatial optimization models in practice.
+Spatial optimization is a major spatial analytical tool in management and planning, the significance of which cannot be overstated. Spatial optimization models play an important role in designing and managing effective and efficient service systems such as transportation, education, public health, environmental protection, and commercial investment among others. To this end, spopt (\textbf{sp}atial \textbf{opt}imization) is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions [@spopt2021].  Spopt is a submodule in the open-source spatial analysis library PySAL (Python Spatial Analysis Library) founded by Dr. Serge Rey and Dr. Luc Anselin in 2005 [@pysal2007;@rey2015open;@Rey2021]. The goal of developing spopt is to provide management and decision-making support to all relevant practitioners and to further promote the appropriate and meaningful application of spatial optimization models in practice.
 
 # Statement of need
 
@@ -146,7 +146,7 @@ We would like to thank all the contributors to this package. Besides, we would l
 
 The following acknowledgement applies to James D. Gaboardi (affiliation 4) *only*:
 
-> This manuscript has been authored by UT-Battelle LLC under contract DE-AC05-00OR22725 with the US Department of Energy (DOE). The US government retains and the publisher, by accepting the article for publication, acknowledges that the US government retains a nonexclusive, paid-up, irrevocable worldwide license to publish or reproduce the published form of this manuscript, or allow others to do so, for US government purposes. DOE will provide public access to these results of federally sponsored research in accordance with the DOE Public Access Plan (http://energy.gov/downloads/doe-public-access-plan).
+> This manuscript has been authored in part by UT-Battelle LLC under contract DE-AC05-00OR22725 with the US Department of Energy (DOE). The US government retains and the publisher, by accepting the article for publication, acknowledges that the US government retains a nonexclusive, paid-up, irrevocable worldwide license to publish or reproduce the published form of this manuscript, or allow others to do so, for US government purposes. DOE will provide public access to these results of federally sponsored research in accordance with the DOE Public Access Plan (http://energy.gov/downloads/doe-public-access-plan).
 
 Dr. Qunshan Zhao has received UK ESRC’s ongoing support for the Urban Big Data Centre (UBDC) (ES/L011921/1 and ES/S007105/1).
 
