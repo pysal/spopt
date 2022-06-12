@@ -81,17 +81,17 @@ Take the functionality of Max-p-regions as an example. Other methods can be appl
 ```python
 from spopt.region import MaxPHeuristic as MaxP
 import geopandas, libpysal
-# Read in the data on regional incomes for Mexican states.
+# read in the data on regional incomes for Mexican states
 mexico = geopandas.read_file(libpysal.examples.get_path("mexicojoin.shp"))
-# Specify parameters for the Max-p-regions model.
-# Details can be found at https://pysal.org/spopt/notebooks/maxp.html.
+# specify parameters for the Max-p-regions model
+# setails can be found at https://pysal.org/spopt/notebooks/maxp.html.
 attrs_name = [f"PCGDP{2000}"]
 w = libpysal.weights.Queen.from_dataframe(mexico)
 threshold_name, threshold, top_n, mexico["count"] = "count", 6, 2, 1
-# Solve the Max-p-regions model.
+# solve the Max-p-regions model
 model = MaxP(mexico, w, attrs_name, threshold_name, threshold, top_n)
 model.solve()
-# Plot the model solution.
+# plot the model solution
 mexico["maxp_new"] = model.labels_
 mexico.plot(column="maxp_new", categorical=True, edgecolor="w");
 ```
@@ -113,17 +113,22 @@ For example, Maximal Covering Location Model functionality is used to select 4 o
 ```python
 from spopt.locate.coverage import MCLP
 import geopandas, numpy, pandas, pulp
-# Read in the datasets 
-ntw_dist = pandas.read_csv("SF_network_distance_candidateStore_16_censusTract_205_new.csv")
-demand_points = pandas.read_csv("SF_demand_205_centroid_uniform_weight.csv", index_col=0)
-facility_points = pandas.read_csv("SF_store_site_16_longlat.csv", index_col=0)
+# read in the datasets
+f1 = "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
+ntw_dist = pandas.read_csv(f1)
+f2 = "SF_demand_205_centroid_uniform_weight.csv"
+demand_points = pandas.read_csv(f2, index_col=0)
+f3 = "SF_store_site_16_longlat.csv"
+facility_points = pandas.read_csv(f3, index_col=0)
 study_area = geopandas.read_file("ServiceAreas_4.shp").dissolve()
-# Create a store site to tract centroid distance matrix
-ntw_piv = ntw_dist.pivot_table(values="distance", index="DestinationName", columns="name")
+# create a store site to tract centroid distance matrix
+ntw_piv = ntw_dist.pivot_table(
+    values="distance", index="DestinationName", columns="name"
+)
 cost_matrix, ai, p = ntw_piv.to_numpy(), demand_points["POP2000"].to_numpy(), 4
 mclp = MCLP.from_cost_matrix(cost_matrix, ai, max_coverage=5000, p_facilities=p)
 mclp = mclp.solve(pulp.GLPK(msg=False))
-# Build a facility-demand array for demand covered by each facility
+# build a facility-demand array for demand covered by each facility
 mclp.facility_client_array()
 fgeom = geopandas.points_from_xy(facility_points.long, facility_points.lat)
 facility_points_gdf = geopandas.GeoDataFrame(
@@ -135,10 +140,10 @@ demand_points_gdf = geopandas.GeoDataFrame(
 ).sort_values(by=["NAME"]).reset_index()
 # plot results
 n_facilities, title = facility_points_gdf.shape[0], f"MCLP ($p$={p})"
-plot_results(mclp, facility_points_gdf, demand_points_gdf, n_facilities, title)
+plot_results(mclp, facility_points_gdf, demand_points_gdf, n_facilities, title);
 ```
 
-![The solution of MCLP while siting 4 facilities using 5 kilometers as the maximum service distance between facilities and demand locations. See the "Real World Facility Location" tutorial (https://pysal.org/spopt/notebooks/facloc-real-world.html) for more details.\label{fig: mclp}](figs/mclp.png)
+![The solution of MCLP while siting 4 facilities using 5 kilometers as the maximum service distance between facilities and demand locations. See the "Real World Facility Location" tutorial ([https://pysal.org/spopt/notebooks/facloc-real-world.html](https://pysal.org/spopt/notebooks/facloc-real-world.html)) for more details.\label{fig: mclp}](figs/mclp.png)
 
 # Planned Enhancements
 
