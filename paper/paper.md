@@ -56,14 +56,14 @@ Spatial optimization is a major spatial analytical tool in management and planni
 
 Spatial optimization methods and algorithms can be accessed in many ways. ArcGIS[^arc] and TransCAD[^transcad] are two well-known commercial GIS software packages that provide modules designed for structuring and solving spatial optimization problems. The optimization functions they offer focus on a set classical single facility location methods (e.g., Weber, Median, Centroid, 1-center), routing and shortest path methods (e.g., shortest path on the network, least cost path over the terrain), and multi-facility location-allocation methods (e.g., coverage models, p-median problem). They are user-friendly and visually appealing, but the cost is relatively high [@murray2021contemporary]. 
 
-[^arc]: https://www.esri.com/en-us/home
-[^transcad]: https://www.caliper.com/
+[^arc]: [https://www.esri.com/en-us/home](https://www.esri.com/en-us/home)
+[^transcad]: [https://www.caliper.com/](https://www.caliper.com/)
 
 Open-source software is another option to access spatial optimization. Although it may require users to have a certain level of programming experience, open-source software provides relatively novel and comprehensive methods, and more importantly, it is free and can be easily replicated. This is particularly true for regionalization and facility-location methods. Regionalization methods are limited in commercial GIS software, and may only have grouping analysis for vector data and region identification for raster data. On the contrary, there are many application-oriented open-source packages that facilitate the implementation of regionalization methods in various fields, including climate (e.g., HiClimR [@badr2015tool], synoptReg [@LEMUSCANOVAS2019114]), biology (e.g., Phyloregion [@daru2020phyloregion], regioneR [@regioneR2015]), hydrology (e.g., nsRFA [@nsRFA]), agriculture (e.g., OpenLCA[^openlca]), and so on. The functions of graph regionalization with clustering and partitioning have been provided by several packages in R[^R] such as Rgeoda [@rgeoda], maxcut: Max-Cut Problem in sdpt3r [@rahman2018sdpt3r], and RBGL: R Boost Graph Library [@RBGL], and grPartition within MATLAB[^matlab]. They are probably the most closely related projects to the regionalization functionality of **spopt**, however, they are written in R and MATLAB. For facility-location methods, commercial software such as ArcGIS and TransCAD implement models using heuristic approaches. However, they don't provide details about the solution found, which limits the interpretability of the results [@Chen2021]. On the other hand, existing open-source packages mostly aim at solving coverage problems such as pyspatialopt [@pyspatialopt], allagash [@allagash] and maxcovr [@maxcovr], but the available models, solvers, and overall accessibility vary significantly.  Therefore, it is necessary to develop an open-source optimization package written in Python that includes various types of classic facility-location methods with a wide range of supported optimization solvers.
 
-[^openlca]: https://www.openlca.org
-[^R]: https://www.r-project.org
-[^matlab]: https://www.mathworks.com/products/matlab.html
+[^openlca]: [https://www.openlca.org](https://www.openlca.org)
+[^R]: [https://www.r-project.org](https://www.r-project.org)
+[^matlab]: [https://www.mathworks.com/products/matlab.html](https://www.mathworks.com/products/matlab.html)
 
 # Current functionality 
 
