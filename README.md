@@ -135,17 +135,33 @@ The project is licensed under the [BSD 3-Clause license](https://github.com/pysa
 
 ## Citation
 
-If you use PySAL-spopt in a scientific publication, we would appreciate using the following citation:
+If you use PySAL-spopt in a scientific publication, we would appreciate using the following citations:
 
 ```
 @misc{spopt2021,
-    author    = {Feng, Xin, and Gaboardi, James D. and Knaap, Elijah and Rey, Sergio J. and Wei, Ran},
+    author    = {Feng, Xin, and Gaboardi, James D. and Knaap, Elijah and
+                Rey, Sergio J. and Wei, Ran},
     month     = {jan},
     year      = {2021},
     title     = {pysal/spopt},
     url       = {https://github.com/pysal/spopt},
     doi       = {10.5281/zenodo.4444156},
     keywords  = {python,regionalization,spatial-optimization,location-modeling}
+}
+
+@article{spopt2022,
+    author    = {Feng, Xin and Barcelos, Germano and Gaboardi, James D. and
+                Knaap, Elijah and Wei, Ran and Wolf, Levi J. and
+                Zhao, Qunshan and Rey, Sergio J.},
+    year      = {2022},
+    title     = {spopt: a python package for solving spatial optimization problems in PySAL},
+    journal   = {Journal of Open Source Software}
+    publisher = {The Open Journal},
+    volume    = {7},
+    number    = {74},
+    pages     = {3330},
+    url       = {https://doi.org/10.21105/joss.03330},
+    doi       = {10.21105/joss.03330},
 }
 ```
 
