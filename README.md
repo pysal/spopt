@@ -155,7 +155,7 @@ If you use PySAL-spopt in a scientific publication, we would appreciate using th
                 Zhao, Qunshan and Rey, Sergio J.},
     year      = {2022},
     title     = {spopt: a python package for solving spatial optimization problems in PySAL},
-    journal   = {Journal of Open Source Software}
+    journal   = {Journal of Open Source Software},
     publisher = {The Open Journal},
     volume    = {7},
     number    = {74},
