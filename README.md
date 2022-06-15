@@ -135,7 +135,7 @@ The project is licensed under the [BSD 3-Clause license](https://github.com/pysa
 
 ## Citation
 
-If you use PySAL-spopt in a scientific publication, we would appreciate using the following citation:
+If you use PySAL-spopt in a scientific publication, we would appreciate using the following citations:
 
 ```
 @misc{spopt2021,

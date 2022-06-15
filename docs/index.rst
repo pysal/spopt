@@ -72,7 +72,7 @@ Development
 Citing **spopt**
 ----------------
 
-If you use **PySAL-spopt** in a scientific publication, we would appreciate citations to the following paper::
+If you use **PySAL-spopt** in a scientific publication, we would appreciate citations to the following::
 
   @misc{spopt2021,
     author    = {Feng, Xin, and 
@@ -88,6 +88,20 @@ If you use **PySAL-spopt** in a scientific publication, we would appreciate cita
     keywords  = {python,regionalization,spatial-optimization,location-modeling}
   }
 
+  @article{spopt2022,
+    author    = {Feng, Xin and Barcelos, Germano and Gaboardi, James D. and
+                Knaap, Elijah and Wei, Ran and Wolf, Levi J. and
+                Zhao, Qunshan and Rey, Sergio J.},
+    year      = {2022},
+    title     = {spopt: a python package for solving spatial optimization problems in PySAL},
+    journal   = {Journal of Open Source Software}
+    publisher = {The Open Journal},
+    volume    = {7},
+    number    = {74},
+    pages     = {3330},
+    url       = {https://doi.org/10.21105/joss.03330},
+    doi       = {10.21105/joss.03330},
+  }
 
 
 Funding
