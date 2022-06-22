@@ -13,6 +13,8 @@ from scipy.spatial.distance import cdist
 
 import warnings
 
+class NEW:
+    pass
 
 
 class LSCP(LocateSolver, BaseOutputMixin):
