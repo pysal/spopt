@@ -14,6 +14,7 @@ from scipy.spatial.distance import cdist
 import warnings
 
 
+
 class LSCP(LocateSolver, BaseOutputMixin):
     """
     LSCP class implements Location Set Covering optimization model and solve it.
