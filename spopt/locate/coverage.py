@@ -362,7 +362,7 @@ class LSCPB(LocateSolver, BaseOutputMixin): #LSCPB shouldn't necessarily inherit
         service_radius: float,
         predefined_facilities_arr: np.array = None,
         name: str = "LSCP-B",
-        #! add coverage_min here?
+        
     ):
         """
         Create a LSCPB object based on a cost matrix.
@@ -425,7 +425,7 @@ class LSCPB(LocateSolver, BaseOutputMixin): #LSCPB shouldn't necessarily inherit
         >>> lscp_from_cost_matrix.fac2cli
 
         """
-
+        #create an lscp object 
         r_fac = range(cost_matrix.shape[1])
         r_cli = range(cost_matrix.shape[0])
 
@@ -449,7 +449,7 @@ class LSCPB(LocateSolver, BaseOutputMixin): #LSCPB shouldn't necessarily inherit
         FacilityModelBuilder.add_set_covering_constraint(
             lscpb, lscpb.problem, lscpb.aij, r_fac, r_cli
         )
-
+        #call backup set constraint here // build method above
         return lscpb
 
 
