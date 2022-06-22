@@ -327,7 +327,7 @@ class FacilityModelBuilder:
             fac_vars = getattr(obj, "fac_vars")
             cli_vars = getattr(obj, "cli_vars")
         for i in range_client:
-            if sum(ni[i]) >= coverage_min: # demand unit has meets coverage requirement
+            if sum(ni[i]) >= 2: # demand unit has meets coverage requirement
                 model += (
                     pulp.lpSum( [ int( ni[i][j] ) * fac_vars[j]  for j in range_facility ] ) >= 1 + 1*cli_vars[i]
                     )
