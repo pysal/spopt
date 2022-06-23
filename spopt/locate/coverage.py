@@ -354,11 +354,59 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         cov_vars = getattr(self, "cli_vars")
         self.problem += pulp.lpSum(cov_vars), "objective function"
 
+    def add_backup_covering_constraint(
+        obj: T_FacModel, #!!! not sure about this
+        model: pulp.LpProblem,
+        ni: np.array,
+        range_facility: range,
+        range_client: range,
+    ) -> None:
+        """
+        backup covering constraint:
+        - coverage_0 + facility_1 + facility_3 + facility_4 + facility_6 + facility_7 + facility_9 >= 1
+
+        Parameters
+        ----------
+        obj: T_FacModel
+            bounded type of LocateSolver class
+        model: pulp.LpProblem
+            optimization model problem
+        ni: np.array
+            two-dimensional array that defines candidate sites between facility points within a distance to supply {i}
+            demand point
+        range_facility: range
+            range of facility points quantity
+        range_client: range
+            range of demand points quantity
+        Returns
+        -------
+        None
+
+        """
+
+        if hasattr(obj, "fac_vars"):
+            fac_vars = getattr(obj, "fac_vars")
+            cli_vars = getattr(obj, "cli_vars")
+        for i in range_client:
+            if sum(ni[i]) >= 2: # demand unit has backup coverage
+                model += (
+                    pulp.lpSum( [ int( ni[i][j] ) * fac_vars[j]  for j in range_facility ] ) >= 1 + 1*cli_vars[i]
+                    )
+            else: #demand unit does not have backup coverage
+                model += (
+                    pulp.lpSum( [ int( ni[i][j] ) * fac_vars[j]  for j in range_facility ] ) >= 1 + 0*cli_vars[i]
+                    )
+        else:
+            raise AttributeError(
+                "before setting constraints must set facility variable"
+            )
+
     @classmethod
     def from_cost_matrix(
         cls,
         cost_matrix: np.array,
         service_radius: float,
+        solver: pulp.LpSolver, #!EO added so LSCP can be solved at object creation...
         predefined_facilities_arr: np.array = None,
         name: str = "LSCP-B",
         
@@ -424,7 +472,14 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         >>> lscp_from_cost_matrix.fac2cli
 
         """
-        #create an lscp object 
+        # create an lscp object using the LSCP class' from_cost_matrix method
+        lscp = LSCP.from_cost_matrix(cost_matrix, service_radius)
+
+        #solve lscp so I can use lscp.problem.objective.value() to set my facility constraint LN 505
+        #!!!what is solver in this instance??
+        #!!! do i need to add a pulp.LpSolver obj parameter to from_cost_matrix for this to run?
+        lscp.solve(solver)
+
         r_fac = range(cost_matrix.shape[1])
         r_cli = range(cost_matrix.shape[0])
 
@@ -445,10 +500,10 @@ class LSCPB(LocateSolver, BaseOutputMixin):
             )
 
         lscpb.__add_obj()
-        FacilityModelBuilder.add_set_covering_constraint(
+        LSCPB.add_backup_covering_constraint(
             lscpb, lscpb.problem, lscpb.aij, r_fac, r_cli
         )
-        #call backup set constraint here // build method above
+        FacilityModelBuilder.add_facility_constraint(lscpb, lscpb.problem, lscp.problem.objective.value())
         return lscpb
 
 
