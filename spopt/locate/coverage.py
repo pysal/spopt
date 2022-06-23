@@ -355,7 +355,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         self.problem += pulp.lpSum(cov_vars), "objective function"
 
     def add_backup_covering_constraint(
-        obj: T_FacModel, #!!! not sure about this
+        self,#obj: T_FacModel, #!!! not sure about this
         model: pulp.LpProblem,
         ni: np.array,
         range_facility: range,
@@ -383,10 +383,13 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         None
 
         """
-
-        if hasattr(obj, "fac_vars"):
-            fac_vars = getattr(obj, "fac_vars")
-            cli_vars = getattr(obj, "cli_vars")
+        fac_vars = self.fac_vars
+        print("# of fac_vars: ", len(fac_vars))
+        if len(fac_vars) > 0: #hasattr(self, "fac_vars"):
+            #!fac_vars = getattr(self, "fac_vars")
+            fac_vars = self.fac_vars
+            #!cli_vars = getattr(self, "cli_vars")
+            cli_vars = self.cli_vars
         for i in range_client:
             if sum(ni[i]) >= 2: # demand unit has backup coverage
                 model += (
@@ -479,6 +482,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         #!!!what is solver in this instance??
         #!!! do i need to add a pulp.LpSolver obj parameter to from_cost_matrix for this to run?
         lscp.solve(solver)
+        print("LSCP Objective Value: ", lscp.problem.objective.value())
 
         r_fac = range(cost_matrix.shape[1])
         r_cli = range(cost_matrix.shape[0])
@@ -487,8 +491,10 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         lscpb = LSCPB(name, model)
 
         FacilityModelBuilder.add_facility_integer_variable(lscpb, r_fac, "x[{i}]")
-        
+        #!trying to understand error in LSCPB.Add_backup_covering_constraint
+        print("Facility Variables: ", lscpb.fac_vars)
         FacilityModelBuilder.add_client_integer_variable(lscpb, r_cli, "u[{i}]")
+        print("Client Variables: ", lscpb.cli_vars)
 
         lscpb.aij = np.zeros(cost_matrix.shape)
         lscpb.aij[cost_matrix <= service_radius] = 1
@@ -500,10 +506,11 @@ class LSCPB(LocateSolver, BaseOutputMixin):
             )
 
         lscpb.__add_obj()
+        FacilityModelBuilder.add_facility_constraint(lscpb, lscpb.problem, lscp.problem.objective.value())
         LSCPB.add_backup_covering_constraint(
             lscpb, lscpb.problem, lscpb.aij, r_fac, r_cli
         )
-        FacilityModelBuilder.add_facility_constraint(lscpb, lscpb.problem, lscp.problem.objective.value())
+
         return lscpb
 
 
