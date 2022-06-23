@@ -13,10 +13,6 @@ from scipy.spatial.distance import cdist
 
 import warnings
 
-class NEW:
-    pass
-
-
 class LSCP(LocateSolver, BaseOutputMixin):
     """
     LSCP class implements Location Set Covering optimization model and solve it.
@@ -316,8 +312,8 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         return self
 
-#use the LSCP object as a framework for a LSCPB object
-class LSCPB(LocateSolver, BaseOutputMixin): #LSCPB shouldn't necessarily inherit from LSCP BUT should be able to call LSCP?
+
+class LSCPB(LocateSolver, BaseOutputMixin): 
     """
     LSCPB class implements Location Set Covering Problem - Backup optimization model and solves it.
 
