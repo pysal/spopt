@@ -355,7 +355,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         self.problem += pulp.lpSum(cov_vars), "objective function"
 
     def add_backup_covering_constraint(
-        self,#obj: T_FacModel, #!!! not sure about this
+        self,
         model: pulp.LpProblem,
         ni: np.array,
         range_facility: range,
@@ -383,22 +383,20 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         None
 
         """
-        fac_vars = self.fac_vars
-        print("# of fac_vars: ", len(fac_vars))
-        if len(fac_vars) > 0: #hasattr(self, "fac_vars"):
-            #!fac_vars = getattr(self, "fac_vars")
-            fac_vars = self.fac_vars
-            #!cli_vars = getattr(self, "cli_vars")
-            cli_vars = self.cli_vars
-        for i in range_client:
-            if sum(ni[i]) >= 2: # demand unit has backup coverage
-                model += (
-                    pulp.lpSum( [ int( ni[i][j] ) * fac_vars[j]  for j in range_facility ] ) >= 1 + 1*cli_vars[i]
-                    )
-            else: #demand unit does not have backup coverage
-                model += (
-                    pulp.lpSum( [ int( ni[i][j] ) * fac_vars[j]  for j in range_facility ] ) >= 1 + 0*cli_vars[i]
-                    )
+
+
+        if hasattr(self, "fac_vars"):
+            fac_vars = getattr(self, "fac_vars")
+            cli_vars = getattr(self, "cli_vars")
+            for i in range_client:
+                if sum(ni[i]) >= 2: # demand unit has backup coverage
+                    model += (
+                        pulp.lpSum( [ int( ni[i][j] ) * fac_vars[j]  for j in range_facility ] ) >= 1 + 1*cli_vars[i]
+                        )
+                else: #demand unit does not have backup coverage
+                    model += (
+                        pulp.lpSum( [ int( ni[i][j] ) * fac_vars[j]  for j in range_facility ] ) >= 1 + 0*cli_vars[i]
+                        )
         else:
             raise AttributeError(
                 "before setting constraints must set facility variable"
