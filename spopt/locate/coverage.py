@@ -407,7 +407,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         cls,
         cost_matrix: np.array,
         service_radius: float,
-        solver: pulp.LpSolver, #!EO added so LSCP can be solved at object creation...
+        solver: pulp.LpSolver, 
         predefined_facilities_arr: np.array = None,
         name: str = "LSCP-B",
         
@@ -473,14 +473,11 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         >>> lscp_from_cost_matrix.fac2cli
 
         """
-        # create an lscp object using the LSCP class' from_cost_matrix method
+        # create a lscp object
         lscp = LSCP.from_cost_matrix(cost_matrix, service_radius)
 
-        #solve lscp so I can use lscp.problem.objective.value() to set my facility constraint LN 505
-        #!!!what is solver in this instance??
-        #!!! do i need to add a pulp.LpSolver obj parameter to from_cost_matrix for this to run?
+        #solve lscp
         lscp.solve(solver)
-        print("LSCP Objective Value: ", lscp.problem.objective.value())
 
         r_fac = range(cost_matrix.shape[1])
         r_cli = range(cost_matrix.shape[0])
@@ -489,15 +486,11 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         lscpb = LSCPB(name, model)
 
         FacilityModelBuilder.add_facility_integer_variable(lscpb, r_fac, "x[{i}]")
-        #!trying to understand error in LSCPB.Add_backup_covering_constraint
-        print("Facility Variables: ", lscpb.fac_vars)
         FacilityModelBuilder.add_client_integer_variable(lscpb, r_cli, "u[{i}]")
-        print("Client Variables: ", lscpb.cli_vars)
 
         lscpb.aij = np.zeros(cost_matrix.shape)
         lscpb.aij[cost_matrix <= service_radius] = 1
 
-        #!!!what does this if block do??
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
                 lscpb, lscpb.problem, predefined_facilities_arr
