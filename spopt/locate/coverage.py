@@ -530,7 +530,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
     def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
-        Solve the LSCP model
+        Solve the LSCPB model
 
         Parameters
         ----------
@@ -542,7 +542,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
         Returns
         -------
-        LSCP object
+        LSCPB object
         """
         self.problem.solve(solver)
         self.check_status()
