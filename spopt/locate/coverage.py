@@ -421,7 +421,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
             two-dimensional distance array between facility points and demand point
         service_radius: float
             maximum acceptable service distance by problem
-        name: str, default="LSCP"
+        name: str, default="LSCP-B"
             name of the problem
 
         Returns
@@ -469,7 +469,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
         Get facility lookup demand coverage array
 
-        >>> lscp_from_cost_matrix.fac2cli
+        >>> lscpb_from_cost_matrix.fac2cli
 
         """
         # create a lscp object
@@ -506,14 +506,14 @@ class LSCPB(LocateSolver, BaseOutputMixin):
     @classmethod
     def from_geodataframe(
         cls,
-        gdf_demand: GeoDataFrame, #geodataframe of demand points 
-        gdf_fac: GeoDataFrame, #geodataframe of facility points
-        demand_col: str, #specify geometry column 
-        facility_col: str, #specify geometry column
-        service_radius: float, #service area radius
-        solver: pulp.LpSolver, #allows LSCP to be solved before LSCP-B
-        predefined_facility_col: str = None, # optional, if you have a predefined facility column, provide column name here
-        distance_metric: str = "euclidean", #defaults to euclidean, specify otherwise if needed
+        gdf_demand: GeoDataFrame, 
+        gdf_fac: GeoDataFrame, 
+        demand_col: str, 
+        facility_col: str, 
+        service_radius: float, 
+        solver: pulp.LpSolver, 
+        predefined_facility_col: str = None, 
+        distance_metric: str = "euclidean", 
         name: str = "LSCP-B", 
     ):
         """
@@ -574,7 +574,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
         >>> lscpb_from_geodataframe = LSCPB.from_geodataframe(clients_snapped, facilities_snapped,
         ...                                                "geometry", "geometry",
-        ...                                                 max_coverage=8, distance_metric="euclidean")
+        ...                                                 max_coverage=8, pulp.PULP_CBC_CMD(msg=False), distance_metric="euclidean")
         >>> lscpb_from_geodataframe = lscpb_from_geodataframe.solve(pulp.PULP_CBC_CMD(msg=False))
 
         Get facility lookup demand coverage array
