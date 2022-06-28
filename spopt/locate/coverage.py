@@ -430,7 +430,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
         Examples
         --------
-        >>> from spopt.locate.coverage import LSCP
+        >>> from spopt.locate.coverage import LSCPB, LSCP
         >>> from spopt.locate.util import simulated_geo_points
         >>> import pulp
         >>> import spaghetti
@@ -462,14 +462,13 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         ...    sourcepattern=ntw.pointpatterns["clients"],
         ...    destpattern=ntw.pointpatterns["facilities"])
 
-        Create LSCP instance from cost matrix
+        Create LSCPB instance from cost matrix
 
-        >>> lscp_from_cost_matrix = LSCP.from_cost_matrix(cost_matrix, max_coverage=8)
-        >>> lscp_from_cost_matrix = lscp_from_cost_matrix.solve(pulp.PULP_CBC_CMD(msg=False))
+        >>> lscpb_from_cost_matrix = LSCPB.from_cost_matrix(cost_matrix, max_coverage=8, pulp.PULP_CBC_CMD(msg=False)
+        >>> lscpb_from_cost_matrix = lscpb_from_cost_matrix.solve(pulp.PULP_CBC_CMD(msg=False))
 
         Get facility lookup demand coverage array
 
-        >>> lscp_from_cost_matrix.facility_client_array()
         >>> lscp_from_cost_matrix.fac2cli
 
         """
@@ -503,6 +502,124 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         )
 
         return lscpb
+
+    @classmethod
+    def from_geodataframe(
+        cls,
+        gdf_demand: GeoDataFrame, #geodataframe of demand points 
+        gdf_fac: GeoDataFrame, #geodataframe of facility points
+        demand_col: str, #specify geometry column 
+        facility_col: str, #specify geometry column
+        service_radius: float, #service area radius
+        solver: pulp.LpSolver, #allows LSCP to be solved before LSCP-B
+        predefined_facility_col: str = None, # optional, if you have a predefined facility column, provide column name here
+        distance_metric: str = "euclidean", #defaults to euclidean, specify otherwise if needed
+        name: str = "LSCP-B", 
+    ):
+        """
+        Create a LSCPB object based on geodataframes. Calculate the cost matrix between demand and facility,
+        and then use from_cost_matrix method.
+
+        Parameters
+        ----------
+        gdf_demand: geopandas.GeoDataFrame
+            demand geodataframe with point geometry
+        gdf_fac: geopandas.GeoDataframe
+            facility geodataframe with point geometry
+        demand_col: str
+            demand geometry column name
+        facility_col: str
+            facility candidate sites geometry column name
+        service_radius: float
+            maximum acceptable service distance by problem
+        distance_metric: str, default="euclidean"
+            metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
+        name: str, default="LSCP"
+            name of the problem
+
+        Returns
+        -------
+        LSCPB object
+
+        Examples
+        --------
+        >>> from spopt.locate.coverage import LSCB, LSCP
+        >>> from spopt.locate.util import simulated_geo_points
+        >>> import pulp
+        >>> import spaghetti
+
+        Create regular lattice
+
+        >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
+        >>> ntw = spaghetti.Network(in_data=lattice)
+        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> street_buffered = geopandas.GeoDataFrame(
+        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
+        ...                            crs=street.crs,
+        ...                            columns=["geometry"])
+
+        Simulate points belong to lattice
+
+        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+
+        Snap points to the network
+
+        >>> ntw.snapobservations(demand_points, "clients", attribute=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+
+        Create LSCPB instance from cost matrix
+
+        >>> lscpb_from_geodataframe = LSCPB.from_geodataframe(clients_snapped, facilities_snapped,
+        ...                                                "geometry", "geometry",
+        ...                                                 max_coverage=8, distance_metric="euclidean")
+        >>> lscpb_from_geodataframe = lscpb_from_geodataframe.solve(pulp.PULP_CBC_CMD(msg=False))
+
+        Get facility lookup demand coverage array
+
+        >>> lscpb_from_geodataframe.fac2cli
+
+        """
+
+        predefined_facilities_arr = None
+        if predefined_facility_col is not None:
+            predefined_facilities_arr = gdf_fac[predefined_facility_col].to_numpy()
+
+        dem = gdf_demand[demand_col]
+        fac = gdf_fac[facility_col]
+
+        dem_type_geom = dem.geom_type.unique()
+        fac_type_geom = fac.geom_type.unique()
+
+        if len(dem_type_geom) > 1 or not "Point" in dem_type_geom:
+            warnings.warn(
+                "Demand geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
+                Warning,
+            )
+            dem = dem.centroid
+
+        if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
+            warnings.warn(
+                "Facility geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
+                Warning,
+            )
+            fac = fac.centroid
+
+        dem_data = np.array([dem.x.to_numpy(), dem.y.to_numpy()]).T
+        fac_data = np.array([fac.x.to_numpy(), fac.y.to_numpy()]).T
+
+        if gdf_demand.crs != gdf_fac.crs:
+            raise ValueError(
+                f"geodataframes crs are different: gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
+            )
+
+        distances = cdist(dem_data, fac_data, distance_metric)
+
+        return cls.from_cost_matrix(
+            distances, service_radius, solver, predefined_facilities_arr, name
+        )
 
 
     def facility_client_array(self) -> None:
