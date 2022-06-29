@@ -477,10 +477,8 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         >>> lscpb_from_cost_matrix.fac2cli
 
         """
-        # create a lscp object
+        
         lscp = LSCP.from_cost_matrix(cost_matrix, service_radius)
-
-        # solve lscp
         lscp.solve(solver)
 
         r_fac = range(cost_matrix.shape[1])
