@@ -331,6 +331,8 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         Problem name
     problem: pulp.LpProblem
         Pulp instance of optimization model that contains constraints, variables and objective function.
+    lscp_obj_value: float
+        Objective value returned from solved LSCP instance.
     fac2cli : np.array
         2-d array MxN, where m is number of facilities and n is number of clients. Each row represents a facility and has an array containing clients index meaning that the facility-i cover the entire array.
     cli2fac: np.array
@@ -339,7 +341,8 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         Cost matrix 2-d array 
     """
 
-    def __init__(self, name: str, problem: pulp.LpProblem):
+    def __init__(self, name: str, problem: pulp.LpProblem, lscp_obj_value=0.0):
+        self.lscp_obj_value = lscp_obj_value
         super().__init__(name, problem)
 
     def __add_obj(self) -> None:
@@ -477,7 +480,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         >>> lscpb_from_cost_matrix.fac2cli
 
         """
-        
+
         lscp = LSCP.from_cost_matrix(cost_matrix, service_radius)
         lscp.solve(solver)
 
@@ -485,7 +488,9 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         r_cli = range(cost_matrix.shape[0])
 
         model = pulp.LpProblem(name, pulp.LpMaximize)
-        lscpb = LSCPB(name, model)
+        lscpb = LSCPB(name, model, lscp.problem.objective.value())
+        # original class instance below
+        #!lscpb = LSCPB(name, model)
 
         FacilityModelBuilder.add_facility_integer_variable(lscpb, r_fac, "x[{i}]")
         FacilityModelBuilder.add_client_integer_variable(lscpb, r_cli, "u[{i}]")
