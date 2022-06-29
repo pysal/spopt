@@ -13,6 +13,7 @@ from scipy.spatial.distance import cdist
 
 import warnings
 
+
 class LSCP(LocateSolver, BaseOutputMixin):
     """
     LSCP class implements Location Set Covering optimization model and solve it.
@@ -313,7 +314,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         return self
 
 
-class LSCPB(LocateSolver, BaseOutputMixin): 
+class LSCPB(LocateSolver, BaseOutputMixin):
     """
     LSCPB class implements Location Set Covering Problem - Backup optimization model and solves it.
 
@@ -384,19 +385,24 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
         """
 
-
         if hasattr(self, "fac_vars"):
             fac_vars = getattr(self, "fac_vars")
             cli_vars = getattr(self, "cli_vars")
             for i in range_client:
-                if sum(ni[i]) >= 2: # demand unit has backup coverage
+                if sum(ni[i]) >= 2:  # demand unit has backup coverage
                     model += (
-                        pulp.lpSum( [ int( ni[i][j] ) * fac_vars[j]  for j in range_facility ] ) >= 1 + 1*cli_vars[i]
+                        pulp.lpSum(
+                            [int(ni[i][j]) * fac_vars[j] for j in range_facility]
                         )
-                else: #demand unit does not have backup coverage
+                        >= 1 + 1 * cli_vars[i]
+                    )
+                else:  # demand unit does not have backup coverage
                     model += (
-                        pulp.lpSum( [ int( ni[i][j] ) * fac_vars[j]  for j in range_facility ] ) >= 1 + 0*cli_vars[i]
+                        pulp.lpSum(
+                            [int(ni[i][j]) * fac_vars[j] for j in range_facility]
                         )
+                        >= 1 + 0 * cli_vars[i]
+                    )
         else:
             raise AttributeError(
                 "before setting constraints must set facility variable"
@@ -407,10 +413,9 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         cls,
         cost_matrix: np.array,
         service_radius: float,
-        solver: pulp.LpSolver, 
+        solver: pulp.LpSolver,
         predefined_facilities_arr: np.array = None,
         name: str = "LSCP-B",
-        
     ):
         """
         Create a LSCPB object based on a cost matrix.
@@ -475,7 +480,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         # create a lscp object
         lscp = LSCP.from_cost_matrix(cost_matrix, service_radius)
 
-        #solve lscp
+        # solve lscp
         lscp.solve(solver)
 
         r_fac = range(cost_matrix.shape[1])
@@ -496,7 +501,9 @@ class LSCPB(LocateSolver, BaseOutputMixin):
             )
 
         lscpb.__add_obj()
-        FacilityModelBuilder.add_facility_constraint(lscpb, lscpb.problem, lscp.problem.objective.value())
+        FacilityModelBuilder.add_facility_constraint(
+            lscpb, lscpb.problem, lscp.problem.objective.value()
+        )
         LSCPB.add_backup_covering_constraint(
             lscpb, lscpb.problem, lscpb.aij, r_fac, r_cli
         )
@@ -506,15 +513,15 @@ class LSCPB(LocateSolver, BaseOutputMixin):
     @classmethod
     def from_geodataframe(
         cls,
-        gdf_demand: GeoDataFrame, 
-        gdf_fac: GeoDataFrame, 
-        demand_col: str, 
-        facility_col: str, 
-        service_radius: float, 
-        solver: pulp.LpSolver, 
-        predefined_facility_col: str = None, 
-        distance_metric: str = "euclidean", 
-        name: str = "LSCP-B", 
+        gdf_demand: GeoDataFrame,
+        gdf_fac: GeoDataFrame,
+        demand_col: str,
+        facility_col: str,
+        service_radius: float,
+        solver: pulp.LpSolver,
+        predefined_facility_col: str = None,
+        distance_metric: str = "euclidean",
+        name: str = "LSCP-B",
     ):
         """
         Create a LSCPB object based on geodataframes. Calculate the cost matrix between demand and facility,
@@ -620,7 +627,6 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         return cls.from_cost_matrix(
             distances, service_radius, solver, predefined_facilities_arr, name
         )
-
 
     def facility_client_array(self) -> None:
         """
