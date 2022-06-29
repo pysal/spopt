@@ -389,14 +389,14 @@ class LSCPB(LocateSolver, BaseOutputMixin):
             fac_vars = getattr(self, "fac_vars")
             cli_vars = getattr(self, "cli_vars")
             for i in range_client:
-                if sum(ni[i]) >= 2:  # demand unit has backup coverage
+                if sum(ni[i]) >= 2:
                     model += (
                         pulp.lpSum(
                             [int(ni[i][j]) * fac_vars[j] for j in range_facility]
                         )
                         >= 1 + 1 * cli_vars[i]
                     )
-                else:  # demand unit does not have backup coverage
+                else:
                     model += (
                         pulp.lpSum(
                             [int(ni[i][j]) * fac_vars[j] for j in range_facility]
