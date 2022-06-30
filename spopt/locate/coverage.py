@@ -488,9 +488,9 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         r_cli = range(cost_matrix.shape[0])
 
         model = pulp.LpProblem(name, pulp.LpMaximize)
-        lscpb = LSCPB(name, model, lscp.problem.objective.value())
-        # original class instance below
-        #!lscpb = LSCPB(name, model)
+
+        lscpb = LSCPB(name, model)
+        lscpb.lscp_obj_value = lscp.problem.objective.value()
 
         FacilityModelBuilder.add_facility_integer_variable(lscpb, r_fac, "x[{i}]")
         FacilityModelBuilder.add_client_integer_variable(lscpb, r_cli, "u[{i}]")
@@ -505,7 +505,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
         lscpb.__add_obj()
         FacilityModelBuilder.add_facility_constraint(
-            lscpb, lscpb.problem, lscp.problem.objective.value()
+            lscpb, lscpb.problem, lscpb.lscp_obj_value
         )
         LSCPB.add_backup_covering_constraint(
             lscpb, lscpb.problem, lscpb.aij, r_fac, r_cli
