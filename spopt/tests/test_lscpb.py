@@ -64,10 +64,10 @@ class TestSyntheticLocate(unittest.TestCase):
 
         self.clients_snapped["weights"] = self.ai
 
-    def test_lscp_from_cost_matrix(self):
-        lscp = LSCP.from_cost_matrix(self.cost_matrix, 10)
-        result = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
-        self.assertIsInstance(result, LSCP)
+    def test_lscpb_from_cost_matrix(self):
+        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 10, pulp.PULP_CBC_CMD(msg=False))
+        result = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+        self.assertIsInstance(result, LSCPB)
 
     def test_lscp_facility_client_array_from_cost_matrix(self):
         with open(self.dirpath + "lscp_fac2cli.pkl", "rb") as f:
