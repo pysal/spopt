@@ -132,28 +132,29 @@ class TestSyntheticLocate(unittest.TestCase):
 
         numpy.testing.assert_array_equal(lscpb.cli2fac, lscpb_objective)
 
-    def test_lscp_preselected_facility_client_array_from_geodataframe(self):
+    def test_lscpb_preselected_facility_client_array_from_geodataframe(self):
         with open(
-            self.dirpath + "lscp_preselected_loc_geodataframe_fac2cli.pkl", "rb"
+            self.dirpath + "lscpb_preselected_loc_geodataframe_fac2cli.pkl", "rb"
         ) as f:
-            lscp_objective = pickle.load(f)
+            lscpb_objective = pickle.load(f)
 
         fac_snapped = self.facilities_snapped.copy()
 
         fac_snapped["predefined_loc"] = numpy.array([0, 0, 0, 0, 1])
 
-        lscp = LSCP.from_geodataframe(
+        lscpb = LSCPB.from_geodataframe(
             self.clients_snapped,
             fac_snapped,
             "geometry",
             "geometry",
             predefined_facility_col="predefined_loc",
             service_radius=8,
+            pulp.PULP_CBC_CMD(msg=False),
         )
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
-        lscp.facility_client_array()
+        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
+        lscpb.facility_client_array()
 
-        numpy.testing.assert_array_equal(lscp.fac2cli, lscp_objective)
+        numpy.testing.assert_array_equal(lscpb.fac2cli, lscpb_objective)
 
 class TestRealWorldLocate(unittest.TestCase):
     
@@ -201,38 +202,40 @@ class TestRealWorldLocate(unittest.TestCase):
         self.p_facility = 4
         self.ai = self.demand_points_gdf["POP2000"].to_numpy()
 
-    def test_optimality_lscp_from_cost_matrix(self):
-        lscp = LSCP.from_cost_matrix(self.cost_matrix, self.service_dist)
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
+    def test_optimality_lscpb_from_cost_matrix(self):
+        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, self.service_dist)
+        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
 
-        self.assertEqual(lscp.problem.status, pulp.LpStatusOptimal)
+        self.assertEqual(lscpb.problem.status, pulp.LpStatusOptimal)
 
-    def test_infeasibility_lscp_from_cost_matrix(self):
-        lscp = LSCP.from_cost_matrix(self.cost_matrix, 20)
+    def test_infeasibility_lscpb_from_cost_matrix(self):
+        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 20)
         with self.assertRaises(RuntimeError):
-            lscp.solve(pulp.PULP_CBC_CMD(msg=False))
+            lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
 
-    def test_optimality_lscp_from_geodataframe(self):
-        lscp = LSCP.from_geodataframe(
+    def test_optimality_lscpb_from_geodataframe(self):
+        lscpb = LSCPB.from_geodataframe(
             self.demand_points_gdf,
             self.facility_points_gdf,
             "geometry",
             "geometry",
             self.service_dist,
+            pulp.PULP_CBC_CMD(msg=False),
         )
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
-        self.assertEqual(lscp.problem.status, pulp.LpStatusOptimal)
+        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+        self.assertEqual(lscpb.problem.status, pulp.LpStatusOptimal)
 
-    def test_infeasibility_lscp_from_geodataframe(self):
-        lscp = LSCP.from_geodataframe(
+    def test_infeasibility_lscpb_from_geodataframe(self):
+        lscpb = LSCPB.from_geodataframe(
             self.demand_points_gdf,
             self.facility_points_gdf,
             "geometry",
             "geometry",
             0,
+            pulp.PULP_CBC_CMD(msg=False),
         )
         with self.assertRaises(RuntimeError):
-            lscp.solve(pulp.PULP_CBC_CMD(msg=False))
+            lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
             
             
 
@@ -257,69 +260,71 @@ class TestErrorsWarnings(unittest.TestCase):
 
     def test_attribute_error_add_set_covering_constraint(self):
         with self.assertRaises(AttributeError):
-            dummy_class = LSCP("dummy", pulp.LpProblem("name"))
+            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
             dummy_matrix = numpy.array([])
             dummy_range = range(1)
+            #!!! I may need to do this different bc of LSCPB specific builder!!!
             FacilityModelBuilder.add_set_covering_constraint(
                 dummy_class, dummy_class.problem, dummy_matrix, dummy_range, dummy_range
             )
 
     def test_attribute_error_add_facility_constraint(self):
         with self.assertRaises(AttributeError):
-            dummy_class = LSCP("dummy", pulp.LpProblem("name"))
+            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
             dummy_p_facility = 1
+            #!!! I may need to do this different bc of LSCPB specific builder!!!
             FacilityModelBuilder.add_facility_constraint(
                 dummy_class, dummy_class.problem, 1
             )
-
+#!!! I may need to do this different bc of LSCPB specific builder!!!
     def test_attribute_error_add_maximal_coverage_constraint(self):
         with self.assertRaises(AttributeError):
-            dummy_class = LSCP("dummy", pulp.LpProblem("name"))
+            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
             dummy_matrix = numpy.array([])
             dummy_range = range(1)
             FacilityModelBuilder.add_maximal_coverage_constraint(
                 dummy_class, dummy_class.problem, dummy_matrix, dummy_range, dummy_range
             )
-
+#!!! I may need to do this different bc of LSCPB specific builder!!!
     def test_attribute_error_add_assignment_constraint(self):
         with self.assertRaises(AttributeError):
-            dummy_class = LSCP("dummy", pulp.LpProblem("name"))
+            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
             dummy_range = range(1)
             FacilityModelBuilder.add_assignment_constraint(
                 dummy_class, dummy_class.problem, dummy_range, dummy_range
             )
-
+#!!! I may need to do this different bc of LSCPB specific builder!!!
     def test_attribute_error_add_opening_constraint(self):
         with self.assertRaises(AttributeError):
-            dummy_class = LSCP("dummy", pulp.LpProblem("name"))
+            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
             dummy_range = range(1)
             FacilityModelBuilder.add_opening_constraint(
                 dummy_class, dummy_class.problem, dummy_range, dummy_range
             )
-
+#!!! I may need to do this different bc of LSCPB specific builder!!!
     def test_attribute_error_add_minimized_maximum_constraint(self):
         with self.assertRaises(AttributeError):
-            dummy_class = LSCP("dummy", pulp.LpProblem("name"))
+            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
             dummy_matrix = numpy.array([])
             dummy_range = range(1)
             FacilityModelBuilder.add_minimized_maximum_constraint(
                 dummy_class, dummy_class.problem, dummy_matrix, dummy_range, dummy_range
             )
 
-    def test_error_lscp_different_crs(self):
+    def test_error_lscpb_different_crs(self):
         with self.assertRaises(ValueError):
-            dummy_class = LSCP.from_geodataframe(
-                self.gdf_dem_crs, self.gdf_fac, "geometry", "geometry", 10
+            dummy_class = LSCPB.from_geodataframe(
+                self.gdf_dem_crs, self.gdf_fac, "geometry", "geometry", 10, pulp.PULP_CBC_CMD(msg=False),
             )
 
-    def test_warning_lscp_facility_geodataframe(self):
+    def test_warning_lscpb_facility_geodataframe(self):
         with self.assertWarns(Warning):
-            dummy_class = LSCP.from_geodataframe(
-                self.gdf_dem, self.gdf_fac, "geometry", "geometry", 10
+            dummy_class = LSCPB.from_geodataframe(
+                self.gdf_dem, self.gdf_fac, "geometry", "geometry", 10, pulp.PULP_CBC_CMD(msg=False)
             )
 
-    def test_warning_lscp_demand_geodataframe(self):
+    def test_warning_lscpb_demand_geodataframe(self):
         with self.assertWarns(Warning):
-            dummy_class = LSCP.from_geodataframe(
-                self.gdf_dem_buffered, self.gdf_fac, "geometry", "geometry", 10
+            dummy_class = LSCPB.from_geodataframe(
+                self.gdf_dem_buffered, self.gdf_fac, "geometry", "geometry", 10, pulp.PULP_CBC_CMD(msg=False)
             )
