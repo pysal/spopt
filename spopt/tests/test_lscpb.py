@@ -7,7 +7,7 @@ import pulp
 import spaghetti
 from shapely.geometry import Point, Polygon
 
-from spopt.locate import LSCP, LSCPB
+from spopt.locate import LSCPB
 from spopt.locate.util import simulated_geo_points
 import unittest
 import os
@@ -69,66 +69,68 @@ class TestSyntheticLocate(unittest.TestCase):
         result = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, LSCPB)
 
-    def test_lscp_facility_client_array_from_cost_matrix(self):
-        with open(self.dirpath + "lscp_fac2cli.pkl", "rb") as f:
-            lscp_objective = pickle.load(f)
+    def test_lscpb_facility_client_array_from_cost_matrix(self):
+        with open(self.dirpath + "lscpb_fac2cli.pkl", "rb") as f:
+            lscpb_objective = pickle.load(f)
 
-        lscp = LSCP.from_cost_matrix(self.cost_matrix, 8)
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
-        lscp.facility_client_array()
+        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False))
+        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+        lscpb.facility_client_array()
 
-        numpy.testing.assert_array_equal(lscp.fac2cli, lscp_objective)
+        numpy.testing.assert_array_equal(lscpb.fac2cli, lscpb_objective)
 
-    def test_lscp_client_facility_array_from_cost_matrix(self):
-        with open(self.dirpath + "lscp_cli2fac.pkl", "rb") as f:
-            lscp_objective = pickle.load(f)
+    def test_lscpb_client_facility_array_from_cost_matrix(self):
+        with open(self.dirpath + "lscpb_cli2fac.pkl", "rb") as f:
+            lscpb_objective = pickle.load(f)
 
-        lscp = LSCP.from_cost_matrix(self.cost_matrix, 8)
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
-        lscp.facility_client_array()
-        lscp.client_facility_array()
+        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False))
+        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+        lscpb.facility_client_array()
+        lscpb.client_facility_array()
 
-        numpy.testing.assert_array_equal(lscp.cli2fac, lscp_objective)
+        numpy.testing.assert_array_equal(lscpb.cli2fac, lscpb_objective)
 
-    def test_lscp_from_geodataframe(self):
-        lscp = LSCP.from_geodataframe(
-            self.clients_snapped, self.facilities_snapped, "geometry", "geometry", 10
+    def test_lscpb_from_geodataframe(self):
+        lscpb = LSCPB.from_geodataframe(
+            self.clients_snapped, self.facilities_snapped, "geometry", "geometry", 10, pulp.PULP_CBC_CMD(msg=False)
         )
-        result = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
-        self.assertIsInstance(result, LSCP)
+        result = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+        self.assertIsInstance(result, LSCPB)
 
-    def test_lscp_facility_client_array_from_geodataframe(self):
-        with open(self.dirpath + "lscp_geodataframe_fac2cli.pkl", "rb") as f:
-            lscp_objective = pickle.load(f)
+    def test_lscpb_facility_client_array_from_geodataframe(self):
+        with open(self.dirpath + "lscpb_geodataframe_fac2cli.pkl", "rb") as f:
+            lscpb_objective = pickle.load(f)
 
-        lscp = LSCP.from_geodataframe(
+        lscpb = LSCPB.from_geodataframe(
             self.clients_snapped,
             self.facilities_snapped,
             "geometry",
             "geometry",
             8,
+            pulp.PULP_CBC_CMD(msg=False),
         )
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
-        lscp.facility_client_array()
+        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+        lscpb.facility_client_array()
 
-        numpy.testing.assert_array_equal(lscp.fac2cli, lscp_objective)
+        numpy.testing.assert_array_equal(lscpb.fac2cli, lscpb_objective)
 
-    def test_lscp_client_facility_array_from_geodataframe(self):
-        with open(self.dirpath + "lscp_geodataframe_cli2fac.pkl", "rb") as f:
-            lscp_objective = pickle.load(f)
+    def test_lscpb_client_facility_array_from_geodataframe(self):
+        with open(self.dirpath + "lscpb_geodataframe_cli2fac.pkl", "rb") as f:
+            lscpb_objective = pickle.load(f)
 
-        lscp = LSCP.from_geodataframe(
+        lscpb = LSCPB.from_geodataframe(
             self.clients_snapped,
             self.facilities_snapped,
             "geometry",
             "geometry",
             8,
+            pulp.PULP_CBC_CMD(msg=False),
         )
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
-        lscp.facility_client_array()
-        lscp.client_facility_array()
+        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+        lscpb.facility_client_array()
+        lscpb.client_facility_array()
 
-        numpy.testing.assert_array_equal(lscp.cli2fac, lscp_objective)
+        numpy.testing.assert_array_equal(lscpb.cli2fac, lscpb_objective)
 
     def test_lscp_preselected_facility_client_array_from_geodataframe(self):
         with open(
