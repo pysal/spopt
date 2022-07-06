@@ -147,9 +147,9 @@ class TestSyntheticLocate(unittest.TestCase):
             fac_snapped,
             "geometry",
             "geometry",
-            predefined_facility_col="predefined_loc",
+            pulp.PULP_CBC_CMD(msg=False, warmStart=True),
             service_radius=8,
-            pulp.PULP_CBC_CMD(msg=False),
+            predefined_facility_col="predefined_loc",
         )
         lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
         lscpb.facility_client_array()
@@ -240,76 +240,6 @@ class TestRealWorldLocate(unittest.TestCase):
             
 
 class TestErrorsWarnings(unittest.TestCase):
-    def setUp(self) -> None:
-
-        pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
-        pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
-        pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])
-        polygon_dict = {"geometry": [pol1, pol2, pol3]}
-
-        point = Point(10, 10)
-        point_dict = {"weight": 4, "geometry": [point]}
-
-        self.gdf_fac = geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
-        self.gdf_dem = geopandas.GeoDataFrame(point_dict, crs="EPSG:4326")
-
-        self.gdf_dem_crs = self.gdf_dem.to_crs("EPSG:3857")
-
-        self.gdf_dem_buffered = self.gdf_dem.copy()
-        self.gdf_dem_buffered["geometry"] = self.gdf_dem.buffer(2)
-
-    def test_attribute_error_add_set_covering_constraint(self):
-        with self.assertRaises(AttributeError):
-            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
-            dummy_matrix = numpy.array([])
-            dummy_range = range(1)
-            #!!! I may need to do this different bc of LSCPB specific builder!!!
-            FacilityModelBuilder.add_set_covering_constraint(
-                dummy_class, dummy_class.problem, dummy_matrix, dummy_range, dummy_range
-            )
-
-    def test_attribute_error_add_facility_constraint(self):
-        with self.assertRaises(AttributeError):
-            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
-            dummy_p_facility = 1
-            #!!! I may need to do this different bc of LSCPB specific builder!!!
-            FacilityModelBuilder.add_facility_constraint(
-                dummy_class, dummy_class.problem, 1
-            )
-#!!! I may need to do this different bc of LSCPB specific builder!!!
-    def test_attribute_error_add_maximal_coverage_constraint(self):
-        with self.assertRaises(AttributeError):
-            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
-            dummy_matrix = numpy.array([])
-            dummy_range = range(1)
-            FacilityModelBuilder.add_maximal_coverage_constraint(
-                dummy_class, dummy_class.problem, dummy_matrix, dummy_range, dummy_range
-            )
-#!!! I may need to do this different bc of LSCPB specific builder!!!
-    def test_attribute_error_add_assignment_constraint(self):
-        with self.assertRaises(AttributeError):
-            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
-            dummy_range = range(1)
-            FacilityModelBuilder.add_assignment_constraint(
-                dummy_class, dummy_class.problem, dummy_range, dummy_range
-            )
-#!!! I may need to do this different bc of LSCPB specific builder!!!
-    def test_attribute_error_add_opening_constraint(self):
-        with self.assertRaises(AttributeError):
-            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
-            dummy_range = range(1)
-            FacilityModelBuilder.add_opening_constraint(
-                dummy_class, dummy_class.problem, dummy_range, dummy_range
-            )
-#!!! I may need to do this different bc of LSCPB specific builder!!!
-    def test_attribute_error_add_minimized_maximum_constraint(self):
-        with self.assertRaises(AttributeError):
-            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
-            dummy_matrix = numpy.array([])
-            dummy_range = range(1)
-            FacilityModelBuilder.add_minimized_maximum_constraint(
-                dummy_class, dummy_class.problem, dummy_matrix, dummy_range, dummy_range
-            )
 
     def test_error_lscpb_different_crs(self):
         with self.assertRaises(ValueError):
