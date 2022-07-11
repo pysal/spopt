@@ -1,11 +1,8 @@
-from pyproj import crs
-from spopt.locate.base import FacilityModelBuilder, LocateSolver, T_FacModel
 import numpy
 import geopandas
 import pandas
 import pulp
 import spaghetti
-from shapely.geometry import Point, Polygon
 
 from spopt.locate import LSCPB
 from spopt.locate.util import simulated_geo_points
@@ -68,19 +65,28 @@ class TestSyntheticLocate(unittest.TestCase):
         lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 10, pulp.PULP_CBC_CMD(msg=False))
         result = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, LSCPB)
-
+    
+    #failing test // lscpb objective value is different than lscp objective value
     def test_lscpb_facility_client_array_from_cost_matrix(self):
-        with open(self.dirpath + "lscpb_fac2cli.pkl", "rb") as f:
+        with open(self.dirpath + "lscp_fac2cli.pkl", "rb") as f:
             lscpb_objective = pickle.load(f)
 
         lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False))
         lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
         lscpb.facility_client_array()
 
-        numpy.testing.assert_array_equal(lscpb.fac2cli, lscpb_objective)
+        #pickle the lscp objective value result
+        
+        #!filename = r'/Users/erinolson/spopt/spopt/tests/data/lscpb_cli2fac.pkl'
+        #!outfile = open(filename,'wb')
+        #!pickle.dump(lscpb.fac2cli,outfile)
+        #!outfile.close()
 
+        numpy.testing.assert_array_equal(lscpb.fac2cli, lscpb_objective)
+    
+    #failing test // difference in objective values
     def test_lscpb_client_facility_array_from_cost_matrix(self):
-        with open(self.dirpath + "lscpb_cli2fac.pkl", "rb") as f:
+        with open(self.dirpath + "lscp_cli2fac.pkl", "rb") as f:
             lscpb_objective = pickle.load(f)
 
         lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False))
@@ -98,7 +104,7 @@ class TestSyntheticLocate(unittest.TestCase):
         self.assertIsInstance(result, LSCPB)
 
     def test_lscpb_facility_client_array_from_geodataframe(self):
-        with open(self.dirpath + "lscpb_geodataframe_fac2cli.pkl", "rb") as f:
+        with open(self.dirpath + "lscp_geodataframe_fac2cli.pkl", "rb") as f:
             lscpb_objective = pickle.load(f)
 
         lscpb = LSCPB.from_geodataframe(
@@ -115,7 +121,7 @@ class TestSyntheticLocate(unittest.TestCase):
         numpy.testing.assert_array_equal(lscpb.fac2cli, lscpb_objective)
 
     def test_lscpb_client_facility_array_from_geodataframe(self):
-        with open(self.dirpath + "lscpb_geodataframe_cli2fac.pkl", "rb") as f:
+        with open(self.dirpath + "lscp_geodataframe_cli2fac.pkl", "rb") as f:
             lscpb_objective = pickle.load(f)
 
         lscpb = LSCPB.from_geodataframe(
@@ -134,7 +140,7 @@ class TestSyntheticLocate(unittest.TestCase):
 
     def test_lscpb_preselected_facility_client_array_from_geodataframe(self):
         with open(
-            self.dirpath + "lscpb_preselected_loc_geodataframe_fac2cli.pkl", "rb"
+            self.dirpath + "lscp_preselected_loc_geodataframe_fac2cli.pkl", "rb"
         ) as f:
             lscpb_objective = pickle.load(f)
 
@@ -203,13 +209,13 @@ class TestRealWorldLocate(unittest.TestCase):
         self.ai = self.demand_points_gdf["POP2000"].to_numpy()
 
     def test_optimality_lscpb_from_cost_matrix(self):
-        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, self.service_dist)
+        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, self.service_dist, pulp.PULP_CBC_CMD(msg=False))
         lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
 
         self.assertEqual(lscpb.problem.status, pulp.LpStatusOptimal)
 
     def test_infeasibility_lscpb_from_cost_matrix(self):
-        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 20)
+        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 20, pulp.PULP_CBC_CMD(msg=False))
         with self.assertRaises(RuntimeError):
             lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
 
@@ -238,7 +244,6 @@ class TestRealWorldLocate(unittest.TestCase):
             lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
             
             
-
 class TestErrorsWarnings(unittest.TestCase):
 
     def test_error_lscpb_different_crs(self):
@@ -258,3 +263,4 @@ class TestErrorsWarnings(unittest.TestCase):
             dummy_class = LSCPB.from_geodataframe(
                 self.gdf_dem_buffered, self.gdf_fac, "geometry", "geometry", 10, pulp.PULP_CBC_CMD(msg=False)
             )
+
