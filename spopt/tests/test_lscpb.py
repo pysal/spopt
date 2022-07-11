@@ -134,9 +134,10 @@ class TestSyntheticLocate(unittest.TestCase):
         #!outfile.close()
 
         numpy.testing.assert_array_equal(lscpb.fac2cli, lscpb_objective)
-
+    
+    #! has pickle file
     def test_lscpb_client_facility_array_from_geodataframe(self):
-        with open(self.dirpath + "lscp_geodataframe_cli2fac.pkl", "rb") as f:
+        with open(self.dirpath + "lscpb_geodataframe_cli2fac.pkl", "rb") as f:
             lscpb_objective = pickle.load(f)
 
         lscpb = LSCPB.from_geodataframe(
@@ -151,29 +152,48 @@ class TestSyntheticLocate(unittest.TestCase):
         lscpb.facility_client_array()
         lscpb.client_facility_array()
 
-        numpy.testing.assert_array_equal(lscpb.cli2fac, lscpb_objective)
+        #pickle the lscp objective value result
+        
+        #!filename = r'/Users/erinolson/spopt/spopt/tests/data/lscpb_geodataframe_cli2fac.pkl'
+        #!outfile = open(filename,'wb')
+        #!pickle.dump(lscpb.cli2fac,outfile)
+        #!outfile.close()
 
+        numpy.testing.assert_array_equal(lscpb.cli2fac, lscpb_objective)
+    
+    #not working for unknown reason
     def test_lscpb_preselected_facility_client_array_from_geodataframe(self):
         with open(
             self.dirpath + "lscp_preselected_loc_geodataframe_fac2cli.pkl", "rb"
         ) as f:
             lscpb_objective = pickle.load(f)
 
-        fac_snapped = self.facilities_snapped.copy()
+        fac_snapped = self.facilities_snapped.copy() #why angry here?
 
         fac_snapped["predefined_loc"] = numpy.array([0, 0, 0, 0, 1])
 
         lscpb = LSCPB.from_geodataframe(
-            self.clients_snapped,
-            fac_snapped,
-            "geometry",
-            "geometry",
-            pulp.PULP_CBC_CMD(msg=False, warmStart=True),
-            service_radius=8,
-            predefined_facility_col="predefined_loc",
+            gdf_demand = self.clients_snapped,
+            gdf_fac = fac_snapped,
+            demand_col = "geometry",
+            fac_col = "geometry",
+            service_radius = 8,
+            solver = pulp.PULP_CBC_CMD(msg=False, warmStart=True),
+            predefined_facility_col = "predefined_loc",
+            distance_metric = "euclidean",
+            name = "LSCP-B"
+            
+            
         )
         lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
         lscpb.facility_client_array()
+
+        #pickle the lscp objective value result
+        
+        filename = r'/Users/erinolson/spopt/spopt/tests/data/lscpb_preselected_loc_geodataframe_fac2cli.pkl'
+        outfile = open(filename,'wb')
+        pickle.dump(lscpb.fac2cli,outfile)
+        outfile.close()
 
         numpy.testing.assert_array_equal(lscpb.fac2cli, lscpb_objective)
 
