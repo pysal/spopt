@@ -66,9 +66,9 @@ class TestSyntheticLocate(unittest.TestCase):
         result = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, LSCPB)
     
-    #failing test // lscpb objective value is different than lscp objective value
+    #has pickle file to run off of
     def test_lscpb_facility_client_array_from_cost_matrix(self):
-        with open(self.dirpath + "lscp_fac2cli.pkl", "rb") as f:
+        with open(self.dirpath + "lscpb_fac2cli.pkl", "rb") as f:
             lscpb_objective = pickle.load(f)
 
         lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False))
@@ -91,8 +91,15 @@ class TestSyntheticLocate(unittest.TestCase):
 
         lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False))
         lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
-        lscpb.facility_client_array()
-        lscpb.client_facility_array()
+        lscpb.facility_client_array() #!lscpb_fac2cli.pkl
+        lscpb.client_facility_array() #! lscpb_cli2fac.pkl
+
+        #pickle the lscp objective value result
+        
+        filename = r'/Users/erinolson/spopt/spopt/tests/data/lscpb_cli2fac.pkl'
+        outfile = open(filename,'wb')
+        pickle.dump(lscpb.cli2fac,outfile)
+        outfile.close()
 
         numpy.testing.assert_array_equal(lscpb.cli2fac, lscpb_objective)
 
