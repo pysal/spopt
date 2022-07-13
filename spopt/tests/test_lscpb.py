@@ -3,6 +3,7 @@ import geopandas
 import pandas
 import pulp
 import spaghetti
+from shapely.geometry import Point, Polygon
 
 from spopt.locate import LSCPB
 from spopt.locate.util import simulated_geo_points
@@ -190,20 +191,20 @@ class TestSyntheticLocate(unittest.TestCase):
 
         #pickle the lscp objective value result
         
-        filename = r'/Users/erinolson/spopt/spopt/tests/data/lscpb_preselected_loc_geodataframe_fac2cli.pkl'
-        outfile = open(filename,'wb')
-        pickle.dump(lscpb.fac2cli,outfile)
-        outfile.close()
+        #!filename = r'/Users/erinolson/spopt/spopt/tests/data/lscpb_preselected_loc_geodataframe_fac2cli.pkl'
+        #!outfile = open(filename,'wb')
+        #!pickle.dump(lscpb.fac2cli,outfile)
+        #!outfile.close()
 
         numpy.testing.assert_array_equal(lscpb.fac2cli, lscpb_objective)
 
 class TestRealWorldLocate(unittest.TestCase):
-    
+    #created copies of test data to only include facilities 1 - 4
     def setUp(self) -> None:
         self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
         network_distance = pandas.read_csv(
             self.dirpath
-            + "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
+            + "SF_network_distance_candidateStore_16_censusTract_205_new_copy.csv"
         )
 
         ntw_dist_piv = network_distance.pivot_table(
@@ -215,7 +216,7 @@ class TestRealWorldLocate(unittest.TestCase):
         demand_points = pandas.read_csv(
             self.dirpath + "SF_demand_205_centroid_uniform_weight.csv"
         )
-        facility_points = pandas.read_csv(self.dirpath + "SF_store_site_16_longlat.csv")
+        facility_points = pandas.read_csv(self.dirpath + "SF_store_site_16_longlat_copy.csv")
 
         self.facility_points_gdf = (
             geopandas.GeoDataFrame(
@@ -239,7 +240,7 @@ class TestRealWorldLocate(unittest.TestCase):
             .reset_index()
         )
 
-        self.service_dist = 5000.0
+        self.service_dist = 20000.0 #changed from 5K to 50K 
         self.p_facility = 4
         self.ai = self.demand_points_gdf["POP2000"].to_numpy()
 
@@ -248,9 +249,11 @@ class TestRealWorldLocate(unittest.TestCase):
         lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
 
         self.assertEqual(lscpb.problem.status, pulp.LpStatusOptimal)
-
-    def test_infeasibility_lscpb_from_cost_matrix(self):
-        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 20, pulp.PULP_CBC_CMD(msg=False))
+    # mess with distance metric to get infeasible result?
+    # don't I want this result to be infeasible?
+    # what makes it infeasible? non-optimal?
+    def test_infeasibility_lscpb_from_cost_matrix(self): #4645 passes
+        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 15000, pulp.PULP_CBC_CMD(msg=False))
         with self.assertRaises(RuntimeError):
             lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
 
@@ -280,6 +283,23 @@ class TestRealWorldLocate(unittest.TestCase):
             
             
 class TestErrorsWarnings(unittest.TestCase):
+    def setUp(self) -> None:
+
+        pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
+        pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
+        pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])
+        polygon_dict = {"geometry": [pol1, pol2, pol3]}
+
+        point = Point(10, 10)
+        point_dict = {"weight": 4, "geometry": [point]}
+
+        self.gdf_fac = geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
+        self.gdf_dem = geopandas.GeoDataFrame(point_dict, crs="EPSG:4326")
+
+        self.gdf_dem_crs = self.gdf_dem.to_crs("EPSG:3857") #error right here...
+
+        self.gdf_dem_buffered = self.gdf_dem.copy()
+        self.gdf_dem_buffered["geometry"] = self.gdf_dem.buffer(2)
 
     def test_error_lscpb_different_crs(self):
         with self.assertRaises(ValueError):
