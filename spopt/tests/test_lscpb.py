@@ -281,8 +281,6 @@ class TestErrorsWarnings(unittest.TestCase):
             )
 
     def test_warning_lscpb_facility_geodataframe(self):
-        print("Geometry Type:  ", self.gdf_fac.geom_type.unique())
-        print("Length Check:  ", len(self.gdf_fac.geom_type.unique()))
         with self.assertWarns(Warning):
             dummy_class = LSCPB.from_geodataframe(
                 self.gdf_dem,
