@@ -219,10 +219,10 @@ class TestRealWorldLocate(unittest.TestCase):
         self.assertEqual(lscpb.problem.status, pulp.LpStatusOptimal)
 
     def test_infeasibility_lscpb_from_cost_matrix(self):
-        lscpb = LSCPB.from_cost_matrix(
-            self.cost_matrix, 20, pulp.PULP_CBC_CMD(msg=False)
-        )
-        with self.assertRaises(RuntimeError):  # ask someone about this
+        with self.assertRaises(RuntimeError):
+            lscpb = LSCPB.from_cost_matrix(
+                self.cost_matrix, 20, pulp.PULP_CBC_CMD(msg=False)
+                )
             lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
 
     def test_optimality_lscpb_from_geodataframe(self):
@@ -238,17 +238,16 @@ class TestRealWorldLocate(unittest.TestCase):
         self.assertEqual(lscpb.problem.status, pulp.LpStatusOptimal)
 
     def test_infeasibility_lscpb_from_geodataframe(self):
-        lscpb = LSCPB.from_geodataframe(
-            self.demand_points_gdf,
-            self.facility_points_gdf,
-            "geometry",
-            "geometry",
-            0,
-            pulp.PULP_CBC_CMD(msg=False),
-        )
         with self.assertRaises(RuntimeError):
+            lscpb = LSCPB.from_geodataframe(
+                self.demand_points_gdf,
+                self.facility_points_gdf,
+                "geometry",
+                "geometry",
+                0,
+                pulp.PULP_CBC_CMD(msg=False),
+            )
             lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
-
 
 class TestErrorsWarnings(unittest.TestCase):
     def setUp(self) -> None:
