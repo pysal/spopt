@@ -222,7 +222,7 @@ class TestRealWorldLocate(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             lscpb = LSCPB.from_cost_matrix(
                 self.cost_matrix, 20, pulp.PULP_CBC_CMD(msg=False)
-                )
+            )
             lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
 
     def test_optimality_lscpb_from_geodataframe(self):
@@ -248,6 +248,7 @@ class TestRealWorldLocate(unittest.TestCase):
                 pulp.PULP_CBC_CMD(msg=False),
             )
             lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+
 
 class TestErrorsWarnings(unittest.TestCase):
     def setUp(self) -> None:
@@ -281,22 +282,24 @@ class TestErrorsWarnings(unittest.TestCase):
 
     def test_warning_lscpb_facility_geodataframe(self):
         with self.assertWarns(Warning):
-            dummy_class = LSCPB.from_geodataframe(
-                self.gdf_dem,
-                self.gdf_fac,
-                "geometry",
-                "geometry",
-                10,
-                pulp.PULP_CBC_CMD(msg=False),
-            )
+            with self.assertRaises(RuntimeError):
+                dummy_class = LSCPB.from_geodataframe(
+                    self.gdf_dem,
+                    self.gdf_fac,
+                    "geometry",
+                    "geometry",
+                    10,
+                    pulp.PULP_CBC_CMD(msg=False),
+                )
 
     def test_warning_lscpb_demand_geodataframe(self):
         with self.assertWarns(Warning):
-            dummy_class = LSCPB.from_geodataframe(
-                self.gdf_dem_buffered,
-                self.gdf_fac,
-                "geometry",
-                "geometry",
-                10,
-                pulp.PULP_CBC_CMD(msg=False),
-            )
+            with self.assertRaises(RuntimeError):
+                dummy_class = LSCPB.from_geodataframe(
+                    self.gdf_dem_buffered,
+                    self.gdf_fac,
+                    "geometry",
+                    "geometry",
+                    10,
+                    pulp.PULP_CBC_CMD(msg=False),
+                )
