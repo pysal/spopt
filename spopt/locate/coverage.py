@@ -480,7 +480,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         >>> lscpb_from_cost_matrix.fac2cli
 
         """
-        if predefined_facilities_arr is not None: #added
+        if predefined_facilities_arr is not None:
             lscp = LSCP.from_cost_matrix(cost_matrix, service_radius, predefined_facilities_arr)
         else:
             lscp = LSCP.from_cost_matrix(cost_matrix, service_radius)
