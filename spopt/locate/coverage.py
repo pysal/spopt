@@ -36,7 +36,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
     cli2fac: np.array
         2-d MxN, where m is number of clients and n is number of facilities. Each row represent a client and has an array containing facility index meaning that the client is covered by the facility ith.
     aij: np.array
-        Cost matrix 2-d array 
+        Cost matrix 2-d array
     """
 
     def __init__(self, name: str, problem: pulp.LpProblem):
@@ -338,7 +338,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
     cli2fac: np.array
         2-d MxN, where m is number of clients and n is number of facilities. Each row represent a client and has an array containing facility index meaning that the client is covered by the facility ith.
     aij: np.array
-        Cost matrix 2-d array 
+        Cost matrix 2-d array
     """
 
     def __init__(self, name: str, problem: pulp.LpProblem, lscp_obj_value=0.0):
@@ -481,7 +481,9 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
         """
         if predefined_facilities_arr is not None:
-            lscp = LSCP.from_cost_matrix(cost_matrix, service_radius, predefined_facilities_arr)
+            lscp = LSCP.from_cost_matrix(
+                cost_matrix, service_radius, predefined_facilities_arr
+            )
         else:
             lscp = LSCP.from_cost_matrix(cost_matrix, service_radius)
         lscp.solve(solver)
@@ -704,7 +706,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
     cli2fac: np.array
         2-d MxN, where m is number of clients and n is number of facilities. Each row represent a client and has an array containing facility index meaning that the client is covered by the facility ith.
     aij: np.array
-        Cost matrix 2-d array 
+        Cost matrix 2-d array
     n_cli_uncov: int
         Specify how many clients points are not covered.
     """
