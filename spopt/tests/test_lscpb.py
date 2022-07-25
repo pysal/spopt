@@ -155,7 +155,7 @@ class TestSyntheticLocate(unittest.TestCase):
             gdf_fac=fac_snapped,
             demand_col="geometry",
             facility_col="geometry",
-            service_radius=200,
+            service_radius=8,
             solver=pulp.PULP_CBC_CMD(msg=False, warmStart=True),
             predefined_facility_col="predefined_loc",
         )
