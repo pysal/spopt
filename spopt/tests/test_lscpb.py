@@ -306,5 +306,4 @@ class TestErrorsWarnings(unittest.TestCase):
         with self.assertRaises(AttributeError):
             dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
             dummy_p_facility = 1
-            self.add_backup_covering_constraint(
-                dummy_class, dummy_class.problem, 1)
+            self.add_backup_covering_constraint(dummy_class, dummy_class.problem, 1)
