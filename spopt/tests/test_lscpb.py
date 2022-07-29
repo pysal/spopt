@@ -301,3 +301,10 @@ class TestErrorsWarnings(unittest.TestCase):
                 100,
                 pulp.PULP_CBC_CMD(msg=False),
             )
+
+    def test_attribute_error_add_facility_constraint(self):
+        with self.assertRaises(AttributeError):
+            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
+            dummy_p_facility = 1
+            self.add_backup_covering_constraint(
+                dummy_class, dummy_class.problem, 1)
