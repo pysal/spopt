@@ -75,7 +75,10 @@ class BaseOutputMixin:
                 for fac_site in self.fac2cli[i]:
                     self.cli2fac[fac_site].append(i)
         else:
-            raise AttributeError("The attribute `fac2cli` is not set. See `facility_client_array` method to set the attribute")
+            raise AttributeError(
+                "The attribute `fac2cli` is not set. See `facility_client_array` method to set the attribute"
+            )
+
 
 class CoveragePercentageMixin:
     """
@@ -103,8 +106,9 @@ class CoveragePercentageMixin:
 
             self.n_cli_uncov = self.aij.shape[0] - len(set_cov)
         else:
-            raise AttributeError("The attribute `fac2cli` is not set. See `facility_client_array` method to set the attribute")
-
+            raise AttributeError(
+                "The attribute `fac2cli` is not set. See `facility_client_array` method to set the attribute"
+            )
 
     def get_percentage(self):
         """
@@ -113,7 +117,10 @@ class CoveragePercentageMixin:
         if hasattr(self, "n_cli_uncov"):
             self.percentage = 1 - (self.n_cli_uncov / self.aij.shape[0])
         else:
-            raise AttributeError("The attribute `n_cli_uncov` is not set. See `uncovered_clients` method to set the attribute.")
+            raise AttributeError(
+                "The attribute `n_cli_uncov` is not set. See `uncovered_clients` method to set the attribute."
+            )
+
 
 class MeanDistanceMixin:
     """
@@ -286,6 +293,59 @@ class FacilityModelBuilder:
                 model += (
                     pulp.lpSum([ni[i][j] * fac_vars[j] for j in range_facility]) >= 1
                 )
+        else:
+            raise AttributeError(
+                "before setting constraints must set facility variable"
+            )
+
+    @staticmethod
+    def add_backup_covering_constraint(
+        obj: T_FacModel,
+        model: pulp.LpProblem,
+        ni: np.array,
+        range_facility: range,
+        range_client: range,
+    ) -> None:
+        """
+        backup covering constraint:
+        - coverage_0 + facility_1 + facility_3 + facility_4 + facility_6 + facility_7 + facility_9 >= 1
+
+        Parameters
+        ----------
+        obj: T_FacModel
+            bounded type of LocateSolver class
+        model: pulp.LpProblem
+            optimization model problem
+        ni: np.array
+            two-dimensional array that defines candidate sites between facility points within a distance to supply {i}
+            demand point
+        range_facility: range
+            range of facility points quantity
+        range_client: range
+            range of demand points quantity
+        Returns
+        -------
+        None
+
+        """
+        if hasattr(obj, "fac_vars"):
+            fac_vars = getattr(obj, "fac_vars")
+            cli_vars = getattr(obj, "cli_vars")
+            for i in range_client:
+                if sum(ni[i]) >= 2:
+                    model += (
+                        pulp.lpSum(
+                            [int(ni[i][j]) * fac_vars[j] for j in range_facility]
+                        )
+                        >= 1 + 1 * cli_vars[i]
+                    )
+                else:
+                    model += (
+                        pulp.lpSum(
+                            [int(ni[i][j]) * fac_vars[j] for j in range_facility]
+                        )
+                        >= 1 + 0 * cli_vars[i]
+                    )
         else:
             raise AttributeError(
                 "before setting constraints must set facility variable"
