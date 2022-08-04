@@ -6,6 +6,7 @@ import spaghetti
 from shapely.geometry import Point, Polygon
 
 from spopt.locate import LSCPB
+from spopt.locate.base import FacilityModelBuilder, LocateSolver
 from spopt.locate.util import simulated_geo_points
 import unittest
 import os
@@ -306,4 +307,12 @@ class TestErrorsWarnings(unittest.TestCase):
         with self.assertRaises(AttributeError):
             dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
             dummy_p_facility = 1
-            self.add_backup_covering_constraint(dummy_class, dummy_class.problem, 1)
+            dummy_fac_r = 0
+            dummy_cli_r = 0
+            FacilityModelBuilder.add_backup_covering_constraint(
+                dummy_class,
+                dummy_class.problem,
+                dummy_p_facility,
+                dummy_fac_r,
+                dummy_cli_r,
+            )
