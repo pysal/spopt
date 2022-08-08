@@ -36,7 +36,8 @@ class PDispersion(LocateSolver, BaseOutputMixin):
     """
 
     def __init__(self, name: str, problem: pulp.LpProblem, p_facilities: int):
-        super().__init__(name, problem, p_facilities)
+        self.p_facilities = p_facilities
+        super().__init__(name, problem)
 
     def __add_obj(self) -> None:
         """
@@ -48,14 +49,14 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         None
         """
         # Add Maximized Minimum Variable
-        D = getattr(self, "D") #must add 'D' as an attribute to the class?
+        D = getattr(self, "D_var") #must add 'D' as an attribute to the class?
         self.problem += pulp.LpVariable('D', lowBound=0), "objective function"
 
     @classmethod
     def from_cost_matrix(
         cls,
         cost_matrix: np.array,
-        p_facilities: int,
+        p_fac: int,
         predefined_facilities_arr: np.array = None,
         name: str = "P-Dispersion",
     ):
@@ -114,11 +115,11 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         r_fac = range(cost_matrix.shape[1])
 
         model = pulp.LpProblem(name, pulp.LpMaximize)
-        pDispersion = PDispersion(name, model, p_facilities)
+        pDispersion = PDispersion(name, model, p_fac)
 
-        FacilityModelBuilder.add_facility_integer_variable(pDispersion, pDispersion.problem, r_fac, "y[{i}]")
-        #maybe I won't need this...
-        #!FacilityModelBuilder.add_maximized_min_variable(pDispersion, pDispersion.problem, 'D')
+        pDispersion.D_var = 0 #test adding
+
+        FacilityModelBuilder.add_facility_integer_variable(pDispersion, r_fac, "y[{i}]") #should create fac_vars attr
 
         FacilityModelBuilder.add_facility_constraint(pDispersion, pDispersion.problem, pDispersion.p_facilities)
 
