@@ -570,3 +570,20 @@ class FacilityModelBuilder:
             raise AttributeError(
                 "before setting constraints must set weight and client assignment variables"
             )
+
+    @staticmethod
+    def add_p_dispersion_constraint(
+        obj: T_FacModel, model, cost_matrix, range_facility
+    ) -> None:
+        #for every pair of facilities...run this code
+        start = range_facility
+        dest = range_facility
+        M = cost_matrix.max()
+        for i in start: # row in cost matrix
+            for j in dest: # column in cost matrix
+                if j <= i: # if row and column index match, skip
+                    continue
+                else:
+                    # should I be assigning D?
+                    dij = cost_matrix[i][j]
+                    model +=  pulp.lpSum( ( dij + M * ( 2 - model.fac_vars[i] - model.fac_vars[j] ) ) >= obj.D_var )
