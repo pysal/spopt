@@ -49,7 +49,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         None
         """
         # Add Maximized Minimum Variable
-        D = getattr(self, "D_var") #must add 'D' as an attribute to the class?
+        getattr(self, "D_var") 
         self.problem += pulp.LpVariable('D', lowBound=0), "objective function"
 
     @classmethod
@@ -119,7 +119,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         pDispersion.D_var = 0 #test adding
 
-        FacilityModelBuilder.add_facility_integer_variable(pDispersion, r_fac, "y[{i}]") #should create fac_vars attr
+        FacilityModelBuilder.add_facility_integer_variable(pDispersion, r_fac, "y[{i}]")
 
         FacilityModelBuilder.add_facility_constraint(pDispersion, pDispersion.problem, pDispersion.p_facilities)
 
@@ -142,6 +142,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         cls,
         gdf_fac: GeoDataFrame,
         facility_col: str,
+        p_fac: int,
         predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
         name: str = "P-Dispersion",
@@ -221,31 +222,8 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         distances = cdist(fac_data, fac_data, distance_metric) #altered, not sure if correct
 
         return cls.from_cost_matrix(
-            distances, predefined_facilities_arr, name
+            distances, p_fac, predefined_facilities_arr, name
         )
-
-    def facility_client_array(self) -> None: # shouldn't need this
-        """
-        Create an array 2d MxN, where m is number of facilities and n is number of clients. Each row represent a facility and has an array containing clients index meaning that the facility-i cover the entire array.
-
-        Returns
-        -------
-        None
-        """
-
-        fac_vars = getattr(self, "fac_vars")
-        len_fac_vars = len(fac_vars)
-
-        self.fac2cli = []
-
-        for j in range(len_fac_vars):
-            array_cli = []
-            if fac_vars[j].value() > 0:
-                for i in range(self.aij.shape[0]):
-                    if self.aij[i][j] > 0:
-                        array_cli.append(i)
-
-            self.fac2cli.append(array_cli)
 
     def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
@@ -265,9 +243,5 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         """
         self.problem.solve(solver)
         self.check_status()
-
-        if results:
-            self.facility_client_array()
-            self.client_facility_array()
 
         return self
