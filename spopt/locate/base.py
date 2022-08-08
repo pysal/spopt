@@ -586,4 +586,4 @@ class FacilityModelBuilder:
                 else:
                     # should I be assigning D?
                     dij = cost_matrix[i][j]
-                    model +=  pulp.lpSum( ( dij + M * ( 2 - model.fac_vars[i] - model.fac_vars[j] ) ) >= obj.D_var )
+                    model +=  pulp.lpSum( ( dij + M * ( 2 - obj.fac_vars[i] - obj.fac_vars[j] ) ) >= obj.D_var )
