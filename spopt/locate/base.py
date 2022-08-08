@@ -258,6 +258,11 @@ class FacilityModelBuilder:
         setattr(obj, "weight_var", weight_var)
 
     @staticmethod
+    def add_maximized_min_variable(obj: T_FacModel, var_name) -> None:
+        D = pulp.LpVariable(var_name, lowBound=0)
+        setattr(obj, "D_var", D)
+
+    @staticmethod
     def add_set_covering_constraint(
         obj: T_FacModel,
         model: pulp.LpProblem,
