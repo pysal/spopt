@@ -117,6 +117,8 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         FacilityModelBuilder.add_facility_integer_variable(pDispersion, r_fac, "y[{i}]")
 
+        FacilityModelBuilder.add_maximized_min_variable(pDispersion,'D')
+
         pDispersion.aij = np.zeros(cost_matrix.shape)
 
         if predefined_facilities_arr is not None:
