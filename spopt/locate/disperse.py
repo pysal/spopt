@@ -116,12 +116,12 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         pDispersion = PDispersion(name, model)
 
         FacilityModelBuilder.add_facility_integer_variable(pDispersion, pDispersion.problem, r_fac, "y[{i}]")
-
-        FacilityModelBuilder.add_maximized_min_variable(pDispersion, pDispersion.problem, 'D')
+        #maybe I won't need this...
+        #!FacilityModelBuilder.add_maximized_min_variable(pDispersion, pDispersion.problem, 'D')
 
         FacilityModelBuilder.add_facility_constraint(pDispersion, pDispersion.problem, pDispersion.p_facilities)
 
-        FacilityModelBuilder.add_p_dispersion_constraint(pDispersion, pDispersion.problem, cost_matrix, r_fac)
+        
 
         pDispersion.aij = np.zeros(cost_matrix.shape)
 
@@ -131,9 +131,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
             )
 
         pDispersion.__add_obj()
-        FacilityModelBuilder.add_set_covering_constraint( #this will be some other covering constraint
-            pDispersion, pDispersion.problem, pDispersion.aij, r_fac,
-        )
+        FacilityModelBuilder.add_p_dispersion_constraint(pDispersion, pDispersion.problem, cost_matrix, r_fac)
 
         return pDispersion
 
