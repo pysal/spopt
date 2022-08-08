@@ -55,6 +55,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
     def from_cost_matrix(
         cls,
         cost_matrix: np.array,
+        p_facilities: int,
         predefined_facilities_arr: np.array = None,
         name: str = "P-Dispersion",
     ):
@@ -113,7 +114,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         r_fac = range(cost_matrix.shape[1])
 
         model = pulp.LpProblem(name, pulp.LpMaximize)
-        pDispersion = PDispersion(name, model)
+        pDispersion = PDispersion(name, model, p_facilities)
 
         FacilityModelBuilder.add_facility_integer_variable(pDispersion, pDispersion.problem, r_fac, "y[{i}]")
         #maybe I won't need this...
