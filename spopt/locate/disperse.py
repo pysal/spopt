@@ -35,8 +35,8 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         Cost matrix 2-d array containing the distances to each pair of facilities.
     """
 
-    def __init__(self, name: str, problem: pulp.LpProblem):
-        super().__init__(name, problem)
+    def __init__(self, name: str, problem: pulp.LpProblem, p_facilities: int):
+        super().__init__(name, problem, p_facilities)
 
     def __add_obj(self) -> None:
         """
@@ -118,6 +118,8 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         FacilityModelBuilder.add_facility_integer_variable(pDispersion, r_fac, "y[{i}]")
 
         FacilityModelBuilder.add_maximized_min_variable(pDispersion,'D')
+
+        FacilityModelBuilder.add_facility_constraint(pDispersion, pDispersion.problem, pDispersion.p_facilities)
 
         pDispersion.aij = np.zeros(cost_matrix.shape)
 
