@@ -59,12 +59,12 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         name: str = "P-Dispersion",
     ):
         """
-        Create a PDispersion object based on cost matrix.
+        Create a PDispersion object based on a cost matrix.
 
         Parameters
         ----------
         cost_matrix: np.array
-            two-dimensional distance array between facility points and demand point
+            two-dimensional distance array between facility points.
         name: str, default="PDispersion"
             name of the problem
 
@@ -112,13 +112,12 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         r_fac = range(cost_matrix.shape[1])
 
-        model = pulp.LpProblem(name, pulp.LpMinimize)
+        model = pulp.LpProblem(name, pulp.LpMaximize)
         pDispersion = PDispersion(name, model)
 
-        FacilityModelBuilder.add_facility_integer_variable(pDispersion, r_fac, "x[{i}]")
+        FacilityModelBuilder.add_facility_integer_variable(pDispersion, r_fac, "y[{i}]")
 
         pDispersion.aij = np.zeros(cost_matrix.shape)
-        pDispersion.aij[cost_matrix <= service_radius] = 1 # shouldn't need this line
 
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
