@@ -115,11 +115,13 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         model = pulp.LpProblem(name, pulp.LpMaximize)
         pDispersion = PDispersion(name, model)
 
-        FacilityModelBuilder.add_facility_integer_variable(pDispersion, r_fac, "y[{i}]")
+        FacilityModelBuilder.add_facility_integer_variable(pDispersion, pDispersion.problem, r_fac, "y[{i}]")
 
-        FacilityModelBuilder.add_maximized_min_variable(pDispersion,'D')
+        FacilityModelBuilder.add_maximized_min_variable(pDispersion, pDispersion.problem, 'D')
 
         FacilityModelBuilder.add_facility_constraint(pDispersion, pDispersion.problem, pDispersion.p_facilities)
+
+        FacilityModelBuilder.add_p_dispersion_constraint(pDispersion, pDispersion.problem, cost_matrix, r_fac)
 
         pDispersion.aij = np.zeros(cost_matrix.shape)
 
