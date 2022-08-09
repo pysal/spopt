@@ -48,9 +48,9 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         -------
         None
         """
-        # Add Maximized Minimum Variable
-        getattr(self, "D_var") 
-        self.problem += pulp.LpVariable('D', lowBound=0), "objective function"
+        disperse = getattr(self, "disperse_var") 
+        
+        self.problem += disperse, "objective function"
 
     @classmethod
     def from_cost_matrix(
@@ -117,7 +117,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         model = pulp.LpProblem(name, pulp.LpMaximize)
         pDispersion = PDispersion(name, model, p_fac)
 
-        pDispersion.D_var = 0 #test adding
+        #pDispersion.D_var = 0 #test adding
 
         FacilityModelBuilder.add_facility_integer_variable(pDispersion, r_fac, "y[{i}]")
 
