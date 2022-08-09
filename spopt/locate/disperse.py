@@ -37,7 +37,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
     def __init__(self, name: str, problem: pulp.LpProblem, p_facilities: int):
         self.p_facilities = p_facilities
-        super().__init__(name, problem)
+        #super().__init__(name, problem) #see if we don't need this...
 
     def __add_obj(self) -> None:
         """
@@ -117,22 +117,24 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         model = pulp.LpProblem(name, pulp.LpMaximize)
         pDispersion = PDispersion(name, model, p_fac)
 
-        #pDispersion.D_var = 0 #test adding
-
         FacilityModelBuilder.add_facility_integer_variable(pDispersion, r_fac, "y[{i}]")
 
         FacilityModelBuilder.add_facility_constraint(pDispersion, pDispersion.problem, pDispersion.p_facilities)
 
+        FacilityModelBuilder.add_maximized_min_variable(pDispersion)
+
+        pDispersion.__add_obj()
+
         
 
-        pDispersion.aij = np.zeros(cost_matrix.shape)
+        pDispersion.aij = np.zeros(cost_matrix.shape) #how is this being used?
 
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
                 pDispersion, pDispersion.problem, predefined_facilities_arr
             )
 
-        pDispersion.__add_obj()
+        
         FacilityModelBuilder.add_p_dispersion_constraint(pDispersion, pDispersion.problem, cost_matrix, r_fac)
 
         return pDispersion
