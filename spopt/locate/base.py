@@ -572,18 +572,23 @@ class FacilityModelBuilder:
             )
 
     @staticmethod
-    def add_p_dispersion_constraint(
+    def add_p_dispersion_interfacility_constraint(
         obj: T_FacModel, model, cost_matrix, range_facility
     ) -> None:
-        #for every pair of facilities...run this code
-        start = range_facility
-        dest = range_facility
-        M = cost_matrix.max()
-        for i in start: # row in cost matrix
-            for j in dest: # column in cost matrix
-                if j <= i: # if row and column index match, skip
-                    continue
-                else:
-                    # should I be assigning D?
-                    dij = cost_matrix[i][j]
-                    model +=  pulp.lpSum( ( dij + M * ( 2 - obj.fac_vars[i] - obj.fac_vars[j] ) ) >= obj.D_var )
+        if hasattr(obj, "disperse_var"):
+            M = cost_matrix.max()
+            
+            for i in range_facility: 
+                for j in range_facility: 
+                    if j <= i: 
+                        continue
+                    else:
+                        dij = cost_matrix[i][j]
+                        model +=  (
+                            pulp.lpSum(
+                                [ ( dij + M * ( 2 - obj.fac_vars[i] - obj.fac_vars[j] )) ] ) >= obj.disperse_var  
+                        )
+        else:
+            raise AttributeError(
+                "before setting constraints must set dispersion objective value and facility assignment variables"
+            )
