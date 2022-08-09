@@ -5,7 +5,6 @@ from geopandas import GeoDataFrame
 
 from spopt.locate.base import (
     BaseOutputMixin,
-    CoveragePercentageMixin,
     LocateSolver,
     FacilityModelBuilder,
 )
@@ -31,13 +30,11 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         Problem name
     problem: pulp.LpProblem
         Pulp instance of optimization model that contains constraints, variables and objective function.
-    aij: np.array
-        Cost matrix 2-d array containing the distances to each pair of facilities.
     """
 
     def __init__(self, name: str, problem: pulp.LpProblem, p_facilities: int):
         self.p_facilities = p_facilities
-        #super().__init__(name, problem) #see if we don't need this...
+        super().__init__(name, problem)
 
     def __add_obj(self) -> None:
         """
@@ -67,6 +64,8 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         ----------
         cost_matrix: np.array
             two-dimensional distance array between facility points.
+        p_fac: int
+            number of facilities to be located
         name: str, default="PDispersion"
             name of the problem
 
@@ -117,25 +116,19 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         model = pulp.LpProblem(name, pulp.LpMaximize)
         pDispersion = PDispersion(name, model, p_fac)
 
+        FacilityModelBuilder.add_maximized_min_variable(pDispersion)
+        pDispersion.__add_obj()
+
         FacilityModelBuilder.add_facility_integer_variable(pDispersion, r_fac, "y[{i}]")
 
         FacilityModelBuilder.add_facility_constraint(pDispersion, pDispersion.problem, pDispersion.p_facilities)
-
-        FacilityModelBuilder.add_maximized_min_variable(pDispersion)
-
-        pDispersion.__add_obj()
-
-        
-
-        pDispersion.aij = np.zeros(cost_matrix.shape) #how is this being used?
 
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
                 pDispersion, pDispersion.problem, predefined_facilities_arr
             )
 
-        
-        FacilityModelBuilder.add_p_dispersion_constraint(pDispersion, pDispersion.problem, cost_matrix, r_fac)
+        FacilityModelBuilder.add_p_dispersion_interfacility_constraint(pDispersion, pDispersion.problem, cost_matrix, r_fac)
 
         return pDispersion
 
@@ -159,6 +152,8 @@ class PDispersion(LocateSolver, BaseOutputMixin):
             facility geodataframe with point geometry
         facility_col: str
             facility candidate sites geometry column name
+        p_fac: int
+            number of facilities to be located
         distance_metric: str, default="euclidean"
             metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
         name: str, default="P-Dispersion"
@@ -221,7 +216,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         fac_data = np.array([fac.x.to_numpy(), fac.y.to_numpy()]).T
 
-        distances = cdist(fac_data, fac_data, distance_metric) #altered, not sure if correct
+        distances = cdist(fac_data, fac_data, distance_metric)
 
         return cls.from_cost_matrix(
             distances, p_fac, predefined_facilities_arr, name
@@ -229,7 +224,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
     def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
-        Solve the LSCP model
+        Solve the P-dispersion model
 
         Parameters
         ----------
@@ -241,7 +236,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         Returns
         -------
-        LSCP object
+        PDispersion object
         """
         self.problem.solve(solver)
         self.check_status()
