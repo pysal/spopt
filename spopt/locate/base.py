@@ -259,7 +259,7 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_maximized_min_variable(obj: T_FacModel, var_name) -> None:
-        D = pulp.LpVariable(var_name, lowBound=0)
+        D = pulp.LpVariable(var_name, lowBound=0, cat=pulp.LpContinuous)
         setattr(obj, "D_var", D)
 
     @staticmethod
