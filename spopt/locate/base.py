@@ -259,6 +259,17 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_maximized_min_variable(obj: T_FacModel) -> None:
+        """
+        
+        Parameters
+        ----------
+        obj: T_FacModel
+            bounded type of LocateSolver class
+
+        Returns
+        -------
+        None
+        """
         D = pulp.LpVariable("D", lowBound=0, cat=pulp.LpContinuous)
         setattr(obj, "disperse_var", D)
 
