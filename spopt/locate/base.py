@@ -575,6 +575,24 @@ class FacilityModelBuilder:
     def add_p_dispersion_interfacility_constraint(
         obj: T_FacModel, model, cost_matrix, range_facility
     ) -> None:
+        """
+        p-dispersion interfacility distance constraint:
+        dij + M (2 - facility_1 - facility_2) >= D
+
+        Parameters
+        ----------
+        obj: T_FacModel
+            bounded type of LocateSolver class
+        model: pulp.LpProblem
+            optimization model problem
+        cost_matrix: np.array
+            two-dimensional array that defines the distance between facility points
+        range_facility: range
+            range of facility points quantity
+        Returns
+        -------
+        None
+        """
         if hasattr(obj, "disperse_var"):
             M = cost_matrix.max()
             
