@@ -22,7 +22,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
     name: str
         Problem name
     problem: pulp.LpProblem
-        Pulp instance of optimization model that contains constraints, variables and objective function.
+        Pulp instance of an optimization model that contains constraints, variables and objective function.
 
     Attributes
     ----------
@@ -66,7 +66,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
             two-dimensional distance array between facility points.
         p_fac: int
             number of facilities to be located
-        name: str, default="PDispersion"
+        name: str, default="P-Dispersion"
             name of the problem
 
         Returns
@@ -114,23 +114,23 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         r_fac = range(cost_matrix.shape[1])
 
         model = pulp.LpProblem(name, pulp.LpMaximize)
-        pDispersion = PDispersion(name, model, p_fac)
+        p_dispersion = PDispersion(name, model, p_fac)
 
-        FacilityModelBuilder.add_maximized_min_variable(pDispersion)
-        pDispersion.__add_obj()
+        FacilityModelBuilder.add_maximized_min_variable(p_dispersion)
+        p_dispersion.__add_obj()
 
-        FacilityModelBuilder.add_facility_integer_variable(pDispersion, r_fac, "y[{i}]")
+        FacilityModelBuilder.add_facility_integer_variable(p_dispersion, r_fac, "y[{i}]")
 
-        FacilityModelBuilder.add_facility_constraint(pDispersion, pDispersion.problem, pDispersion.p_facilities)
+        FacilityModelBuilder.add_facility_constraint(p_dispersion, p_dispersion.problem, p_dispersion.p_facilities)
 
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
-                pDispersion, pDispersion.problem, predefined_facilities_arr
+                p_dispersion, p_dispersion.problem, predefined_facilities_arr
             )
 
-        FacilityModelBuilder.add_p_dispersion_interfacility_constraint(pDispersion, pDispersion.problem, cost_matrix, r_fac)
+        FacilityModelBuilder.add_p_dispersion_interfacility_constraint(p_dispersion, p_dispersion.problem, cost_matrix, r_fac)
 
-        return pDispersion
+        return p_dispersion
 
     @classmethod
     def from_geodataframe(
@@ -143,8 +143,8 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         name: str = "P-Dispersion",
     ):
         """
-        Create a PDispersion object based on geodataframes. Calculate the cost matrix between facility and facility,
-        and then use from_cost_matrix method.
+        Create a PDispersion object based on a geodataframe. Calculate the cost matrix between facility and facility,
+        and then use the from_cost_matrix method.
 
         Parameters
         ----------
@@ -186,7 +186,6 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         Snap points to the network
 
-        >>> ntw.snapobservations(demand_points, "clients", attribute=True)
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
         >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
 
@@ -194,6 +193,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         >>> pDispersion_from_geodataframe = PDispersion.from_geodataframe(facilities_snapped,
         ...                                                "geometry",
+        #how to create this from ran code?                                                  2,
         ...                                                 distance_metric="euclidean")
         >>> pDispersion_from_geodataframe = pDispersion_from_geodataframe.solve(pulp.PULP_CBC_CMD(msg=False))
 
