@@ -59,29 +59,6 @@ class TestSyntheticLocate(unittest.TestCase):
         result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, PDispersion)
 
-    #not sure if i'll need this... or how could the test be retrofitted to work well with this class?
-    '''    def test_p_dispersion_facility_client_array_from_cost_matrix(self):
-        with open(self.dirpath + "pdispersion_fac2cli.pkl", "rb") as f:
-            pdispersion_objective = pickle.load(f)
-
-        pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, p_facilities=4)
-        pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
-        pdispersion.facility_client_array()
-
-        numpy.testing.assert_array_equal(pdispersion.fac2cli, pdispersion_objective)
-        '''
-    '''
-    def test_p_dispersion_client_facility_array_from_cost_matrix(self):
-        with open(self.dirpath + "pdispersion_cli2fac.pkl", "rb") as f:
-            pdispersion_objective = pickle.load(f)
-
-        pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, p_facilities=4)
-        pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
-        pdispersion.facility_client_array()
-        pdispersion.client_facility_array()
-
-        numpy.testing.assert_array_equal(pdispersion.cli2fac, pdispersion_objective)'''
-
     def test_p_dispersion_from_geodataframe(self):
         pdispersion = PDispersion.from_geodataframe(
             self.facilities_snapped,
@@ -90,40 +67,6 @@ class TestSyntheticLocate(unittest.TestCase):
         )
         result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, PDispersion)
-    '''
-    def test_p_dispersion_facility_client_array_from_geodataframe(self):
-        with open(self.dirpath + "pdispersion_geodataframe_fac2cli.pkl", "rb") as f:
-            pdispersion_objective = pickle.load(f)
-
-        pdispersion = PDispersion.from_geodataframe(
-            self.clients_snapped,
-            self.facilities_snapped,
-            "geometry",
-            "geometry",
-            p_facilities=4,
-        )
-        pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
-        pdispersion.facility_client_array()
-
-        numpy.testing.assert_array_equal(pdispersion.fac2cli, pdispersion_objective)'''
-
-    '''    def test_p_dispersion_client_facility_array_from_geodataframe(self):
-        with open(self.dirpath + "pdispersion_geodataframe_cli2fac.pkl", "rb") as f:
-            pdispersion_objective = pickle.load(f)
-
-        pdispersion = PDispersion.from_geodataframe(
-            self.clients_snapped,
-            self.facilities_snapped,
-            "geometry",
-            "geometry",
-            p_facilities=4,
-        )
-        pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
-        pdispersion.facility_client_array()
-        pdispersion.client_facility_array()
-
-        numpy.testing.assert_array_equal(pdispersion.cli2fac, pdispersion_objective)'''
-
 
 class TestRealWorldLocate(unittest.TestCase):
     def setUp(self) -> None:
