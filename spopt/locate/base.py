@@ -260,7 +260,7 @@ class FacilityModelBuilder:
     @staticmethod
     def add_maximized_min_variable(obj: T_FacModel) -> None:
         """
-        
+
         Parameters
         ----------
         obj: T_FacModel
@@ -606,16 +606,18 @@ class FacilityModelBuilder:
         """
         if hasattr(obj, "disperse_var"):
             M = cost_matrix.max()
-            
-            for i in range_facility: 
-                for j in range_facility: 
-                    if j <= i: 
+
+            for i in range_facility:
+                for j in range_facility:
+                    if j <= i:
                         continue
                     else:
                         dij = cost_matrix[i][j]
-                        model +=  (
+                        model += (
                             pulp.lpSum(
-                                [ ( dij + M * ( 2 - obj.fac_vars[i] - obj.fac_vars[j] )) ] ) >= obj.disperse_var  
+                                [(dij + M * (2 - obj.fac_vars[i] - obj.fac_vars[j]))]
+                            )
+                            >= obj.disperse_var
                         )
         else:
             raise AttributeError(
