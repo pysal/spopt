@@ -53,7 +53,6 @@ class TestSyntheticLocate(unittest.TestCase):
             destpattern=ntw.pointpatterns["facilities"],
         )
 
-
     def test_p_dispersion_from_cost_matrix(self):
         pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, p_fac=2)
         result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -67,6 +66,7 @@ class TestSyntheticLocate(unittest.TestCase):
         )
         result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, PDispersion)
+
 
 class TestRealWorldLocate(unittest.TestCase):
     def setUp(self) -> None:
@@ -98,13 +98,13 @@ class TestRealWorldLocate(unittest.TestCase):
         self.service_dist = 5000.0
         self.p_facility = 4
 
-
     def test_optimality_p_dispersion_from_cost_matrix(self):
         pdispersion = PDispersion.from_cost_matrix(
             self.cost_matrix, p_fac=self.p_facility
         )
         pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(pdispersion.problem.status, pulp.LpStatusOptimal)
+
     # how to force this to fail???
     def test_infeasibility_p_dispersion_from_cost_matrix(self):
         pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, p_fac=0)
@@ -113,17 +113,23 @@ class TestRealWorldLocate(unittest.TestCase):
 
     def test_optimality_p_dispersion_from_geodataframe(self):
         pdispersion = PDispersion.from_geodataframe(
-            self.facility_points_gdf, "geometry", p_fac=self.p_facility,
+            self.facility_points_gdf,
+            "geometry",
+            p_fac=self.p_facility,
         )
         pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(pdispersion.problem.status, pulp.LpStatusOptimal)
+
     # how to force this to fail??? a cost matrix with all facilities equidistant?
     def test_infeasibility_p_dispersion_from_geodataframe(self):
         pdispersion = PDispersion.from_geodataframe(
-            self.facility_points_gdf, "geometry", p_fac=0,
+            self.facility_points_gdf,
+            "geometry",
+            p_fac=0,
         )
         with self.assertRaises(RuntimeError):
             pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
+
 
 class TestErrorsWarnings(unittest.TestCase):
     def setUp(self) -> None:
@@ -138,15 +144,12 @@ class TestErrorsWarnings(unittest.TestCase):
     # error raised for diff. crs w/ x2 gdf input
     def test_error_p_dispersion_different_crs(self):
         with self.assertRaises(ValueError):
-            dummy_class = PDispersion.from_geodataframe(
-                self.gdf_fac, "geometry", 2
-            )
+            dummy_class = PDispersion.from_geodataframe(self.gdf_fac, "geometry", 2)
+
     # error raised for multiple geometries w/ x2 gdf input
     def test_warning_p_dispersion_facility_geodataframe(self):
         with self.assertWarns(Warning):
-            dummy_class = PDispersion.from_geodataframe(
-                self.gdf_fac, "geometry", 2
-            )
+            dummy_class = PDispersion.from_geodataframe(self.gdf_fac, "geometry", 2)
 
     def test_attribute_error_add_facility_constraint(self):
         with self.assertRaises(AttributeError):
