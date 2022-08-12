@@ -75,7 +75,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         Examples
         --------
-        >>> from spopt.locate.coverage import PDispersion
+        >>> from spopt.locate.p_dispersion import PDispersion
         >>> from spopt.locate.util import simulated_geo_points
         >>> import pulp
         >>> import spaghetti
@@ -106,8 +106,8 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         Create PDispersion instance from cost matrix
 
-        >>> pDispersion_from_cost_matrix = PDispersion.from_cost_matrix(cost_matrix)
-        >>> pDispersion_from_cost_matrix = PDispersion_from_cost_matrix.solve(pulp.PULP_CBC_CMD(msg=False))
+        >>> p_dispersion_from_cost_matrix = PDispersion.from_cost_matrix(cost_matrix, p_fac = 2)
+        >>> p_dispersion_from_cost_matrix = PDispersion_from_cost_matrix.solve(pulp.PULP_CBC_CMD(msg=False))
 
         """
 
@@ -149,7 +149,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         name: str = "P-Dispersion",
     ):
         """
-        Create a PDispersion object based on a geodataframe. Calculate the cost matrix between facility and facility,
+        Create a PDispersion object based on a geodataframe. Calculate the cost matrix between facilities,
         and then use the from_cost_matrix method.
 
         Parameters
@@ -171,7 +171,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         Examples
         --------
-        >>> from spopt.locate.coverage import PDispersion
+        >>> from spopt.locate.p_dispersion import PDispersion
         >>> from spopt.locate.util import simulated_geo_points
         >>> import pulp
         >>> import spaghetti
@@ -199,7 +199,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         >>> pDispersion_from_geodataframe = PDispersion.from_geodataframe(facilities_snapped,
         ...                                                "geometry",
-        #how to create this from ran code?                                                  2,
+        ...                                                 p_fac = 2,
         ...                                                 distance_metric="euclidean")
         >>> pDispersion_from_geodataframe = pDispersion_from_geodataframe.solve(pulp.PULP_CBC_CMD(msg=False))
 
@@ -236,7 +236,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
             solver supported by pulp package
 
         results: bool
-            if True it will create metainfo - which facilities cover which demand and vice-versa, and the uncovered demand - about the model results
+            if True it will create metainfo about the model results
 
         Returns
         -------
