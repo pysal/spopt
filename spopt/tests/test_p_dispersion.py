@@ -133,33 +133,27 @@ class TestErrorsWarnings(unittest.TestCase):
         pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])
         polygon_dict = {"geometry": [pol1, pol2, pol3]}
 
-        point = Point(10, 10)
-        point_dict = {"weight": 4, "geometry": [point]}
-
         self.gdf_fac = geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
-        self.gdf_dem = geopandas.GeoDataFrame(point_dict, crs="EPSG:4326")
 
-        self.gdf_dem_crs = self.gdf_dem.to_crs("EPSG:3857")
-
-        self.gdf_dem_buffered = self.gdf_dem.copy()
-        self.gdf_dem_buffered["geometry"] = self.gdf_dem.buffer(2)
-
-    # i don't think this specific test is relevant
-
-    '''    def test_error_p_dispersion_different_crs(self):
+    # error raised for diff. crs w/ x2 gdf input
+    def test_error_p_dispersion_different_crs(self):
         with self.assertRaises(ValueError):
             dummy_class = PDispersion.from_geodataframe(
                 self.gdf_fac, "geometry", 2
-            )'''
-
+            )
+    # error raised for multiple geometries w/ x2 gdf input
     def test_warning_p_dispersion_facility_geodataframe(self):
         with self.assertWarns(Warning):
             dummy_class = PDispersion.from_geodataframe(
                 self.gdf_fac, "geometry", 2
             )
 
-    def test_warning_p_dispersion_demand_geodataframe(self):
-        with self.assertWarns(Warning):
-            dummy_class = PDispersion.from_geodataframe(
-                self.gdf_fac, "geometry", 2
+    def test_attribute_error_add_facility_constraint(self):
+        with self.assertRaises(AttributeError):
+            dummy_p_facility = 1
+            dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
+            FacilityModelBuilder.add_facility_constraint(
+                dummy_class,
+                dummy_class.problem,
+                dummy_p_facility,
             )
