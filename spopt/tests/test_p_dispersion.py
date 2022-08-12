@@ -105,9 +105,8 @@ class TestRealWorldLocate(unittest.TestCase):
         pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(pdispersion.problem.status, pulp.LpStatusOptimal)
 
-    # how to force this to fail???
     def test_infeasibility_p_dispersion_from_cost_matrix(self):
-        pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, p_fac=0)
+        pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, p_fac=17)
         with self.assertRaises(RuntimeError):
             pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
 
@@ -120,12 +119,11 @@ class TestRealWorldLocate(unittest.TestCase):
         pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(pdispersion.problem.status, pulp.LpStatusOptimal)
 
-    # how to force this to fail??? a cost matrix with all facilities equidistant?
     def test_infeasibility_p_dispersion_from_geodataframe(self):
         pdispersion = PDispersion.from_geodataframe(
             self.facility_points_gdf,
             "geometry",
-            p_fac=0,
+            p_fac=17,
         )
         with self.assertRaises(RuntimeError):
             pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
