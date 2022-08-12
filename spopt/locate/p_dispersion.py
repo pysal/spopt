@@ -45,8 +45,8 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         -------
         None
         """
-        disperse = getattr(self, "disperse_var") 
-        
+        disperse = getattr(self, "disperse_var")
+
         self.problem += disperse, "objective function"
 
     @classmethod
@@ -119,16 +119,22 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         FacilityModelBuilder.add_maximized_min_variable(p_dispersion)
         p_dispersion.__add_obj()
 
-        FacilityModelBuilder.add_facility_integer_variable(p_dispersion, r_fac, "y[{i}]")
+        FacilityModelBuilder.add_facility_integer_variable(
+            p_dispersion, r_fac, "y[{i}]"
+        )
 
-        FacilityModelBuilder.add_facility_constraint(p_dispersion, p_dispersion.problem, p_dispersion.p_facilities)
+        FacilityModelBuilder.add_facility_constraint(
+            p_dispersion, p_dispersion.problem, p_dispersion.p_facilities
+        )
 
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
                 p_dispersion, p_dispersion.problem, predefined_facilities_arr
             )
 
-        FacilityModelBuilder.add_p_dispersion_interfacility_constraint(p_dispersion, p_dispersion.problem, cost_matrix, r_fac)
+        FacilityModelBuilder.add_p_dispersion_interfacility_constraint(
+            p_dispersion, p_dispersion.problem, cost_matrix, r_fac
+        )
 
         return p_dispersion
 
@@ -218,9 +224,7 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         distances = cdist(fac_data, fac_data, distance_metric)
 
-        return cls.from_cost_matrix(
-            distances, p_fac, predefined_facilities_arr, name
-        )
+        return cls.from_cost_matrix(distances, p_fac, predefined_facilities_arr, name)
 
     def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
