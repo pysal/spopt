@@ -35,5 +35,6 @@ Locate Methods
     locate.coverage.MCLP
     locate.PCenter
     locate.PMedian
+    locate.PDispersion
 
 
