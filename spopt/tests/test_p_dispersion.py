@@ -130,24 +130,7 @@ class TestRealWorldLocate(unittest.TestCase):
 
 
 class TestErrorsWarnings(unittest.TestCase):
-    def setUp(self) -> None:
 
-        pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
-        pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
-        pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])
-        polygon_dict = {"geometry": [pol1, pol2, pol3]}
-
-        self.gdf_fac = geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
-
-    # error raised for diff. crs w/ x2 gdf input
-    def test_error_p_dispersion_different_crs(self):
-        with self.assertRaises(ValueError):
-            dummy_class = PDispersion.from_geodataframe(self.gdf_fac, "geometry", 2)
-
-    # error raised for multiple geometries w/ x2 gdf input
-    def test_warning_p_dispersion_facility_geodataframe(self):
-        with self.assertWarns(Warning):
-            dummy_class = PDispersion.from_geodataframe(self.gdf_fac, "geometry", 2)
 
     def test_attribute_error_add_facility_constraint(self):
         with self.assertRaises(AttributeError):
