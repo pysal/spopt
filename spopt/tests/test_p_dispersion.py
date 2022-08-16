@@ -60,9 +60,7 @@ class TestSyntheticLocate(unittest.TestCase):
 
     def test_p_dispersion_from_geodataframe(self):
         pdispersion = PDispersion.from_geodataframe(
-            self.facilities_snapped,
-            "geometry",
-            p_fac=2,
+            self.facilities_snapped, "geometry", p_fac=2,
         )
         result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertIsInstance(result, PDispersion)
@@ -112,32 +110,24 @@ class TestRealWorldLocate(unittest.TestCase):
 
     def test_optimality_p_dispersion_from_geodataframe(self):
         pdispersion = PDispersion.from_geodataframe(
-            self.facility_points_gdf,
-            "geometry",
-            p_fac=self.p_facility,
+            self.facility_points_gdf, "geometry", p_fac=self.p_facility,
         )
         pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         self.assertEqual(pdispersion.problem.status, pulp.LpStatusOptimal)
 
     def test_infeasibility_p_dispersion_from_geodataframe(self):
         pdispersion = PDispersion.from_geodataframe(
-            self.facility_points_gdf,
-            "geometry",
-            p_fac=17,
+            self.facility_points_gdf, "geometry", p_fac=17,
         )
         with self.assertRaises(RuntimeError):
             pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
 
 
 class TestErrorsWarnings(unittest.TestCase):
-
-
     def test_attribute_error_add_facility_constraint(self):
         with self.assertRaises(AttributeError):
             dummy_p_facility = 1
             dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
             FacilityModelBuilder.add_facility_constraint(
-                dummy_class,
-                dummy_class.problem,
-                dummy_p_facility,
+                dummy_class, dummy_class.problem, dummy_p_facility,
             )
