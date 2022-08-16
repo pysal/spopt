@@ -31,6 +31,7 @@ Locate Methods
    :toctree: generated/
 
     locate.coverage.LSCP
+    locate.coverage.LSCPB
     locate.coverage.MCLP
     locate.PCenter
     locate.PMedian
