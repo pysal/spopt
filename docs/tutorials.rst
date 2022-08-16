@@ -22,3 +22,5 @@ Tutorials
     notebooks/p-median.ipynb
     notebooks/lscpb.ipynb
     notebooks/facloc-lscpb-real-world.ipynb
+    notebooks/p-dispersion.ipynb
+    notebooks/facloc-disperse-real-world.ipynb
