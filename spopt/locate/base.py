@@ -208,7 +208,7 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_client_assign_integer_variable(
-        obj: T_FacModel, range_client, range_facility, var_name
+        obj: T_FacModel, range_client, range_facility, var_name, lp_category
     ) -> None:
         """
 
@@ -223,22 +223,31 @@ class FacilityModelBuilder:
         var_name: str
             formatted string
             client assigning variable name
+        lp_category: pulp.LpVariable parameter
+            The category this variable is in, Integer or Continuous
 
         Returns
         -------
         None
         """
-        cli_assgn_vars = [
-            [
-                pulp.LpVariable(
-                    var_name.format(i=i, j=j), lowBound=0, upBound=1, cat=pulp.LpInteger
-                )
-                for j in range_facility
+        #lp_category should be either pulp.LpContinuous OR pulp.LpInteger
+        if lp_category != pulp.LpBinary:
+            cli_assgn_vars = [
+                [
+                    pulp.LpVariable(
+                        var_name.format(i=i, j=j), lowBound=0, upBound=1, cat=lp_category
+                    )
+                    for j in range_facility
+                ]
+                for i in range_client
             ]
-            for i in range_client
-        ]
 
-        setattr(obj, "cli_assgn_vars", cli_assgn_vars)
+            setattr(obj, "cli_assgn_vars", cli_assgn_vars)
+
+        else:
+            #error message indicating improper pulp variable parameter
+            #what kind of error should we create here?
+            pass
 
     @staticmethod
     def add_weight_continuous_variable(obj: T_FacModel) -> None:
