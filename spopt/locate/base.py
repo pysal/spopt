@@ -450,8 +450,8 @@ class FacilityModelBuilder:
             for j in range_facility:
                 zij = sum(ni_t[j]) # sum of demand pts assigned to a facility.
                 model += (
-                    pulp.lpSum([ ni_t[j][i] * zij/dem for i in range_client ])
-                    >= cl_ni[j] * fac_vars[j]
+                    pulp.lpSum([ ni_t[j][i] * zij for i in range_client ])
+                    <= cl_ni[j] * fac_vars[j]
                 )
         else:
             raise AttributeError(
