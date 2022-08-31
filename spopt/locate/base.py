@@ -604,7 +604,7 @@ class FacilityModelBuilder:
         -------
         None
         """
-        if hasattr(obj, "disperse_var"):
+        if hasattr(obj, "disperse_var") and hasattr(obj, "fac_vars"):
             M = cost_matrix.max()
 
             for i in range_facility:
