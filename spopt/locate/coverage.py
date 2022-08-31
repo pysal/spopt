@@ -60,7 +60,8 @@ class LSCP(LocateSolver, BaseOutputMixin):
         cost_matrix: np.array,
         service_radius: float,
         predefined_facilities_arr: np.array = None,
-        facility_constraints: np.array = None,
+        facility_capacity: np.array = None,
+        demand_quantity: np.array = None,
         name: str = "LSCP",
     ):
         """
@@ -133,6 +134,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         #if capacities exist, create later
         #will also need to add demand variables
+        #warn users if they pass demand_quantity array, but no facility capacities
         FacilityModelBuilder.add_facility_integer_variable(lscp, r_fac, "x[{i}]")
 
         lscp.aij = np.zeros(cost_matrix.shape)
@@ -148,9 +150,9 @@ class LSCP(LocateSolver, BaseOutputMixin):
             lscp, lscp.problem, lscp.aij, r_fac, r_cli
         )
 
-        if facility_constraints is not None:
+        if facility_capacity is not None:
             FacilityModelBuilder.add_facility_capacity_constraint(
-                lscp, lscp.problem, lscp.aij, facility_constraints, r_fac, r_cli
+                lscp, lscp.problem, lscp.aij, facility_capacity, r_fac, r_cli
             )
 
         return lscp
