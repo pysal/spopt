@@ -130,6 +130,15 @@ class TestRealWorldLocate(unittest.TestCase):
 
 
 class TestErrorsWarnings(unittest.TestCase):
+    def setUp(self) -> None:
+
+        pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
+        pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
+        pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])
+        polygon_dict = {"geometry": [pol1, pol2, pol3]}
+
+        self.gdf_fac = geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
+
     def test_attribute_error_add_facility_constraint(self):
         with self.assertRaises(AttributeError):
             dummy_p_facility = 1
@@ -160,4 +169,10 @@ class TestErrorsWarnings(unittest.TestCase):
             dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
             FacilityModelBuilder.add_facility_constraint(
                 dummy_class, dummy_class.problem, dummy_matrix
+            )
+
+    def test_warning_facility_geodataframe(self):
+        with self.assertWarns(Warning):
+            dummy_class = PDispersion.from_geodataframe(
+                self.gdf_fac, "geometry", 1
             )
