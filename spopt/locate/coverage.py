@@ -60,6 +60,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         cost_matrix: np.array,
         service_radius: float,
         predefined_facilities_arr: np.array = None,
+        facility_constraints: np.array = None,
         name: str = "LSCP",
     ):
         """
@@ -144,6 +145,11 @@ class LSCP(LocateSolver, BaseOutputMixin):
         FacilityModelBuilder.add_set_covering_constraint(
             lscp, lscp.problem, lscp.aij, r_fac, r_cli
         )
+
+        if facility_constraints is not None:
+            FacilityModelBuilder.add_facility_capacity_constraint(
+                lscp, lscp.problem, lscp.aij, facility_constraints, r_fac, r_cli
+            )
 
         return lscp
 
