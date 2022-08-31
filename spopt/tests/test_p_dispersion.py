@@ -173,6 +173,4 @@ class TestErrorsWarnings(unittest.TestCase):
 
     def test_warning_facility_geodataframe(self):
         with self.assertWarns(Warning):
-            dummy_class = PDispersion.from_geodataframe(
-                self.gdf_fac, "geometry", 1
-            )
+            dummy_class = PDispersion.from_geodataframe(self.gdf_fac, "geometry", 1)
