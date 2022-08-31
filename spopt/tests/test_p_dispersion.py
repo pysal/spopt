@@ -131,3 +131,13 @@ class TestErrorsWarnings(unittest.TestCase):
             FacilityModelBuilder.add_facility_constraint(
                 dummy_class, dummy_class.problem, dummy_p_facility,
             )
+
+    def test_attribute_error_add_p_dispersion_interfacility_constraint(self):
+        with self.assertRaises(AttributeError):
+            dummy_p_facility = 1
+            dummy_matrix = numpy.array([])
+            dummy_range = range(1)
+            dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
+            FacilityModelBuilder.add_p_dispersion_interfacility_constraint(
+                dummy_class, dummy_class.problem, dummy_matrix, dummy_range,
+            )
