@@ -224,7 +224,7 @@ class FacilityModelBuilder:
             formatted string
             client assigning variable name
         lp_category: pulp.LpVariable parameter
-            The category this variable is in, Integer or Continuous
+            The category this variable is in, pulp.LpInteger or pulp.LpContinuous
 
         Returns
         -------
