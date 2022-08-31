@@ -152,3 +152,12 @@ class TestErrorsWarnings(unittest.TestCase):
                 dummy_matrix,
                 dummy_range,
             )
+
+    def test_attribute_error_add_predefined_facility_constraint(self):
+        with self.assertRaises(AttributeError):
+            dummy_p_facility = 1
+            dummy_matrix = numpy.array([])
+            dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
+            FacilityModelBuilder.add_facility_constraint(
+                dummy_class, dummy_class.problem, dummy_matrix
+            )
