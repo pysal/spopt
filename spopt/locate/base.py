@@ -412,6 +412,53 @@ class FacilityModelBuilder:
             )
 
     @staticmethod
+    def add_facility_capacity_constraint(
+        obj: T_FacModel, model, ni, cl_ni, range_facility, range_client
+    ) -> None:
+        """
+        set facility capacity constraint:
+        In plain-ish English :
+        Demand at (i) multiplied by the fraction of demand (i) assigned to facility (j) must be <= to facility (j)'s capacity. a_i(Z_i_j) <= C_j(X_j)
+        n1_1 * fac_var1 + n1_2 * fac_var1 + ... + nij * fac_varj >= dem_var[i]
+
+        Parameters
+        ----------
+        obj: T_FacModel
+            bounded type of LocateSolver class
+        model: pulp.LpProblem
+            optimization model problem
+        ni: np.array
+            two-dimensional array that defines candidate sites between facility points within a distance to supply {i} demand point
+        cl_ni: np.array
+            one-dimensional array that defines capacity limits of facility points
+        range_facility: range
+            range of facility points quantity
+        range_client: range
+            range of demand points quantity
+
+        Returns
+        -------
+        None
+        """
+        if hasattr(obj, "fac_vars"): #and hasattr(obj, "cli_vars"):
+            fac_vars = getattr(obj, "fac_vars")
+            #dem_vars = getattr(obj, "cli_vars")
+
+            ni_t = ni.transpose() #shift array so facilities represented by a row and each column a demand node value
+            dem = ni_t.shape[1] # total demand pts
+
+            for j in range_facility:
+                zij = sum(ni_t[j]) # sum of demand pts assigned to a facility.
+                model += (
+                    pulp.lpSum([ ni_t[j][i] * zij/dem for i in range_client ])
+                    >= cl_ni[j] * fac_vars[j]
+                )
+        else:
+            raise AttributeError(
+                "before setting constraints must set facility variable"
+            )
+
+    @staticmethod
     def add_maximal_coverage_constraint(
         obj: T_FacModel, model, ni, range_facility, range_client
     ) -> None:
