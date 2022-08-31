@@ -131,6 +131,8 @@ class LSCP(LocateSolver, BaseOutputMixin):
         model = pulp.LpProblem(name, pulp.LpMinimize)
         lscp = LSCP(name, model)
 
+        #if capacities exist, create later
+        #will also need to add demand variables
         FacilityModelBuilder.add_facility_integer_variable(lscp, r_fac, "x[{i}]")
 
         lscp.aij = np.zeros(cost_matrix.shape)
