@@ -60,8 +60,8 @@ class LSCP(LocateSolver, BaseOutputMixin):
         cost_matrix: np.array,
         service_radius: float,
         predefined_facilities_arr: np.array = None,
-        facility_capacity: np.array = None,
-        demand_quantity: np.array = None,
+        facility_capacity_arr: np.array = None, #one-dimensional
+        demand_quantity_arr: np.array = None, #one-dimensional
         name: str = "LSCP",
     ):
         """
@@ -131,6 +131,12 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         model = pulp.LpProblem(name, pulp.LpMinimize)
         lscp = LSCP(name, model)
+        
+        if demand_quantity_arr is not None and facility_capacity_arr is None:
+            warnings.warn(
+                "Demand quantities supplied with no facility capacities. Model cannot solve for capacities without facility capacity values.",
+                Warning,
+            )
 
         #if capacities exist, create later
         #will also need to add demand variables
@@ -150,9 +156,9 @@ class LSCP(LocateSolver, BaseOutputMixin):
             lscp, lscp.problem, lscp.aij, r_fac, r_cli
         )
 
-        if facility_capacity is not None:
+        if facility_capacity_arr is not None:
             FacilityModelBuilder.add_facility_capacity_constraint(
-                lscp, lscp.problem, lscp.aij, facility_capacity, r_fac, r_cli
+                lscp, lscp.problem, lscp.aij, facility_capacity_arr, r_fac, r_cli
             )
 
         return lscp
