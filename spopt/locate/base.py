@@ -457,8 +457,6 @@ class FacilityModelBuilder:
             ni_t = ni.transpose() #may not even need this any more
 
             for j in range_facility:
-                #Demand at (i) multiplied by the fraction of demand (i) assigned to facility (j) must be <= to facility (j)'s capacity. a_i(Z_i_j) <= C_j(X_j)
-                #zij = sum(ni_t[j]) # sum of demand pts assigned to a facility.
                 model += (
                     #pulp.lpSum([ ni_t[j][i] * zij for i in range_client ])
                     pulp.lpSum([ dq_ni[i] * cli_assn_vars[i][j] for i in range_client ])
