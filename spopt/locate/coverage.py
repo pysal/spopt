@@ -138,28 +138,33 @@ class LSCP(LocateSolver, BaseOutputMixin):
                 Warning,
             )
 
-        #if capacities exist, create later
-        #will also need to add demand variables
-        #warn users if they pass demand_quantity array, but no facility capacities
-        FacilityModelBuilder.add_facility_integer_variable(lscp, r_fac, "x[{i}]")
-
         lscp.aij = np.zeros(cost_matrix.shape)
         lscp.aij[cost_matrix <= service_radius] = 1
+
+        if demand_quantity_arr is None and facility_capacity_arr is not None:
+            demand_quantity_arr = np.ones(cost_matrix.shape[0])
+
+        #if capacities exist, create later?
+        FacilityModelBuilder.add_facility_integer_variable(lscp, r_fac, "x[{i}]")
 
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
                 lscp, lscp.problem, predefined_facilities_arr
             )
 
+        if demand_quantity_arr is not None:
+            FacilityModelBuilder.add_client_assign_integer_variable(
+            lscp, r_cli, r_fac, "z[{i}_{j}]", pulp.LpContinuous)
+
+        if facility_capacity_arr is not None:
+            FacilityModelBuilder.add_facility_capacity_constraint(
+                lscp, lscp.problem, lscp.aij, facility_capacity_arr, demand_quantity_arr, r_fac, r_cli
+            )
+
         lscp.__add_obj()
         FacilityModelBuilder.add_set_covering_constraint(
             lscp, lscp.problem, lscp.aij, r_fac, r_cli
         )
-
-        if facility_capacity_arr is not None:
-            FacilityModelBuilder.add_facility_capacity_constraint(
-                lscp, lscp.problem, lscp.aij, facility_capacity_arr, r_fac, r_cli
-            )
 
         return lscp
 
