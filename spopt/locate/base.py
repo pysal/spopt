@@ -462,7 +462,7 @@ class FacilityModelBuilder:
                 model += (
                     #pulp.lpSum([ ni_t[j][i] * zij for i in range_client ])
                     pulp.lpSum([ dq_ni[i] * cli_assn_vars[i][j] for i in range_client ])
-                    <= cl_ni[j] * fac_vars[j]
+                    <= cl_ni[j] * fac_vars[j] #my concern is that fac_vars[j] isn't correct. Shows up as zero in the LP problem formulation, but I thought this would just be a decision variable that is assigned 0 or 1 depending on if a facility is selected?
                 )
         else:
             raise AttributeError(
