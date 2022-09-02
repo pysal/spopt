@@ -230,7 +230,6 @@ class FacilityModelBuilder:
         -------
         None
         """
-        #lp_category should be either pulp.LpContinuous OR pulp.LpInteger
         if lp_category != pulp.LpBinary:
             cli_assgn_vars = [
                 [
@@ -246,7 +245,7 @@ class FacilityModelBuilder:
 
         else:
             #error message indicating improper pulp variable parameter
-            #what kind of error should we create here?
+            #what kind of error should we create here? This is a message for developers, not users.
             pass
 
     @staticmethod
@@ -422,7 +421,7 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_facility_capacity_constraint(
-        obj: T_FacModel, model, ni, cl_ni, range_facility, range_client
+        obj: T_FacModel, model, ni, cl_ni, dq_ni, range_facility, range_client
     ) -> None:
         """
         set facility capacity constraint:
@@ -440,6 +439,8 @@ class FacilityModelBuilder:
             two-dimensional array that defines candidate sites between facility points within a distance to supply {i} demand point
         cl_ni: np.array
             one-dimensional array that defines capacity limits of facility points
+        dq_ni: np.array
+            one-dimensional array that defines demand quantities for demand points
         range_facility: range
             range of facility points quantity
         range_client: range
@@ -449,22 +450,23 @@ class FacilityModelBuilder:
         -------
         None
         """
-        if hasattr(obj, "fac_vars"): #and hasattr(obj, "cli_vars"):
+        if hasattr(obj, "fac_vars") and hasattr(obj, "cli_assgn_vars"):
             fac_vars = getattr(obj, "fac_vars")
-            #dem_vars = getattr(obj, "cli_vars")
+            cli_assn_vars = getattr(obj, "cli_assgn_vars")
 
-            ni_t = ni.transpose() #shift array so facilities represented by a row and each column a demand node value
-            dem = ni_t.shape[1] # total demand pts
+            ni_t = ni.transpose() #may not even need this any more
 
             for j in range_facility:
-                zij = sum(ni_t[j]) # sum of demand pts assigned to a facility.
+                #Demand at (i) multiplied by the fraction of demand (i) assigned to facility (j) must be <= to facility (j)'s capacity. a_i(Z_i_j) <= C_j(X_j)
+                #zij = sum(ni_t[j]) # sum of demand pts assigned to a facility.
                 model += (
-                    pulp.lpSum([ ni_t[j][i] * zij for i in range_client ])
+                    #pulp.lpSum([ ni_t[j][i] * zij for i in range_client ])
+                    pulp.lpSum([ dq_ni[i] * cli_assn_vars[i][j] for i in range_client ])
                     <= cl_ni[j] * fac_vars[j]
                 )
         else:
             raise AttributeError(
-                "before setting constraints must set facility variable"
+                "before setting constraints must set facility variable and demand quantity variable" #might want to update this message later
             )
 
     @staticmethod
