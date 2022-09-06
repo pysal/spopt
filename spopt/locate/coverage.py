@@ -132,19 +132,20 @@ class LSCP(LocateSolver, BaseOutputMixin):
         model = pulp.LpProblem(name, pulp.LpMinimize)
         lscp = LSCP(name, model)
         
+        #use raise value error here this will stop everything
+        #!raise ValueError("message")
         if demand_quantity_arr is not None and facility_capacity_arr is None:
             warnings.warn(
-                "Demand quantities supplied with no facility capacities. Model cannot solve for capacities without facility capacity values.",
+                "Demand quantities supplied with no facility capacities. Model cannot satisfy clients with different demands without facility capacities.",
                 Warning,
             )
 
         lscp.aij = np.zeros(cost_matrix.shape)
         lscp.aij[cost_matrix <= service_radius] = 1
 
-        if demand_quantity_arr is None and facility_capacity_arr is not None:
+        if (demand_quantity_arr is None) and (facility_capacity_arr is not None):
             demand_quantity_arr = np.ones(cost_matrix.shape[0])
 
-        #if capacities exist, create later?
         FacilityModelBuilder.add_facility_integer_variable(lscp, r_fac, "x[{i}]")
 
         if predefined_facilities_arr is not None:
@@ -154,17 +155,23 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         if demand_quantity_arr is not None:
             FacilityModelBuilder.add_client_assign_integer_variable(
-            lscp, r_cli, r_fac, "z[{i}_{j}]", pulp.LpContinuous)
+            lscp, r_cli, r_fac, "z[{i}_{j}]", lp_category=pulp.LpContinuous)
 
-        if facility_capacity_arr is not None:
             FacilityModelBuilder.add_facility_capacity_constraint(
                 lscp, lscp.problem, lscp.aij, facility_capacity_arr, demand_quantity_arr, r_fac, r_cli
             )
 
+            #add demand satisfaction constraint 7.19
+            #check all demands covered by a facility
+            #loop demand
+                #loop facility
+
+        else:
+            FacilityModelBuilder.add_set_covering_constraint(
+                lscp, lscp.problem, lscp.aij, r_fac, r_cli
+            )
+
         lscp.__add_obj()
-        FacilityModelBuilder.add_set_covering_constraint(
-            lscp, lscp.problem, lscp.aij, r_fac, r_cli
-        )
 
         return lscp
 
