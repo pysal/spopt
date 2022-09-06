@@ -208,7 +208,7 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_client_assign_integer_variable(
-        obj: T_FacModel, range_client, range_facility, var_name, lp_category
+        obj: T_FacModel, range_client, range_facility, var_name, lp_category=pulp.LpInteger
     ) -> None:
         """
 
@@ -230,23 +230,18 @@ class FacilityModelBuilder:
         -------
         None
         """
-        if lp_category != pulp.LpBinary:
-            cli_assgn_vars = [
-                [
-                    pulp.LpVariable(
-                        var_name.format(i=i, j=j), lowBound=0, upBound=1, cat=lp_category
-                    )
-                    for j in range_facility
-                ]
-                for i in range_client
+
+        cli_assgn_vars = [
+            [
+                pulp.LpVariable(
+                    var_name.format(i=i, j=j), lowBound=0, upBound=1, cat=lp_category
+                )
+                for j in range_facility
             ]
+            for i in range_client
+        ]
 
-            setattr(obj, "cli_assgn_vars", cli_assgn_vars)
-
-        else:
-            #error message indicating improper pulp variable parameter
-            #what kind of error should we create here? This is a message for developers, not users.
-            pass
+        setattr(obj, "cli_assgn_vars", cli_assgn_vars)
 
     @staticmethod
     def add_weight_continuous_variable(obj: T_FacModel) -> None:
