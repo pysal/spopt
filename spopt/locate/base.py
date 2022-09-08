@@ -480,7 +480,6 @@ class FacilityModelBuilder:
         -------
         None
         """
-        print('add satisfaction constraint')
         if hasattr(obj, "fac_vars") and hasattr(obj, "cli_assgn_vars"):
             cli_assn_vars = getattr(obj, "cli_assgn_vars")
 
