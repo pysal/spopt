@@ -208,7 +208,11 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_client_assign_integer_variable(
-        obj: T_FacModel, range_client, range_facility, var_name, lp_category=pulp.LpInteger
+        obj: T_FacModel,
+        range_client,
+        range_facility,
+        var_name,
+        lp_category=pulp.LpInteger,
     ) -> None:
         """
 
@@ -451,12 +455,12 @@ class FacilityModelBuilder:
 
             for j in range_facility:
                 model += (
-                    pulp.lpSum([ dq_ni[i] * cli_assn_vars[i][j] for i in range_client ])
+                    pulp.lpSum([dq_ni[i] * cli_assn_vars[i][j] for i in range_client])
                     <= cl_ni[j] * fac_vars[j]
                 )
         else:
             raise AttributeError(
-                "before setting constraints must set facility variable and demand quantity variable" #might want to update this message later
+                "before setting constraints must set facility variable and demand quantity variable"  # might want to update this message later
             )
 
     @staticmethod
@@ -484,12 +488,10 @@ class FacilityModelBuilder:
             cli_assn_vars = getattr(obj, "cli_assgn_vars")
 
             for i in range_client:
-                model += (
-                    pulp.lpSum([cli_assn_vars[i][j] for j in range_facility]) == 1
-                )
+                model += pulp.lpSum([cli_assn_vars[i][j] for j in range_facility]) == 1
         else:
             raise AttributeError(
-                "before setting constraints must set facility variable and demand quantity variable" #might want to update this message later
+                "before setting constraints must set facility variable and demand quantity variable"  # might want to update this message later
             )
 
     @staticmethod
