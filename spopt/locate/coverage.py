@@ -60,8 +60,8 @@ class LSCP(LocateSolver, BaseOutputMixin):
         cost_matrix: np.array,
         service_radius: float,
         predefined_facilities_arr: np.array = None,
-        facility_capacity_arr: np.array = None, 
-        demand_quantity_arr: np.array = None, 
+        facility_capacity_arr: np.array = None,
+        demand_quantity_arr: np.array = None,
         name: str = "LSCP",
     ):
         """
@@ -131,7 +131,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         model = pulp.LpProblem(name, pulp.LpMinimize)
         lscp = LSCP(name, model)
-        
+
         if demand_quantity_arr is not None and facility_capacity_arr is None:
             raise ValueError(
                 "Demand quantities supplied with no facility capacities. Model cannot satisfy clients with different demands without facility capacities."
@@ -152,14 +152,22 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         if demand_quantity_arr is not None:
             FacilityModelBuilder.add_client_assign_integer_variable(
-            lscp, r_cli, r_fac, "z[{i}_{j}]", lp_category=pulp.LpContinuous)
+                lscp, r_cli, r_fac, "z[{i}_{j}]", lp_category=pulp.LpContinuous
+            )
 
             FacilityModelBuilder.add_facility_capacity_constraint(
-                lscp, lscp.problem, lscp.aij, facility_capacity_arr, demand_quantity_arr, r_fac, r_cli
+                lscp,
+                lscp.problem,
+                lscp.aij,
+                facility_capacity_arr,
+                demand_quantity_arr,
+                r_fac,
+                r_cli,
             )
 
             FacilityModelBuilder.add_client_demand_satisfaction_constraint(
-                lscp, lscp.problem, r_cli, r_fac)
+                lscp, lscp.problem, r_cli, r_fac
+            )
 
         else:
             FacilityModelBuilder.add_set_covering_constraint(
@@ -179,8 +187,8 @@ class LSCP(LocateSolver, BaseOutputMixin):
         facility_col: str,
         service_radius: float,
         predefined_facility_col: str = None,
-        facility_capacity_col: str = None, 
-        demand_quantity_col: str = None, 
+        facility_capacity_col: str = None,
+        demand_quantity_col: str = None,
         distance_metric: str = "euclidean",
         name: str = "LSCP",
     ):
@@ -254,7 +262,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         demand_quantity_arr = None
         if demand_quantity_col is not None:
             demand_quantity_arr = gdf_demand[demand_quantity_col].to_numpy()
-        
+
         facility_capacity_arr = None
         if facility_capacity_col is not None:
             facility_capacity_arr = gdf_fac[facility_capacity_col].to_numpy()
@@ -299,7 +307,12 @@ class LSCP(LocateSolver, BaseOutputMixin):
         distances = cdist(dem_data, fac_data, distance_metric)
 
         return cls.from_cost_matrix(
-            distances, service_radius, predefined_facilities_arr, facility_capacity_arr, demand_quantity_arr, name
+            distances,
+            service_radius,
+            predefined_facilities_arr,
+            facility_capacity_arr,
+            demand_quantity_arr,
+            name,
         )
 
     def facility_client_array(self) -> None:
