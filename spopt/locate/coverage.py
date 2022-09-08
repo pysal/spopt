@@ -179,6 +179,8 @@ class LSCP(LocateSolver, BaseOutputMixin):
         facility_col: str,
         service_radius: float,
         predefined_facility_col: str = None,
+        facility_capacity_col: str = None, 
+        demand_quantity_col: str = None, 
         distance_metric: str = "euclidean",
         name: str = "LSCP",
     ):
@@ -249,6 +251,18 @@ class LSCP(LocateSolver, BaseOutputMixin):
         >>> lscp_from_geodataframe.fac2cli
 
         """
+        demand_quantity_arr = None
+        if demand_quantity_col is not None:
+            demand_quantity_arr = gdf_demand[demand_quantity_col].to_numpy()
+        
+        facility_capacity_arr = None
+        if facility_capacity_col is not None:
+            facility_capacity_arr = gdf_fac[facility_capacity_col].to_numpy()
+
+        if demand_quantity_arr is not None and facility_capacity_arr is None:
+            raise ValueError(
+                "Demand quantities supplied with no facility capacities. Model cannot satisfy clients with different demands without facility capacities."
+            )
 
         predefined_facilities_arr = None
         if predefined_facility_col is not None:
@@ -285,7 +299,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         distances = cdist(dem_data, fac_data, distance_metric)
 
         return cls.from_cost_matrix(
-            distances, service_radius, predefined_facilities_arr, name
+            distances, service_radius, predefined_facilities_arr, facility_capacity_arr, demand_quantity_arr, name
         )
 
     def facility_client_array(self) -> None:
