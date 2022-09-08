@@ -158,10 +158,8 @@ class LSCP(LocateSolver, BaseOutputMixin):
                 lscp, lscp.problem, lscp.aij, facility_capacity_arr, demand_quantity_arr, r_fac, r_cli
             )
 
-            #add demand satisfaction constraint 7.19
-            #check all demands covered by a facility
-            #loop demand
-                #loop facility
+            FacilityModelBuilder.add_client_demand_satisfaction_constraint(
+                lscp, lscp.problem, r_cli, r_fac)
 
         else:
             FacilityModelBuilder.add_set_covering_constraint(
