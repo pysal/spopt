@@ -60,8 +60,8 @@ class LSCP(LocateSolver, BaseOutputMixin):
         cost_matrix: np.array,
         service_radius: float,
         predefined_facilities_arr: np.array = None,
-        facility_capacity_arr: np.array = None, #one-dimensional
-        demand_quantity_arr: np.array = None, #one-dimensional
+        facility_capacity_arr: np.array = None, 
+        demand_quantity_arr: np.array = None, 
         name: str = "LSCP",
     ):
         """
@@ -132,12 +132,9 @@ class LSCP(LocateSolver, BaseOutputMixin):
         model = pulp.LpProblem(name, pulp.LpMinimize)
         lscp = LSCP(name, model)
         
-        #use raise value error here this will stop everything
-        #!raise ValueError("message")
         if demand_quantity_arr is not None and facility_capacity_arr is None:
-            warnings.warn(
-                "Demand quantities supplied with no facility capacities. Model cannot satisfy clients with different demands without facility capacities.",
-                Warning,
+            raise ValueError(
+                "Demand quantities supplied with no facility capacities. Model cannot satisfy clients with different demands without facility capacities."
             )
 
         lscp.aij = np.zeros(cost_matrix.shape)
