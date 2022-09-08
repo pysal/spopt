@@ -449,13 +449,44 @@ class FacilityModelBuilder:
             fac_vars = getattr(obj, "fac_vars")
             cli_assn_vars = getattr(obj, "cli_assgn_vars")
 
-            ni_t = ni.transpose() #may not even need this any more
-
             for j in range_facility:
                 model += (
-                    #pulp.lpSum([ ni_t[j][i] * zij for i in range_client ])
                     pulp.lpSum([ dq_ni[i] * cli_assn_vars[i][j] for i in range_client ])
-                    <= cl_ni[j] * fac_vars[j] #my concern is that fac_vars[j] isn't correct. Shows up as zero in the LP problem formulation, but I thought this would just be a decision variable that is assigned 0 or 1 depending on if a facility is selected?
+                    <= cl_ni[j] * fac_vars[j]
+                )
+        else:
+            raise AttributeError(
+                "before setting constraints must set facility variable and demand quantity variable" #might want to update this message later
+            )
+
+    @staticmethod
+    def add_client_demand_satisfaction_constraint(
+        obj: T_FacModel, model, range_client, range_facility
+    ) -> None:
+        """
+
+        Parameters
+        ----------
+        obj: T_FacModel
+            bounded type of LocateSolver class
+        model: pulp.LpProblem
+            optimization model problem
+        range_client: range
+            range of demand points quantity
+        range_facility: range
+            range of facility points quantity
+
+        Returns
+        -------
+        None
+        """
+        print('add satisfaction constraint')
+        if hasattr(obj, "fac_vars") and hasattr(obj, "cli_assgn_vars"):
+            cli_assn_vars = getattr(obj, "cli_assgn_vars")
+
+            for i in range_client:
+                model += (
+                    pulp.lpSum([cli_assn_vars[i][j] for j in range_facility]) == 1
                 )
         else:
             raise AttributeError(
