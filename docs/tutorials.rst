@@ -20,3 +20,7 @@ Tutorials
     notebooks/mclp.ipynb
     notebooks/p-center.ipynb
     notebooks/p-median.ipynb
+    notebooks/lscpb.ipynb
+    notebooks/facloc-lscpb-real-world.ipynb
+    notebooks/p-dispersion.ipynb
+    notebooks/facloc-disperse-real-world.ipynb

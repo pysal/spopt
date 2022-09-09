@@ -258,6 +258,22 @@ class FacilityModelBuilder:
         setattr(obj, "weight_var", weight_var)
 
     @staticmethod
+    def add_maximized_min_variable(obj: T_FacModel) -> None:
+        """
+
+        Parameters
+        ----------
+        obj: T_FacModel
+            bounded type of LocateSolver class
+
+        Returns
+        -------
+        None
+        """
+        D = pulp.LpVariable("D", lowBound=0, cat=pulp.LpContinuous)
+        setattr(obj, "disperse_var", D)
+
+    @staticmethod
     def add_set_covering_constraint(
         obj: T_FacModel,
         model: pulp.LpProblem,
@@ -564,4 +580,46 @@ class FacilityModelBuilder:
         else:
             raise AttributeError(
                 "before setting constraints must set weight and client assignment variables"
+            )
+
+    @staticmethod
+    def add_p_dispersion_interfacility_constraint(
+        obj: T_FacModel, model, cost_matrix, range_facility
+    ) -> None:
+        """
+        p-dispersion interfacility distance constraint:
+        dij + M (2 - facility_1 - facility_2) >= D
+
+        Parameters
+        ----------
+        obj: T_FacModel
+            bounded type of LocateSolver class
+        model: pulp.LpProblem
+            optimization model problem
+        cost_matrix: np.array
+            two-dimensional array that defines the distance between facility points
+        range_facility: range
+            range of facility points quantity
+        Returns
+        -------
+        None
+        """
+        if hasattr(obj, "disperse_var") and hasattr(obj, "fac_vars"):
+            M = cost_matrix.max()
+
+            for i in range_facility:
+                for j in range_facility:
+                    if j <= i:
+                        continue
+                    else:
+                        dij = cost_matrix[i][j]
+                        model += (
+                            pulp.lpSum(
+                                [(dij + M * (2 - obj.fac_vars[i] - obj.fac_vars[j]))]
+                            )
+                            >= obj.disperse_var
+                        )
+        else:
+            raise AttributeError(
+                "before setting constraints must set dispersion objective value and facility assignment variables"
             )
