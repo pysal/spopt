@@ -24,7 +24,7 @@ from .base import (
 )
 
 
-def region_k_means(X, n_clusters, w):
+def region_k_means(X, n_clusters, w, drop_islands=True):
     """Solve the region-K-means problem with the constraint
     that each cluster forms a spatially connected component.
 
@@ -33,12 +33,13 @@ def region_k_means(X, n_clusters, w):
 
     X : {numpy.ndarray, list}
         The observations to cluster shaped ``(n_samples, n_features)``.
-
     n_clusters : int
         The number of clusters to form.
-
     w : libpysal.weights.W
-        ...
+        Weights object created from given data.
+    drop_islands : bool
+        Drop observations that are islands (``True``) or keep them (``False``).
+        Default is ``True``.
 
     Returns
     -------
@@ -46,18 +47,16 @@ def region_k_means(X, n_clusters, w):
     label : numpy.ndarray
         Integer array with shape ``(n_samples,)``, where ``label[i]`` is the
         code or index of the centroid the ``i``th observation is closest to.
-
     centroid : numpy.ndarray
        Floating point array of centroids in the shape of ``(k, n_features)``
        found at the last iteration of ``region_k_means``.
-
     iters : int
         The number of iterations for the reassignment phase.
 
     """
 
     data = X
-    a_list = w.to_adjlist(remove_symmetric=False)
+    a_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
     areas = numpy.arange(w.n).astype(int)
     k = n_clusters
     seeds = _seeds(areas, k)
@@ -138,37 +137,38 @@ class RegionKMeansHeuristic(BaseSpOptHeuristicSolver):
     ----------
     data : {numpy.ndarray, list}, required
         The observations to cluster shaped ``(n_samples, n_features)``.
-
     n_clusters : int
         The number of clusters to form.
-
     w : libpysal.weights.W, required
         Weights object created from given data.
-
+    drop_islands : bool
+        Drop observations that are islands (``True``) or keep them (``False``).
+        Default is ``True``.
 
     Attributes
     ----------
-    
-    labels_ : numpy.array 
-        Region IDs for observations
-    
+
+    labels_ : numpy.array
+        Region IDs for observations.
     centroids_ : numpy.ndarray
        Floating point array of centroids in the shape of ``(k, n_features)``
        found at the last iteration of ``region_k_means``.
-
-    iters : int
+    iters_ : int
         The number of iterations for the reassignment phase.
 
     """
 
-    def __init__(self, data, n_clusters, w):
+    def __init__(self, data, n_clusters, w, drop_islands=True):
         self.data = data
         self.w = w
         self.n_clusters = n_clusters
+        self.drop_islands = drop_islands
 
     def solve(self):
         """Solve the region k-means heuristic."""
-        centroid, label, iters = region_k_means(self.data, self.n_clusters, self.w)
+        centroid, label, iters = region_k_means(
+            self.data, self.n_clusters, self.w, self.drop_islands
+        )
         self.labels_ = label
         self.centroids_ = centroid
         self.iters_ = iters
