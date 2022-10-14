@@ -3,7 +3,7 @@ import geopandas
 import networkx
 import numpy
 import pulp
-import unittest
+import pytest
 
 import spopt.region.util as util
 
@@ -15,9 +15,8 @@ pth = libpysal.examples.get_path("mexicojoin.shp")
 MEXICO = geopandas.read_file(pth)
 
 
-class TestRegionUtil(unittest.TestCase):
-    def setUp(self):
-
+class TestRegionUtil:
+    def setup_method(self):
         pass
 
     def test_array_from_dict_values(self):
@@ -72,7 +71,7 @@ class TestRegionUtil(unittest.TestCase):
     def test_dict_from_graph_attr(self):
         desired = {0: [1]}
         observed = util.dict_from_graph_attr(None, desired)
-        self.assertEqual(observed, desired)
+        assert observed == desired
 
         edges = [(0, 1), (1, 2), (0, 3), (1, 4), (2, 5), (3, 4), (4, 5)]
         graph = networkx.Graph(edges)
@@ -81,25 +80,20 @@ class TestRegionUtil(unittest.TestCase):
 
         desired = {key: [value] for key, value in data_dict.items()}
         observed = util.dict_from_graph_attr(graph, "test_data")
-        self.assertEqual(observed, desired)
+        assert observed == desired
 
         desired_array = dict()
         for node in data_dict:
             desired_array[node] = numpy.array(data_dict[node])
         observed = util.dict_from_graph_attr(graph, "test_data", array_values=True)
-        self.assertEqual(observed, desired)
+        assert observed == desired
 
     def test_check_solver(self):
         util.check_solver("cbc")
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError, match="The solver must be one of"):
             util.check_solver("bcb")
 
     def test_get_solver_instance(self):
         known_name = "PULP_CBC_CMD"
         observed_name = util.get_solver_instance("cbc").name
-        self.assertEqual(known_name, observed_name)
-
-
-"""
-
-"""
+        assert known_name == observed_name

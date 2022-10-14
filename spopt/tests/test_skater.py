@@ -1,8 +1,9 @@
 import geopandas
 import libpysal
 import numpy
+import pytest
+from scipy.optimize import OptimizeWarning
 from sklearn.metrics import pairwise as skm
-import unittest
 
 from spopt.region import Skater
 
@@ -17,8 +18,8 @@ pth = libpysal.examples.get_path("columbus.shp")
 COLUMBUS = geopandas.read_file(pth)
 
 
-class TestSkater(unittest.TestCase):
-    def setUp(self):
+class TestSkater:
+    def setup_method(self):
 
         # Mexico
         self.mexico = MEXICO.copy()
@@ -39,6 +40,7 @@ class TestSkater(unittest.TestCase):
         self.columbus_labels += [3, 2, 3, 2, 2, 2, 2, 4, 3, 2, 4, 2, 4]
         self.columbus_labels += [5, 2, 4, 3, 3, 4, 5, 5, 5, 4, 3, 5, 5]
 
+    @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
     def test_skater_defaults(self):
         self.mexico["count"] = 1
         numpy.random.seed(RANDOM_STATE)
@@ -47,6 +49,7 @@ class TestSkater(unittest.TestCase):
 
         numpy.testing.assert_equal(model.labels_, self.default_mexico)
 
+    @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
     def test_skater_defaults_verbose(self):
         self.mexico["count"] = 1
         sfkws = {"verbose": 1}
@@ -61,6 +64,7 @@ class TestSkater(unittest.TestCase):
 
         numpy.testing.assert_equal(model.labels_, self.default_mexico)
 
+    @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
     def test_skater_defaults_super_verbose(self):
         self.mexico["count"] = 1
         sfkws = {"verbose": 2}
@@ -75,6 +79,8 @@ class TestSkater(unittest.TestCase):
 
         numpy.testing.assert_equal(model.labels_, self.default_mexico)
 
+    @pytest.mark.filterwarnings("ignore:MSF contains no valid moves after")
+    @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
     def test_skater_defaults_non_defaults(self):
         self.mexico["count"] = 1
         args = self.mexico, self.w_mexico, self.default_attrs_mexico
@@ -94,6 +100,8 @@ class TestSkater(unittest.TestCase):
 
         numpy.testing.assert_equal(model.labels_, self.non_default_mexico)
 
+    @pytest.mark.filterwarnings("ignore:MSF contains no valid moves after")
+    @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
     def test_skater_island_pass(self):
         self.columbus["count"] = 1
         args = self.columbus, self.w_columbus, self.attrs_columbus
@@ -103,12 +111,15 @@ class TestSkater(unittest.TestCase):
         kws.update(dict(spanning_forest_kwds=sfkws))
         numpy.random.seed(RANDOM_STATE)
         model = Skater(*args, **kws)
-        model.solve()
+        with pytest.warns(OptimizeWarning, match="MSF contains no valid moves after"):
+            model.solve()
 
         numpy.testing.assert_equal(model.labels_, self.columbus_labels)
 
+    @pytest.mark.filterwarnings("ignore:By default, the graph is disconnected!")
+    @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
     def test_skater_island_fail(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError, match="Islands must be larger than the quorum"):
             self.columbus["count"] = 1
             args = self.columbus, self.w_columbus, self.attrs_columbus
             n_clusters, floor, trace, islands = 10, 10, True, "increase"
@@ -117,4 +128,7 @@ class TestSkater(unittest.TestCase):
             kws.update(dict(spanning_forest_kwds=sfkws))
             numpy.random.seed(RANDOM_STATE)
             model = Skater(*args, **kws)
-            model.solve()
+            with pytest.warns(
+                OptimizeWarning, match="By default, the graph is disconnected!"
+            ):
+                model.solve()

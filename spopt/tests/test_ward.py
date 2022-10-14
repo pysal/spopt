@@ -1,7 +1,7 @@
 import geopandas
 import libpysal
 import numpy
-import unittest
+import pytest
 
 from spopt.region import WardSpatial
 
@@ -12,8 +12,8 @@ pth = libpysal.examples.get_path("mexicojoin.shp")
 MEXICO = geopandas.read_file(pth)
 
 
-class TestWard(unittest.TestCase):
-    def setUp(self):
+class TestWard:
+    def setup_method(self):
 
         self.mexico = MEXICO.copy()
         self.mexico["count"] = 1
