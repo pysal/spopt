@@ -33,7 +33,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
     cli2fac: np.array
         2-d MxN, where m is number of clients and n is number of facilities. Each row represent a client and has an array containing facility index meaning that the client is covered by the facility ith.
     aij: np.array
-        Cost matrix 2-d array 
+        Cost matrix 2-d array
 
     """
 
@@ -244,18 +244,16 @@ class PCenter(LocateSolver, BaseOutputMixin):
         dem_type_geom = dem.geom_type.unique()
         fac_type_geom = fac.geom_type.unique()
 
+        _msg = (
+            " geodataframe contains mixed type geometries or is not a point. Be "
+            "sure deriving centroid from geometries doesn't affect the results."
+        )
         if len(dem_type_geom) > 1 or not "Point" in dem_type_geom:
-            warnings.warn(
-                "Demand geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
-                Warning,
-            )
+            warnings.warn(f"Demand{_msg}", UserWarning)
             dem = dem.centroid
 
         if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
-            warnings.warn(
-                "Facility geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
-                Warning,
-            )
+            warnings.warn(f"Facility{_msg}", UserWarning)
             fac = fac.centroid
 
         dem_data = np.array([dem.x.to_numpy(), dem.y.to_numpy()]).T
@@ -263,7 +261,8 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         if gdf_demand.crs != gdf_fac.crs:
             raise ValueError(
-                f"geodataframes crs are different: gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
+                "Geodataframes crs are different: "
+                f"gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
             )
 
         distances = cdist(dem_data, fac_data, distance_metric)
@@ -301,7 +300,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ----------
         solver: pulp.LpSolver
             solver supported by pulp package
-        
+
         results: bool
             if True it will create metainfo - which facilities cover which demand and vice-versa, and the uncovered demand - about the model results
 

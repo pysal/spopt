@@ -215,8 +215,12 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
             warnings.warn(
-                "Facility geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
-                Warning,
+                (
+                    "Facility geodataframe contains mixed type geometries "
+                    "or is not a point. Be sure deriving centroid from "
+                    "geometries doesn't affect the results."
+                ),
+                UserWarning,
             )
             fac = fac.centroid
 
