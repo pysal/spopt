@@ -6,7 +6,7 @@ import types
 
 import scipy.sparse.csgraph as csg
 from sklearn.metrics.pairwise import distance_metrics
-from scipy.sparse.dok import dok_matrix
+from scipy.sparse import dok_matrix
 import numpy as np
 import networkx as nx
 from libpysal import weights
@@ -18,7 +18,7 @@ Move = collections.namedtuple("move", "area old_region new_region")
 "A named tuple representing a move from `old_region` to `new_region`."  # sphinx
 
 
-def array_from_dict_values(dct, sorted_keys=None, flat_output=False, dtype=np.float):
+def array_from_dict_values(dct, sorted_keys=None, flat_output=False, dtype=float):
     """
     Return values of the dictionary passed as `dct` argument as an numpy array.
     The values in the returned array are sorted by the keys of `dct`.
@@ -889,15 +889,10 @@ def count(arr, el):
 
 
 def check_solver(solver):
-    if not isinstance(solver, str) or solver.lower() not in [
-        "cbc",
-        "cplex",
-        "glpk",
-        "gurobi",
-    ]:
+    solvers = ["cbc", "cplex", "glpk", "gurobi"]
+    if not isinstance(solver, str) or solver.lower() not in solvers:
         raise ValueError(
-            "The solver argument must be one of the following"
-            ' strings: "cbc", "cplex", "glpk", or "gurobi".'
+            f"The solver must be one of {solvers} but '{solver}' was given."
         )
 
 

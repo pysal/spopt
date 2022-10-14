@@ -16,8 +16,7 @@ from scipy.sparse.csgraph import connected_components
 import libpysal
 import numpy as np
 from copy import deepcopy
-from .base import (infeasible_components, plot_components,
-                   modify_components)
+from .base import infeasible_components, plot_components, modify_components
 
 ITERCONSTRUCT = 999
 ITERSA = 10
@@ -33,7 +32,7 @@ def maxp(
     max_iterations_construction=ITERCONSTRUCT,
     max_iterations_sa=ITERSA,
     verbose=False,
-    policy='single',
+    policy="single",
 ):
     """The max-p-regions involves the aggregation of n areas into an unknown maximum number of
     homogeneous regions, while ensuring that each region is contiguous and satisfies a minimum
@@ -87,8 +86,7 @@ def maxp(
         Region IDs for observations.
 
     """
-    gdf, w = modify_components(gdf, w, threshold_name,
-                               threshold, policy=policy)
+    gdf, w = modify_components(gdf, w, threshold_name, threshold, policy=policy)
     attr = np.atleast_2d(gdf[attrs_name].values)
     if attr.shape[0] == 1:
         attr = attr.T
@@ -785,7 +783,7 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         max_iterations_construction=99,
         max_iterations_sa=ITERSA,
         verbose=False,
-        policy='attach',
+        policy="attach",
     ):
 
         self.gdf = gdf

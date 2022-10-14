@@ -14,22 +14,22 @@ class RegionMixin(object):
 
     def solve_assign(self, X, adjacency):
         """
-        
+
         Parameters
         ----------
-        
-        X : 
+
+        X :
             ...
-        
-        adjacency : 
+
+        adjacency :
             ...
-    
+
         Returns
         -------
-        
-        _labels_ : 
+
+        _labels_ :
             ...
-        
+
         """
 
         self.solve(X, adjacency)
@@ -39,19 +39,19 @@ class RegionMixin(object):
 
 def w_to_g(w):
     """Get a ``networkx`` graph from a PySAL W.
-    
+
     Parameters
     ----------
-    
+
     w : libpysal.weights.W
         ...
-    
+
     Returns
     -------
-    
+
     g : networkx.Graph
         ...
-    
+
     """
     g = networkx.Graph()
     for ego, alters in w.neighbors.items():
@@ -62,31 +62,31 @@ def w_to_g(w):
 
 def move_ok(area, source, destination, g, w):
     """Check if area can move from source region to destination region.
-    
+
     Parameters
     ----------
-    
-    area : 
+
+    area :
         ...
-    
-    source : 
+
+    source :
         ...
-    
-    destination : 
+
+    destination :
         ...
-    
+
     g : networkx.Graph
         ...
-    
+
     w : libpysal.weights.W
         ...
-    
+
     Returns
     -------
-    
+
     _move_ok_ : bool
         ``True`` if the move is acceptable otherwise ``False``.
-    
+
     """
 
     _move_ok_ = False
@@ -105,37 +105,37 @@ def move_ok(area, source, destination, g, w):
 
 def ok_moves(candidates, regions, labels_, closest, g, w, areas):
     """Check a sequence of candidate moves.
-    
+
     Parameters
     ----------
-    
-    candidates : 
+
+    candidates :
         ...
-    
-    regions : 
+
+    regions :
         ...
-    
-    labels_ : 
+
+    labels_ :
         ...
-    
-    closest : 
+
+    closest :
         ...
-    
+
     g : networkx.Graph
         ...
-    
+
     w : libpysal.weights.W
         ...
-    
-    areas : 
+
+    areas :
         ...
-    
+
     Returns
     -------
-    
+
     keep : list
         ...
-    
+
     """
 
     keep = []
@@ -149,22 +149,22 @@ def ok_moves(candidates, regions, labels_, closest, g, w, areas):
 
 def region_neighbors(a_list, region):
     """Get neighbors for members of a region.
-    
+
     Parameters
     ----------
-    
-    a_list : 
+
+    a_list :
         ...
-    
-    region : 
+
+    region :
         ...
-    
+
     Returns
     -------
-    
+
     _region_neighbors_ : list
         ...
-    
+
     """
 
     neighbors = a_list[a_list["focal"].isin(region)].neighbor.values
@@ -174,22 +174,22 @@ def region_neighbors(a_list, region):
 
 def _centroid(regions, data):
     """Get centroids for all regions.
-    
+
     Parameters
     ----------
-    
-    regions : 
+
+    regions :
         ...
-    
-    data : 
+
+    data :
         ...
-    
+
     Returns
     -------
-    
+
     _centroid_ : numpy.array
         ...
-    
+
     """
 
     _centroid_ = numpy.array([data[region, :].mean(axis=0) for region in regions])
@@ -198,22 +198,22 @@ def _centroid(regions, data):
 
 def _closest(data, centroids):
     """For each row in data, find the closest row in centroids.
-    
+
     Parameters
     ----------
-    
-    data : 
+
+    data :
         ...
-    
-    centroids : 
+
+    centroids :
         ...
-    
+
     Returns
     -------
-    
+
     _closest_ : list
         ...
-    
+
     """
 
     _closest_ = [numpy.argmin(((row - centroids) ** 2).sum(axis=1)) for row in data]
@@ -222,22 +222,22 @@ def _closest(data, centroids):
 
 def _seeds(areas, k):
     """Randomly select `k` seeds from a sequence of areas.
-    
+
     Parameters
     ----------
-    
-    areas : 
+
+    areas :
         ...
-    
+
     k : int
         The number of desired seeds.
-    
+
     Returns
     -------
-    
+
     _seeds_ : numpy.array
         ...
-    
+
     """
 
     _seeds_ = numpy.random.choice(areas, size=k, replace=False)
@@ -246,26 +246,26 @@ def _seeds(areas, k):
 
 def is_neighbor(area, region, w):
     """Check if area is a neighbor of any member of region.
-    
+
     Parameters
     ----------
-    
-    area : 
+
+    area :
         ...
-    
-    region : 
+
+    region :
         ...
-    
+
     w : libpysal.weights.W
         ...
-    
+
     Returns
     -------
-    
+
     neighboring : bool
         ``True`` if area is a neighbor of any member
         of region otherwise ``False``.
-    
+
     """
 
     neighboring = False
@@ -274,8 +274,6 @@ def is_neighbor(area, region, w):
             neighboring = True
             return neighboring
     return neighboring
-
-
 
 
 def infeasible_components(gdf, w, threshold_var, threshold):
@@ -303,11 +301,11 @@ def infeasible_components(gdf, w, threshold_var, threshold):
     -------
     list of infeasible components
     """
-    gdf['_components'] = w.component_labels
-    gb = gdf.groupby(by='_components').sum()
+    gdf["_components"] = w.component_labels
+    gb = gdf.groupby(by="_components").sum(numeric_only=True)
     gdf.drop(columns="_components", inplace=True)
     if gb[threshold_var].min() < threshold:
-        l = gb[gb[threshold_var]< threshold]
+        l = gb[gb[threshold_var] < threshold]
         return l.index.values.tolist()
     return []
 
@@ -327,11 +325,11 @@ def plot_components(gdf, w):
 
     """
     cgdf = gdf.copy()
-    cgdf['component'] = w.component_labels
-    return cgdf.explore(column='component', categorical=True)
+    cgdf["component"] = w.component_labels
+    return cgdf.explore(column="component", categorical=True)
 
 
-def modify_components(gdf, w, threshold_var, threshold, policy='single'):
+def modify_components(gdf, w, threshold_var, threshold, policy="single"):
     """Modify infeasible components.
 
     Parameters
@@ -376,18 +374,18 @@ def modify_components(gdf, w, threshold_var, threshold, policy='single'):
     if ifcs == numpy.unique(w.component_labels).tolist():
         raise Exception("No feasible components found in input.")
     policy = policy.lower()
-    if not ifcs or policy == 'keep':
+    if not ifcs or policy == "keep":
         return gdf, w
-    elif policy == 'single':
-        w = form_single_component(gdf, w, linkage='single')
+    elif policy == "single":
+        w = form_single_component(gdf, w, linkage="single")
         return gdf, w
-    elif policy == 'multiple':
-        w = form_single_component(gdf, w, linkage='multiple')
+    elif policy == "multiple":
+        w = form_single_component(gdf, w, linkage="multiple")
         return gdf, w
-    elif policy == 'drop':
+    elif policy == "drop":
         keep_ids = numpy.where(~numpy.isin(w.component_labels, ifcs))[0]
         gdf = gdf.iloc[keep_ids]
-        cw = libpysal.weights.w_subset(w, keep_ids) 
+        cw = libpysal.weights.w_subset(w, keep_ids)
         new_neigh = {}
         old_new = dict([(o, n) for n, o in enumerate(keep_ids)])
         for old in keep_ids:
@@ -397,10 +395,10 @@ def modify_components(gdf, w, threshold_var, threshold, policy='single'):
         gdf.reset_index(inplace=True)
         return gdf, new_w
     else:
-        raise Exception(f'Undefined components policy: {policy}')
+        raise Exception(f"Undefined components policy: {policy}")
 
 
-def form_single_component(gdf, w, linkage='single'):
+def form_single_component(gdf, w, linkage="single"):
     """Ensure the connectivity forms a signal connected component.
 
     Parameters
@@ -422,7 +420,7 @@ def form_single_component(gdf, w, linkage='single'):
     w  : libpysal.weights.W
     """
     data = numpy.unique(w.component_labels, return_counts=True)
-    if len(data[0])== 1:
+    if len(data[0]) == 1:
         return w
     else:
         # largest component label
@@ -430,8 +428,14 @@ def form_single_component(gdf, w, linkage='single'):
 
         # form tree on largest component
         wcl = w.component_labels
-        tree = KDTree(list(zip(gdf.iloc[wcl == lcl].geometry.centroid.x,
-                               gdf.iloc[wcl == lcl].geometry.centroid.y)))
+        tree = KDTree(
+            list(
+                zip(
+                    gdf.iloc[wcl == lcl].geometry.centroid.x,
+                    gdf.iloc[wcl == lcl].geometry.centroid.y,
+                )
+            )
+        )
 
         # small component labels
         scl = [cl for cl in data[0] if cl != lcl]
@@ -444,8 +448,12 @@ def form_single_component(gdf, w, linkage='single'):
         for cl in data[0]:
             if cl == lcl:
                 continue
-            query_pnts = list(zip(gdf.iloc[wcl == cl].geometry.centroid.x,
-                              gdf.iloc[wcl == cl].geometry.centroid.y))
+            query_pnts = list(
+                zip(
+                    gdf.iloc[wcl == cl].geometry.centroid.x,
+                    gdf.iloc[wcl == cl].geometry.centroid.y,
+                )
+            )
             dd, jj = tree.query(query_pnts, k=1)
             clas = numpy.where(numpy.isin(w.component_labels, [cl]))[0]
 
@@ -453,16 +461,16 @@ def form_single_component(gdf, w, linkage='single'):
 
             ll = linkage.lower()
 
-            if ll == 'single':
+            if ll == "single":
                 min_idx = numpy.argmin(dd)
                 j = jj[min_idx]
                 i = clas[min_idx]
-                joins.append((i,j))
-            elif ll == 'multiple':
+                joins.append((i, j))
+            elif ll == "multiple":
                 pairs = zip(clas, jj)
                 joins.extend(list(pairs))
             else:
-                raise Exception(f'Unknown linkage: {linkage}')
+                raise Exception(f"Unknown linkage: {linkage}")
 
         neighbors = copy.deepcopy(w.neighbors)
         for join in joins:

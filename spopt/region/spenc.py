@@ -16,7 +16,7 @@ class Spenc(BaseSpOptHeuristicSolver):
 
         gdf : geopandas.GeoDataFrame
             Input data.
-            
+
         w : libpywal.weights.W
             Spatial weights matrix.
 
@@ -26,11 +26,11 @@ class Spenc(BaseSpOptHeuristicSolver):
 
         n_clusters : int
             The number of clusters to form. Default is ``5``.
-        
+
         random_state : int
             Random seed to set for reproducible results.
             Default is ``None``.
-            
+
         gamma: int
             Default is ``1``.
 
