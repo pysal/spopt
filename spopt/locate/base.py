@@ -76,7 +76,8 @@ class BaseOutputMixin:
                     self.cli2fac[fac_site].append(i)
         else:
             raise AttributeError(
-                "The attribute `fac2cli` is not set. See `facility_client_array` method to set the attribute"
+                "The attribute `fac2cli` is not set. "
+                "See `facility_client_array` method to set the attribute"
             )
 
 
@@ -311,7 +312,7 @@ class FacilityModelBuilder:
                 )
         else:
             raise AttributeError(
-                "before setting constraints must set facility variable"
+                "Before setting coverage constraints facility variables must be set."
             )
 
     @staticmethod
@@ -364,7 +365,8 @@ class FacilityModelBuilder:
                     )
         else:
             raise AttributeError(
-                "before setting constraints must set facility variable"
+                "Before setting backup coverage constraints "
+                "facility variables must be set."
             )
 
     @staticmethod
@@ -393,7 +395,7 @@ class FacilityModelBuilder:
             model += pulp.lpSum(fac_vars) == p_facilities
         else:
             raise AttributeError(
-                "before setting constraints must set facility variable"
+                "Before setting facility constraint facility variables must be set."
             )
 
     @staticmethod
@@ -424,7 +426,8 @@ class FacilityModelBuilder:
                     fac_vars[ind].fixValue()
         else:
             raise AttributeError(
-                "before predefined facility must set facility variable"
+                "Before setting predefined facility constraints "
+                "facility variables must be set."
             )
 
     @staticmethod
@@ -463,7 +466,8 @@ class FacilityModelBuilder:
                 )
         else:
             raise AttributeError(
-                "before setting constraints must set facility and demand variable"
+                "Before setting maximal coverage constraints facility "
+                "and demand variables must be set."
             )
 
     @staticmethod
@@ -496,7 +500,8 @@ class FacilityModelBuilder:
                 model += pulp.lpSum([cli_assgn_vars[i][j] for j in range_facility]) == 1
         else:
             raise AttributeError(
-                "before setting constraints must set client assignment variable"
+                "Before setting assignment constraints "
+                "client assignment variables must be set."
             )
 
     @staticmethod
@@ -531,7 +536,8 @@ class FacilityModelBuilder:
                     model += fac_vars[j] - cli_assgn_vars[i][j] >= 0
         else:
             raise AttributeError(
-                "before setting constraints must set client assignment variable"
+                "Before setting opening constraints "
+                "client assignment variables must be set."
             )
 
     @staticmethod
@@ -579,7 +585,8 @@ class FacilityModelBuilder:
                 )
         else:
             raise AttributeError(
-                "before setting constraints must set weight and client assignment variables"
+                "Before setting minimized maximum constraints weight "
+                "and client assignment variables must be set."
             )
 
     @staticmethod
@@ -621,5 +628,6 @@ class FacilityModelBuilder:
                         )
         else:
             raise AttributeError(
-                "before setting constraints must set dispersion objective value and facility assignment variables"
+                "Before setting interfacility distance constraints dispersion "
+                "objective value and facility assignment variables must be set."
             )

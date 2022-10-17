@@ -35,8 +35,9 @@ def is_connected(adj):
     >>> is_connected(disconnected)
     False
     """
-    n_connected_components = csg.connected_components(adj, directed=False,
-                                                      return_labels=False)
+    n_connected_components = csg.connected_components(
+        adj, directed=False, return_labels=False
+    )
     return True if n_connected_components == 1 else False
 
 
@@ -124,4 +125,3 @@ def sub_adj_matrix(adj, nodes, wo_nodes=None):
         nodes = nodes[mask]
     nodes = nodes[:, None]
     return csr_matrix(adj[nodes, nodes.T])
-

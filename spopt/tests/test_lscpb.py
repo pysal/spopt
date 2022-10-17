@@ -8,20 +8,15 @@ from shapely.geometry import Point, Polygon
 from spopt.locate import LSCPB
 from spopt.locate.base import FacilityModelBuilder, LocateSolver
 from spopt.locate.util import simulated_geo_points
-import unittest
+
 import os
 import pickle
-import platform
-
-operating_system = platform.platform()[:7].lower()
-if operating_system == "windows":
-    WINDOWS = True
-else:
-    WINDOWS = False
+import warnings
+import pytest
 
 
-class TestSyntheticLocate(unittest.TestCase):
-    def setUp(self) -> None:
+class TestSyntheticLocate:
+    def setup_method(self) -> None:
         self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
 
         lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
@@ -68,7 +63,8 @@ class TestSyntheticLocate(unittest.TestCase):
             self.cost_matrix, 10, pulp.PULP_CBC_CMD(msg=False)
         )
         result = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
-        self.assertIsInstance(result, LSCPB)
+
+        assert isinstance(result, LSCPB)
 
     def test_lscpb_facility_client_array_from_cost_matrix(self):
         with open(self.dirpath + "lscpb_fac2cli.pkl", "rb") as f:
@@ -80,7 +76,10 @@ class TestSyntheticLocate(unittest.TestCase):
         lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
         lscpb.facility_client_array()
 
-        numpy.testing.assert_array_equal(lscpb.fac2cli, lscpb_objective)
+        numpy.testing.assert_array_equal(
+            numpy.array(lscpb.fac2cli, dtype=object),
+            numpy.array(lscpb_objective, dtype=object),
+        )
 
     def test_lscpb_client_facility_array_from_cost_matrix(self):
         with open(self.dirpath + "lscpb_cli2fac.pkl", "rb") as f:
@@ -93,7 +92,10 @@ class TestSyntheticLocate(unittest.TestCase):
         lscpb.facility_client_array()
         lscpb.client_facility_array()
 
-        numpy.testing.assert_array_equal(lscpb.cli2fac, lscpb_objective)
+        numpy.testing.assert_array_equal(
+            numpy.array(lscpb.cli2fac, dtype=object),
+            numpy.array(lscpb_objective, dtype=object),
+        )
 
     def test_lscpb_from_geodataframe(self):
         lscpb = LSCPB.from_geodataframe(
@@ -105,7 +107,8 @@ class TestSyntheticLocate(unittest.TestCase):
             pulp.PULP_CBC_CMD(msg=False),
         )
         result = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
-        self.assertIsInstance(result, LSCPB)
+
+        assert isinstance(result, LSCPB)
 
     def test_lscpb_facility_client_array_from_geodataframe(self):
         with open(self.dirpath + "lscpb_geodataframe_fac2cli.pkl", "rb") as f:
@@ -122,7 +125,10 @@ class TestSyntheticLocate(unittest.TestCase):
         lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
         lscpb.facility_client_array()
 
-        numpy.testing.assert_array_equal(lscpb.fac2cli, lscpb_objective)
+        numpy.testing.assert_array_equal(
+            numpy.array(lscpb.fac2cli, dtype=object),
+            numpy.array(lscpb_objective, dtype=object),
+        )
 
     def test_lscpb_client_facility_array_from_geodataframe(self):
         with open(self.dirpath + "lscpb_geodataframe_cli2fac.pkl", "rb") as f:
@@ -140,7 +146,10 @@ class TestSyntheticLocate(unittest.TestCase):
         lscpb.facility_client_array()
         lscpb.client_facility_array()
 
-        numpy.testing.assert_array_equal(lscpb.cli2fac, lscpb_objective)
+        numpy.testing.assert_array_equal(
+            numpy.array(lscpb.cli2fac, dtype=object),
+            numpy.array(lscpb_objective, dtype=object),
+        )
 
     def test_lscpb_preselected_facility_client_array_from_geodataframe(self):
         with open(
@@ -163,11 +172,14 @@ class TestSyntheticLocate(unittest.TestCase):
         lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
         lscpb.facility_client_array()
 
-        numpy.testing.assert_array_equal(lscpb.fac2cli, lscpb_objective)
+        numpy.testing.assert_array_equal(
+            numpy.array(lscpb.fac2cli, dtype=object),
+            numpy.array(lscpb_objective, dtype=object),
+        )
 
 
-class TestRealWorldLocate(unittest.TestCase):
-    def setUp(self) -> None:
+class TestRealWorldLocate:
+    def setup_method(self) -> None:
         self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
         network_distance = pandas.read_csv(
             self.dirpath
@@ -217,10 +229,10 @@ class TestRealWorldLocate(unittest.TestCase):
         )
         lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
 
-        self.assertEqual(lscpb.problem.status, pulp.LpStatusOptimal)
+        assert lscpb.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_lscpb_from_cost_matrix(self):
-        with self.assertRaises(RuntimeError):
+        with pytest.raises(RuntimeError, match="Model is not solved"):
             lscpb = LSCPB.from_cost_matrix(
                 self.cost_matrix, 20, pulp.PULP_CBC_CMD(msg=False)
             )
@@ -236,10 +248,11 @@ class TestRealWorldLocate(unittest.TestCase):
             pulp.PULP_CBC_CMD(msg=False),
         )
         lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
-        self.assertEqual(lscpb.problem.status, pulp.LpStatusOptimal)
+
+        assert lscpb.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_lscpb_from_geodataframe(self):
-        with self.assertRaises(RuntimeError):
+        with pytest.raises(RuntimeError, match="Model is not solved"):
             lscpb = LSCPB.from_geodataframe(
                 self.demand_points_gdf,
                 self.facility_points_gdf,
@@ -251,8 +264,8 @@ class TestRealWorldLocate(unittest.TestCase):
             lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
 
 
-class TestErrorsWarnings(unittest.TestCase):
-    def setUp(self) -> None:
+class TestErrorsWarnings:
+    def setup_method(self) -> None:
 
         pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
         pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
@@ -268,33 +281,31 @@ class TestErrorsWarnings(unittest.TestCase):
         self.gdf_dem_crs = self.gdf_dem.to_crs("EPSG:3857")
 
         self.gdf_dem_buffered = self.gdf_dem.copy()
-        self.gdf_dem_buffered["geometry"] = self.gdf_dem.buffer(2)
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                category=UserWarning,
+                message="Geometry is in a geographic CRS",
+            )
+            self.gdf_dem_buffered["geometry"] = self.gdf_dem.buffer(2)
 
     def test_error_lscpb_different_crs(self):
-        with self.assertRaises(ValueError):
-            dummy_class = LSCPB.from_geodataframe(
-                self.gdf_dem_crs,
-                self.gdf_fac,
-                "geometry",
-                "geometry",
-                10,
-                pulp.PULP_CBC_CMD(msg=False),
-            )
-
-    def test_warning_lscpb_facility_geodataframe(self):
-        with self.assertWarns(Warning):
-            dummy_class = LSCPB.from_geodataframe(
-                self.gdf_dem,
-                self.gdf_fac,
-                "geometry",
-                "geometry",
-                100,
-                pulp.PULP_CBC_CMD(msg=False),
-            )
+        with pytest.warns(
+            UserWarning, match="Facility geodataframe contains mixed type"
+        ):
+            with pytest.raises(ValueError, match="Geodataframes crs are different: "):
+                LSCPB.from_geodataframe(
+                    self.gdf_dem_crs,
+                    self.gdf_fac,
+                    "geometry",
+                    "geometry",
+                    10,
+                    pulp.PULP_CBC_CMD(msg=False),
+                )
 
     def test_warning_lscpb_demand_geodataframe(self):
-        with self.assertWarns(Warning):
-            dummy_class = LSCPB.from_geodataframe(
+        with pytest.warns(UserWarning, match="Demand geodataframe contains mixed type"):
+            LSCPB.from_geodataframe(
                 self.gdf_dem_buffered,
                 self.gdf_fac,
                 "geometry",
@@ -304,7 +315,7 @@ class TestErrorsWarnings(unittest.TestCase):
             )
 
     def test_attribute_error_add_facility_constraint(self):
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError, match="Before setting backup coverage"):
             dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
             dummy_p_facility = 1
             dummy_fac_r = 0

@@ -1,7 +1,7 @@
 import geopandas
 import libpysal
 import numpy
-import unittest
+import pytest
 
 from spopt.region import RandomRegion, RandomRegions
 
@@ -19,8 +19,8 @@ SYNTH_IDS = SYNTH_W.id_order
 
 
 # Empirical tests ------------------------------------------------------------------------
-class TestRandomRegionEmpirical(unittest.TestCase):
-    def setUp(self):
+class TestRandomRegionEmpirical:
+    def setup_method(self):
 
         self.mexico = MEXICO.copy()
         self.cards = self.mexico.groupby(by="HANSON03").count().NAME.values.tolist()
@@ -40,7 +40,10 @@ class TestRandomRegionEmpirical(unittest.TestCase):
         kwargs = {"num_regions": 6, "cardinality": self.cards}
         model = RandomRegion(self.ids, **kwargs)
 
-        numpy.testing.assert_array_equal(known_regions, model.regions)
+        numpy.testing.assert_array_equal(
+            numpy.array(known_regions, dtype=object),
+            numpy.array(model.regions, dtype=object),
+        )
 
     def test_random_region_6_card_contig_compact(self):
         known_regions = [
@@ -60,11 +63,14 @@ class TestRandomRegionEmpirical(unittest.TestCase):
         }
         model = RandomRegion(self.ids, **kwargs)
 
-        numpy.testing.assert_array_equal(known_regions, model.regions)
+        numpy.testing.assert_array_equal(
+            numpy.array(known_regions, dtype=object),
+            numpy.array(model.regions, dtype=object),
+        )
 
 
-class TestRandomRegionsEmpirical(unittest.TestCase):
-    def setUp(self):
+class TestRandomRegionsEmpirical:
+    def setup_method(self):
 
         self.mexico = MEXICO.copy()
         self.cards = self.mexico.groupby(by="HANSON03").count().NAME.values.tolist()
@@ -83,12 +89,15 @@ class TestRandomRegionsEmpirical(unittest.TestCase):
         kwargs = {"num_regions": 6, "cardinality": self.cards, "permutations": 99}
         model = RandomRegions(self.ids, **kwargs)
 
-        numpy.testing.assert_array_equal(known_regions, model.solutions_feas[2].regions)
+        numpy.testing.assert_array_equal(
+            numpy.array(known_regions, dtype=object),
+            numpy.array(model.solutions_feas[2].regions, dtype=object),
+        )
 
 
 # Synthetic tests ------------------------------------------------------------------------
-class TestRandomRegionSynthetic(unittest.TestCase):
-    def setUp(self):
+class TestRandomRegionSynthetic:
+    def setup_method(self):
 
         self.nregs = N_REGIONS
         self.cards = SYNTH_CARDS
@@ -99,42 +108,42 @@ class TestRandomRegionSynthetic(unittest.TestCase):
         known_region_0 = [19, 14, 43, 37, 66, 3, 79, 41, 38, 68, 2, 1, 60]
         numpy.random.seed(10)
         model = RandomRegion(self.ids)
-        self.assertEqual(known_region_0, model.regions[0])
+        assert known_region_0 == model.regions[0]
 
     def test_random_region_exo_regions(self):
         known_region_0 = [37, 62, 26, 41, 35, 25, 36]
         numpy.random.seed(100)
         kwargs = {"num_regions": self.nregs}
         model = RandomRegion(self.ids, **kwargs)
-        self.assertEqual(known_region_0, model.regions[0])
+        assert known_region_0 == model.regions[0]
 
     def test_random_region_endo_regions_constrained_card(self):
         known_region_0 = [37, 62]
         numpy.random.seed(100)
         kwargs = {"cardinality": self.cards}
         model = RandomRegion(self.ids, **kwargs)
-        self.assertEqual(known_region_0, model.regions[0])
+        assert known_region_0 == model.regions[0]
 
     def test_random_region_exo_regions_constrained_card(self):
         known_region_0 = [37, 62]
         numpy.random.seed(100)
         kwargs = {"num_regions": self.nregs, "cardinality": self.cards}
         model = RandomRegion(self.ids, **kwargs)
-        self.assertEqual(known_region_0, model.regions[0])
+        assert known_region_0 == model.regions[0]
 
     def test_random_region_endo_regions_constrained_contig(self):
         known_region_5 = [33, 43, 32, 31]
         numpy.random.seed(100)
         kwargs = {"contiguity": self.w}
         model = RandomRegion(self.ids, **kwargs)
-        self.assertEqual(known_region_5, model.regions[5])
+        assert known_region_5 == model.regions[5]
 
     def test_random_region_exo_regions_constrained_contig(self):
         known_region_5 = [92, 93, 91, 81, 71, 70, 90, 80]
         numpy.random.seed(100)
         kwargs = {"num_regions": self.nregs, "contiguity": self.w}
         model = RandomRegion(self.ids, **kwargs)
-        self.assertEqual(known_region_5, model.regions[5])
+        assert known_region_5 == model.regions[5]
 
     def test_random_region_exo_regions_constrained_card_contig(self):
         known_region_0 = [62, 61, 81, 71, 64, 90, 72, 51, 80, 63, 50, 73, 52]
@@ -145,21 +154,21 @@ class TestRandomRegionSynthetic(unittest.TestCase):
         }
         numpy.random.seed(60)
         model = RandomRegion(self.ids, **kwargs)
-        self.assertEqual(known_region_0, model.regions[0])
+        assert known_region_0, model.regions[0]
 
     def test_random_region_endo_regions_constrained_card_contig(self):
         known_region_0 = [62, 61, 81, 71, 64, 90, 72, 51, 80, 63, 50, 73, 52]
         kwargs = {"cardinality": self.cards, "contiguity": self.w}
         numpy.random.seed(60)
         model = RandomRegion(self.ids, **kwargs)
-        self.assertEqual(known_region_0, model.regions[0])
+        assert known_region_0 == model.regions[0]
 
     def test_random_regions_error_card(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError, match="Number of areas"):
             RandomRegion([0, 1], cardinality=[4])
 
     def test_random_regions_error_contig(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError, match="Order of 'area_ids'"):
 
             class _shell_w_:
                 def __init__(self):
@@ -168,12 +177,12 @@ class TestRandomRegionSynthetic(unittest.TestCase):
             RandomRegion([0, 1], contiguity=_shell_w_())
 
     def test_random_regions_error_nregs(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError, match="Number of regions"):
             RandomRegion([0, 1, 2, 3, 4, 5], num_regions=2, cardinality=[1, 2, 3])
 
 
-class TestRandomRegionsSynthetic(unittest.TestCase):
-    def setUp(self):
+class TestRandomRegionsSynthetic:
+    def setup_method(self):
 
         self.nregs = N_REGIONS
         self.cards = SYNTH_CARDS
@@ -186,21 +195,21 @@ class TestRandomRegionsSynthetic(unittest.TestCase):
         numpy.random.seed(10)
         kwargs = {"permutations": self.permutations}
         model = RandomRegions(self.ids, **kwargs)
-        self.assertEqual(known_region_0, model.solutions[0].regions[0])
+        assert known_region_0 == model.solutions[0].regions[0]
 
     def test_random_region_exo_regions(self):
         known_region_0 = [37, 62, 26, 41, 35, 25, 36]
         numpy.random.seed(100)
         kwargs = {"num_regions": self.nregs, "permutations": self.permutations}
         model = RandomRegions(self.ids, **kwargs)
-        self.assertEqual(known_region_0, model.solutions[0].regions[0])
+        assert known_region_0 == model.solutions[0].regions[0]
 
     def test_random_region_endo_regions_constrained_card(self):
         known_region_0 = [37, 62]
         numpy.random.seed(100)
         kwargs = {"cardinality": self.cards, "permutations": self.permutations}
         model = RandomRegions(self.ids, **kwargs)
-        self.assertEqual(known_region_0, model.solutions[0].regions[0])
+        assert known_region_0 == model.solutions[0].regions[0]
 
     def test_random_region_exo_regions_constrained_card(self):
         known_region_0 = [37, 62]
@@ -211,14 +220,14 @@ class TestRandomRegionsSynthetic(unittest.TestCase):
             "permutations": self.permutations,
         }
         model = RandomRegions(self.ids, **kwargs)
-        self.assertEqual(known_region_0, model.solutions[0].regions[0])
+        assert known_region_0 == model.solutions[0].regions[0]
 
     def test_random_region_endo_regions_constrained_contig(self):
         known_region_5 = [33, 43, 32, 31]
         numpy.random.seed(100)
         kwargs = {"contiguity": self.w, "permutations": self.permutations}
         model = RandomRegions(self.ids, **kwargs)
-        self.assertEqual(known_region_5, model.solutions[0].regions[5])
+        assert known_region_5 == model.solutions[0].regions[5]
 
     def test_random_region_exo_regions_constrained_contig(self):
         known_region_5 = [92, 93, 91, 81, 71, 70, 90, 80]
@@ -229,7 +238,7 @@ class TestRandomRegionsSynthetic(unittest.TestCase):
             "permutations": self.permutations,
         }
         model = RandomRegions(self.ids, **kwargs)
-        self.assertEqual(known_region_5, model.solutions[0].regions[5])
+        assert known_region_5 == model.solutions[0].regions[5]
 
     def test_random_region_exo_regions_constrained_card_contig(self):
         known_region_0 = [62, 61, 81, 71, 64, 90, 72, 51, 80, 63, 50, 73, 52]
@@ -241,7 +250,7 @@ class TestRandomRegionsSynthetic(unittest.TestCase):
         }
         numpy.random.seed(60)
         model = RandomRegions(self.ids, **kwargs)
-        self.assertEqual(known_region_0, model.solutions[0].regions[0])
+        assert known_region_0 == model.solutions[0].regions[0]
 
     def test_random_region_endo_regions_constrained_card_contig(self):
         known_region_0 = [62, 61, 81, 71, 64, 90, 72, 51, 80, 63, 50, 73, 52]
@@ -252,4 +261,4 @@ class TestRandomRegionsSynthetic(unittest.TestCase):
         }
         numpy.random.seed(60)
         model = RandomRegions(self.ids, **kwargs)
-        self.assertEqual(known_region_0, model.solutions[0].regions[0])
+        assert known_region_0 == model.solutions[0].regions[0]

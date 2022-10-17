@@ -1,7 +1,7 @@
 import libpysal
 import geopandas
 import numpy
-import unittest
+import pytest
 
 import spopt
 from spopt.region import AZP
@@ -14,8 +14,8 @@ pth = libpysal.examples.get_path("mexicojoin.shp")
 MEXICO = geopandas.read_file(pth)
 
 
-class TestAZP(unittest.TestCase):
-    def setUp(self):
+class TestAZP:
+    def setup_method(self):
 
         self.mexico = MEXICO.copy()
 

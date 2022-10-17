@@ -9,10 +9,11 @@ from shapely.geometry import Point, Polygon
 
 from spopt.locate import PDispersion
 from spopt.locate.util import simulated_geo_points
-import unittest
+
 import os
 import pickle
 import platform
+import pytest
 
 operating_system = platform.platform()[:7].lower()
 if operating_system == "windows":
@@ -21,8 +22,8 @@ else:
     WINDOWS = False
 
 
-class TestSyntheticLocate(unittest.TestCase):
-    def setUp(self) -> None:
+class TestSyntheticLocate:
+    def setup_method(self) -> None:
         self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
 
         lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
@@ -56,7 +57,7 @@ class TestSyntheticLocate(unittest.TestCase):
     def test_p_dispersion_from_cost_matrix(self):
         pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, p_fac=2)
         result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
-        self.assertIsInstance(result, PDispersion)
+        assert isinstance(result, PDispersion)
 
     def test_p_dispersion_from_geodataframe(self):
         pdispersion = PDispersion.from_geodataframe(
@@ -65,11 +66,11 @@ class TestSyntheticLocate(unittest.TestCase):
             p_fac=2,
         )
         result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
-        self.assertIsInstance(result, PDispersion)
+        assert isinstance(result, PDispersion)
 
 
-class TestRealWorldLocate(unittest.TestCase):
-    def setUp(self) -> None:
+class TestRealWorldLocate:
+    def setup_method(self) -> None:
         self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
         network_distance = pandas.read_csv(
             self.dirpath
@@ -103,11 +104,11 @@ class TestRealWorldLocate(unittest.TestCase):
             self.cost_matrix, p_fac=self.p_facility
         )
         pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
-        self.assertEqual(pdispersion.problem.status, pulp.LpStatusOptimal)
+        assert pdispersion.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_p_dispersion_from_cost_matrix(self):
         pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, p_fac=17)
-        with self.assertRaises(RuntimeError):
+        with pytest.raises(RuntimeError, match="Model is not solved:"):
             pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
 
     def test_optimality_p_dispersion_from_geodataframe(self):
@@ -117,7 +118,7 @@ class TestRealWorldLocate(unittest.TestCase):
             p_fac=self.p_facility,
         )
         pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
-        self.assertEqual(pdispersion.problem.status, pulp.LpStatusOptimal)
+        assert pdispersion.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_p_dispersion_from_geodataframe(self):
         pdispersion = PDispersion.from_geodataframe(
@@ -125,12 +126,12 @@ class TestRealWorldLocate(unittest.TestCase):
             "geometry",
             p_fac=17,
         )
-        with self.assertRaises(RuntimeError):
+        with pytest.raises(RuntimeError, match="Model is not solved:"):
             pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
 
 
-class TestErrorsWarnings(unittest.TestCase):
-    def setUp(self) -> None:
+class TestErrorsWarnings:
+    def setup_method(self) -> None:
 
         pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
         pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
@@ -140,7 +141,7 @@ class TestErrorsWarnings(unittest.TestCase):
         self.gdf_fac = geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
 
     def test_attribute_error_add_facility_constraint(self):
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError, match="Before setting facility constraint"):
             dummy_p_facility = 1
             dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
             FacilityModelBuilder.add_facility_constraint(
@@ -150,7 +151,9 @@ class TestErrorsWarnings(unittest.TestCase):
             )
 
     def test_attribute_error_add_p_dispersion_interfacility_constraint(self):
-        with self.assertRaises(AttributeError):
+        with pytest.raises(
+            AttributeError, match="Before setting interfacility distance constraints"
+        ):
             dummy_p_facility = 1
             dummy_matrix = numpy.array([])
             dummy_range = range(1)
@@ -163,7 +166,7 @@ class TestErrorsWarnings(unittest.TestCase):
             )
 
     def test_attribute_error_add_predefined_facility_constraint(self):
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError, match="Before setting facility constraint"):
             dummy_p_facility = 1
             dummy_matrix = numpy.array([])
             dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
@@ -172,5 +175,7 @@ class TestErrorsWarnings(unittest.TestCase):
             )
 
     def test_warning_facility_geodataframe(self):
-        with self.assertWarns(Warning):
-            dummy_class = PDispersion.from_geodataframe(self.gdf_fac, "geometry", 1)
+        with pytest.warns(
+            UserWarning, match="Facility geodataframe contains mixed type"
+        ):
+            PDispersion.from_geodataframe(self.gdf_fac, "geometry", 1)

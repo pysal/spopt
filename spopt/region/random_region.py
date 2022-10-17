@@ -387,12 +387,12 @@ class RandomRegion:
             self.build_noncontig_regions(num_regions, region_breaks)
 
     def get_num_regions(self):
-        return np.random.random_integers(2, self.n)
+        return np.random.randint(2, self.n)
 
     def get_region_breaks(self, num_regions):
         region_breaks = set([])
         while len(region_breaks) < num_regions - 1:
-            region_breaks.add(np.random.random_integers(1, self.n - 1))
+            region_breaks.add(np.random.randint(1, self.n - 1))
         region_breaks = list(region_breaks)
         region_breaks.sort()
         return region_breaks
@@ -428,7 +428,7 @@ class RandomRegion:
         # potential areas before adding new potential areas
         add_areas = []
         while potential and len(region) < test_card:
-            pot_index = np.random.random_integers(0, len(potential) - 1)
+            pot_index = np.random.randint(0, len(potential))
             add_area = potential[pot_index]
             region.append(add_area)
             candidates.remove(add_area)
@@ -447,7 +447,7 @@ class RandomRegion:
     def grow_free(self, w, test_card, region, candidates, potential):
         # increment potential areas after each new area is
         # added to the region (faster than the grow_compact)
-        pot_index = np.random.random_integers(0, len(potential) - 1)
+        pot_index = np.random.randint(0, len(potential))
         add_area = potential[pot_index]
         region.append(add_area)
         candidates.remove(add_area)

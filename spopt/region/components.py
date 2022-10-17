@@ -43,8 +43,7 @@ def is_component(w, ids):
         while q:
             node = q.pop()
             marks[node] = components
-            others = [neighbor for neighbor in w.neighbors[node]
-                      if neighbor in ids]
+            others = [neighbor for neighbor in w.neighbors[node] if neighbor in ids]
             for other in others:
                 if marks[other] == 0 and other not in q:
                     q.append(other)
@@ -129,8 +128,7 @@ class Graph(object):
             nodes = set(self.nodes)
             components, visited = [], set()
             while len(nodes) > 0:
-                connected, visited = self.dfs(
-                    nodes.pop(), visited, threshold, op)
+                connected, visited = self.dfs(nodes.pop(), visited, threshold, op)
                 connected = set(connected)
                 for node in connected:
                     if node in nodes:
@@ -152,8 +150,11 @@ class Graph(object):
         visited.add(v)
         if first is None:
             first = v
-        for i in (n for n, w in self.edges.get(v, {}).iteritems()
-                  if op(w, threshold) and n not in visited):
+        for i in (
+            n
+            for n, w in self.edges.get(v, {}).iteritems()
+            if op(w, threshold) and n not in visited
+        ):
             x, y = self.dfs(i, visited, threshold, op, first)
             aux.extend(x)
             visited = visited.union(y)

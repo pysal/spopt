@@ -2,9 +2,7 @@ from abc import ABC, abstractmethod
 
 
 class BaseSpOptSolver(ABC):
-    """Base class for all spatial optimization model solvers.
-
-    """
+    """Base class for all spatial optimization model solvers."""
 
     @abstractmethod
     def solve(self):

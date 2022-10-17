@@ -162,7 +162,7 @@ class AZP_orig:
     labels_ : numpy.ndarray
         Each element is a region label specifying to which region the
         corresponding area was assigned to by the last run of a fit-method.
-    
+
     """
 
     def __init__(self, allow_move_strategy=None, random_state=None):
@@ -175,7 +175,7 @@ class AZP_orig:
             instance can be passed as argument. Default is ``None``.
         random_state : None, int, str, bytes, or bytearray
             Random seed. Default is ``None``.
-        
+
         """
 
         self.n_regions = None
@@ -225,7 +225,7 @@ class AZP_orig:
         objective_func : region.objective_function.ObjectiveFunction
             The objective function to use. Default is
             ``ObjectiveFunctionPairwise()``.
-            
+
         """
 
         if attr.ndim == 1:
@@ -375,7 +375,7 @@ class AZP_orig:
             ``fit_from_scipy_sparse_matrix``.
         contiguity : str
             Defines the contiguity relationship between areas.
-            Default is ``'rook'``. Possible contiguity definitions are: 
+            Default is ``'rook'``. Possible contiguity definitions are:
 
             * "rook" - Rook contiguity.
             * "queen" - Queen contiguity.
@@ -750,7 +750,7 @@ class AZPSimulatedAnnealing:
             Refer to the corresponding argument in
             ``AZP.fit_from_networkx``.
             Default is ``ObjectiveFunctionPairwise()``.
-        
+
         """
 
         adj = nx.to_scipy_sparse_matrix(graph)

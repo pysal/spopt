@@ -1,7 +1,7 @@
 import libpysal
 import numpy
+import pandas
 import pytest
-import unittest
 
 from spopt.region import RegionKMeansHeuristic
 from spopt.region.spenclib.utils import lattice
@@ -10,8 +10,8 @@ from spopt.region.spenclib.utils import lattice
 RANDOM_STATE = 12345
 
 
-class TestRegionKMeansHeuristic(unittest.TestCase):
-    def setUp(self):
+class TestRegionKMeansHeuristic:
+    def setup_method(self):
 
         # small 3 x 3 example w/ 3 regions
         dim_small = 3
@@ -27,7 +27,7 @@ class TestRegionKMeansHeuristic(unittest.TestCase):
         numpy.random.seed(RANDOM_STATE)
         gdf["data_values_1"] = numpy.random.random(n_polys)
         gdf["data_values_2"] = numpy.random.random(n_polys)
-        gdf = gdf[:200].append(gdf[220:])
+        gdf = pandas.concat([gdf[:200], gdf[220:]])
         self.w_large = libpysal.weights.Rook.from_dataframe(gdf)
         self.data_large = gdf[["data_values_1", "data_values_2"]].values
         self.reg_large = 3
@@ -35,6 +35,7 @@ class TestRegionKMeansHeuristic(unittest.TestCase):
         self.known_labels_large = [1] * self.limit_index
 
     @pytest.mark.xfail
+    @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
     def test_region_k_means_heuristic_synth_small(self):
         numpy.random.seed(RANDOM_STATE)
         model = RegionKMeansHeuristic(self.data_small, self.reg_small, self.w_small)
@@ -42,6 +43,7 @@ class TestRegionKMeansHeuristic(unittest.TestCase):
 
         numpy.testing.assert_equal(model.labels_, self.known_labels_small)
 
+    @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
     def test_region_k_means_heuristic_synth_large(self):
         numpy.random.seed(RANDOM_STATE)
         model = RegionKMeansHeuristic(self.data_large, self.reg_large, self.w_large)

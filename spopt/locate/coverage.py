@@ -237,18 +237,16 @@ class LSCP(LocateSolver, BaseOutputMixin):
         dem_type_geom = dem.geom_type.unique()
         fac_type_geom = fac.geom_type.unique()
 
+        _msg = (
+            " geodataframe contains mixed type geometries or is not a point. Be "
+            "sure deriving centroid from geometries doesn't affect the results."
+        )
         if len(dem_type_geom) > 1 or not "Point" in dem_type_geom:
-            warnings.warn(
-                "Demand geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
-                Warning,
-            )
+            warnings.warn(f"Demand{_msg}", UserWarning)
             dem = dem.centroid
 
         if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
-            warnings.warn(
-                "Facility geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
-                Warning,
-            )
+            warnings.warn(f"Facility{_msg}", UserWarning)
             fac = fac.centroid
 
         dem_data = np.array([dem.x.to_numpy(), dem.y.to_numpy()]).T
@@ -256,7 +254,8 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         if gdf_demand.crs != gdf_fac.crs:
             raise ValueError(
-                f"geodataframes crs are different: gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
+                "Geodataframes crs are different: "
+                f"gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
             )
 
         distances = cdist(dem_data, fac_data, distance_metric)
@@ -554,18 +553,16 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         dem_type_geom = dem.geom_type.unique()
         fac_type_geom = fac.geom_type.unique()
 
+        _msg = (
+            " geodataframe contains mixed type geometries or is not a point. Be "
+            "sure deriving centroid from geometries doesn't affect the results."
+        )
         if len(dem_type_geom) > 1 or not "Point" in dem_type_geom:
-            warnings.warn(
-                "Demand geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
-                Warning,
-            )
+            warnings.warn(f"Demand{_msg}", UserWarning)
             dem = dem.centroid
 
         if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
-            warnings.warn(
-                "Facility geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
-                Warning,
-            )
+            warnings.warn(f"Facility{_msg}", UserWarning)
             fac = fac.centroid
 
         dem_data = np.array([dem.x.to_numpy(), dem.y.to_numpy()]).T
@@ -573,7 +570,8 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
         if gdf_demand.crs != gdf_fac.crs:
             raise ValueError(
-                f"geodataframes crs are different: gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
+                "Geodataframes crs are different: "
+                f"gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
             )
 
         distances = cdist(dem_data, fac_data, distance_metric)
@@ -898,18 +896,16 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         dem_type_geom = dem.geom_type.unique()
         fac_type_geom = fac.geom_type.unique()
 
+        _msg = (
+            " geodataframe contains mixed type geometries or is not a point. Be "
+            "sure deriving centroid from geometries doesn't affect the results."
+        )
         if len(dem_type_geom) > 1 or not "Point" in dem_type_geom:
-            warnings.warn(
-                "Demand geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
-                Warning,
-            )
+            warnings.warn(f"Demand{_msg}", UserWarning)
             dem = dem.centroid
 
         if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
-            warnings.warn(
-                "Facility geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
-                Warning,
-            )
+            warnings.warn(f"Facility{_msg}", UserWarning)
             fac = fac.centroid
 
         dem_data = np.array([dem.x.to_numpy(), dem.y.to_numpy()]).T
@@ -917,7 +913,8 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
 
         if gdf_demand.crs != gdf_fac.crs:
             raise ValueError(
-                f"geodataframes crs are different: gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
+                "Geodataframes crs are different: "
+                f"gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
             )
 
         distances = cdist(dem_data, fac_data, distance_metric)
