@@ -17,7 +17,9 @@ Tutorials
 
     notebooks/facloc-real-world.ipynb
     notebooks/lscp.ipynb
+    notebooks/lscp_gis.ipynb
     notebooks/mclp.ipynb
+    notebooks/mclp_gis.ipynb
     notebooks/p-center.ipynb
     notebooks/p-median.ipynb
     notebooks/lscpb.ipynb
