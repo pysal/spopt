@@ -113,6 +113,15 @@ You may also install the latest stable spopt via conda-forge channel by running:
 $ conda install --channel conda-forge spopt
 ```
 
+## Related packages
+
+* Region
+* Locate
+  * [`allagash`](https://github.com/apulverizer/allagash)
+  * [`maximum-coverage-location`](https://github.com/cyang-kth/maximum-coverage-location)
+  * [`p-center`](https://github.com/antoniomedrano/p-center)
+  * [`pyspatialopt`](https://github.com/apulverizer/pyspatialopt)
+
 ## Contribute
 
 PySAL-spopt is under active development and contributors are welcome.
