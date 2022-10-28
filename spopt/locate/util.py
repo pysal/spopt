@@ -1,10 +1,11 @@
+import geopandas
 import numpy
 from shapely.geometry import Point, Polygon, MultiPolygon
-import geopandas
+from typing import Union
 
 
 def simulated_geo_points(
-    in_data: geopandas.GeoDataFrame | geopandas.GeoSeries | Polygon | MultiPolygon,
+    in_data: Union[geopandas.GeoDataFrame, geopandas.GeoSeries, Polygon, MultiPolygon],
     needed: int = 1,
     seed: int = 0,
 ) -> geopandas.GeoDataFrame:
