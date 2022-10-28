@@ -24,6 +24,7 @@
              os: macos-latest
            - environment-file: .ci/310.yaml
              os: windows-latest
+       fail-fast: false
     
      steps:
        - name: checkout repo
