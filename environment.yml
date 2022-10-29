@@ -22,7 +22,6 @@ dependencies:
   - matplotlib
   - matplotlib-scalebar
   - overpy
-  - routingpy
   - seaborn
   - spaghetti
   - watermark
@@ -31,5 +30,5 @@ dependencies:
   - pip:
     - git+https://github.com/pysal/spopt.git@main
     # (notebook/binder specific) having trouble resolving routingpy via conda-forge
-    #- routingpy
+    - routingpy
     - pulp
