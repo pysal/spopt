@@ -10,7 +10,8 @@ dependencies:
   - networkx
   - numpy>=1.3
   - pandas>=1
-  - pulp
+  - pip
+  #- pulp ##############################
   - scikit-learn>=0.22
   - scipy>=1.0
   
@@ -21,13 +22,14 @@ dependencies:
   - matplotlib
   - matplotlib-scalebar
   - overpy
+  - routingpy
   - seaborn
   - spaghetti
   - watermark
-  # having trouble resolving routingpy via conda-forge
-  - pip:
-    - routingpy
   
   # bleeding edge spopt
   - pip:
     - git+https://github.com/pysal/spopt.git@main
+    # (notebook/binder specific) having trouble resolving routingpy via conda-forge
+    #- routingpy
+    - pulp
