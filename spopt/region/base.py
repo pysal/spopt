@@ -7,36 +7,6 @@ import networkx
 from scipy.spatial import KDTree
 
 
-class RegionMixin(object):
-    """Mixin class for all region solvers."""
-
-    _solver_type = "regionalizer"
-
-    def solve_assign(self, X, adjacency):
-        """
-
-        Parameters
-        ----------
-
-        X :
-            ...
-
-        adjacency :
-            ...
-
-        Returns
-        -------
-
-        _labels_ : list
-            Region labels.
-
-        """
-
-        self.solve(X, adjacency)
-        _labels_ = self.labels_
-        return _labels_
-
-
 def w_to_g(w):
     """Get a ``networkx`` graph from a PySAL W.
 
