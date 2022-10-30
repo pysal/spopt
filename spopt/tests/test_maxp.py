@@ -5,6 +5,7 @@ import pytest
 from shapely.geometry import Polygon, box
 from spopt.region import MaxPHeuristic
 from spopt.region.maxp import infeasible_components, modify_components, plot_components
+from spopt.region.base import form_single_component
 
 
 # Mexican states
@@ -125,3 +126,12 @@ class TestMaxPHeuristic:
         assert gdf1.shape[0] == 55
         assert w1.neighbors[0] != w.neighbors[0]
         assert w1.neighbors[1] != w.neighbors[1]
+
+    def test_form_single_component_error(self):
+        linkage = "Triple"
+        with pytest.raises(ValueError, match=f"Unknown `linkage`: '{linkage}'"):
+            form_single_component(
+                self.gdf,
+                libpysal.weights.Queen.from_dataframe(self.gdf),
+                linkage=linkage,
+            )
