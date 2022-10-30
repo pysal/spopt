@@ -351,7 +351,7 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
     threshold : {int, float}
         The threshold value.
     policy: str
-        ``'single'`` will attach an infeasible component to a feasible
+        ``'single'`` (default) will attach an infeasible component to a feasible
         component based on a single join using the minimum nearest
         neighbor distance between areas of infeasible components and
         areas in the largest component. ``'multiple'`` will form a join
@@ -364,26 +364,26 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
     Returns
     -------
     gdf: geopandas.GeoDataFrame
-        Geodataframe containing modiefied data.
+        Geodataframe containing modified data.
     w : libpysal.weights.W
         Weights object created from given data.
 
     """
 
-    ifcs = infeasible_components(gdf, w, threshold_var, threshold)
+    _policy = policy.lower()
+    if _policy not in ["keep", "single", "multiple", "drop"]:
+        raise ValueError(f"Unknown `policy`: '{policy}'")
 
+    ifcs = infeasible_components(gdf, w, threshold_var, threshold)
     if ifcs == numpy.unique(w.component_labels).tolist():
-        raise Exception("No feasible components found in input.")
-    policy = policy.lower()
-    if not ifcs or policy == "keep":
+        raise ValueError("No feasible components found in input.")
+
+    if not ifcs or _policy == "keep":
         return gdf, w
-    elif policy == "single":
-        w = form_single_component(gdf, w, linkage="single")
+    elif _policy in ["single", "multiple"]:
+        w = form_single_component(gdf, w, linkage=_policy)
         return gdf, w
-    elif policy == "multiple":
-        w = form_single_component(gdf, w, linkage="multiple")
-        return gdf, w
-    elif policy == "drop":
+    else:
         keep_ids = numpy.where(~numpy.isin(w.component_labels, ifcs))[0]
         gdf = gdf.iloc[keep_ids]
         cw = libpysal.weights.w_subset(w, keep_ids)
@@ -395,8 +395,6 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
         new_w = libpysal.weights.W(new_neigh)
         gdf.reset_index(inplace=True)
         return gdf, new_w
-    else:
-        raise Exception(f"Undefined components policy: {policy}")
 
 
 def form_single_component(gdf, w, linkage="single"):

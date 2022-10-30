@@ -104,7 +104,6 @@ class TestMaxPHeuristic:
 
     def test_infeasible_components(self):
         ifcs = infeasible_components(self.mexico, self.w, "count", 35)
-        print(ifcs)
         numpy.testing.assert_array_equal(ifcs, [0])
 
     def test_plot_components(self):
@@ -127,6 +126,39 @@ class TestMaxPHeuristic:
         assert w1.neighbors[0] != w.neighbors[0]
         assert w1.neighbors[1] != w.neighbors[1]
 
+    @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
+    def test_modify_components_policy_error(self):
+        policy = "Triple"
+        with pytest.raises(ValueError, match=f"Unknown `policy`: '{policy}'"):
+            modify_components(
+                self.gdf,
+                libpysal.weights.Queen.from_dataframe(self.gdf),
+                "var",
+                6,
+                policy=policy,
+            )
+
+    @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
+    def test_modify_components_xfeasible_error(self):
+        with pytest.raises(ValueError, match="No feasible components found in input."):
+            modify_components(
+                self.gdf,
+                libpysal.weights.Queen.from_dataframe(self.gdf),
+                "var",
+                100,
+            )
+
+    @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
+    def test_form_single_component_already_single(self):
+        _gdf = self.gdf[10:20].copy()
+        w = libpysal.weights.Queen.from_dataframe(_gdf)
+        single_component = form_single_component(_gdf, w)
+
+        numpy.testing.assert_array_equal(
+            numpy.zeros(_gdf.shape[0]), single_component.component_labels
+        )
+
+    @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
     def test_form_single_component_error(self):
         linkage = "Triple"
         with pytest.raises(ValueError, match=f"Unknown `linkage`: '{linkage}'"):
