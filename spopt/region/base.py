@@ -27,8 +27,8 @@ class RegionMixin(object):
         Returns
         -------
 
-        _labels_ :
-            ...
+        _labels_ : list
+            Region labels.
 
         """
 
@@ -78,7 +78,6 @@ def move_ok(area, source, destination, g, w):
 
     g : networkx.Graph
         NetworkX representation of ``w``.
-
     w : libpysal.weights.W
         PySAL weights object.
 
@@ -116,15 +115,14 @@ def ok_moves(candidates, regions, labels_, closest, g, w, areas):
     regions :
         ...
 
-    labels_ :
-        ...
+    labels_ : list
+        Region labels.
 
     closest :
         ...
 
     g : networkx.Graph
-        ...
-
+        NetworkX representation of ``w``.
     w : libpysal.weights.W
         PySAL weights object.
 
@@ -135,7 +133,7 @@ def ok_moves(candidates, regions, labels_, closest, g, w, areas):
     -------
 
     keep : list
-        ...
+        Area labels where moves are OK.
 
     """
 
@@ -283,6 +281,7 @@ def infeasible_components(gdf, w, threshold_var, threshold):
 
     Parameters
     ----------
+
     gdf : geopandas.GeoDataFrame, required
         Geodataframe containing original data.
     w : libpysal.weights.W, required
@@ -297,7 +296,8 @@ def infeasible_components(gdf, w, threshold_var, threshold):
 
     Returns
     -------
-    : list
+
+    list
         Infeasible components.
 
     """
@@ -312,12 +312,12 @@ def infeasible_components(gdf, w, threshold_var, threshold):
 
 
 def plot_components(gdf, w):
-    """Plot to view components of the W for a gdf.
+    """Plot to view components of the W for a ``gdf``.
 
     Parameters
     ----------
     gdf: geopandas.GeoDataframe
-
+        Geodataframe of component data.
     w: libpysal.weights.W
         PySAL weights object defined on ``gdf``.
 
@@ -340,7 +340,7 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
     ----------
 
     gdf : geopandas.GeoDataFrame
-        Geodataframe containing original data
+        Geodataframe containing original data.
     w : libpysal.weights.W
         Weights object created from given data.
     attrs_name : list
@@ -364,11 +364,12 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
     Returns
     -------
     gdf: geopandas.GeoDataFrame
-        ...
+        Geodataframe containing modiefied data.
     w : libpysal.weights.W
         Weights object created from given data.
 
     """
+
     ifcs = infeasible_components(gdf, w, threshold_var, threshold)
 
     if ifcs == numpy.unique(w.component_labels).tolist():
@@ -404,7 +405,7 @@ def form_single_component(gdf, w, linkage="single"):
     Parameters
     ----------
     gdf : geopandas.GeoDataFrame
-        ...
+        Input area data.
     w : libysal.weights.W
         PySAL weights object.
     linkage : str
