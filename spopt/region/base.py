@@ -37,15 +37,12 @@ def move_ok(area, source, destination, g, w):
     Parameters
     ----------
 
-    area :
-        ...
-
-    source :
-        ...
-
-    destination :
-        ...
-
+    area : int, numpy.int64
+        Area label.
+    source : numpy.array
+        Source region labels.
+    destination : list
+        destination region labels.
     g : networkx.Graph
         NetworkX representation of ``w``.
     w : libpysal.weights.W
@@ -79,25 +76,20 @@ def ok_moves(candidates, regions, labels_, closest, g, w, areas):
     Parameters
     ----------
 
-    candidates :
-        ...
-
-    regions :
-        ...
-
-    labels_ : list
+    candidates : numpy.array
+        Candidate area labels for moves.
+    regions : list
         Region labels.
-
-    closest :
-        ...
-
+    labels_ : list
+        Region membership labels.
+    closest : numpy.array
+        Closest region labels.
     g : networkx.Graph
         NetworkX representation of ``w``.
     w : libpysal.weights.W
         PySAL weights object.
-
-    areas :
-        ...
+    areas : numpy.array
+        All area labels.
 
     Returns
     -------
@@ -113,6 +105,7 @@ def ok_moves(candidates, regions, labels_, closest, g, w, areas):
         destination = regions[closest[area]]
         if move_ok(area, source, destination, g, w):
             keep.append(area)
+
     return keep
 
 
@@ -122,22 +115,22 @@ def region_neighbors(a_list, region):
     Parameters
     ----------
 
-    a_list :
-        ...
-
-    region :
-        ...
+    a_list : pandas.DataFrame
+        Adjacency and weights information in dataframe format.
+    region : numpy.array
+        Single element array for region label.
 
     Returns
     -------
 
     _region_neighbors_ : list
-        ...
+        Neighboring region labels of ``region``.
 
     """
 
     neighbors = a_list[a_list["focal"].isin(region)].neighbor.values
     _region_neighbors_ = [j for j in neighbors if j not in region]
+
     return _region_neighbors_
 
 
@@ -147,17 +140,16 @@ def _centroid(regions, data):
     Parameters
     ----------
 
-    regions :
-        ...
-
-    data :
-        ...
+    regions : list
+        Region labels.
+    data :  numpy.array
+        All data coordinates.
 
     Returns
     -------
 
     _centroid_ : numpy.array
-        ...
+        Centroid coordinates.
 
     """
 
@@ -171,17 +163,16 @@ def _closest(data, centroids):
     Parameters
     ----------
 
-    data :
-        ...
-
-    centroids :
-        ...
+    data : numpy.array
+        All data coordinates.
+    centroids : numpy.array
+        Centroid coordinates.
 
     Returns
     -------
 
     _closest_ : list
-        ...
+        The closest row in ``centroids`` for each row in ``data``.
 
     """
 
@@ -221,12 +212,10 @@ def is_neighbor(area, region, w):
     Parameters
     ----------
 
-    area :
-        ...
-
-    region :
-        ...
-
+    area : int, numpy.int64
+        Area label
+    region : list
+        Region members.
     w : libpysal.weights.W
         PySAL weights object.
 
