@@ -44,15 +44,16 @@ def w_to_g(w):
     ----------
 
     w : libpysal.weights.W
-        ...
+        PySAL weights object.
 
     Returns
     -------
 
     g : networkx.Graph
-        ...
+        NetworkX representation of ``w``.
 
     """
+
     g = networkx.Graph()
     for ego, alters in w.neighbors.items():
         for alter in alters:
@@ -76,10 +77,10 @@ def move_ok(area, source, destination, g, w):
         ...
 
     g : networkx.Graph
-        ...
+        NetworkX representation of ``w``.
 
     w : libpysal.weights.W
-        ...
+        PySAL weights object.
 
     Returns
     -------
@@ -125,7 +126,7 @@ def ok_moves(candidates, regions, labels_, closest, g, w, areas):
         ...
 
     w : libpysal.weights.W
-        ...
+        PySAL weights object.
 
     areas :
         ...
@@ -220,26 +221,28 @@ def _closest(data, centroids):
     return _closest_
 
 
-def _seeds(areas, k):
+def _seeds(areas, k, seed):
     """Randomly select `k` seeds from a sequence of areas.
 
     Parameters
     ----------
 
-    areas :
-        ...
-
+    areas : numpy.array
+        Enumeration of ``W`` areas.
     k : int
         The number of desired seeds.
+    seed : int
+        Random state.
 
     Returns
     -------
 
     _seeds_ : numpy.array
-        ...
+        Random labels of clusters to form.
 
     """
 
+    numpy.random.seed(seed)
     _seeds_ = numpy.random.choice(areas, size=k, replace=False)
     return _seeds_
 
@@ -257,14 +260,13 @@ def is_neighbor(area, region, w):
         ...
 
     w : libpysal.weights.W
-        ...
+        PySAL weights object.
 
     Returns
     -------
 
     neighboring : bool
-        ``True`` if area is a neighbor of any member
-        of region otherwise ``False``.
+        ``True`` if area is a neighbor of any member of region otherwise ``False``.
 
     """
 
@@ -282,25 +284,24 @@ def infeasible_components(gdf, w, threshold_var, threshold):
     Parameters
     ----------
     gdf : geopandas.GeoDataFrame, required
-        Geodataframe containing original data
-
+        Geodataframe containing original data.
     w : libpysal.weights.W, required
-        Weights object created from given data
-
+        Weights object created from given data.
     attrs_name : list, required
         Strings for attribute names to measure similarity
         (cols of ``geopandas.GeoDataFrame``).
-
     threshold_var : string, requied
         The name of the spatial extensive attribute variable.
-
     threshold : {int, float}, required
         The threshold value.
 
     Returns
     -------
-    list of infeasible components
+    : list
+        Infeasible components.
+
     """
+
     gdf["_components"] = w.component_labels
     gb = gdf.groupby(by="_components").sum(numeric_only=True)
     gdf.drop(columns="_components", inplace=True)
@@ -317,13 +318,16 @@ def plot_components(gdf, w):
     ----------
     gdf: geopandas.GeoDataframe
 
-    w: libpysal.weights.W defined on gdf
+    w: libpysal.weights.W
+        PySAL weights object defined on ``gdf``.
 
     Returns
     -------
+
     folium.folium.Map
 
     """
+
     cgdf = gdf.copy()
     cgdf["component"] = w.component_labels
     return cgdf.explore(column="component", categorical=True)
@@ -334,40 +338,36 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
 
     Parameters
     ----------
-    gdf : geopandas.GeoDataFrame, required
+
+    gdf : geopandas.GeoDataFrame
         Geodataframe containing original data
-
-    w : libpysal.weights.W, required
-        Weights object created from given data
-
-    attrs_name : list, required
+    w : libpysal.weights.W
+        Weights object created from given data.
+    attrs_name : list
         Strings for attribute names to measure similarity (cols of
         ``geopandas.GeoDataFrame``).
-
-    threshold_var : string, requied
+    threshold_var : str
         The name of the spatial extensive attribute variable.
-
-    threshold : {int, float}, required
+    threshold : {int, float}
         The threshold value.
-
     policy: str
-          'single' will attach an infeasible component to a feasible
-          component based on a single join using the minimum nearest
-          neighbor distance between areas of infeasible components and
-          areas in the largest component. 'multiple' will form a join
-          between each area of an infeasible area and its nearest
-          neighbor area in a feasible component.  'keep' keeps
-          infeasible components and attempts to solve. 'drop' will
-          remove the areas from the smallest components and return a w
-          defined on the feasible components.
-
+        ``'single'`` will attach an infeasible component to a feasible
+        component based on a single join using the minimum nearest
+        neighbor distance between areas of infeasible components and
+        areas in the largest component. ``'multiple'`` will form a join
+        between each area of an infeasible area and its nearest
+        neighbor area in a feasible component. ``'keep'`` keeps
+        infeasible components and attempts to solve. ``'drop'`` will
+        remove the areas from the smallest components and return a ``w``
+        defined on the feasible components.
 
     Returns
     -------
     gdf: geopandas.GeoDataFrame
+        ...
+    w : libpysal.weights.W
+        Weights object created from given data.
 
-    w : libpysal.weights.W, required
-        Weights object created from given data
     """
     ifcs = infeasible_components(gdf, w, threshold_var, threshold)
 
@@ -403,10 +403,10 @@ def form_single_component(gdf, w, linkage="single"):
 
     Parameters
     ----------
-    gdf : GeoDataFrame
-
-    w   : libysal.weights.W
-
+    gdf : geopandas.GeoDataFrame
+        ...
+    w : libysal.weights.W
+        PySAL weights object.
     linkage : str
          `single`: a small component will be joined with the largest
          component by adding a single join based on minimum nearest
@@ -417,8 +417,15 @@ def form_single_component(gdf, w, linkage="single"):
 
     Returns
     -------
-    w  : libpysal.weights.W
+    w : libpysal.weights.W
+        PySAL weights object.
+
     """
+
+    ll = linkage.lower()
+    if ll not in ["single", "multiple"]:
+        raise ValueError(f"Unknown `linkage`: '{linkage}'")
+
     data = numpy.unique(w.component_labels, return_counts=True)
     if len(data[0]) == 1:
         return w
@@ -457,24 +464,24 @@ def form_single_component(gdf, w, linkage="single"):
             dd, jj = tree.query(query_pnts, k=1)
             clas = numpy.where(numpy.isin(w.component_labels, [cl]))[0]
 
-            jj = [lcas[0][j] for j in jj]  # map to idx in gdf
-
-            ll = linkage.lower()
+            # map to idx in gdf
+            jj = [lcas[0][j] for j in jj]
 
             if ll == "single":
                 min_idx = numpy.argmin(dd)
                 j = jj[min_idx]
                 i = clas[min_idx]
                 joins.append((i, j))
-            elif ll == "multiple":
+            else:
                 pairs = zip(clas, jj)
                 joins.extend(list(pairs))
-            else:
-                raise Exception(f"Unknown linkage: {linkage}")
 
         neighbors = copy.deepcopy(w.neighbors)
         for join in joins:
             head, tail = join
             neighbors[head].append(tail)
             neighbors[tail].append(head)
-        return libpysal.weights.W(neighbors)
+
+        w = libpysal.weights.W(neighbors)
+
+        return w

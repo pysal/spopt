@@ -24,7 +24,7 @@ from .base import (
 )
 
 
-def region_k_means(X, n_clusters, w, drop_islands=True):
+def region_k_means(X, n_clusters, w, drop_islands=True, seed=0):
     """Solve the region-K-means problem with the constraint
     that each cluster forms a spatially connected component.
 
@@ -40,6 +40,8 @@ def region_k_means(X, n_clusters, w, drop_islands=True):
     drop_islands : bool
         Drop observations that are islands (``True``) or keep them (``False``).
         Default is ``True``.
+    seed : int
+        Random state to pass into ``_seeds()``. Default is ``0``.
 
     Returns
     -------
@@ -59,7 +61,7 @@ def region_k_means(X, n_clusters, w, drop_islands=True):
     a_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
     areas = numpy.arange(w.n).astype(int)
     k = n_clusters
-    seeds = _seeds(areas, k)
+    seeds = _seeds(areas, k, seed)
 
     # initial assignment phase
     label = numpy.array([-1] * w.n).astype(int)
@@ -144,6 +146,8 @@ class RegionKMeansHeuristic(BaseSpOptHeuristicSolver):
     drop_islands : bool
         Drop observations that are islands (``True``) or keep them (``False``).
         Default is ``True``.
+    seed : int
+        Random state to pass into ``_seeds()``. Default is ``0``.
 
     Attributes
     ----------
@@ -158,17 +162,23 @@ class RegionKMeansHeuristic(BaseSpOptHeuristicSolver):
 
     """
 
-    def __init__(self, data, n_clusters, w, drop_islands=True):
+    def __init__(self, data, n_clusters, w, drop_islands=True, seed=0):
         self.data = data
         self.w = w
         self.n_clusters = n_clusters
         self.drop_islands = drop_islands
+        self.seed = seed
 
     def solve(self):
         """Solve the region k-means heuristic."""
         centroid, label, iters = region_k_means(
-            self.data, self.n_clusters, self.w, self.drop_islands
+            self.data,
+            self.n_clusters,
+            self.w,
+            drop_islands=self.drop_islands,
+            seed=self.seed,
         )
+
         self.labels_ = label
         self.centroids_ = centroid
         self.iters_ = iters
