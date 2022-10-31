@@ -85,6 +85,9 @@ class LSCP(LocateSolver, BaseOutputMixin):
             two-dimensional distance array between facility points and demand point
         service_radius: float
             maximum acceptable service distance by problem
+        predefined_facilities_arr : numpy.array
+            Predefined facilities that must appear in the solution.
+            Default is ``None``.
         name: str, default="LSCP"
             name of the problem
 
@@ -208,6 +211,9 @@ class LSCP(LocateSolver, BaseOutputMixin):
             facility candidate sites geometry column name
         service_radius: float
             maximum acceptable service distance by problem
+        predefined_facility_col: str
+            Column name representing facilities are already defined.
+            Default is ``None``.
         distance_metric: str, default="euclidean"
             metrics supported by :method: `scipy.spatial.distance.cdist` used
             for the distance calculations
@@ -388,6 +394,8 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
     problem: pulp.LpProblem
         Pulp instance of optimization model that contains constraints,
         variables and objective function.
+    solver: pulp.LpSolver
+        solver supported by pulp package
 
     Attributes
     ----------
@@ -397,6 +405,8 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
     problem: pulp.LpProblem
         Pulp instance of optimization model that contains constraints,
         variables and objective function.
+    solver: pulp.LpSolver
+        solver supported by pulp package
     lscp_obj_value: float
         Objective value returned from solved LSCP instance.
     fac2cli : np.array
@@ -456,6 +466,11 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
             two-dimensional distance array between facility points and demand point
         service_radius: float
             maximum acceptable service distance by problem
+        solver: pulp.LpSolver
+            solver supported by pulp package
+        predefined_facilities_arr : numpy.array
+            Predefined facilities that must appear in the solution.
+            Default is ``None``.
         name: str, default="LSCP-B"
             name of the problem
 
@@ -599,6 +614,11 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
             facility candidate sites geometry column name
         service_radius: float
             maximum acceptable service distance by problem
+        solver: pulp.LpSolver
+            solver supported by pulp package
+        predefined_facility_col: str
+            Column name representing facilities are already defined.
+            Default is ``None``.
         distance_metric: str, default="euclidean"
             metrics supported by :method: `scipy.spatial.distance.cdist` used for
             the distance calculations
@@ -854,8 +874,9 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             maximum acceptable service distance by problem
         p_facilities: int
             number of facilities to be located
-        predefined_facilities_arr: np.array, default=None
-            bool array defining which facilities are already defined
+        predefined_facilities_arr : numpy.array
+            Predefined facilities that must appear in the solution.
+            Default is ``None``.
         name: str, default="MCLP"
             name of the problem
 
@@ -1002,8 +1023,9 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             maximum acceptable service distance by problem
         p_facilities: int
             number of facilities to be located
-        predefined_facility_col: np.array, default=None
-            column name representing facilities are already defined
+        predefined_facility_col: str
+            Column name representing facilities are already defined.
+            Default is ``None``.
         distance_metric: str, default="euclidean"
             metrics supported by :method: `scipy.spatial.distance.cdist` used for
             the distance calculations
