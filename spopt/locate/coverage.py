@@ -412,8 +412,13 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
 
     """
 
-    def __init__(self, name: str, problem: pulp.LpProblem, lscp_obj_value=0.0):
-        self.lscp_obj_value = lscp_obj_value
+    def __init__(
+        self,
+        name: str,
+        problem: pulp.LpProblem,
+        solver: pulp.LpSolver,
+    ):
+        self.solver = solver
         super().__init__(name, problem)
 
     def __add_obj(self) -> None:
@@ -507,9 +512,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
         >>> lscpb_from_cost_matrix = LSCPB.from_cost_matrix(
         ...     cost_matrix, service_radius=8, solver=pulp.PULP_CBC_CMD(msg=False)
         ... )
-        >>> lscpb_from_cost_matrix = lscpb_from_cost_matrix.solve(
-        ...     pulp.PULP_CBC_CMD(msg=False)
-        ... )
+        >>> lscpb_from_cost_matrix = lscpb_from_cost_matrix.solve()
 
         Get facility lookup demand coverage array
 
@@ -542,7 +545,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
 
         model = pulp.LpProblem(name, pulp.LpMaximize)
 
-        lscpb = LSCPB(name, model)
+        lscpb = LSCPB(name, model, solver)
         lscpb.lscp_obj_value = lscp.problem.objective.value()
 
         FacilityModelBuilder.add_facility_integer_variable(lscpb, r_fac, "y[{i}]")
@@ -655,9 +658,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
         ...     solver=pulp.PULP_CBC_CMD(msg=False),
         ...     distance_metric="euclidean"
         ... )
-        >>> lscpb_from_geodataframe = lscpb_from_geodataframe.solve(
-        ...     pulp.PULP_CBC_CMD(msg=False)
-        ... )
+        >>> lscpb_from_geodataframe = lscpb_from_geodataframe.solve()
 
         Get facility lookup demand coverage array
 
@@ -743,15 +744,13 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
 
             self.fac2cli.append(array_cli)
 
-    def solve(self, solver: pulp.LpSolver, results: bool = True):
+    def solve(self, results: bool = True):
         """
         Solve the LSCPB model
 
         Parameters
         ----------
 
-        solver: pulp.LpSolver
-            solver supported by pulp package
         results: bool
             if True it will create metainfo - which facilities cover which demand
             and vice-versa, and the uncovered demand - about the model results
@@ -762,7 +761,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
         LSCPB object
 
         """
-        self.problem.solve(solver)
+        self.problem.solve(self.solver)
         self.check_status()
 
         if results:

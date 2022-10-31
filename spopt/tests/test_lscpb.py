@@ -62,7 +62,7 @@ class TestSyntheticLocate:
         lscpb = LSCPB.from_cost_matrix(
             self.cost_matrix, 10, pulp.PULP_CBC_CMD(msg=False)
         )
-        result = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = lscpb.solve()
 
         assert isinstance(result, LSCPB)
 
@@ -70,7 +70,7 @@ class TestSyntheticLocate:
         lscpb = LSCPB.from_cost_matrix(
             self.cost_matrix, 10, pulp.PULP_CBC_CMD(msg=False)
         )
-        result = lscpb.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        result = lscpb.solve(results=False)
         assert isinstance(result, LSCPB)
 
         with pytest.raises(AttributeError):
@@ -87,8 +87,7 @@ class TestSyntheticLocate:
         lscpb = LSCPB.from_cost_matrix(
             self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False)
         )
-        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
-        lscpb.facility_client_array()
+        lscpb = lscpb.solve()
 
         numpy.testing.assert_array_equal(
             numpy.array(lscpb.fac2cli, dtype=object),
@@ -102,9 +101,7 @@ class TestSyntheticLocate:
         lscpb = LSCPB.from_cost_matrix(
             self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False)
         )
-        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
-        lscpb.facility_client_array()
-        lscpb.client_facility_array()
+        lscpb = lscpb.solve()
 
         numpy.testing.assert_array_equal(
             numpy.array(lscpb.cli2fac, dtype=object),
@@ -120,7 +117,7 @@ class TestSyntheticLocate:
             10,
             pulp.PULP_CBC_CMD(msg=False),
         )
-        result = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = lscpb.solve()
 
         assert isinstance(result, LSCPB)
 
@@ -136,8 +133,7 @@ class TestSyntheticLocate:
             8,
             pulp.PULP_CBC_CMD(msg=False),
         )
-        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
-        lscpb.facility_client_array()
+        lscpb = lscpb.solve()
 
         numpy.testing.assert_array_equal(
             numpy.array(lscpb.fac2cli, dtype=object),
@@ -156,9 +152,7 @@ class TestSyntheticLocate:
             8,
             pulp.PULP_CBC_CMD(msg=False),
         )
-        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
-        lscpb.facility_client_array()
-        lscpb.client_facility_array()
+        lscpb = lscpb.solve()
 
         numpy.testing.assert_array_equal(
             numpy.array(lscpb.cli2fac, dtype=object),
@@ -183,8 +177,7 @@ class TestSyntheticLocate:
             solver=pulp.PULP_CBC_CMD(msg=False, warmStart=True),
             predefined_facility_col="predefined_loc",
         )
-        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
-        lscpb.facility_client_array()
+        lscpb = lscpb.solve()
 
         numpy.testing.assert_array_equal(
             numpy.array(lscpb.fac2cli, dtype=object),
@@ -241,7 +234,7 @@ class TestRealWorldLocate:
         lscpb = LSCPB.from_cost_matrix(
             self.cost_matrix, self.service_dist, pulp.PULP_CBC_CMD(msg=False)
         )
-        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+        lscpb = lscpb.solve()
 
         assert lscpb.problem.status == pulp.LpStatusOptimal
 
@@ -250,14 +243,14 @@ class TestRealWorldLocate:
             lscpb = LSCPB.from_cost_matrix(
                 self.cost_matrix, 20, pulp.PULP_CBC_CMD(msg=False)
             )
-            lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+            lscpb.solve()
 
     def test_mixin_lscpb_get_percentage(self):
         percentage_expected = 81.46341463414633
         lscpb = LSCPB.from_cost_matrix(
             self.cost_matrix, self.service_dist, pulp.PULP_CBC_CMD(msg=False)
         )
-        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+        lscpb = lscpb.solve()
 
         assert lscpb.backup_perc == pytest.approx(percentage_expected)
 
@@ -270,7 +263,7 @@ class TestRealWorldLocate:
             self.service_dist,
             pulp.PULP_CBC_CMD(msg=False),
         )
-        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+        lscpb = lscpb.solve()
 
         assert lscpb.problem.status == pulp.LpStatusOptimal
 
@@ -284,7 +277,7 @@ class TestRealWorldLocate:
                 0,
                 pulp.PULP_CBC_CMD(msg=False),
             )
-            lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+            lscpb.solve()
 
 
 class TestErrorsWarnings:
@@ -339,7 +332,9 @@ class TestErrorsWarnings:
 
     def test_attribute_error_add_facility_constraint(self):
         with pytest.raises(AttributeError, match="Before setting backup coverage"):
-            dummy_class = LSCPB("dummy", pulp.LpProblem("name"))
+            dummy_class = LSCPB(
+                "dummy", pulp.LpProblem("name"), pulp.PULP_CBC_CMD(msg=False)
+            )
             dummy_p_facility = 1
             dummy_fac_r = 0
             dummy_cli_r = 0
