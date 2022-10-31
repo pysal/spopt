@@ -59,6 +59,16 @@ class TestSyntheticLocate:
         result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         assert isinstance(result, PDispersion)
 
+    def test_p_dispersion_from_cost_matrix_no_results(self):
+        pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, p_fac=2)
+        result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        assert isinstance(result, PDispersion)
+
+        with pytest.raises(AttributeError):
+            result.cli2fac
+        with pytest.raises(AttributeError):
+            result.fac2clif
+
     def test_p_dispersion_from_geodataframe(self):
         pdispersion = PDispersion.from_geodataframe(
             self.facilities_snapped,

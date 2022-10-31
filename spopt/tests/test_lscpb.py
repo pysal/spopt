@@ -66,6 +66,20 @@ class TestSyntheticLocate:
 
         assert isinstance(result, LSCPB)
 
+    def test_lscpb_from_cost_matrix_no_results(self):
+        lscpb = LSCPB.from_cost_matrix(
+            self.cost_matrix, 10, pulp.PULP_CBC_CMD(msg=False)
+        )
+        result = lscpb.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        assert isinstance(result, LSCPB)
+
+        with pytest.raises(AttributeError):
+            result.cli2fac
+        with pytest.raises(AttributeError):
+            result.fac2clif
+        with pytest.raises(AttributeError):
+            result.backup_perc
+
     def test_lscpb_facility_client_array_from_cost_matrix(self):
         with open(self.dirpath + "lscpb_fac2cli.pkl", "rb") as f:
             lscpb_objective = pickle.load(f)
@@ -237,6 +251,15 @@ class TestRealWorldLocate:
                 self.cost_matrix, 20, pulp.PULP_CBC_CMD(msg=False)
             )
             lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+
+    def test_mixin_lscpb_get_percentage(self):
+        percentage_expected = 81.46341463414633
+        lscpb = LSCPB.from_cost_matrix(
+            self.cost_matrix, self.service_dist, pulp.PULP_CBC_CMD(msg=False)
+        )
+        lscpb = lscpb.solve(pulp.PULP_CBC_CMD(msg=False))
+
+        assert lscpb.backup_perc == pytest.approx(percentage_expected)
 
     def test_optimality_lscpb_from_geodataframe(self):
         lscpb = LSCPB.from_geodataframe(

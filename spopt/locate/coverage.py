@@ -6,6 +6,7 @@ from geopandas import GeoDataFrame
 from spopt.locate.base import (
     BaseOutputMixin,
     CoveragePercentageMixin,
+    BackupPercentageMixinMixin,
     LocateSolver,
     FacilityModelBuilder,
 )
@@ -374,7 +375,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         return self
 
 
-class LSCPB(LocateSolver, BaseOutputMixin):
+class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
     """
     LSCPB class implements Location Set Covering Problem - Backup
     optimization model and solves it.
@@ -520,6 +521,12 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         facility 3 serving 92 clients
         facility 4 serving 0 clients
 
+        Get the percentage of clients covered by more than one facility.
+
+        >>> round(lscpb_from_cost_matrix.backup_perc, 3)
+        88.0
+
+        88% of clients are covered by more than 1 facility
 
         """
         if predefined_facilities_arr is not None:
@@ -662,6 +669,14 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         facility 3 serving 0 clients
         facility 4 serving 0 clients
 
+        Get the percentage of clients covered by more than one facility.
+
+        >>> round(lscpb_from_geodataframe.backup_perc, 3)
+        0.0
+
+        All clients are covered by 1 facility because only one facility
+        is needed to solve the LSCP.
+
         """
 
         predefined_facilities_arr = None
@@ -753,6 +768,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         if results:
             self.facility_client_array()
             self.client_facility_array()
+            self.get_percentage()
 
         return self
 

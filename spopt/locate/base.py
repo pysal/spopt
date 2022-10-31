@@ -157,6 +157,19 @@ class MeanDistanceMixin:
         self.mean_dist = self.problem.objective.value() / self.ai_sum
 
 
+class BackupPercentageMixinMixin:
+    """
+    Mixin to calculate the percentage of clients being covered by
+    more the one facility (LSCP-B).
+    """
+
+    def get_percentage(self):
+        """
+        Calculate the percentage of clients with backup.
+        """
+        self.backup_perc = (self.problem.objective.value() / len(self.cli_vars)) * 100.0
+
+
 T_FacModel = TypeVar("T_FacModel", bound=LocateSolver)
 
 
