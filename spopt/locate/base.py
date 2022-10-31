@@ -134,7 +134,7 @@ class CoveragePercentageMixin:
 
     def get_percentage(self):
         """
-        Calculate the percentage
+        Calculate the percentage of covered clients.
         """
         if hasattr(self, "n_cli_uncov"):
             self.perc_cov = (1 - (self.n_cli_uncov / self.aij.shape[0])) * 100.0
@@ -150,23 +150,11 @@ class MeanDistanceMixin:
     Mixin to calculate the mean distance between demand and facility sites chosen
     """
 
-    def get_mean_distance(self, weight: np.array):
+    def get_mean_distance(self):
         """
         Calculate the mean distance
-
-        Parameters
-        ----------
-
-        weight: np.array
-            weight of all demand points
-
-        Returns
-        -------
-
-        None
-
         """
-        self.mean_dist = self.problem.objective.value() / weight.sum()
+        self.mean_dist = self.problem.objective.value() / self.ai_sum
 
 
 T_FacModel = TypeVar("T_FacModel", bound=LocateSolver)

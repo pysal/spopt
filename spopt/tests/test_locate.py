@@ -70,6 +70,16 @@ class TestSyntheticLocate:
         result = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
         assert isinstance(result, LSCP)
 
+    def test_lscp_from_cost_matrix_no_results(self):
+        lscp = LSCP.from_cost_matrix(self.cost_matrix, 10)
+        result = lscp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        assert isinstance(result, LSCP)
+
+        with pytest.raises(AttributeError):
+            result.cli2fac
+        with pytest.raises(AttributeError):
+            result.fac2clif
+
     def test_lscp_facility_client_array_from_cost_matrix(self):
         with open(self.dirpath + "lscp_fac2cli.pkl", "rb") as f:
             lscp_objective = pickle.load(f)
@@ -309,6 +319,18 @@ class TestSyntheticLocate:
         result = p_median.solve(pulp.PULP_CBC_CMD(msg=False))
         assert isinstance(result, PMedian)
 
+    def test_p_median_from_cost_matrix_no_results(self):
+        p_median = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
+        result = p_median.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        assert isinstance(result, PMedian)
+
+        with pytest.raises(AttributeError):
+            result.cli2fac
+        with pytest.raises(AttributeError):
+            result.fac2clif
+        with pytest.raises(AttributeError):
+            result.mean_dist
+
     def test_pmedian_facility_client_array_from_cost_matrix(self):
         with open(self.dirpath + "pmedian_fac2cli.pkl", "rb") as f:
             pmedian_objective = pickle.load(f)
@@ -387,6 +409,16 @@ class TestSyntheticLocate:
         p_center = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
         result = p_center.solve(pulp.PULP_CBC_CMD(msg=False))
         assert isinstance(result, PCenter)
+
+    def test_p_center_from_cost_matrix_no_results(self):
+        p_center = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
+        result = p_center.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        assert isinstance(result, PCenter)
+
+        with pytest.raises(AttributeError):
+            result.cli2fac
+        with pytest.raises(AttributeError):
+            result.fac2clif
 
     def test_pcenter_facility_client_array_from_cost_matrix(self):
         with open(self.dirpath + "pcenter_fac2cli.pkl", "rb") as f:
@@ -660,7 +692,6 @@ class TestRealWorldLocate:
             self.cost_matrix, self.ai, p_facilities=self.p_facility
         )
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
-        pmedian.get_mean_distance(self.ai)
 
         assert pmedian.mean_dist == mean_distance_expected
 

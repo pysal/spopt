@@ -51,8 +51,15 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 
     """
 
-    def __init__(self, name: str, problem: pulp.LpProblem, aij: np.array):
+    def __init__(
+        self,
+        name: str,
+        problem: pulp.LpProblem,
+        aij: np.array,
+        weights_sum: int | float,
+    ):
         self.aij = aij
+        self.ai_sum = weights_sum
         self.name = name
         self.problem = problem
 
@@ -184,16 +191,24 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         facility 3 serving 0 clients
         facility 4 serving 26 clients
 
+        Get the total and average weighted travel cost.
+
+        >>> round(pmedian_from_cost_matrix.problem.objective.value(), 3)
+        1870.747
+        >>> round(pmedian_from_cost_matrix.mean_dist, 3)
+        3.027
+
         """
         r_cli = range(cost_matrix.shape[0])
         r_fac = range(cost_matrix.shape[1])
 
         model = pulp.LpProblem(name, pulp.LpMinimize)
 
+        weights_sum = weights.sum()
         weights = np.reshape(weights, (cost_matrix.shape[0], 1))
         aij = weights * cost_matrix
 
-        p_median = PMedian(name, model, aij)
+        p_median = PMedian(name, model, aij, weights_sum)
 
         FacilityModelBuilder.add_facility_integer_variable(p_median, r_fac, "y[{i}]")
         FacilityModelBuilder.add_client_assign_integer_variable(
@@ -409,5 +424,6 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         if results:
             self.facility_client_array()
             self.client_facility_array()
+            self.get_mean_distance()
 
         return self
