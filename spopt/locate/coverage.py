@@ -55,7 +55,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         """
         Add objective function to model:
 
-        Minimize x1 + x2 + x3 + x4 + x5 + ... + xj
+        Minimize y1 + y2 + y3 + y4 + y5 + ... + yj
 
         Returns
         -------
@@ -161,7 +161,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         model = pulp.LpProblem(name, pulp.LpMinimize)
         lscp = LSCP(name, model)
 
-        FacilityModelBuilder.add_facility_integer_variable(lscp, r_fac, "x[{i}]")
+        FacilityModelBuilder.add_facility_integer_variable(lscp, r_fac, "y[{i}]")
 
         lscp.aij = np.zeros(cost_matrix.shape)
         lscp.aij[cost_matrix <= service_radius] = 1
@@ -255,7 +255,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         ...     ntw, pp_name="facilities", snapped=True
         ... )
 
-        Create LSCP instance from cost matrix
+        Create LSCP instance from geodataframe
 
         >>> lscp_from_geodataframe = LSCP.from_geodataframe(
         ...     clients_snapped,
@@ -538,8 +538,8 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         lscpb = LSCPB(name, model)
         lscpb.lscp_obj_value = lscp.problem.objective.value()
 
-        FacilityModelBuilder.add_facility_integer_variable(lscpb, r_fac, "x[{i}]")
-        FacilityModelBuilder.add_client_integer_variable(lscpb, r_cli, "u[{i}]")
+        FacilityModelBuilder.add_facility_integer_variable(lscpb, r_fac, "y[{i}]")
+        FacilityModelBuilder.add_client_integer_variable(lscpb, r_cli, "x[{i}]")
 
         lscpb.aij = np.zeros(cost_matrix.shape)
         lscpb.aij[cost_matrix <= service_radius] = 1
@@ -637,7 +637,7 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         ...     ntw, pp_name="facilities", snapped=True
         ... )
 
-        Create LSCPB instance from cost matrix
+        Create LSCPB instance from geodataframe
 
         >>> lscpb_from_geodataframe = LSCPB.from_geodataframe(
         ...     clients_snapped,
@@ -800,7 +800,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         """
         Add objective function to model:
 
-        Maximize w1 * y1 + w2 * y2 +  ... + wi * yi
+        Maximize a1 * y1 + a2 * y2 +  ... + ai * yi
 
         Returns
         -------
@@ -930,8 +930,8 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         model = pulp.LpProblem(name, pulp.LpMaximize)
         mclp = MCLP(name, model)
 
-        FacilityModelBuilder.add_facility_integer_variable(mclp, r_fac, "x[{i}]")
-        FacilityModelBuilder.add_client_integer_variable(mclp, r_cli, "y[{i}]")
+        FacilityModelBuilder.add_facility_integer_variable(mclp, r_fac, "y[{i}]")
+        FacilityModelBuilder.add_client_integer_variable(mclp, r_cli, "x[{i}]")
 
         mclp.aij = np.zeros(cost_matrix.shape)
         mclp.aij[cost_matrix <= service_radius] = 1

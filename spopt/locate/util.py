@@ -12,8 +12,12 @@ def simulated_geo_points(
     """
     Simulate points within an area.
 
+    This function will wrap a random spatial generator in geopandas once merged.
+    See https://github.com/geopandas/geopandas/pull/2363
+
     Parameters
     ----------
+
     in_data : geopandas.GeoDataFrame, shapely.geometry.{Polygon, MultiPolygon}
         The areal unit in which to generate points.
     needed : int
@@ -23,11 +27,13 @@ def simulated_geo_points(
 
     Returns
     -------
+
     sim_pts : geopandas.GeoDataFrame
         The resultant simulated points within ``in_data``.
 
     Examples
     --------
+
     >>> import spaghetti
     >>> from spopt.locate.util import simulated_geo_points
 

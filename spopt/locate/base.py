@@ -306,23 +306,28 @@ class FacilityModelBuilder:
     ) -> None:
         """
         set covering constraint:
+
         n1_1 * fac_var1 + n1_2 * fac_var1 + ... + nij * fac_varj >= 1
 
         Parameters
         ----------
+
         obj: T_FacModel
             bounded type of LocateSolver class
         model: pulp.LpProblem
             optimization model problem
         ni: np.array
-            two-dimensional array that defines candidate sites between facility points within a distance to supply {i}
+            two-dimensional array that defines candidate sites between facility
+            points within a distance to supply {i}
             demand point
         range_facility: range
             range of facility points quantity
         range_client: range
             range of demand points quantity
+
         Returns
         -------
+
         None
 
         """
@@ -356,14 +361,16 @@ class FacilityModelBuilder:
         model: pulp.LpProblem
             optimization model problem
         ni: np.array
-            two-dimensional array that defines candidate sites between facility points within a distance to supply {i}
-            demand point
+            two-dimensional array that defines candidate sites between facility
+            points within a distance to supply {i} demand point
         range_facility: range
             range of facility points quantity
         range_client: range
             range of demand points quantity
+
         Returns
         -------
+
         None
 
         """
@@ -467,7 +474,8 @@ class FacilityModelBuilder:
         model: pulp.LpProblem
             optimization model problem
         ni: np.array
-            two-dimensional array that defines candidate sites between facility points within a distance to supply {i} demand point
+            two-dimensional array that defines candidate sites between facility
+            points within a distance to supply {i} demand point
         range_facility: range
             range of facility points quantity
         range_client: range

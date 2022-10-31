@@ -106,6 +106,12 @@ class TestRealWorldLocate:
         pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         assert pdispersion.problem.status == pulp.LpStatusOptimal
 
+        known_solution_set = ["y_0_", "y_1_", "y_14_", "y_15_"]
+        observed_solution_set = [
+            dv.name for dv in pdispersion.fac_vars if dv.varValue == 1
+        ]
+        assert known_solution_set == observed_solution_set
+
     def test_infeasibility_p_dispersion_from_cost_matrix(self):
         pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, p_fac=17)
         with pytest.raises(RuntimeError, match="Model is not solved:"):
@@ -119,6 +125,12 @@ class TestRealWorldLocate:
         )
         pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         assert pdispersion.problem.status == pulp.LpStatusOptimal
+
+        known_solution_set = ["y_0_", "y_2_", "y_8_", "y_14_"]
+        observed_solution_set = [
+            dv.name for dv in pdispersion.fac_vars if dv.varValue == 1
+        ]
+        assert known_solution_set == observed_solution_set
 
     def test_infeasibility_p_dispersion_from_geodataframe(self):
         pdispersion = PDispersion.from_geodataframe(

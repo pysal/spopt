@@ -76,7 +76,6 @@ class TestSyntheticLocate:
 
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 8)
         lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
-        lscp.facility_client_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(lscp.fac2cli, dtype=object),
@@ -89,8 +88,6 @@ class TestSyntheticLocate:
 
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 8)
         lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
-        lscp.facility_client_array()
-        lscp.client_facility_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(lscp.cli2fac, dtype=object),
@@ -116,7 +113,6 @@ class TestSyntheticLocate:
             8,
         )
         lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
-        lscp.facility_client_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(lscp.fac2cli, dtype=object),
@@ -135,8 +131,6 @@ class TestSyntheticLocate:
             8,
         )
         lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
-        lscp.facility_client_array()
-        lscp.client_facility_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(lscp.cli2fac, dtype=object),
@@ -162,7 +156,6 @@ class TestSyntheticLocate:
             service_radius=8,
         )
         lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
-        lscp.facility_client_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(lscp.fac2cli, dtype=object),
@@ -207,7 +200,6 @@ class TestSyntheticLocate:
             p_facilities=4,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
-        mclp.facility_client_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(mclp.fac2cli, dtype=object),
@@ -225,8 +217,6 @@ class TestSyntheticLocate:
             p_facilities=4,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
-        mclp.facility_client_array()
-        mclp.client_facility_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(mclp.cli2fac, dtype=object),
@@ -261,7 +251,6 @@ class TestSyntheticLocate:
             p_facilities=4,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
-        mclp.facility_client_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(mclp.fac2cli, dtype=object),
@@ -289,7 +278,6 @@ class TestSyntheticLocate:
             p_facilities=4,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
-        mclp.facility_client_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(mclp.fac2cli, dtype=object),
@@ -310,8 +298,6 @@ class TestSyntheticLocate:
             p_facilities=4,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
-        mclp.facility_client_array()
-        mclp.client_facility_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(mclp.cli2fac, dtype=object),
@@ -329,7 +315,6 @@ class TestSyntheticLocate:
 
         pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
-        pmedian.facility_client_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(pmedian.fac2cli, dtype=object),
@@ -342,8 +327,6 @@ class TestSyntheticLocate:
 
         pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
-        pmedian.facility_client_array()
-        pmedian.client_facility_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(pmedian.cli2fac, dtype=object),
@@ -375,7 +358,6 @@ class TestSyntheticLocate:
             p_facilities=4,
         )
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
-        pmedian.facility_client_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(pmedian.fac2cli, dtype=object),
@@ -395,8 +377,6 @@ class TestSyntheticLocate:
             p_facilities=4,
         )
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
-        pmedian.facility_client_array()
-        pmedian.client_facility_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(pmedian.cli2fac, dtype=object),
@@ -414,7 +394,6 @@ class TestSyntheticLocate:
 
         pcenter = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
-        pcenter.facility_client_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(pcenter.fac2cli, dtype=object),
@@ -427,8 +406,6 @@ class TestSyntheticLocate:
 
         pcenter = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
-        pcenter.facility_client_array()
-        pcenter.client_facility_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(pcenter.cli2fac, dtype=object),
@@ -458,7 +435,6 @@ class TestSyntheticLocate:
             p_facilities=4,
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
-        pcenter.facility_client_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(pcenter.fac2cli, dtype=object),
@@ -477,8 +453,6 @@ class TestSyntheticLocate:
             p_facilities=4,
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
-        pcenter.facility_client_array()
-        pcenter.client_facility_array()
 
         numpy.testing.assert_array_equal(
             numpy.array(pcenter.cli2fac, dtype=object),
@@ -593,13 +567,11 @@ class TestRealWorldLocate:
             p_facilities=self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
-        mclp.facility_client_array()
-        mclp.uncovered_clients()
 
         assert mclp.n_cli_uncov == uncovered_clients_expected
 
     def test_mixin_mclp_get_percentage(self):
-        percentage_expected = 0.8975609756097561
+        percentage_expected = 89.75609756097561
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix,
             self.ai,
@@ -607,11 +579,8 @@ class TestRealWorldLocate:
             p_facilities=self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
-        mclp.facility_client_array()
-        mclp.uncovered_clients()
-        mclp.get_percentage()
 
-        assert mclp.percentage == percentage_expected
+        assert mclp.perc_cov == pytest.approx(percentage_expected)
 
     def test_optimality_mclp_from_geodataframe(self):
         mclp = MCLP.from_geodataframe(
