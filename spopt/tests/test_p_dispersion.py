@@ -55,12 +55,12 @@ class TestSyntheticLocate:
         )
 
     def test_p_dispersion_from_cost_matrix(self):
-        pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, p_fac=2)
+        pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, 2)
         result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         assert isinstance(result, PDispersion)
 
     def test_p_dispersion_from_cost_matrix_no_results(self):
-        pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, p_fac=2)
+        pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, 2)
         result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
         assert isinstance(result, PDispersion)
 
@@ -73,10 +73,38 @@ class TestSyntheticLocate:
         pdispersion = PDispersion.from_geodataframe(
             self.facilities_snapped,
             "geometry",
-            p_fac=2,
+            2,
         )
         result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         assert isinstance(result, PDispersion)
+
+    def test_p_dispersion_preselected_facility_array_from_geodataframe(self):
+
+        known_objval = 4.213464
+        known_solution_set = ["y_1_", "y_3_", "y_4_"]
+
+        fac_snapped = self.facilities_snapped.copy()
+        fac_snapped["predefined_loc"] = numpy.array([0, 0, 0, 1, 1])
+
+        pdispersion = PDispersion.from_geodataframe(
+            fac_snapped,
+            "geometry",
+            3,
+            predefined_facility_col="predefined_loc",
+        )
+        result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
+        assert isinstance(result, PDispersion)
+
+        observed_objval = pdispersion.problem.objective.value()
+        assert known_objval == pytest.approx(observed_objval)
+
+        observed_solution_set = [
+            dv.name for dv in pdispersion.fac_vars if dv.varValue == 1
+        ]
+        numpy.testing.assert_array_equal(
+            numpy.array(known_solution_set, dtype=object),
+            numpy.array(observed_solution_set, dtype=object),
+        )
 
 
 class TestRealWorldLocate:
@@ -131,7 +159,7 @@ class TestRealWorldLocate:
         pdispersion = PDispersion.from_geodataframe(
             self.facility_points_gdf,
             "geometry",
-            p_fac=self.p_facility,
+            self.p_facility,
         )
         pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         assert pdispersion.problem.status == pulp.LpStatusOptimal
@@ -146,7 +174,7 @@ class TestRealWorldLocate:
         pdispersion = PDispersion.from_geodataframe(
             self.facility_points_gdf,
             "geometry",
-            p_fac=17,
+            17,
         )
         with pytest.raises(RuntimeError, match="Model is not solved:"):
             pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))

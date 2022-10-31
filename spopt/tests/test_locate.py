@@ -405,6 +405,38 @@ class TestSyntheticLocate:
             numpy.array(pmedian_objective, dtype=object),
         )
 
+    def test_pmedian_preselected_facility_client_array_from_geodataframe(self):
+
+        known_objval = 1872.5093264630818
+        known_mean = 3.0299503664451164
+        known_solution_set = ["y_1_", "y_3_", "y_4_"]
+
+        fac_snapped = self.facilities_snapped.copy()
+        fac_snapped["predefined_loc"] = numpy.array([0, 0, 0, 1, 1])
+
+        pmedian = PMedian.from_geodataframe(
+            self.clients_snapped,
+            fac_snapped,
+            "geometry",
+            "geometry",
+            "weights",
+            predefined_facility_col="predefined_loc",
+            p_facilities=3,
+        )
+        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
+
+        observed_objval = pmedian.problem.objective.value()
+        assert known_objval == pytest.approx(observed_objval)
+
+        observed_mean = pmedian.mean_dist
+        assert known_mean == pytest.approx(observed_mean)
+
+        observed_solution_set = [dv.name for dv in pmedian.fac_vars if dv.varValue == 1]
+        numpy.testing.assert_array_equal(
+            numpy.array(known_solution_set, dtype=object),
+            numpy.array(observed_solution_set, dtype=object),
+        )
+
     def test_p_center_from_cost_matrix(self):
         p_center = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
         result = p_center.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -482,13 +514,40 @@ class TestSyntheticLocate:
             self.facilities_snapped,
             "geometry",
             "geometry",
-            p_facilities=4,
+            4,
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(pcenter.cli2fac, dtype=object),
             numpy.array(pcenter_objective, dtype=object),
+        )
+
+    def test_pcenter_preselected_facility_client_array_from_geodataframe(self):
+
+        known_objval = 6.2520432
+        known_solution_set = ["y_2_", "y_3_", "y_4_"]
+
+        fac_snapped = self.facilities_snapped.copy()
+        fac_snapped["predefined_loc"] = numpy.array([0, 0, 0, 1, 1])
+
+        pcenter = PCenter.from_geodataframe(
+            self.clients_snapped,
+            fac_snapped,
+            "geometry",
+            "geometry",
+            3,
+            predefined_facility_col="predefined_loc",
+        )
+        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
+
+        observed_objval = pcenter.problem.objective.value()
+        assert known_objval == pytest.approx(observed_objval)
+
+        observed_solution_set = [dv.name for dv in pcenter.fac_vars if dv.varValue == 1]
+        numpy.testing.assert_array_equal(
+            numpy.array(known_solution_set, dtype=object),
+            numpy.array(observed_solution_set, dtype=object),
         )
 
 
@@ -574,8 +633,8 @@ class TestRealWorldLocate:
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix,
             self.ai,
-            service_radius=self.service_dist,
-            p_facilities=self.p_facility,
+            self.service_dist,
+            self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         assert mclp.problem.status == pulp.LpStatusOptimal
@@ -584,8 +643,8 @@ class TestRealWorldLocate:
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix,
             self.ai,
-            service_radius=self.service_dist,
-            p_facilities=1000,
+            self.service_dist,
+            1000,
         )
         with pytest.raises(RuntimeError, match="Model is not solved: Infeasible."):
             mclp.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -595,8 +654,8 @@ class TestRealWorldLocate:
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix,
             self.ai,
-            service_radius=self.service_dist,
-            p_facilities=self.p_facility,
+            self.service_dist,
+            self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
 
@@ -607,8 +666,8 @@ class TestRealWorldLocate:
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix,
             self.ai,
-            service_radius=self.service_dist,
-            p_facilities=self.p_facility,
+            self.service_dist,
+            self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
 
@@ -621,8 +680,8 @@ class TestRealWorldLocate:
             "geometry",
             "geometry",
             "POP2000",
-            service_radius=self.service_dist,
-            p_facilities=self.p_facility,
+            self.service_dist,
+            self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
         assert mclp.problem.status == pulp.LpStatusOptimal
@@ -634,21 +693,19 @@ class TestRealWorldLocate:
             "geometry",
             "geometry",
             "POP2000",
-            service_radius=self.service_dist,
-            p_facilities=1000,
+            self.service_dist,
+            1000,
         )
         with pytest.raises(RuntimeError, match="Model is not solved: Infeasible."):
             mclp.solve(pulp.PULP_CBC_CMD(msg=False))
 
     def test_optimality_pcenter_from_cost_matrix(self):
-        pcenter = PCenter.from_cost_matrix(
-            self.cost_matrix, p_facilities=self.p_facility
-        )
+        pcenter = PCenter.from_cost_matrix(self.cost_matrix, self.p_facility)
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
         assert pcenter.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_pcenter_from_cost_matrix(self):
-        pcenter = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=0)
+        pcenter = PCenter.from_cost_matrix(self.cost_matrix, 0)
         with pytest.raises(RuntimeError, match="Model is not solved: Infeasible."):
             pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
 
@@ -658,7 +715,7 @@ class TestRealWorldLocate:
             self.facility_points_gdf,
             "geometry",
             "geometry",
-            p_facilities=self.p_facility,
+            self.p_facility,
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
         assert pcenter.problem.status == pulp.LpStatusOptimal
@@ -669,28 +726,24 @@ class TestRealWorldLocate:
             self.facility_points_gdf,
             "geometry",
             "geometry",
-            p_facilities=0,
+            0,
         )
         with pytest.raises(RuntimeError, match="Model is not solved: Infeasible."):
             pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
 
     def test_optimality_pmedian_from_cost_matrix(self):
-        pmedian = PMedian.from_cost_matrix(
-            self.cost_matrix, self.ai, p_facilities=self.p_facility
-        )
+        pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, self.p_facility)
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         assert pmedian.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_pmedian_from_cost_matrix(self):
-        pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=0)
+        pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, 0)
         with pytest.raises(RuntimeError, match="Model is not solved: Infeasible."):
             pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
 
     def test_mixin_mean_distance(self):
         mean_distance_expected = 2982.1268579890657
-        pmedian = PMedian.from_cost_matrix(
-            self.cost_matrix, self.ai, p_facilities=self.p_facility
-        )
+        pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, self.p_facility)
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
 
         assert pmedian.mean_dist == mean_distance_expected
@@ -702,7 +755,7 @@ class TestRealWorldLocate:
             "geometry",
             "geometry",
             "POP2000",
-            p_facilities=self.p_facility,
+            self.p_facility,
         )
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         assert pmedian.problem.status == pulp.LpStatusOptimal
@@ -714,7 +767,7 @@ class TestRealWorldLocate:
             "geometry",
             "geometry",
             "POP2000",
-            p_facilities=0,
+            0,
         )
         with pytest.raises(RuntimeError, match="Model is not solved: Infeasible."):
             pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -726,8 +779,8 @@ class TestRealWorldLocate:
             "geometry",
             "geometry",
             "POP2000",
-            service_radius=self.service_dist,
-            p_facilities=self.p_facility,
+            self.service_dist,
+            self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
 
@@ -743,8 +796,8 @@ class TestRealWorldLocate:
             "geometry",
             "geometry",
             "POP2000",
-            service_radius=self.service_dist,
-            p_facilities=self.p_facility,
+            self.service_dist,
+            self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
 
@@ -760,8 +813,8 @@ class TestRealWorldLocate:
             "geometry",
             "geometry",
             "POP2000",
-            service_radius=self.service_dist,
-            p_facilities=self.p_facility,
+            self.service_dist,
+            self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
 
@@ -777,8 +830,8 @@ class TestRealWorldLocate:
             "geometry",
             "geometry",
             "POP2000",
-            service_radius=self.service_dist,
-            p_facilities=self.p_facility,
+            self.service_dist,
+            self.p_facility,
         )
         mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
 

@@ -71,6 +71,9 @@ class PDispersion(LocateSolver):
             two-dimensional distance array between facility points.
         p_fac: int
             number of facilities to be located
+        predefined_facilities_arr : numpy.array
+            Predefined facilities that must appear in the solution.
+            Default is ``None``.
         name: str, default="P-Dispersion"
             name of the problem
 
@@ -186,6 +189,9 @@ class PDispersion(LocateSolver):
             facility candidate sites geometry column name
         p_fac: int
             number of facilities to be located
+        predefined_facility_col: str
+            Column name representing facilities are already defined.
+            Default is ``None``.
         distance_metric: str, default="euclidean"
             metrics supported by :method: `scipy.spatial.distance.cdist`
             used for the distance calculations

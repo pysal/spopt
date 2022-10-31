@@ -169,12 +169,12 @@ class TestSyntheticLocate:
         fac_snapped["predefined_loc"] = numpy.array([0, 0, 0, 0, 1])
 
         lscpb = LSCPB.from_geodataframe(
-            gdf_demand=self.clients_snapped,
-            gdf_fac=fac_snapped,
-            demand_col="geometry",
-            facility_col="geometry",
-            service_radius=8,
-            solver=pulp.PULP_CBC_CMD(msg=False, warmStart=True),
+            self.clients_snapped,
+            fac_snapped,
+            "geometry",
+            "geometry",
+            8,
+            pulp.PULP_CBC_CMD(msg=False, warmStart=True),
             predefined_facility_col="predefined_loc",
         )
         lscpb = lscpb.solve()

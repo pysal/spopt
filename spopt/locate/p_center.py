@@ -72,6 +72,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         cls,
         cost_matrix: np.array,
         p_facilities: int,
+        predefined_facilities_arr: np.array = None,
         name: str = "p-center",
     ):
         """
@@ -84,6 +85,9 @@ class PCenter(LocateSolver, BaseOutputMixin):
             two-dimensional distance array between facility points and demand point
         p_facilities: int
             number of facilities to be located
+        predefined_facilities_arr : numpy.array
+            Predefined facilities that must appear in the solution.
+            Default is ``None``.
         name: str, default="p-center"
             name of the problem
 
@@ -168,6 +172,11 @@ class PCenter(LocateSolver, BaseOutputMixin):
         )
         FacilityModelBuilder.add_weight_continuous_variable(p_center)
 
+        if predefined_facilities_arr is not None:
+            FacilityModelBuilder.add_predefined_facility_constraint(
+                p_center, p_center.problem, predefined_facilities_arr
+            )
+
         p_center.__add_obj()
 
         FacilityModelBuilder.add_facility_constraint(
@@ -193,6 +202,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         demand_col: str,
         facility_col: str,
         p_facilities: int,
+        predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
         name: str = "p-center",
     ):
@@ -213,6 +223,9 @@ class PCenter(LocateSolver, BaseOutputMixin):
             facility candidate sites geometry column name
         p_facilities: int
             number of facilities to be located
+        predefined_facility_col: str
+            Column name representing facilities are already defined.
+            Default is ``None``.
         distance_metric: str, default="euclidean"
             metrics supported by :method: `scipy.spatial.distance.cdist`
             used for the distance calculations
@@ -286,6 +299,10 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         """
 
+        predefined_facilities_arr = None
+        if predefined_facility_col is not None:
+            predefined_facilities_arr = gdf_fac[predefined_facility_col].to_numpy()
+
         dem = gdf_demand[demand_col]
         fac = gdf_fac[facility_col]
 
@@ -315,7 +332,9 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         distances = cdist(dem_data, fac_data, distance_metric)
 
-        return cls.from_cost_matrix(distances, p_facilities, name)
+        return cls.from_cost_matrix(
+            distances, p_facilities, predefined_facilities_arr, name
+        )
 
     def facility_client_array(self) -> None:
         """
