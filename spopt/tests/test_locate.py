@@ -173,8 +173,28 @@ class TestSyntheticLocate:
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix, self.ai, service_radius=7, p_facilities=4
         )
-        result = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=True)
+
         assert isinstance(result, MCLP)
+        assert result.n_cli_uncov == 1
+        assert result.perc_cov == 99.0
+
+    def test_mclp_from_cost_matrix_no_results(self):
+        mclp = MCLP.from_cost_matrix(
+            self.cost_matrix, self.ai, service_radius=7, p_facilities=4
+        )
+        result = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+
+        assert isinstance(result, MCLP)
+
+        with pytest.raises(AttributeError):
+            result.cli2fac
+        with pytest.raises(AttributeError):
+            result.fac2clif
+        with pytest.raises(AttributeError):
+            result.n_cli_uncov
+        with pytest.raises(AttributeError):
+            result.perc_cov
 
     def test_mclp_facility_client_array_from_cost_matrix(self):
         with open(self.dirpath + "mclp_fac2cli.pkl", "rb") as f:

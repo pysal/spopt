@@ -34,12 +34,15 @@ class LocateSolver(BaseSpOptSolver):
 
         Parameters
         ----------
+
         solver: pulp.LpSolver
-                solver supported by pulp package
+            solver supported by pulp package
 
         Returns
         -------
+
         None
+
         """
         pass
 
@@ -62,11 +65,18 @@ class BaseOutputMixin:
 
     def client_facility_array(self) -> None:
         """
-        Create an array 2d MxN, where m is number of clients and n is number of facilities.
+        Create an array 2d MxN, where m is number of
+        clients and n is number of facilities.
 
-        Note
-        ----
-        This functions requires `fac2cli` attribute to work properly. This attribute is set using `facility_client_array` method which is located inside the model classes. When solve method is used with `results=True` it will already set automatically, if not, you have to call the method.
+        Notes
+        -----
+
+        This functions requires `fac2cli` attribute to work properly.
+        This attribute is set using `facility_client_array` method which is
+        located inside the model classes. When solve method is used with
+        `results=True` it will already set automatically, if not,
+        you have to call the method.
+
         """
         if hasattr(self, "fac2cli"):
             self.cli2fac = [[] for i in range(self.aij.shape[0])]
@@ -85,9 +95,13 @@ class CoveragePercentageMixin:
     """
     Mixin to calculate the percentage of area covered.
 
-    Note
-    ----
-    This Mixin requires `n_cli_uncov` attribute to work properly. This attribute is set using `uncovered_clients` method which is located inside the model classes. When solve method is used with `results=True` it will already set automatically, if not, you have to call the method.
+    Notes
+    -----
+
+    This Mixin requires `n_cli_uncov` attribute to work properly.
+    This attribute is set using `uncovered_clients` method which is located
+    inside the model classes. When solve method is used with `results=True`
+    it will already set automatically, if not, you have to call the method.
 
     """
 
@@ -95,9 +109,15 @@ class CoveragePercentageMixin:
         """
         Calculate how many clients points are not covered.
 
-        Note
-        ----
-        This function requires `fac2cli` attribute to work properly. This attribute is set using `facility_client_array` method which is located inside the model classes. When solve method is used with `results=True` it will already set automatically, if not, you have to call the method.
+        Notes
+        -----
+
+        This function requires `fac2cli` attribute to work properly.
+        This attribute is set using `facility_client_array` method which
+        is located inside the model classes. When solve method is used with
+        `results=True` it will already set automatically, if not, you have
+        to call the method.
+
         """
 
         if hasattr(self, "fac2cli"):
@@ -108,7 +128,8 @@ class CoveragePercentageMixin:
             self.n_cli_uncov = self.aij.shape[0] - len(set_cov)
         else:
             raise AttributeError(
-                "The attribute `fac2cli` is not set. See `facility_client_array` method to set the attribute"
+                "The attribute `fac2cli` is not set. See `facility_client_array` "
+                "method to set the attribute."
             )
 
     def get_percentage(self):
@@ -116,10 +137,11 @@ class CoveragePercentageMixin:
         Calculate the percentage
         """
         if hasattr(self, "n_cli_uncov"):
-            self.percentage = 1 - (self.n_cli_uncov / self.aij.shape[0])
+            self.perc_cov = (1 - (self.n_cli_uncov / self.aij.shape[0])) * 100.0
         else:
             raise AttributeError(
-                "The attribute `n_cli_uncov` is not set. See `uncovered_clients` method to set the attribute."
+                "The attribute `n_cli_uncov` is not set. See `uncovered_clients` "
+                "method to set the attribute."
             )
 
 
