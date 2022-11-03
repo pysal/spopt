@@ -715,13 +715,13 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         Default is ``False``.
 
     policy : str
-        Defaults to ``single`` to attach infeasible components using a
+        Defaults to ``'single'`` to attach infeasible components using a
         single linkage between the area in the infeasible component
         with the smallest nearest neighbor distance to an area in a
-        feasible component. ``multiple`` adds joins for each area
+        feasible component. ``'multiple'`` adds joins for each area
         in an infeasible component and their nearest neighbor area in a
-        feasible component. ``keep`` attempts to solve without
-        modification (useful for debugging). ``drop`` removes areas in
+        feasible component. ``'keep'`` attempts to solve without
+        modification (useful for debugging). ``'drop'`` removes areas in
         infeasible components before solving.
 
 
@@ -783,7 +783,7 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         max_iterations_construction=99,
         max_iterations_sa=ITERSA,
         verbose=False,
-        policy="attach",
+        policy="single",
     ):
 
         self.gdf = gdf
