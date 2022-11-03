@@ -76,7 +76,7 @@ class TestSyntheticLocate:
         with pytest.raises(AttributeError):
             result.cli2fac
         with pytest.raises(AttributeError):
-            result.fac2clif
+            result.fac2cli
         with pytest.raises(AttributeError):
             result.backup_perc
 

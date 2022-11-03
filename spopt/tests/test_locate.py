@@ -78,7 +78,7 @@ class TestSyntheticLocate:
         with pytest.raises(AttributeError):
             result.cli2fac
         with pytest.raises(AttributeError):
-            result.fac2clif
+            result.fac2cli
 
     def test_lscp_facility_client_array_from_cost_matrix(self):
         with open(self.dirpath + "lscp_fac2cli.pkl", "rb") as f:
@@ -193,7 +193,7 @@ class TestSyntheticLocate:
         with pytest.raises(AttributeError):
             result.cli2fac
         with pytest.raises(AttributeError):
-            result.fac2clif
+            result.fac2cli
         with pytest.raises(AttributeError):
             result.n_cli_uncov
         with pytest.raises(AttributeError):
@@ -327,7 +327,7 @@ class TestSyntheticLocate:
         with pytest.raises(AttributeError):
             result.cli2fac
         with pytest.raises(AttributeError):
-            result.fac2clif
+            result.fac2cli
         with pytest.raises(AttributeError):
             result.mean_dist
 
@@ -450,7 +450,7 @@ class TestSyntheticLocate:
         with pytest.raises(AttributeError):
             result.cli2fac
         with pytest.raises(AttributeError):
-            result.fac2clif
+            result.fac2cli
 
     def test_pcenter_facility_client_array_from_cost_matrix(self):
         with open(self.dirpath + "pcenter_fac2cli.pkl", "rb") as f:
