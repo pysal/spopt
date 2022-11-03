@@ -14,22 +14,16 @@ class RegionMixin(object):
 
     def solve_assign(self, X, adjacency):
         """
-
         Parameters
         ----------
-
         X :
             ...
-
         adjacency :
             ...
-
         Returns
         -------
-
         _labels_ :
             ...
-
         """
 
         self.solve(X, adjacency)
@@ -44,15 +38,16 @@ def w_to_g(w):
     ----------
 
     w : libpysal.weights.W
-        ...
+        PySAL weights object.
 
     Returns
     -------
 
     g : networkx.Graph
-        ...
+        NetworkX representation of ``w``.
 
     """
+
     g = networkx.Graph()
     for ego, alters in w.neighbors.items():
         for alter in alters:
@@ -66,20 +61,16 @@ def move_ok(area, source, destination, g, w):
     Parameters
     ----------
 
-    area :
-        ...
-
-    source :
-        ...
-
-    destination :
-        ...
-
+    area : int, numpy.int64
+        Area label.
+    source : numpy.array
+        Source region labels.
+    destination : list
+        destination region labels.
     g : networkx.Graph
-        ...
-
+        NetworkX representation of ``w``.
     w : libpysal.weights.W
-        ...
+        PySAL weights object.
 
     Returns
     -------
@@ -109,32 +100,26 @@ def ok_moves(candidates, regions, labels_, closest, g, w, areas):
     Parameters
     ----------
 
-    candidates :
-        ...
-
-    regions :
-        ...
-
-    labels_ :
-        ...
-
-    closest :
-        ...
-
+    candidates : numpy.array
+        Candidate area labels for moves.
+    regions : list
+        Region labels.
+    labels_ : list
+        Region membership labels.
+    closest : numpy.array
+        Closest region labels.
     g : networkx.Graph
-        ...
-
+        NetworkX representation of ``w``.
     w : libpysal.weights.W
-        ...
-
-    areas :
-        ...
+        PySAL weights object.
+    areas : numpy.array
+        All area labels.
 
     Returns
     -------
 
     keep : list
-        ...
+        Area labels where moves are OK.
 
     """
 
@@ -144,6 +129,7 @@ def ok_moves(candidates, regions, labels_, closest, g, w, areas):
         destination = regions[closest[area]]
         if move_ok(area, source, destination, g, w):
             keep.append(area)
+
     return keep
 
 
@@ -153,22 +139,22 @@ def region_neighbors(a_list, region):
     Parameters
     ----------
 
-    a_list :
-        ...
-
-    region :
-        ...
+    a_list : pandas.DataFrame
+        Adjacency and weights information in dataframe format.
+    region : numpy.array
+        Single element array for region label.
 
     Returns
     -------
 
     _region_neighbors_ : list
-        ...
+        Neighboring region labels of ``region``.
 
     """
 
     neighbors = a_list[a_list["focal"].isin(region)].neighbor.values
     _region_neighbors_ = [j for j in neighbors if j not in region]
+
     return _region_neighbors_
 
 
@@ -178,17 +164,16 @@ def _centroid(regions, data):
     Parameters
     ----------
 
-    regions :
-        ...
-
-    data :
-        ...
+    regions : list
+        Region labels.
+    data :  numpy.array
+        All data coordinates.
 
     Returns
     -------
 
     _centroid_ : numpy.array
-        ...
+        Centroid coordinates.
 
     """
 
@@ -202,17 +187,16 @@ def _closest(data, centroids):
     Parameters
     ----------
 
-    data :
-        ...
-
-    centroids :
-        ...
+    data : numpy.array
+        All data coordinates.
+    centroids : numpy.array
+        Centroid coordinates.
 
     Returns
     -------
 
     _closest_ : list
-        ...
+        The closest row in ``centroids`` for each row in ``data``.
 
     """
 
@@ -220,26 +204,28 @@ def _closest(data, centroids):
     return _closest_
 
 
-def _seeds(areas, k):
+def _seeds(areas, k, seed):
     """Randomly select `k` seeds from a sequence of areas.
 
     Parameters
     ----------
 
-    areas :
-        ...
-
+    areas : numpy.array
+        Enumeration of ``W`` areas.
     k : int
         The number of desired seeds.
+    seed : int
+        Random state.
 
     Returns
     -------
 
     _seeds_ : numpy.array
-        ...
+        Random labels of clusters to form.
 
     """
 
+    numpy.random.seed(seed)
     _seeds_ = numpy.random.choice(areas, size=k, replace=False)
     return _seeds_
 
@@ -250,21 +236,18 @@ def is_neighbor(area, region, w):
     Parameters
     ----------
 
-    area :
-        ...
-
-    region :
-        ...
-
+    area : int, numpy.int64
+        Area label
+    region : list
+        Region members.
     w : libpysal.weights.W
-        ...
+        PySAL weights object.
 
     Returns
     -------
 
     neighboring : bool
-        ``True`` if area is a neighbor of any member
-        of region otherwise ``False``.
+        ``True`` if area is a neighbor of any member of region otherwise ``False``.
 
     """
 
@@ -281,26 +264,27 @@ def infeasible_components(gdf, w, threshold_var, threshold):
 
     Parameters
     ----------
+
     gdf : geopandas.GeoDataFrame, required
-        Geodataframe containing original data
-
+        Geodataframe containing original data.
     w : libpysal.weights.W, required
-        Weights object created from given data
-
+        Weights object created from given data.
     attrs_name : list, required
         Strings for attribute names to measure similarity
         (cols of ``geopandas.GeoDataFrame``).
-
     threshold_var : string, requied
         The name of the spatial extensive attribute variable.
-
     threshold : {int, float}, required
         The threshold value.
 
     Returns
     -------
-    list of infeasible components
+
+    list
+        Infeasible components.
+
     """
+
     gdf["_components"] = w.component_labels
     gb = gdf.groupby(by="_components").sum(numeric_only=True)
     gdf.drop(columns="_components", inplace=True)
@@ -311,19 +295,22 @@ def infeasible_components(gdf, w, threshold_var, threshold):
 
 
 def plot_components(gdf, w):
-    """Plot to view components of the W for a gdf.
+    """Plot to view components of the W for a ``gdf``.
 
     Parameters
     ----------
     gdf: geopandas.GeoDataframe
-
-    w: libpysal.weights.W defined on gdf
+        Geodataframe of component data.
+    w: libpysal.weights.W
+        PySAL weights object defined on ``gdf``.
 
     Returns
     -------
+
     folium.folium.Map
 
     """
+
     cgdf = gdf.copy()
     cgdf["component"] = w.component_labels
     return cgdf.explore(column="component", categorical=True)
@@ -334,55 +321,52 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
 
     Parameters
     ----------
-    gdf : geopandas.GeoDataFrame, required
-        Geodataframe containing original data
 
-    w : libpysal.weights.W, required
-        Weights object created from given data
-
-    attrs_name : list, required
+    gdf : geopandas.GeoDataFrame
+        Geodataframe containing original data.
+    w : libpysal.weights.W
+        Weights object created from given data.
+    attrs_name : list
         Strings for attribute names to measure similarity (cols of
         ``geopandas.GeoDataFrame``).
-
-    threshold_var : string, requied
+    threshold_var : str
         The name of the spatial extensive attribute variable.
-
-    threshold : {int, float}, required
+    threshold : {int, float}
         The threshold value.
-
     policy: str
-          'single' will attach an infeasible component to a feasible
-          component based on a single join using the minimum nearest
-          neighbor distance between areas of infeasible components and
-          areas in the largest component. 'multiple' will form a join
-          between each area of an infeasible area and its nearest
-          neighbor area in a feasible component.  'keep' keeps
-          infeasible components and attempts to solve. 'drop' will
-          remove the areas from the smallest components and return a w
-          defined on the feasible components.
-
+        ``'single'`` (default) will attach an infeasible component to a feasible
+        component based on a single join using the minimum nearest
+        neighbor distance between areas of infeasible components and
+        areas in the largest component. ``'multiple'`` will form a join
+        between each area of an infeasible area and its nearest
+        neighbor area in a feasible component. ``'keep'`` keeps
+        infeasible components and attempts to solve. ``'drop'`` will
+        remove the areas from the smallest components and return a ``w``
+        defined on the feasible components.
 
     Returns
     -------
     gdf: geopandas.GeoDataFrame
+        Geodataframe containing modified data.
+    w : libpysal.weights.W
+        Weights object created from given data.
 
-    w : libpysal.weights.W, required
-        Weights object created from given data
     """
-    ifcs = infeasible_components(gdf, w, threshold_var, threshold)
 
+    _policy = policy.lower()
+    if _policy not in ["keep", "single", "multiple", "drop"]:
+        raise ValueError(f"Unknown `policy`: '{policy}'")
+
+    ifcs = infeasible_components(gdf, w, threshold_var, threshold)
     if ifcs == numpy.unique(w.component_labels).tolist():
-        raise Exception("No feasible components found in input.")
-    policy = policy.lower()
-    if not ifcs or policy == "keep":
+        raise ValueError("No feasible components found in input.")
+
+    if not ifcs or _policy == "keep":
         return gdf, w
-    elif policy == "single":
-        w = form_single_component(gdf, w, linkage="single")
+    elif _policy in ["single", "multiple"]:
+        w = form_single_component(gdf, w, linkage=_policy)
         return gdf, w
-    elif policy == "multiple":
-        w = form_single_component(gdf, w, linkage="multiple")
-        return gdf, w
-    elif policy == "drop":
+    else:
         keep_ids = numpy.where(~numpy.isin(w.component_labels, ifcs))[0]
         gdf = gdf.iloc[keep_ids]
         cw = libpysal.weights.w_subset(w, keep_ids)
@@ -394,8 +378,6 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
         new_w = libpysal.weights.W(new_neigh)
         gdf.reset_index(inplace=True)
         return gdf, new_w
-    else:
-        raise Exception(f"Undefined components policy: {policy}")
 
 
 def form_single_component(gdf, w, linkage="single"):
@@ -403,10 +385,10 @@ def form_single_component(gdf, w, linkage="single"):
 
     Parameters
     ----------
-    gdf : GeoDataFrame
-
-    w   : libysal.weights.W
-
+    gdf : geopandas.GeoDataFrame
+        Input area data.
+    w : libysal.weights.W
+        PySAL weights object.
     linkage : str
          `single`: a small component will be joined with the largest
          component by adding a single join based on minimum nearest
@@ -417,8 +399,15 @@ def form_single_component(gdf, w, linkage="single"):
 
     Returns
     -------
-    w  : libpysal.weights.W
+    w : libpysal.weights.W
+        PySAL weights object.
+
     """
+
+    ll = linkage.lower()
+    if ll not in ["single", "multiple"]:
+        raise ValueError(f"Unknown `linkage`: '{linkage}'")
+
     data = numpy.unique(w.component_labels, return_counts=True)
     if len(data[0]) == 1:
         return w
@@ -457,24 +446,24 @@ def form_single_component(gdf, w, linkage="single"):
             dd, jj = tree.query(query_pnts, k=1)
             clas = numpy.where(numpy.isin(w.component_labels, [cl]))[0]
 
-            jj = [lcas[0][j] for j in jj]  # map to idx in gdf
-
-            ll = linkage.lower()
+            # map to idx in gdf
+            jj = [lcas[0][j] for j in jj]
 
             if ll == "single":
                 min_idx = numpy.argmin(dd)
                 j = jj[min_idx]
                 i = clas[min_idx]
                 joins.append((i, j))
-            elif ll == "multiple":
+            else:
                 pairs = zip(clas, jj)
                 joins.extend(list(pairs))
-            else:
-                raise Exception(f"Unknown linkage: {linkage}")
 
         neighbors = copy.deepcopy(w.neighbors)
         for join in joins:
             head, tail = join
             neighbors[head].append(tail)
             neighbors[tail].append(head)
-        return libpysal.weights.W(neighbors)
+
+        w = libpysal.weights.W(neighbors)
+
+        return w
