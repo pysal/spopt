@@ -188,8 +188,8 @@ latex_documents = [
     (
         master_doc,
         "%sdoc.tex" % project,
-        u"%s Documentation" % project,
-        u"%s developers" % project,
+        "%s Documentation" % project,
+        "%s developers" % project,
         "manual",
     )
 ]
@@ -199,7 +199,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, project, u"%s Documentation" % project, [author], 1)]
+man_pages = [(master_doc, project, "%s Documentation" % project, [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -211,7 +211,7 @@ texinfo_documents = [
     (
         master_doc,
         project,
-        u"%s Documentation" % project,
+        "%s Documentation" % project,
         author,
         project,
         "Spatial Optimization with PySAL",
