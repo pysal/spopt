@@ -15,23 +15,32 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
     Parameters
     ----------
+
     name: str
         problem name
     problem: pulp.LpProblem
-        pulp instance of optimization model that contains constraints, variables and objective function.
+        pulp instance of optimization model that contains constraints,
+        variables and objective function.
     aij: np.array
-        two-dimensional array product of service load/population demand and distance matrix between facility and demand.
+        two-dimensional array product of service load/population demand and
+        distance matrix between facility and demand.
 
     Attributes
     ----------
+
     name: str
         Problem name
     problem: pulp.LpProblem
-        Pulp instance of optimization model that contains constraints, variables and objective function.
+        Pulp instance of optimization model that contains constraints,
+        variables and objective function.
     fac2cli : np.array
-        2-d array MxN, where m is number of facilities and n is number of clients. Each row represents a facility and has an array containing clients index meaning that the facility-i cover the entire array.
+        2-d array MxN, where m is number of facilities and n is number of clients.
+        Each row represents a facility and has an array containing clients index
+        meaning that the facility-i cover the entire array.
     cli2fac: np.array
-        2-d MxN, where m is number of clients and n is number of facilities. Each row represent a client and has an array containing facility index meaning that the client is covered by the facility ith.
+        2-d MxN, where m is number of clients and n is number of facilities.
+        Each row represent a client and has an array containing facility index
+        meaning that the client is covered by the facility ith.
     aij: np.array
         Cost matrix 2-d array
 
@@ -45,11 +54,14 @@ class PCenter(LocateSolver, BaseOutputMixin):
     def __add_obj(self) -> None:
         """
         Add objective function to the model:
+
         Minimize W
 
         Returns
         -------
+
         None
+
         """
         weight = getattr(self, "weight_var")
 
@@ -60,6 +72,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         cls,
         cost_matrix: np.array,
         p_facilities: int,
+        predefined_facilities_arr: np.array = None,
         name: str = "p-center",
     ):
         """
@@ -67,15 +80,20 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         Parameters
         ----------
+
         cost_matrix: np.array
             two-dimensional distance array between facility points and demand point
         p_facilities: int
             number of facilities to be located
+        predefined_facilities_arr : numpy.array
+            Predefined facilities that must appear in the solution.
+            Default is ``None``.
         name: str, default="p-center"
             name of the problem
 
         Returns
         -------
+
         PCenter object
 
         Examples
@@ -83,6 +101,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         >>> from spopt.locate import PCenter
         >>> from spopt.locate.util import simulated_geo_points
+        >>> import geopandas
         >>> import pulp
         >>> import spaghetti
 
@@ -90,39 +109,54 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
-        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
-        >>> street_buffered = geopandas.GeoDataFrame(
-        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
-        ...                            crs=street.crs,
-        ...                            columns=["geometry"])
+        >>> streets = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> streets_buffered = geopandas.GeoDataFrame(
+        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),
+        ...     crs=streets.crs,
+        ...     columns=["geometry"]
+        ... )
 
         Simulate points belong to lattice
 
-        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
-        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+        >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
         Snap points to the network
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
-        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="clients", snapped=True
+        ... )
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
-        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="facilities", snapped=True
+        ... )
 
         Calculate the cost matrix
 
         >>> cost_matrix = ntw.allneighbordistances(
         ...    sourcepattern=ntw.pointpatterns["clients"],
-        ...    destpattern=ntw.pointpatterns["facilities"])
+        ...    destpattern=ntw.pointpatterns["facilities"]
+        ... )
 
         Create PCenter instance from cost matrix
 
-        >>> pcenter_from_cost_matrix = PCenter.from_cost_matrix(cost_matrix, p_facilities=4)
-        >>> pcenter_from_cost_matrix = pcenter_from_cost_matrix.solve(pulp.PULP_CBC_CMD(msg=False))
+        >>> pcenter_from_cost_matrix = PCenter.from_cost_matrix(
+        ...     cost_matrix, p_facilities=4
+        ... )
+        >>> pcenter_from_cost_matrix = pcenter_from_cost_matrix.solve(
+        ...     pulp.PULP_CBC_CMD(msg=False)
+        ... )
 
         Get facility lookup demand coverage array
 
-        >>> pcenter_from_cost_matrix.facility_client_array()
-        >>> pcenter_from_cost_matrix.fac2cli
+        >>> for fac, cli in enumerate(pcenter_from_cost_matrix.fac2cli):
+        ...     print(f"facility {fac} serving {len(cli)} clients")
+        facility 0 serving 15 clients
+        facility 1 serving 24 clients
+        facility 2 serving 33 clients
+        facility 3 serving 0 clients
+        facility 4 serving 28 clients
 
         """
         r_cli = range(cost_matrix.shape[0])
@@ -137,6 +171,11 @@ class PCenter(LocateSolver, BaseOutputMixin):
             p_center, r_cli, r_fac, "z[{i}_{j}]"
         )
         FacilityModelBuilder.add_weight_continuous_variable(p_center)
+
+        if predefined_facilities_arr is not None:
+            FacilityModelBuilder.add_predefined_facility_constraint(
+                p_center, p_center.problem, predefined_facilities_arr
+            )
 
         p_center.__add_obj()
 
@@ -163,15 +202,17 @@ class PCenter(LocateSolver, BaseOutputMixin):
         demand_col: str,
         facility_col: str,
         p_facilities: int,
+        predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
         name: str = "p-center",
     ):
         """
-        Create a PCenter object based on geodataframes. Calculate the cost matrix between demand and facility,
-        and then use from_cost_matrix method.
+        Create a PCenter object based on geodataframes. Calculate the cost
+        matrix between demand and facility, and then use from_cost_matrix method.
 
         Parameters
         ----------
+
         gdf_demand: geopandas.GeoDataFrame
             demand geodataframe with point geometry
         gdf_fac: geopandas.GeoDataframe
@@ -182,19 +223,26 @@ class PCenter(LocateSolver, BaseOutputMixin):
             facility candidate sites geometry column name
         p_facilities: int
             number of facilities to be located
+        predefined_facility_col: str
+            Column name representing facilities are already defined.
+            Default is ``None``.
         distance_metric: str, default="euclidean"
-            metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
+            metrics supported by :method: `scipy.spatial.distance.cdist`
+            used for the distance calculations
         name: str, default="p-median"
             name of the problem
 
         Returns
         -------
+
         PCenter object
 
         Examples
         --------
+
         >>> from spopt.locate import PCenter
         >>> from spopt.locate.util import simulated_geo_points
+        >>> import geopandas
         >>> import pulp
         >>> import spaghetti
 
@@ -202,41 +250,58 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
-        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
-        >>> street_buffered = geopandas.GeoDataFrame(
-        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
-        ...                            crs=street.crs,
-        ...                            columns=["geometry"])
+        >>> streets = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> streets_buffered = geopandas.GeoDataFrame(
+        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),
+        ...     crs=streets.crs,
+        ...     columns=["geometry"]
+        ... )
 
         Simulate points belong to lattice
 
-        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
-        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+        >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
         Snap points to the network
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
-        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="clients", snapped=True
+        ... )
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
-        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="facilities", snapped=True
+        ... )
 
-        Create PCenter instance from cost matrix
+        Create PCenter instance from geodataframe
 
         >>> pcenter_from_geodataframe = PCenter.from_geodataframe(
-        ...                                            clients_snapped,
-        ...                                            facilities_snapped,
-        ...                                            "geometry",
-        ...                                            "geometry",
-        ...                                            p_facilities=P_FACILITIES,
-        ...                                            distance_metric="euclidean"
-        ...                                       )
-        >>> pcenter_from_geodataframe = pcenter_from_geodataframe.solve(pulp.PULP_CBC_CMD(msg=False))
+        ...     clients_snapped,
+        ...     facilities_snapped,
+        ...     "geometry",
+        ...     "geometry",
+        ...     p_facilities=4,
+        ...     distance_metric="euclidean"
+        ... )
+        >>> pcenter_from_geodataframe = pcenter_from_geodataframe.solve(
+        ...     pulp.PULP_CBC_CMD(msg=False)
+        ... )
 
-        Get facility lookup demand coverage array
+        Get facility-client associations
 
-        >>> pcenter_from_geodataframe.facility_client_array()
-        >>> pcenter_from_geodataframe.fac2cli
+        >>> for fac, cli in enumerate(pcenter_from_geodataframe.fac2cli):
+        ...     print(f"facility {fac} serving {len(cli)} clients")
+        facility 0 serving 14 clients
+        facility 1 serving 26 clients
+        facility 2 serving 34 clients
+        facility 3 serving 0 clients
+        facility 4 serving 26 clients
+
         """
+
+        predefined_facilities_arr = None
+        if predefined_facility_col is not None:
+            predefined_facilities_arr = gdf_fac[predefined_facility_col].to_numpy()
 
         dem = gdf_demand[demand_col]
         fac = gdf_fac[facility_col]
@@ -267,15 +332,21 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         distances = cdist(dem_data, fac_data, distance_metric)
 
-        return cls.from_cost_matrix(distances, p_facilities, name)
+        return cls.from_cost_matrix(
+            distances, p_facilities, predefined_facilities_arr, name
+        )
 
     def facility_client_array(self) -> None:
         """
-        Create an array 2d MxN, where m is number of facilities and n is number of clients. Each row represent a facility and has an array containing clients index meaning that the facility-i cover the entire array.
+        Create an array 2d MxN, where m is number of facilities and n is number of
+        clients. Each row represent a facility and has an array containing clients
+        index meaning that the facility-i cover the entire array.
 
         Returns
         -------
+
         None
+
         """
         fac_vars = getattr(self, "fac_vars")
         cli_vars = getattr(self, "cli_assgn_vars")
@@ -298,15 +369,18 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         Parameters
         ----------
+
         solver: pulp.LpSolver
             solver supported by pulp package
-
         results: bool
-            if True it will create metainfo - which facilities cover which demand and vice-versa, and the uncovered demand - about the model results
+            if True it will create metainfo - which facilities cover which demand
+            and vice-versa, and the uncovered demand - about the model results
 
         Returns
         -------
+
         PCenter object
+
         """
         self.problem.solve(solver)
         self.check_status()

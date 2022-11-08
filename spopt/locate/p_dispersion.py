@@ -3,33 +3,34 @@ import numpy as np
 import pulp
 from geopandas import GeoDataFrame
 
-from spopt.locate.base import (
-    BaseOutputMixin,
-    LocateSolver,
-    FacilityModelBuilder,
-)
+from spopt.locate.base import LocateSolver, FacilityModelBuilder
 from scipy.spatial.distance import cdist
 
 import warnings
 
 
-class PDispersion(LocateSolver, BaseOutputMixin):
+class PDispersion(LocateSolver):
     """
     PDispersion class implements the p-dispersion optimization model and solves it.
 
     Parameters
     ----------
+
     name: str
         Problem name
     problem: pulp.LpProblem
-        Pulp instance of an optimization model that contains constraints, variables and objective function.
+        Pulp instance of an optimization model that contains constraints,
+        variables and objective function.
 
     Attributes
     ----------
+
     name: str
         Problem name
     problem: pulp.LpProblem
-        Pulp instance of optimization model that contains constraints, variables and objective function.
+        Pulp instance of optimization model that contains constraints,
+        variables and objective function.
+
     """
 
     def __init__(self, name: str, problem: pulp.LpProblem, p_facilities: int):
@@ -39,11 +40,14 @@ class PDispersion(LocateSolver, BaseOutputMixin):
     def __add_obj(self) -> None:
         """
         Add objective function to model:
+
         Maximize D
 
         Returns
         -------
+
         None
+
         """
         disperse = getattr(self, "disperse_var")
 
@@ -62,21 +66,28 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         Parameters
         ----------
+
         cost_matrix: np.array
             two-dimensional distance array between facility points.
         p_fac: int
             number of facilities to be located
+        predefined_facilities_arr : numpy.array
+            Predefined facilities that must appear in the solution.
+            Default is ``None``.
         name: str, default="P-Dispersion"
             name of the problem
 
         Returns
         -------
+
         PDispersion object
 
         Examples
         --------
+
         >>> from spopt.locate.p_dispersion import PDispersion
         >>> from spopt.locate.util import simulated_geo_points
+        >>> import geopandas
         >>> import pulp
         >>> import spaghetti
 
@@ -84,30 +95,47 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
-        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
-        >>> street_buffered = geopandas.GeoDataFrame(
-        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
-        ...                            crs=street.crs,
-        ...                            columns=["geometry"])
+        >>> streets = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> streets_buffered = geopandas.GeoDataFrame(
+        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),
+        ...     crs=streets.crs,
+        ...     columns=["geometry"]
+        ... )
 
         Simulate points belong to lattice
 
-        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+        >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
         Snap points to the network
 
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
-        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="facilities", snapped=True
+        ... )
 
         Calculate the cost matrix
+
         >>> cost_matrix = ntw.allneighbordistances(
         ...    sourcepattern=ntw.pointpatterns["facilities"],
-        ...    destpattern=ntw.pointpatterns["facilities"])
+        ...    destpattern=ntw.pointpatterns["facilities"]
+        ... )
 
         Create PDispersion instance from cost matrix
 
-        >>> p_dispersion_from_cost_matrix = PDispersion.from_cost_matrix(cost_matrix, p_fac = 2)
-        >>> p_dispersion_from_cost_matrix = PDispersion_from_cost_matrix.solve(pulp.PULP_CBC_CMD(msg=False))
+        >>> pdispersion_from_cost_matrix = PDispersion.from_cost_matrix(
+        ...     cost_matrix, p_fac=2
+        ... )
+        >>> pdispersion_from_cost_matrix = pdispersion_from_cost_matrix.solve(
+        ...     pulp.PULP_CBC_CMD(msg=False)
+        ... )
+
+        Examine the solution
+
+        >>> for dv in pdispersion_from_cost_matrix.fac_vars:
+        ...     if dv.varValue:
+        ...         print(f"facility {dv.name} is selected")
+        facility y_0_ is selected
+        facility y_1_ is selected
 
         """
 
@@ -149,30 +177,38 @@ class PDispersion(LocateSolver, BaseOutputMixin):
         name: str = "P-Dispersion",
     ):
         """
-        Create a PDispersion object based on a geodataframe. Calculate the cost matrix between facilities,
-        and then use the from_cost_matrix method.
+        Create a PDispersion object based on a geodataframe. Calculate the
+        cost matrix between facilities, and then use the from_cost_matrix method.
 
         Parameters
         ----------
+
         gdf_fac: geopandas.GeoDataframe
             facility geodataframe with point geometry
         facility_col: str
             facility candidate sites geometry column name
         p_fac: int
             number of facilities to be located
+        predefined_facility_col: str
+            Column name representing facilities are already defined.
+            Default is ``None``.
         distance_metric: str, default="euclidean"
-            metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
+            metrics supported by :method: `scipy.spatial.distance.cdist`
+            used for the distance calculations
         name: str, default="P-Dispersion"
             name of the problem
 
         Returns
         -------
+
         PDispersion object
 
         Examples
         --------
+
         >>> from spopt.locate.p_dispersion import PDispersion
         >>> from spopt.locate.util import simulated_geo_points
+        >>> import geopandas
         >>> import pulp
         >>> import spaghetti
 
@@ -180,28 +216,43 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
-        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
-        >>> street_buffered = geopandas.GeoDataFrame(
-        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
-        ...                            crs=street.crs,
-        ...                            columns=["geometry"])
+        >>> streets = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> streets_buffered = geopandas.GeoDataFrame(
+        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),
+        ...     crs=streets.crs,
+        ...     columns=["geometry"]
+        ... )
 
         Simulate points belong to lattice
 
-        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+        >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
         Snap points to the network
 
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
-        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="facilities", snapped=True
+        ... )
 
-        Create PDispersion instance from cost matrix
+        Create PDispersion instance from geodataframe
 
-        >>> pDispersion_from_geodataframe = PDispersion.from_geodataframe(facilities_snapped,
-        ...                                                "geometry",
-        ...                                                 p_fac = 2,
-        ...                                                 distance_metric="euclidean")
-        >>> pDispersion_from_geodataframe = pDispersion_from_geodataframe.solve(pulp.PULP_CBC_CMD(msg=False))
+        >>> pdispersion_from_geodataframe = PDispersion.from_geodataframe(
+        ...     facilities_snapped,
+        ...     "geometry",
+        ...     p_fac=2,
+        ...     distance_metric="euclidean"
+        ... )
+        >>> pdispersion_from_geodataframe = pdispersion_from_geodataframe.solve(
+        ...     pulp.PULP_CBC_CMD(msg=False)
+        ... )
+
+        Examine the solution
+
+        >>> for dv in pdispersion_from_geodataframe.fac_vars:
+        ...     if dv.varValue:
+        ...         print(f"facility {dv.name} is selected")
+        facility y_0_ is selected
+        facility y_1_ is selected
 
         """
 
@@ -236,15 +287,17 @@ class PDispersion(LocateSolver, BaseOutputMixin):
 
         Parameters
         ----------
+
         solver: pulp.LpSolver
             solver supported by pulp package
-
         results: bool
             if True it will create metainfo about the model results
 
         Returns
         -------
+
         PDispersion object
+
         """
         self.problem.solve(solver)
         self.check_status()

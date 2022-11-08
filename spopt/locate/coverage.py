@@ -6,6 +6,7 @@ from geopandas import GeoDataFrame
 from spopt.locate.base import (
     BaseOutputMixin,
     CoveragePercentageMixin,
+    BackupPercentageMixinMixin,
     LocateSolver,
     FacilityModelBuilder,
 )
@@ -20,23 +21,32 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
     Parameters
     ----------
+
     name: str
         Problem name
     problem: pulp.LpProblem
-        Pulp instance of optimization model that contains constraints, variables and objective function.
+        Pulp instance of optimization model that contains constraints,
+        variables and objective function.
 
     Attributes
     ----------
+
     name: str
         Problem name
     problem: pulp.LpProblem
-        Pulp instance of optimization model that contains constraints, variables and objective function.
+        Pulp instance of optimization model that contains constraints,
+        variables and objective function.
     fac2cli : np.array
-        2-d array MxN, where m is number of facilities and n is number of clients. Each row represents a facility and has an array containing clients index meaning that the facility-i cover the entire array.
+        2-d array MxN, where m is number of facilities and n is number of clients.
+        Each row represents a facility and has an array containing clients
+        index meaning that the facility-i cover the entire array.
     cli2fac: np.array
-        2-d MxN, where m is number of clients and n is number of facilities. Each row represent a client and has an array containing facility index meaning that the client is covered by the facility ith.
+        2-d MxN, where m is number of clients and n is number of facilities.
+        Each row represent a client and has an array containing facility index
+        meaning that the client is covered by the facility ith.
     aij: np.array
         Cost matrix 2-d array
+
     """
 
     def __init__(self, name: str, problem: pulp.LpProblem):
@@ -45,11 +55,14 @@ class LSCP(LocateSolver, BaseOutputMixin):
     def __add_obj(self) -> None:
         """
         Add objective function to model:
-        Minimize x1 + x2 + x3 + x4 + x5 + ... + xj
+
+        Minimize y1 + y2 + y3 + y4 + y5 + ... + yj
 
         Returns
         -------
+
         None
+
         """
         fac_vars = getattr(self, "fac_vars")
         self.problem += pulp.lpSum(fac_vars), "objective function"
@@ -67,21 +80,29 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         Parameters
         ----------
+
         cost_matrix: np.array
             two-dimensional distance array between facility points and demand point
         service_radius: float
             maximum acceptable service distance by problem
+        predefined_facilities_arr : numpy.array
+            Predefined facilities that must appear in the solution.
+            Default is ``None``.
         name: str, default="LSCP"
             name of the problem
 
         Returns
         -------
+
         LSCP object
 
         Examples
         --------
-        >>> from spopt.locate.coverage import LSCP
+
+        >>> from spopt.locate import LSCP
         >>> from spopt.locate.util import simulated_geo_points
+        >>> import geopandas
+        >>> import numpy
         >>> import pulp
         >>> import spaghetti
 
@@ -89,23 +110,28 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
-        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
-        >>> street_buffered = geopandas.GeoDataFrame(
-        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
-        ...                            crs=street.crs,
-        ...                            columns=["geometry"])
+        >>> streets = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> streets_buffered = geopandas.GeoDataFrame(
+        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),
+        ...     crs=streets.crs,
+        ...     columns=["geometry"]
+        ... )
 
         Simulate points belong to lattice
 
-        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
-        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+        >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
         Snap points to the network
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
-        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="clients", snapped=True
+        ... )
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
-        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="facilities", snapped=True
+        ... )
 
         Calculate the cost matrix
         >>> cost_matrix = ntw.allneighbordistances(
@@ -114,13 +140,22 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         Create LSCP instance from cost matrix
 
-        >>> lscp_from_cost_matrix = LSCP.from_cost_matrix(cost_matrix, max_coverage=8)
-        >>> lscp_from_cost_matrix = lscp_from_cost_matrix.solve(pulp.PULP_CBC_CMD(msg=False))
+        >>> lscp_from_cost_matrix = LSCP.from_cost_matrix(
+        ...     cost_matrix, service_radius=8
+        ... )
+        >>> lscp_from_cost_matrix = lscp_from_cost_matrix.solve(
+        ...     pulp.PULP_CBC_CMD(msg=False)
+        ... )
 
         Get facility lookup demand coverage array
 
-        >>> lscp_from_cost_matrix.facility_client_array()
-        >>> lscp_from_cost_matrix.fac2cli
+        >>> for fac, cli in enumerate(lscp_from_cost_matrix.fac2cli):
+        ...     print(f"facility {fac} serving {len(cli)} clients")
+        facility 0 serving 0 clients
+        facility 1 serving 63 clients
+        facility 2 serving 85 clients
+        facility 3 serving 0 clients
+        facility 4 serving 58 clients
 
         """
 
@@ -130,7 +165,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         model = pulp.LpProblem(name, pulp.LpMinimize)
         lscp = LSCP(name, model)
 
-        FacilityModelBuilder.add_facility_integer_variable(lscp, r_fac, "x[{i}]")
+        FacilityModelBuilder.add_facility_integer_variable(lscp, r_fac, "y[{i}]")
 
         lscp.aij = np.zeros(cost_matrix.shape)
         lscp.aij[cost_matrix <= service_radius] = 1
@@ -160,11 +195,12 @@ class LSCP(LocateSolver, BaseOutputMixin):
         name: str = "LSCP",
     ):
         """
-        Create a LSCP object based on geodataframes. Calculate the cost matrix between demand and facility,
-        and then use from_cost_matrix method.
+        Create a LSCP object based on geodataframes. Calculate the cost matrix
+        between demand and facility, and then use from_cost_matrix method.
 
         Parameters
         ----------
+
         gdf_demand: geopandas.GeoDataFrame
             demand geodataframe with point geometry
         gdf_fac: geopandas.GeoDataframe
@@ -175,19 +211,27 @@ class LSCP(LocateSolver, BaseOutputMixin):
             facility candidate sites geometry column name
         service_radius: float
             maximum acceptable service distance by problem
+        predefined_facility_col: str
+            Column name representing facilities are already defined.
+            Default is ``None``.
         distance_metric: str, default="euclidean"
-            metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
+            metrics supported by :method: `scipy.spatial.distance.cdist` used
+            for the distance calculations
         name: str, default="LSCP"
             name of the problem
 
         Returns
         -------
+
         LSCP object
 
         Examples
         --------
-        >>> from spopt.locate.coverage import LSCP
+
+        >>> from spopt.locate import LSCP
         >>> from spopt.locate.util import simulated_geo_points
+        >>> import geopandas
+        >>> import numpy
         >>> import pulp
         >>> import spaghetti
 
@@ -195,35 +239,52 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
-        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
-        >>> street_buffered = geopandas.GeoDataFrame(
-        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
-        ...                            crs=street.crs,
-        ...                            columns=["geometry"])
+        >>> streets = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> streets_buffered = geopandas.GeoDataFrame(
+        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),
+        ...     crs=streets.crs,
+        ...     columns=["geometry"]
+        ... )
 
         Simulate points belong to lattice
 
-        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
-        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+        >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
         Snap points to the network
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
-        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="clients", snapped=True
+        ... )
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
-        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="facilities", snapped=True
+        ... )
 
-        Create LSCP instance from cost matrix
+        Create LSCP instance from geodataframe
 
-        >>> lscp_from_geodataframe = LSCP.from_geodataframe(clients_snapped, facilities_snapped,
-        ...                                                "geometry", "geometry",
-        ...                                                 max_coverage=8, distance_metric="euclidean")
-        >>> lscp_from_geodataframe = lscp_from_geodataframe.solve(pulp.PULP_CBC_CMD(msg=False))
+        >>> lscp_from_geodataframe = LSCP.from_geodataframe(
+        ...     clients_snapped,
+        ...     facilities_snapped,
+        ...     "geometry",
+        ...     "geometry",
+        ...     service_radius=8,
+        ...     distance_metric="euclidean"
+        ... )
+        >>> lscp_from_geodataframe = lscp_from_geodataframe.solve(
+        ...     pulp.PULP_CBC_CMD(msg=False)
+        ... )
 
         Get facility lookup demand coverage array
 
-        >>> lscp_from_geodataframe.facility_client_array()
-        >>> lscp_from_geodataframe.fac2cli
+        >>> for fac, cli in enumerate(lscp_from_geodataframe.fac2cli):
+        ...     print(f"facility {fac} serving {len(cli)} clients")
+        facility 0 serving 0 clients
+        facility 1 serving 0 clients
+        facility 2 serving 100 clients
+        facility 3 serving 0 clients
+        facility 4 serving 0 clients
 
         """
 
@@ -266,11 +327,15 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
     def facility_client_array(self) -> None:
         """
-        Create an array 2d MxN, where m is number of facilities and n is number of clients. Each row represent a facility and has an array containing clients index meaning that the facility-i cover the entire array.
+        Create an array 2d MxN, where m is number of facilities and n is number of
+        clients. Each row represent a facility and has an array containing clients
+        index meaning that the facility-i cover the entire array.
 
         Returns
         -------
+
         None
+
         """
 
         fac_vars = getattr(self, "fac_vars")
@@ -289,19 +354,22 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
     def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
-        Solve the LSCP model
+        Solve the LSCP model.
 
         Parameters
         ----------
+
         solver: pulp.LpSolver
             solver supported by pulp package
-
         results: bool
-            if True it will create metainfo - which facilities cover which demand and vice-versa, and the uncovered demand - about the model results
+            if True it will create metainfo - which facilities cover which demand and
+            vice-versa, and the uncovered demand - about the model results
 
         Returns
         -------
+
         LSCP object
+
         """
         self.problem.solve(solver)
         self.check_status()
@@ -313,46 +381,68 @@ class LSCP(LocateSolver, BaseOutputMixin):
         return self
 
 
-class LSCPB(LocateSolver, BaseOutputMixin):
+class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
     """
-    LSCPB class implements Location Set Covering Problem - Backup optimization model and solves it.
+    LSCPB class implements Location Set Covering Problem - Backup
+    optimization model and solves it.
 
     Parameters
     ----------
+
     name: str
         Problem name
     problem: pulp.LpProblem
-        Pulp instance of optimization model that contains constraints, variables and objective function.
+        Pulp instance of optimization model that contains constraints,
+        variables and objective function.
+    solver: pulp.LpSolver
+        solver supported by pulp package
 
     Attributes
     ----------
+
     name: str
         Problem name
     problem: pulp.LpProblem
-        Pulp instance of optimization model that contains constraints, variables and objective function.
+        Pulp instance of optimization model that contains constraints,
+        variables and objective function.
+    solver: pulp.LpSolver
+        solver supported by pulp package
     lscp_obj_value: float
         Objective value returned from solved LSCP instance.
     fac2cli : np.array
-        2-d array MxN, where m is number of facilities and n is number of clients. Each row represents a facility and has an array containing clients index meaning that the facility-i cover the entire array.
+        2-d array MxN, where m is number of facilities and n is number of clients.
+        Each row represents a facility and has an array containing clients index
+        meaning that the facility-i cover the entire array.
     cli2fac: np.array
-        2-d MxN, where m is number of clients and n is number of facilities. Each row represent a client and has an array containing facility index meaning that the client is covered by the facility ith.
+        2-d MxN, where m is number of clients and n is number of facilities.
+        Each row represent a client and has an array containing facility index
+        meaning that the client is covered by the facility ith.
     aij: np.array
         Cost matrix 2-d array
+
     """
 
-    def __init__(self, name: str, problem: pulp.LpProblem, lscp_obj_value=0.0):
-        self.lscp_obj_value = lscp_obj_value
+    def __init__(
+        self,
+        name: str,
+        problem: pulp.LpProblem,
+        solver: pulp.LpSolver,
+    ):
+        self.solver = solver
         super().__init__(name, problem)
 
     def __add_obj(self) -> None:
         """
         Add objective function to model:
         (Coverage Variable)
+
         Maximize U1 + U2 + U3 + U4 + U5 + ... + Uj
 
         Returns
         -------
+
         None
+
         """
         cov_vars = getattr(self, "cli_vars")
         self.problem += pulp.lpSum(cov_vars), "objective function"
@@ -371,21 +461,31 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
         Parameters
         ----------
+
         cost_matrix: np.array
             two-dimensional distance array between facility points and demand point
         service_radius: float
             maximum acceptable service distance by problem
+        solver: pulp.LpSolver
+            solver supported by pulp package
+        predefined_facilities_arr : numpy.array
+            Predefined facilities that must appear in the solution.
+            Default is ``None``.
         name: str, default="LSCP-B"
             name of the problem
 
         Returns
         -------
+
         LSCPB object
 
         Examples
         --------
-        >>> from spopt.locate.coverage import LSCPB, LSCP
+
+        >>> from spopt.locate import LSCPB
         >>> from spopt.locate.util import simulated_geo_points
+        >>> import geopandas
+        >>> import numpy
         >>> import pulp
         >>> import spaghetti
 
@@ -393,37 +493,58 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
-        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
-        >>> street_buffered = geopandas.GeoDataFrame(
-        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
-        ...                            crs=street.crs,
-        ...                            columns=["geometry"])
+        >>> streets = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> streets_buffered = geopandas.GeoDataFrame(
+        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),
+        ...     crs=streets.crs,
+        ...     columns=["geometry"]
+        ... )
 
         Simulate points belong to lattice
 
-        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
-        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+        >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
         Snap points to the network
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
-        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="clients", snapped=True
+        ... )
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
-        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="facilities", snapped=True
+        ... )
 
         Calculate the cost matrix
         >>> cost_matrix = ntw.allneighbordistances(
-        ...    sourcepattern=ntw.pointpatterns["clients"],
-        ...    destpattern=ntw.pointpatterns["facilities"])
+        ...     sourcepattern=ntw.pointpatterns["clients"],
+        ...     destpattern=ntw.pointpatterns["facilities"]
+        ... )
 
         Create LSCPB instance from cost matrix
 
-        >>> lscpb_from_cost_matrix = LSCPB.from_cost_matrix(cost_matrix, max_coverage=8, pulp.PULP_CBC_CMD(msg=False)
-        >>> lscpb_from_cost_matrix = lscpb_from_cost_matrix.solve(pulp.PULP_CBC_CMD(msg=False))
+        >>> lscpb_from_cost_matrix = LSCPB.from_cost_matrix(
+        ...     cost_matrix, service_radius=8, solver=pulp.PULP_CBC_CMD(msg=False)
+        ... )
+        >>> lscpb_from_cost_matrix = lscpb_from_cost_matrix.solve()
 
         Get facility lookup demand coverage array
 
-        >>> lscpb_from_cost_matrix.fac2cli
+        >>> for fac, cli in enumerate(lscpb_from_cost_matrix.fac2cli):
+        ...     print(f"facility {fac} serving {len(cli)} clients")
+        facility 0 serving 0 clients
+        facility 1 serving 63 clients
+        facility 2 serving 85 clients
+        facility 3 serving 92 clients
+        facility 4 serving 0 clients
+
+        Get the percentage of clients covered by more than one facility.
+
+        >>> round(lscpb_from_cost_matrix.backup_perc, 3)
+        88.0
+
+        88% of clients are covered by more than 1 facility
 
         """
         if predefined_facilities_arr is not None:
@@ -439,11 +560,11 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
         model = pulp.LpProblem(name, pulp.LpMaximize)
 
-        lscpb = LSCPB(name, model)
+        lscpb = LSCPB(name, model, solver)
         lscpb.lscp_obj_value = lscp.problem.objective.value()
 
-        FacilityModelBuilder.add_facility_integer_variable(lscpb, r_fac, "x[{i}]")
-        FacilityModelBuilder.add_client_integer_variable(lscpb, r_cli, "u[{i}]")
+        FacilityModelBuilder.add_facility_integer_variable(lscpb, r_fac, "y[{i}]")
+        FacilityModelBuilder.add_client_integer_variable(lscpb, r_cli, "x[{i}]")
 
         lscpb.aij = np.zeros(cost_matrix.shape)
         lscpb.aij[cost_matrix <= service_radius] = 1
@@ -477,11 +598,12 @@ class LSCPB(LocateSolver, BaseOutputMixin):
         name: str = "LSCP-B",
     ):
         """
-        Create a LSCPB object based on geodataframes. Calculate the cost matrix between demand and facility,
-        and then use from_cost_matrix method.
+        Create a LSCPB object based on geodataframes. Calculate the cost matrix
+        between demand and facility, and then use from_cost_matrix method.
 
         Parameters
         ----------
+
         gdf_demand: geopandas.GeoDataFrame
             demand geodataframe with point geometry
         gdf_fac: geopandas.GeoDataframe
@@ -492,19 +614,29 @@ class LSCPB(LocateSolver, BaseOutputMixin):
             facility candidate sites geometry column name
         service_radius: float
             maximum acceptable service distance by problem
+        solver: pulp.LpSolver
+            solver supported by pulp package
+        predefined_facility_col: str
+            Column name representing facilities are already defined.
+            Default is ``None``.
         distance_metric: str, default="euclidean"
-            metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
+            metrics supported by :method: `scipy.spatial.distance.cdist` used for
+            the distance calculations
         name: str, default="LSCP"
             name of the problem
 
         Returns
         -------
+
         LSCPB object
 
         Examples
         --------
-        >>> from spopt.locate.coverage import LSCB, LSCP
+
+        >>> from spopt.locate import LSCPB
         >>> from spopt.locate.util import simulated_geo_points
+        >>> import geopandas
+        >>> import numpy
         >>> import pulp
         >>> import spaghetti
 
@@ -512,34 +644,59 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
-        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
-        >>> street_buffered = geopandas.GeoDataFrame(
-        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
-        ...                            crs=street.crs,
-        ...                            columns=["geometry"])
+        >>> streets = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> streets_buffered = geopandas.GeoDataFrame(
+        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),
+        ...     crs=streets.crs,
+        ...     columns=["geometry"]
+        ... )
 
         Simulate points belong to lattice
 
-        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
-        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+        >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
         Snap points to the network
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
-        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="clients", snapped=True
+        ... )
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
-        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="facilities", snapped=True
+        ... )
 
-        Create LSCPB instance from cost matrix
+        Create LSCPB instance from geodataframe
 
-        >>> lscpb_from_geodataframe = LSCPB.from_geodataframe(clients_snapped, facilities_snapped,
-        ...                                                "geometry", "geometry",
-        ...                                                 max_coverage=8, pulp.PULP_CBC_CMD(msg=False), distance_metric="euclidean")
-        >>> lscpb_from_geodataframe = lscpb_from_geodataframe.solve(pulp.PULP_CBC_CMD(msg=False))
+        >>> lscpb_from_geodataframe = LSCPB.from_geodataframe(
+        ...     clients_snapped,
+        ...     facilities_snapped,
+        ...     "geometry",
+        ...     "geometry",
+        ...     service_radius=8,
+        ...     solver=pulp.PULP_CBC_CMD(msg=False),
+        ...     distance_metric="euclidean"
+        ... )
+        >>> lscpb_from_geodataframe = lscpb_from_geodataframe.solve()
 
         Get facility lookup demand coverage array
 
-        >>> lscpb_from_geodataframe.fac2cli
+        >>> for fac, cli in enumerate(lscpb_from_geodataframe.fac2cli):
+        ...     print(f"facility {fac} serving {len(cli)} clients")
+        facility 0 serving 0 clients
+        facility 1 serving 0 clients
+        facility 2 serving 100 clients
+        facility 3 serving 0 clients
+        facility 4 serving 0 clients
+
+        Get the percentage of clients covered by more than one facility.
+
+        >>> round(lscpb_from_geodataframe.backup_perc, 3)
+        0.0
+
+        All clients are covered by 1 facility because only one facility
+        is needed to solve the LSCP.
 
         """
 
@@ -582,11 +739,15 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
     def facility_client_array(self) -> None:
         """
-        Create an array 2d MxN, where m is number of facilities and n is number of clients. Each row represent a facility and has an array containing clients index meaning that the facility-i cover the entire array.
+        Create an array 2d MxN, where m is number of facilities and n is
+        number of clients. Each row represent a facility and has an array
+        containing clients index meaning that the facility-i cover the entire array.
 
         Returns
         -------
+
         None
+
         """
 
         fac_vars = getattr(self, "fac_vars")
@@ -603,28 +764,30 @@ class LSCPB(LocateSolver, BaseOutputMixin):
 
             self.fac2cli.append(array_cli)
 
-    def solve(self, solver: pulp.LpSolver, results: bool = True):
+    def solve(self, results: bool = True):
         """
         Solve the LSCPB model
 
         Parameters
         ----------
-        solver: pulp.LpSolver
-            solver supported by pulp package
 
         results: bool
-            if True it will create metainfo - which facilities cover which demand and vice-versa, and the uncovered demand - about the model results
+            if True it will create metainfo - which facilities cover which demand
+            and vice-versa, and the uncovered demand - about the model results
 
         Returns
         -------
+
         LSCPB object
+
         """
-        self.problem.solve(solver)
+        self.problem.solve(self.solver)
         self.check_status()
 
         if results:
             self.facility_client_array()
             self.client_facility_array()
+            self.get_percentage()
 
         return self
 
@@ -635,25 +798,34 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
 
     Parameters
     ----------
+
     name: str
         Problem name
     problem: pulp.LpProblem
-        Pulp instance of optimization model that contains constraints, variables and objective function.
+        Pulp instance of optimization model that contains constraints,
+        variables and objective function.
 
     Attributes
     ----------
+
     name: str
         Problem name
     problem: pulp.LpProblem
-        Pulp instance of optimization model that contains constraints, variables and objective function.
+        Pulp instance of optimization model that contains constraints,
+        variables and objective function.
     fac2cli : np.array
-        2-d array MxN, where m is number of facilities and n is number of clients. Each row represents a facility and has an array containing clients index meaning that the facility-i cover the entire array.
+        2-d array MxN, where m is number of facilities and n is number of clients.
+        Each row represents a facility and has an array containing clients index
+        meaning that the facility-i cover the entire array.
     cli2fac: np.array
-        2-d MxN, where m is number of clients and n is number of facilities. Each row represent a client and has an array containing facility index meaning that the client is covered by the facility ith.
+        2-d MxN, where m is number of clients and n is number of facilities.
+        Each row represent a client and has an array containing facility index
+        meaning that the client is covered by the facility ith.
     aij: np.array
         Cost matrix 2-d array
     n_cli_uncov: int
         Specify how many clients points are not covered.
+
     """
 
     def __init__(self, name: str, problem: pulp.LpProblem):
@@ -662,11 +834,14 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
     def __add_obj(self, weights: np.array, range_clients: range) -> None:
         """
         Add objective function to model:
+
         Maximize w1 * y1 + w2 * y2 +  ... + wi * yi
 
         Returns
         -------
+
         None
+
         """
         dem_vars = getattr(self, "cli_vars")
 
@@ -690,6 +865,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
 
         Parameters
         ----------
+
         cost_matrix: np.array
             two-dimensional distance array between facility points and demand point
         weights: np.array
@@ -698,20 +874,24 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             maximum acceptable service distance by problem
         p_facilities: int
             number of facilities to be located
-        predefined_facilities_arr: np.array, default=None
-            bool array defining which facilities are already defined
+        predefined_facilities_arr : numpy.array
+            Predefined facilities that must appear in the solution.
+            Default is ``None``.
         name: str, default="MCLP"
             name of the problem
 
         Returns
         -------
+
         MCLP object
 
         Examples
         --------
 
-        >>> from spopt.locate.coverage import MCLP
+        >>> from spopt.locate import MCLP
         >>> from spopt.locate.util import simulated_geo_points
+        >>> import geopandas
+        >>> import numpy
         >>> import pulp
         >>> import spaghetti
 
@@ -719,29 +899,35 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
-        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
-        >>> street_buffered = geopandas.GeoDataFrame(
-        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
-        ...                            crs=street.crs,
-        ...                            columns=["geometry"])
+        >>> streets = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> streets_buffered = geopandas.GeoDataFrame(
+        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),
+        ...     crs=streets.crs,
+        ...     columns=["geometry"]
+        ... )
 
         Simulate points belong to lattice
 
-        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
-        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+        >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
         Snap points to the network
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
-        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="clients", snapped=True
+        ... )
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
-        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="facilities", snapped=True
+        ... )
 
         Calculate the cost matrix
 
         >>> cost_matrix = ntw.allneighbordistances(
         ...    sourcepattern=ntw.pointpatterns["clients"],
-        ...    destpattern=ntw.pointpatterns["facilities"])
+        ...    destpattern=ntw.pointpatterns["facilities"]
+        ... )
 
         Simulate demand weights from 1 to 12
 
@@ -749,13 +935,30 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
 
         Create MCLP instance from cost matrix
 
-        >>> mclp_from_cost_matrix = MCLP.from_cost_matrix(cost_matrix, ai, max_coverage=7, p_facilities=4)
-        >>> mclp_from_cost_matrix = mclp_from_cost_matrix.solve(pulp.PULP_CBC_CMD(msg=False))
+        >>> mclp_from_cost_matrix = MCLP.from_cost_matrix(
+        ...     cost_matrix, ai, service_radius=7, p_facilities=4
+        ... )
+        >>> mclp_from_cost_matrix = mclp_from_cost_matrix.solve(
+        ...     pulp.PULP_CBC_CMD(msg=False)
+        ... )
 
         Get facility lookup demand coverage array
 
-        >>> mclp_from_cost_matrix.facility_client_array()
-        >>> mclp_from_cost_matrix.fac2cli
+        >>> for fac, cli in enumerate(mclp_from_cost_matrix.fac2cli):
+        ...     print(f"facility {fac} serving {len(cli)} clients")
+        facility 0 serving 44 clients
+        facility 1 serving 54 clients
+        facility 2 serving 75 clients
+        facility 3 serving 77 clients
+        facility 4 serving 0 clients
+
+        Get number of clients uncovered and percentage covered
+
+        >>> mclp_from_cost_matrix.n_cli_uncov
+        1
+        >>> mclp_from_cost_matrix.perc_cov
+        99.0
+
         """
         r_fac = range(cost_matrix.shape[1])
         r_cli = range(cost_matrix.shape[0])
@@ -800,11 +1003,12 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         name: str = "MCLP",
     ):
         """
-        Create a MCLP object based on geodataframes. Calculate the cost matrix between demand and facility,
-        and then use from_cost_matrix method.
+        Create a MCLP object based on geodataframes. Calculate the cost matrix
+        between demand and facility, and then use from_cost_matrix method.
 
         Parameters
         ----------
+
         gdf_demand: geopandas.GeoDataFrame
             demand geodataframe with point geometry
         gdf_fac: geopandas.GeoDataframe
@@ -819,45 +1023,56 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             maximum acceptable service distance by problem
         p_facilities: int
             number of facilities to be located
-        predefined_facility_col: np.array, default=None
-            column name representing facilities are already defined
+        predefined_facility_col: str
+            Column name representing facilities are already defined.
+            Default is ``None``.
         distance_metric: str, default="euclidean"
-            metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
+            metrics supported by :method: `scipy.spatial.distance.cdist` used for
+            the distance calculations
         name: str, default="MCLP"
             name of the problem
 
         Returns
         -------
+
         MCLP object
 
         Examples
         --------
-        >>> from spopt.locate.coverage import MCLP
+
+        >>> from spopt.locate import MCLP
         >>> from spopt.locate.util import simulated_geo_points
+        >>> import geopandas
         >>> import pulp
+        >>> import numpy
         >>> import spaghetti
 
         Create regular lattice
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
-        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
-        >>> street_buffered = geopandas.GeoDataFrame(
-        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
-        ...                            crs=street.crs,
-        ...                            columns=["geometry"])
+        >>> streets = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> streets_buffered = geopandas.GeoDataFrame(
+        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),
+        ...     crs=streets.crs,
+        ...     columns=["geometry"]
+        ... )
 
         Simulate points belong to lattice
 
-        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
-        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+        >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
         Snap points to the network
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
-        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="clients", snapped=True
+        ... )
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
-        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="facilities", snapped=True
+        ... )
 
         Simulate demand weights from 1 to 12
 
@@ -867,22 +1082,37 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         Create MCLP instance from geodataframe
 
         >>> mclp_from_geodataframe = MCLP.from_geodataframe(
-        ...                                    clients_snapped,
-        ...                                    facilities_snapped,
-        ...                                    "geometry",
-        ...                                    "geometry",
-        ...                                    "weights",
-        ...                                    max_coverage=7,
-        ...                                    p_facilities=4,
-        ...                                    distance_metric="euclidean"
-        ...                               )
+        ...     clients_snapped,
+        ...     facilities_snapped,
+        ...     "geometry",
+        ...     "geometry",
+        ...     "weights",
+        ...     service_radius=7,
+        ...     p_facilities=4,
+        ...     distance_metric="euclidean"
+        ... )
 
-        >>> mclp_from_geodataframe = mclp_from_geodataframe.solve(pulp.PULP_CBC_CMD(msg=False))
+        >>> mclp_from_geodataframe = mclp_from_geodataframe.solve(
+        ...     pulp.PULP_CBC_CMD(msg=False)
+        ... )
 
         Get facility lookup demand coverage array
 
-        >>> mclp_from_geodataframe.facility_client_array()
-        >>> mclp_from_geodataframe.fac2cli
+        >>> for fac, cli in enumerate(mclp_from_geodataframe.fac2cli):
+        ...     print(f"facility {fac} serving {len(cli)} clients")
+        facility 0 serving 63 clients
+        facility 1 serving 80 clients
+        facility 2 serving 96 clients
+        facility 3 serving 0 clients
+        facility 4 serving 58 clients
+
+        Get number of clients uncovered and percentage covered
+
+        >>> mclp_from_geodataframe.n_cli_uncov
+        0
+        >>> mclp_from_geodataframe.perc_cov
+        100.0
+
         """
 
         predefined_facilities_arr = None
@@ -930,11 +1160,15 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
 
     def facility_client_array(self) -> None:
         """
-        Create an array 2d MxN, where m is number of facilities and n is number of clients. Each row represent a facility and has an array containing clients index meaning that the facility-i cover the entire array.
+        Create an array 2d MxN, where m is number of facilities and n is number of
+        clients. Each row represent a facility and has an array containing clients
+        index meaning that the facility-i cover the entire array.
 
         Returns
         -------
+
         None
+
         """
 
         fac_vars = getattr(self, "fac_vars")
@@ -959,15 +1193,18 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
 
         Parameters
         ----------
+
         solver: pulp.LpSolver
             solver supported by pulp package
-
         results: bool
-            if True it will create metainfo - which facilities cover which demand and vice-versa, and the uncovered demand - about the model results
+            if True it will create metainfo - which facilities cover which demand and
+            vice-versa, and the uncovered demand - about the model results
 
         Returns
         -------
+
         MCLP object
+
         """
         self.problem.solve(solver)
         self.check_status()
@@ -976,4 +1213,5 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             self.facility_client_array()
             self.client_facility_array()
             self.uncovered_clients()
+            self.get_percentage()
         return self
