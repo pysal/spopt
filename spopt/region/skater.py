@@ -24,6 +24,9 @@ class SpanningForest(object):
         """
         Initialize the SKATER algorithm.
 
+        Parameters
+        ----------
+
         dissimilarity : a callable distance metric
         affinity : an callable affinity metric between 0,1.
                    Will be inverted to provide a
@@ -35,9 +38,13 @@ class SpanningForest(object):
         verbose: bool/int describing how much output to provide to the user,
                  in terms of print statements or progressbars.
 
-        NOTE: Optimization occurs with respect to a *dissimilarity* metric, so the reduction should
-              yield some kind of score where larger values are *less desirable* than smaller values.
-              Typically, this means we use addition.
+        Notes
+        -----
+
+        Optimization occurs with respect to a *dissimilarity* metric, so the reduction should
+        yield some kind of score where larger values are *less desirable* than smaller values.
+        Typically, this means we use addition.
+
         """
         if affinity is not None:
             # invert the 0,1 affinity to
@@ -65,6 +72,10 @@ class SpanningForest(object):
         islands="increase",
     ):
         """
+
+        Parameters
+        ----------
+
         n_clusters : int of clusters wanted
         W : pysal W object expressing the neighbor relationships between observations.
             Should be symmetric and binary, so Queen/Rook, DistanceBand, or a symmetrized KNN.
@@ -76,8 +87,12 @@ class SpanningForest(object):
                  If "ignore", will discover `n_clusters` regions, treating islands as their own regions.
                  If "increase", will discover `n_clusters` regions, treating islands as separate from n_clusters.
 
-        NOTE: Optimization occurs with respect to a *dissimilarity* metric, so the problem *minimizes*
-              the map dissimilarity. So, lower scores are better.
+        Notes
+        -----
+
+        Optimization occurs with respect to a *dissimilarity* metric, so the
+        problem *minimizes* the map dissimilarity. So, lower scores are better.
+
         """
         if trace:
             self._trace = []
@@ -195,13 +210,20 @@ class SpanningForest(object):
 
         If a quorum is passed and the labels do not meet quorum, the score is inf.
 
+        Parameters
+        ----------
+
         data    :   (N,P) array of data on which to compute the score of the regions expressed in labels
         labels  :   (N,) array of labels expressing the classification of each observation into a region.
         quorum  :   int expressing the minimum size of regions. Can be -inf if there is no lower bound.
                     Any region below quorum makes the score inf.
 
-        NOTE: Optimization occurs with respect to a *dissimilarity* metric, so the problem *minimizes*
-              the map dissimilarity. So, lower scores are better.
+        Notes
+        -----
+
+        Optimization occurs with respect to a *dissimilarity* metric, so the
+        problem *minimizes* the map dissimilarity. So, lower scores are better.
+
         """
         if labels is None:
             try:
@@ -242,6 +264,9 @@ class SpanningForest(object):
         """
         Find the best cut from the MSF.
 
+        Parameters
+        ----------
+
         MSF: (N,N) scipy sparse matrix with zero elements removed.
              Represents the adjacency matrix for the minimum spanning forest.
              Constructed from sparse.csgraph.sparse_from_dense or using MSF.eliminate_zeros().
@@ -250,11 +275,18 @@ class SpanningForest(object):
         quorum: int denoting the minimum number of elements in the region
         labels: (N,) flat vector of labels for each point. Represents the "cluster labels"
                 for disconnected components of the graph.
-        target_label: int from the labels array to subset the MSF. If passed along with `labels`, then a cut
-                      will be found that is restricted to that subset of the MSF.
-        make: bool, whether or not to modify the input MSF in order to make the best cut that was found.
+        target_label: int
+            from the labels array to subset the MSF. If passed along with `labels`, then a cut
+            will be found that is restricted to that subset of the MSF.
+        make: bool
+            whether or not to modify the input MSF in order to make the best cut that was found.
 
-        Returns a namedtuple with in_node, out_node, and score.
+        Returns
+        -------
+        a namedtuple with in_node, out_node, and score.
+
+
+
         """
         if data is None:
             data = np.ones(MSF.shape)
@@ -317,11 +349,19 @@ class SpanningForest(object):
     def make_cut(self, in_node, out_node, score, MSF=None):
         """
         make a cut on the MSF inplace, provided the in_node, out_node, MSF, and score.
-        in_node: int, ID of the source node for the edge to be cut
-        out_node: int, ID of the destination node for the edge to be cut
-        score: float, the value of the score being cut. if the score is infinite, the cut is not made.
+
+        Parameters
+        ----------
+
+        in_node: int
+            ID of the source node for the edge to be cut
+        out_node: int
+            ID of the destination node for the edge to be cut
+        score: float
+            the value of the score being cut. if the score is infinite, the cut is not made.
         MSF: the spanning forest to use when making the cut. If not provided,
              uses the defualt tree in self.minimum_spanning_forest_
+
         """
         if MSF is None:
             MSF = self.minimum_spanning_forest_
@@ -336,7 +376,6 @@ class SpanningForest(object):
 
 class Skater(BaseSpOptHeuristicSolver):
     """Skater is a spatial regionalization algorithm based on spanning tree pruning
-
 
     Parameters
     ----------
@@ -378,7 +417,7 @@ class Skater(BaseSpOptHeuristicSolver):
         A way to compute the center of each region in attribute space.
 
     Attributes
-    -------
+    ----------
 
     labels_ : numpy.array
         Region IDs for observations.

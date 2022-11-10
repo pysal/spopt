@@ -64,6 +64,7 @@ class SPENC(clust.SpectralClustering):
 
         Parameters
         -----------
+
         n_clusters : integer, optional
             The number of clusters to search for.
 
@@ -137,6 +138,7 @@ class SPENC(clust.SpectralClustering):
 
         Attributes
         ----------
+
         affinity_matrix_ : array-like, shape (n_samples, n_samples)
             Affinity matrix used for clustering. Available only if after calling
             ``fit``.
@@ -146,6 +148,7 @@ class SPENC(clust.SpectralClustering):
 
         Notes
         -----
+
         If you have an affinity matrix, such as a distance matrix,
         for which 0 means identical elements, and high values means
         very dissimilar elements, it can be transformed in a
@@ -174,6 +177,7 @@ class SPENC(clust.SpectralClustering):
         - Multiclass spectral clustering, 2003
           Stella X. Yu, Jianbo Shi
           http://www1.icsi.berkeley.edu/~stellayu/publication/doc/2003kwayICCV.pdf
+
         """
         self.n_clusters = n_clusters
         self.eigen_solver = eigen_solver
@@ -206,8 +210,9 @@ class SPENC(clust.SpectralClustering):
         applies W to the affinity elementwise, and then applies spectral clustering
         to the affinity matrix.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
+
         X               : sparse or dense array
                           matrix containing P features for N observations.
         W               : sparse or dense array, default None
@@ -251,7 +256,8 @@ class SPENC(clust.SpectralClustering):
                           "gridsearch" may be slow when grid_resolution is large.
                           "zero" is the best method for large data.
 
-        NOTE:
+        Notes
+        -----
 
         breakme sends the affinity matrix down to scikit's spectral clustering class.
         I call this breakme because of bug8129.
@@ -336,8 +342,9 @@ class SPENC(clust.SpectralClustering):
         """
         Compute the eigenspace embedding of a given affinity matrix.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
+
         affinity    :   sparse or dense matrix
                         affinity matrix to compute the spectral embedding of
         shift_invert:   bool
@@ -381,8 +388,9 @@ class SPENC(clust.SpectralClustering):
         If n_clusters = np.inf and floor > 0, then will find
         all possible cuts with more than X units.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
+
         grid_resolution : int
                           how many subdivisions to use when doing gridsearch
                           for cutpoint on second eigenvector of subgraphs.
@@ -526,8 +534,9 @@ class SPENC(clust.SpectralClustering):
         Computes the score of the given label vector on data in X using convex
         combination weight in delta.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
+
         X               : numpy array (N,P)
                           array of data classified into `labels` to score.
         W               : sparse array or numpy array (N,N)
@@ -565,8 +574,9 @@ class SPENC(clust.SpectralClustering):
         This uses random weights in spectral decomposition to generate approximately-evenly populated
         random subgraphs from W.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
+
         W                : np.ndarray or scipy.sparse matrix
                            matrix encoding the spatial relationships between observations in the frame.
                            Must be strictly binary & connected to result in connected graphs correct behavior.
@@ -596,8 +606,9 @@ class SPENC(clust.SpectralClustering):
         This uses random weights in spectral decomposition to generate approximately-evenly populated
         random subgraphs from W.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
+
         W             : np.ndarray or scipy.sparse matrix
                         matrix encoding the spatial relationships between observations in the frame.
                         Must be strictly binary & connected to result in connected graphs correct behavior.
@@ -613,7 +624,9 @@ class SPENC(clust.SpectralClustering):
                         extra arguments passed down to the SPENC class for further customization.
         Returns
         -------
+
         labels corresponding to the input W that are generated at random.
+
         """
         result = np.vstack(
             [
@@ -650,8 +663,9 @@ class AgglomerativeClustering(clust.AgglomerativeClustering):
         This uses random weights in agglomerative clustering decomposition to generate
         random subgraphs from W.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
+
         W                : np.ndarray or scipy.sparse matrix
                            matrix encoding the spatial relationships between observations in the frame.
                            Must be strictly binary & connected to result in connected graphs correct behavior.
@@ -664,7 +678,9 @@ class AgglomerativeClustering(clust.AgglomerativeClustering):
 
         Returns
         -------
+
         labels corresponding to the input W that are generated at random.
+
         """
         return np.vstack(
             [
