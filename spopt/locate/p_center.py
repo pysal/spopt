@@ -11,38 +11,37 @@ import warnings
 
 class PCenter(LocateSolver, BaseOutputMixin):
     """
-    PCenter class implements P-Center optimization model and solve it.
+    Implements and solve the optimal :math:`p`-center facility location problem.
 
     Parameters
     ----------
 
-    name: str
-        problem name
-    problem: pulp.LpProblem
-        pulp instance of optimization model that contains constraints,
-        variables and objective function.
-    aij: np.array
-        two-dimensional array product of service load/population demand and
-        distance matrix between facility and demand.
+    name : str
+        The problem name.
+    problem : pulp.LpProblem
+        A ``pulp`` instance of an optimization model that contains
+        constraints, variables, and an objective function.
+    aij : np.array
+        A cost matrix in the form of a 2D array between origins and destinations.
 
     Attributes
     ----------
 
-    name: str
+    name : str
         Problem name
-    problem: pulp.LpProblem
+    problem : pulp.LpProblem
         Pulp instance of optimization model that contains constraints,
         variables and objective function.
     fac2cli : np.array
         2-d array MxN, where m is number of facilities and n is number of clients.
         Each row represents a facility and has an array containing clients index
         meaning that the facility-i cover the entire array.
-    cli2fac: np.array
+    cli2fac : np.array
         2-d MxN, where m is number of clients and n is number of facilities.
         Each row represent a client and has an array containing facility index
         meaning that the client is covered by the facility ith.
-    aij: np.array
-        Cost matrix 2-d array
+    aij : np.array
+        A cost matrix in the form of a 2D array between origins and destinations.
 
     """
 
@@ -76,13 +75,13 @@ class PCenter(LocateSolver, BaseOutputMixin):
         name: str = "p-center",
     ):
         """
-        Create PCenter object based on cost matrix
+        Create a ``PCenter`` object based on a cost matrix.
 
         Parameters
         ----------
 
         cost_matrix: np.array
-            two-dimensional distance array between facility points and demand point
+            A cost matrix in the form of a 2D array between origins and destinations.
         p_facilities: int
             number of facilities to be located
         predefined_facilities_arr : numpy.array
@@ -94,7 +93,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         Returns
         -------
 
-        PCenter object
+        spopt.locate.PCenter
 
         Examples
         --------
@@ -105,7 +104,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         >>> import pulp
         >>> import spaghetti
 
-        Create regular lattice
+        Create a regular lattice.
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
@@ -116,12 +115,12 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ...     columns=["geometry"]
         ... )
 
-        Simulate points belong to lattice
+        Simulate points about the lattice.
 
         >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
         >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
-        Snap points to the network
+        Snap the points to the network of lattice edges.
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
         >>> clients_snapped = spaghetti.element_as_gdf(
@@ -132,14 +131,14 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ...     ntw, pp_name="facilities", snapped=True
         ... )
 
-        Calculate the cost matrix
+        Calculate the cost matrix from origins to destinations.
 
         >>> cost_matrix = ntw.allneighbordistances(
         ...    sourcepattern=ntw.pointpatterns["clients"],
         ...    destpattern=ntw.pointpatterns["facilities"]
         ... )
 
-        Create PCenter instance from cost matrix
+        Create and solve a ``PCenter`` instance from the cost matrix.
 
         >>> pcenter_from_cost_matrix = PCenter.from_cost_matrix(
         ...     cost_matrix, p_facilities=4
@@ -148,7 +147,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ...     pulp.PULP_CBC_CMD(msg=False)
         ... )
 
-        Get facility lookup demand coverage array
+        Get the facility-client associations.
 
         >>> for fac, cli in enumerate(pcenter_from_cost_matrix.fac2cli):
         ...     print(f"facility {fac} serving {len(cli)} clients")
@@ -235,7 +234,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         Returns
         -------
 
-        PCenter object
+        spopt.locate.PCenter
 
         Examples
         --------
@@ -246,7 +245,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         >>> import pulp
         >>> import spaghetti
 
-        Create regular lattice
+        Create a regular lattice.
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
@@ -257,12 +256,13 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ...     columns=["geometry"]
         ... )
 
-        Simulate points belong to lattice
+        Simulate points about the lattice.
 
         >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
         >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
-        Snap points to the network
+        Snap the points to the network of lattice edges
+        and extract as ``GeoDataFrame`` objects.
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
         >>> clients_snapped = spaghetti.element_as_gdf(
@@ -273,7 +273,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ...     ntw, pp_name="facilities", snapped=True
         ... )
 
-        Create PCenter instance from geodataframe
+        Create and solve a ``PCenter`` instance from the ``GeoDataFrame`` objects.
 
         >>> pcenter_from_geodataframe = PCenter.from_geodataframe(
         ...     clients_snapped,
@@ -287,7 +287,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ...     pulp.PULP_CBC_CMD(msg=False)
         ... )
 
-        Get facility-client associations
+        Get the facility-client associations.
 
         >>> for fac, cli in enumerate(pcenter_from_geodataframe.fac2cli):
         ...     print(f"facility {fac} serving {len(cli)} clients")
@@ -338,9 +338,10 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
     def facility_client_array(self) -> None:
         """
-        Create an array 2d MxN, where m is number of facilities and n is number of
-        clients. Each row represent a facility and has an array containing clients
-        index meaning that the facility-i cover the entire array.
+
+        Create a 2D :math:`m \times n` array, where :math:`m` is number of
+        facilities and :math:`n` is number of clients. Each row represent a
+        facility and has an array containing a clients indices.
 
         Returns
         -------
@@ -365,21 +366,21 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
     def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
-        Solve the PCenter model
+        Solve the ``PCenter`` model.
 
         Parameters
         ----------
 
-        solver: pulp.LpSolver
-            solver supported by pulp package
-        results: bool
-            if True it will create metainfo - which facilities cover which demand
-            and vice-versa, and the uncovered demand - about the model results
+        solver : pulp.LpSolver
+            A solver supported by ``pulp``.
+        results : bool
+            If ``True`` it will create metainfo (which facilities cover
+            which demand) and vice-versa, and the uncovered demand.
 
         Returns
         -------
 
-        PCenter object
+        spopt.locate.PCenter
 
         """
         self.problem.solve(solver)

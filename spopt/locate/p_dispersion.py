@@ -16,18 +16,18 @@ class PDispersion(LocateSolver):
     Parameters
     ----------
 
-    name: str
-        Problem name
-    problem: pulp.LpProblem
-        Pulp instance of an optimization model that contains constraints,
-        variables and objective function.
+    name : str
+        The problem name.
+    problem : pulp.LpProblem
+        A ``pulp`` instance of an optimization model that contains
+        constraints, variables, and an objective function.
 
     Attributes
     ----------
 
-    name: str
+    name : str
         Problem name
-    problem: pulp.LpProblem
+    problem : pulp.LpProblem
         Pulp instance of optimization model that contains constraints,
         variables and objective function.
 
@@ -62,13 +62,13 @@ class PDispersion(LocateSolver):
         name: str = "P-Dispersion",
     ):
         """
-        Create a PDispersion object based on a cost matrix.
+        Create a ``PDispersion`` object based on a cost matrix.
 
         Parameters
         ----------
 
         cost_matrix: np.array
-            two-dimensional distance array between facility points.
+            A cost matrix in the form of a 2D array between origins and destinations.
         p_fac: int
             number of facilities to be located
         predefined_facilities_arr : numpy.array
@@ -80,7 +80,7 @@ class PDispersion(LocateSolver):
         Returns
         -------
 
-        PDispersion object
+        spopt.locate.PDispersion
 
         Examples
         --------
@@ -91,7 +91,7 @@ class PDispersion(LocateSolver):
         >>> import pulp
         >>> import spaghetti
 
-        Create regular lattice
+        Create a regular lattice.
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
@@ -102,25 +102,26 @@ class PDispersion(LocateSolver):
         ...     columns=["geometry"]
         ... )
 
-        Simulate points belong to lattice
+        Simulate points about the lattice.
 
         >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
-        Snap points to the network
+        Snap the points to the network of lattice edges.
 
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
         >>> facilities_snapped = spaghetti.element_as_gdf(
         ...     ntw, pp_name="facilities", snapped=True
         ... )
 
-        Calculate the cost matrix
+        Calculate the cost matrix from origins to destinations. Origins
+        and destinations are both ``'facilities'`` in this case.
 
         >>> cost_matrix = ntw.allneighbordistances(
         ...    sourcepattern=ntw.pointpatterns["facilities"],
         ...    destpattern=ntw.pointpatterns["facilities"]
         ... )
 
-        Create PDispersion instance from cost matrix
+        Create and solve a ``PDispersion`` instance from the cost matrix.
 
         >>> pdispersion_from_cost_matrix = PDispersion.from_cost_matrix(
         ...     cost_matrix, p_fac=2
@@ -129,7 +130,7 @@ class PDispersion(LocateSolver):
         ...     pulp.PULP_CBC_CMD(msg=False)
         ... )
 
-        Examine the solution
+        Examine the solution.
 
         >>> for dv in pdispersion_from_cost_matrix.fac_vars:
         ...     if dv.varValue:
@@ -177,7 +178,7 @@ class PDispersion(LocateSolver):
         name: str = "P-Dispersion",
     ):
         """
-        Create a PDispersion object based on a geodataframe. Calculate the
+        Create a ``PDispersion`` object based on a geodataframe. Calculate the
         cost matrix between facilities, and then use the from_cost_matrix method.
 
         Parameters
@@ -201,7 +202,7 @@ class PDispersion(LocateSolver):
         Returns
         -------
 
-        PDispersion object
+        spopt.locate.PDispersion
 
         Examples
         --------
@@ -212,7 +213,7 @@ class PDispersion(LocateSolver):
         >>> import pulp
         >>> import spaghetti
 
-        Create regular lattice
+        Create a regular lattice.
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
@@ -223,18 +224,19 @@ class PDispersion(LocateSolver):
         ...     columns=["geometry"]
         ... )
 
-        Simulate points belong to lattice
+        Simulate points about the lattice.
 
         >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
-        Snap points to the network
+        Snap the points to the network of lattice edges
+        and extract as a ``GeoDataFrame`` object.
 
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
         >>> facilities_snapped = spaghetti.element_as_gdf(
         ...     ntw, pp_name="facilities", snapped=True
         ... )
 
-        Create PDispersion instance from geodataframe
+        Create and solve a ``PDispersion`` instance from the ``GeoDataFrame`` object.
 
         >>> pdispersion_from_geodataframe = PDispersion.from_geodataframe(
         ...     facilities_snapped,
@@ -246,7 +248,7 @@ class PDispersion(LocateSolver):
         ...     pulp.PULP_CBC_CMD(msg=False)
         ... )
 
-        Examine the solution
+        Examine the solution.
 
         >>> for dv in pdispersion_from_geodataframe.fac_vars:
         ...     if dv.varValue:
@@ -283,20 +285,21 @@ class PDispersion(LocateSolver):
 
     def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
-        Solve the P-dispersion model
+        Solve the ``PDispersion`` model.
 
         Parameters
         ----------
 
-        solver: pulp.LpSolver
-            solver supported by pulp package
-        results: bool
-            if True it will create metainfo about the model results
+        solver : pulp.LpSolver
+            A solver supported by ``pulp``.
+        results : bool
+            If ``True`` it will create metainfo (which facilities cover
+            which demand) and vice-versa, and the uncovered demand.
 
         Returns
         -------
 
-        PDispersion object
+        spopt.locate.PDispersion
 
         """
         self.problem.solve(solver)

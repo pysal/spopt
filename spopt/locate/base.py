@@ -18,9 +18,7 @@ STATUS_CODES = {
 
 
 class LocateSolver(BaseSpOptSolver):
-    """
-    Base Class for locate package
-    """
+    """Base class for the ``locate`` package."""
 
     def __init__(self, name: str, problem: pulp.LpProblem):
         self.name = name
@@ -30,13 +28,13 @@ class LocateSolver(BaseSpOptSolver):
     @abstractmethod
     def solve(self, solver: pulp.LpSolver):
         """
-        Solve the optimization model
+        Solve the optimization model.
 
         Parameters
         ----------
 
-        solver: pulp.LpSolver
-            solver supported by pulp package
+        solver : pulp.apis.LpSolver
+            A solver supported by ``pulp``.
 
         Returns
         -------
@@ -59,23 +57,24 @@ class LocateSolver(BaseSpOptSolver):
 
 
 class BaseOutputMixin:
-    """
-    Base Mixin used by all models
-    """
+    """Base Mixin used by all models with clients."""
 
     def client_facility_array(self) -> None:
         """
-        Create an array 2d MxN, where m is number of
-        clients and n is number of facilities.
+
+        Create a 2D array storing **client to facility relationships** where each
+        row represents a client and contains an array of facility indices
+        with which it is associated. An empty facility array indicates
+        the client is associated with no facility.
 
         Notes
         -----
 
-        This functions requires `fac2cli` attribute to work properly.
-        This attribute is set using `facility_client_array` method which is
-        located inside the model classes. When solve method is used with
-        `results=True` it will already set automatically, if not,
-        you have to call the method.
+        This function requires ``fac2cli`` attribute to work properly.
+        This attribute is set using ``facility_client_array`` method
+        which is located inside the model classes. When the ``solve``
+        method is used with ``results=True`` it will be called automatically,
+        if not, you have to call the method manually post-solve.
 
         """
         if hasattr(self, "fac2cli"):
@@ -98,9 +97,9 @@ class CoveragePercentageMixin:
     Notes
     -----
 
-    This Mixin requires `n_cli_uncov` attribute to work properly.
-    This attribute is set using `uncovered_clients` method which is located
-    inside the model classes. When solve method is used with `results=True`
+    This Mixin requires ``n_cli_uncov`` attribute to work properly.
+    This attribute is set using ``uncovered_clients`` method which is located
+    inside the model classes. When solve method is used with ``results=True``
     it will already set automatically, if not, you have to call the method.
 
     """
@@ -133,9 +132,7 @@ class CoveragePercentageMixin:
             )
 
     def get_percentage(self):
-        """
-        Calculate the percentage of covered clients.
-        """
+        """Calculate the percentage of covered clients."""
         if hasattr(self, "n_cli_uncov"):
             self.perc_cov = (1 - (self.n_cli_uncov / self.aij.shape[0])) * 100.0
         else:
@@ -147,7 +144,7 @@ class CoveragePercentageMixin:
 
 class MeanDistanceMixin:
     """
-    Mixin to calculate the mean distance between demand and facility sites chosen
+    Mixin to calculate the mean distance between demand and facility sites chosen.
     """
 
     def get_mean_distance(self):
@@ -164,9 +161,7 @@ class BackupPercentageMixinMixin:
     """
 
     def get_percentage(self):
-        """
-        Calculate the percentage of clients with backup.
-        """
+        """Calculate the percentage of clients with backup."""
         self.backup_perc = (self.problem.objective.value() / len(self.cli_vars)) * 100.0
 
 
@@ -174,9 +169,7 @@ T_FacModel = TypeVar("T_FacModel", bound=LocateSolver)
 
 
 class FacilityModelBuilder:
-    """
-    Set facility locations' variables and constraints
-    """
+    """Set facility location modeling variables and constraints."""
 
     @staticmethod
     def add_facility_integer_variable(
@@ -212,7 +205,7 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_client_integer_variable(obj: T_FacModel, range_client, var_name) -> None:
-        """client integer decision variables
+        """Client integer decision variables.
 
         Parameters
         ----------
@@ -244,7 +237,7 @@ class FacilityModelBuilder:
     def add_client_assign_integer_variable(
         obj: T_FacModel, range_client, range_facility, var_name
     ) -> None:
-        """client assignment integer decision variables (used for allocation)
+        """Client assignment integer decision variables (used for allocation).
 
         Parameters
         ----------
@@ -279,7 +272,7 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_weight_continuous_variable(obj: T_FacModel) -> None:
-        """maximized minimum variable (p-center)
+        """Maximized minimum variable (p-center).
 
         Parameters
         ----------
@@ -324,7 +317,7 @@ class FacilityModelBuilder:
         range_client: range,
     ) -> None:
         """
-        set covering constraint:
+        Set covering constraint:
 
         ni0 * y0 + ni1 * y1 + ... + nij * yj >= 1
 

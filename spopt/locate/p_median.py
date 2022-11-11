@@ -22,14 +22,13 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
     Parameters
     ----------
 
-    name: str
-        problem name
-    problem: pulp.LpProblem
-        pulp instance of optimization model that contains constraints,
-        variables and objective function.
+    name : str
+        The problem name.
+    problem : pulp.LpProblem
+        A ``pulp`` instance of an optimization model that contains
+        constraints, variables, and an objective function.
     aij: np.array
-        two-dimensional array product of service load/population demand and distance
-        matrix between facility and demand.
+        A cost matrix in the form of a 2D array between origins and destinations.
 
     Attributes
     ----------
@@ -48,7 +47,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         Each row represent a client and has an array containing facility index
         meaning that the client is covered by the facility ith.
     aij: np.array
-        Cost matrix 2-d array
+        A cost matrix in the form of a 2D array between origins and destinations.
 
     """
 
@@ -113,7 +112,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         ----------
 
         cost_matrix: np.array
-            two-dimensional distance array between facility points and demand point
+            A cost matrix in the form of a 2D array between origins and destinations.
         weights: np.array
             one-dimensional service load or population demand
         p_facilities: int
@@ -127,7 +126,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         Returns
         -------
 
-        PMedian object
+        spopt.locate.PMedian
 
         Examples
         --------
@@ -139,7 +138,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         >>> import pulp
         >>> import spaghetti
 
-        Create regular lattice
+        Create a regular lattice.
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
@@ -150,12 +149,12 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         ...     columns=["geometry"]
         ... )
 
-        Simulate points belong to lattice
+        Simulate points about the lattice.
 
         >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
         >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
-        Snap points to the network
+        Snap the points to the network of lattice edges.
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
         >>> clients_snapped = spaghetti.element_as_gdf(
@@ -166,18 +165,18 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         ...     ntw, pp_name="facilities", snapped=True
         ... )
 
-        Calculate the cost matrix
+        Calculate the cost matrix from origins to destinations.
 
         >>> cost_matrix = ntw.allneighbordistances(
         ...    sourcepattern=ntw.pointpatterns["clients"],
         ...    destpattern=ntw.pointpatterns["facilities"]
         ... )
 
-        Simulate demand weights from 1 to 12
+        Simulate demand weights from ``1`` to ``12``.
 
         >>> ai = numpy.random.randint(1, 12, 100)
 
-        Create PMedian instance from cost matrix
+        Create and solve a ``PMedian`` instance from the cost matrix.
 
         >>> pmedian_from_cost_matrix = PMedian.from_cost_matrix(
         ...     cost_matrix, ai, p_facilities=4
@@ -186,7 +185,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         ...     pulp.PULP_CBC_CMD(msg=False)
         ... )
 
-        Get facility-client associations
+        Get the facility-client associations.
 
         >>> for fac, cli in enumerate(pmedian_from_cost_matrix.fac2cli):
         ...     print(f"facility {fac} serving {len(cli)} clients")
@@ -283,7 +282,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         Returns
         -------
 
-        PMedian object
+        spopt.locate.PMedian
 
         Examples
         --------
@@ -295,7 +294,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         >>> import pulp
         >>> import spaghetti
 
-        Create regular lattice
+        Create a regular lattice.
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
@@ -306,12 +305,13 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         ...     columns=["geometry"]
         ... )
 
-        Simulate points belong to lattice
+        Simulate points about the lattice.
 
         >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
         >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
-        Snap points to the network
+        Snap the points to the network of lattice edges
+        and extract as ``GeoDataFrame`` objects.
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
         >>> clients_snapped = spaghetti.element_as_gdf(
@@ -322,12 +322,12 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         ...     ntw, pp_name="facilities", snapped=True
         ... )
 
-        Simulate demand weights from 1 to 12
+        Simulate demand weights from ``1`` to ``12``.
 
         >>> ai = numpy.random.randint(1, 12, 100)
         >>> clients_snapped['weights'] = ai
 
-        Create PMedian instance from cost matrix
+        Create and solve a ``PMedian`` instance from the ``GeoDataFrame`` object.
 
         >>> pmedian_from_geodataframe = PMedian.from_geodataframe(
         ...    clients_snapped,
@@ -342,7 +342,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         ...     pulp.PULP_CBC_CMD(msg=False)
         ... )
 
-        Get facility-client associations
+        Get the facility-client associations.
 
         >>> for fac, cli in enumerate(pmedian_from_geodataframe.fac2cli):
         ...     print(f"facility {fac} serving {len(cli)} clients")
@@ -394,9 +394,10 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 
     def facility_client_array(self) -> None:
         """
-        Create an array 2d MxN, where m is number of facilities and n is
-        number of clients. Each row represent a facility and has an array
-        containing clients index meaning that the facility-i cover the entire array.
+
+        Create a 2D :math:`m \times n` array, where :math:`m` is number of
+        facilities and :math:`n` is number of clients. Each row represent a
+        facility and has an array containing a clients indices.
 
         Returns
         -------
@@ -421,21 +422,21 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 
     def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
-        Solve the PMedian model
+        Solve the ``PMedian`` model.
 
         Parameters
         ----------
 
-        solver: pulp.LpSolver
-            solver supported by pulp package
-        results: bool
-            if True it will create metainfo - which facilities cover which demand
-            and vice-versa, and the uncovered demand - about the model results
+        solver : pulp.LpSolver
+            A solver supported by ``pulp``.
+        results : bool
+            If ``True`` it will create metainfo (which facilities cover
+            which demand) and vice-versa, and the uncovered demand.
 
         Returns
         -------
 
-        PMedian object
+        spopt.locate.PMedian
 
         """
         self.problem.solve(solver)
