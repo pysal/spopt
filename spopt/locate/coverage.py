@@ -3,7 +3,7 @@ import numpy as np
 import pulp
 from geopandas import GeoDataFrame
 
-from spopt.locate.base import (
+from .base import (
     BaseOutputMixin,
     CoveragePercentageMixin,
     BackupPercentageMixinMixin,
@@ -24,19 +24,19 @@ class LSCP(LocateSolver, BaseOutputMixin):
     .. math::
 
        \begin{array}{lllll}
-       \displaystyle \textbf{Minimize}      & \displaystyle \sum_{j=1}^{n}{Y_j}         &           & (1)                                                                           \\
-       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j\in N_i}{Y_j} \geq 1 & \forall i & (2)                                                                           \\
-                                            & Y_j \in {0,1}                             & \forall j & (3)                                                                           \\
-                                            &                                           &           &                                                                               \\
-       \displaystyle \textbf{Where}         &  i                                        &  =        & \textrm{index of demand locations}                                            \\
-                                            &  j                                        &  =        & \textrm{index of facility sites}                                              \\
-                                            &  S                                        &  =        & \textrm{maximum acceptable service distance or time standard}                 \\
-                                            &  d_{ij}                                   &  =        & \textrm{shortest distance or travel time between nodes } i \textrm{ and } j   \\
-                                            &  N_i                                      &  =        & \{j | d_{ij} < S\}                                                            \\
-                                            &  Y_j                                      &  =        & \begin{cases}
-                                                                                                        1, \text{if a facility is located at node } j                               \\
-                                                                                                        0, \text{otherwise}                                                         \\
-                                                                                                      \end{cases}
+       \displaystyle \textbf{Minimize}      & \displaystyle \sum_{j=1}^{n}{Y_j}         &&              & (1)                                                                               \\
+       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j\in N_i}{Y_j} \geq 1 && \forall i    & (2)                                                                               \\
+                                            & Y_j \in \{0,1\}                           && \forall j    & (3)                                                                               \\
+                                            &                                           &&              &                                                                                   \\
+       \displaystyle \textbf{Where}         &&  i                                       &  =            & \textrm{index of demand locations}                                                \\
+                                            &&  j                                       &  =            & \textrm{index of facility sites}                                                  \\
+                                            &&  S                                       &  =            & \textrm{maximum acceptable service distance or time standard}                     \\
+                                            &&  d_{ij}                                  &  =            & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
+                                            &&  N_i                                     &  =            & \{j | d_{ij} < S\}                                                                \\
+                                            &&  Y_j                                     &  =            & \begin{cases}
+                                                                                                           1, \textrm{if a facility is sited at location } j                                \\
+                                                                                                           0, \textrm{otherwise}                                                            \\
+                                                                                                         \end{cases}
        \end{array}
 
     Parameters
@@ -404,9 +404,36 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
 
 class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
-    """
-    LSCPB class implements Location Set Covering Problem - Backup
-    optimization model and solves it.
+    r"""
+    Implement the Location Set Covering Problem - Backup (*LSCP-B*) optimization
+    model and solve it. The *LSCP-B*, as adapted from :cite:`church_murray_2018`,
+    can be formulated as:
+
+    .. math::
+
+       \begin{array}{lllll}
+       \displaystyle \textbf{Maximize}      & \displaystyle \sum_{i}{U_i}                       &&              & (1)                                                                          \\
+       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j}{a_{ij}}{Y_j} \geq 1 + U_i  && \forall i    & (2)                                                                          \\
+                                            & \displaystyle \sum_{j}{Y_j} = p                   &&              & (3)                                                                          \\
+                                            & U_i \leq 1                                        && \forall i    & (4)                                                                          \\
+                                            & Y_j \in \{0, 1\}                                  && \forall j    & (5)                                                                          \\
+                                            &                                                   &&              &                                                                              \\
+       \displaystyle \textbf{Where}         &&  i                                               &  =            & \textrm{index of demand locations}                                           \\
+                                            &&  j                                               &  =            & \textrm{index of facility sites}                                             \\
+                                            &&  p                                               &  =            & \textrm{objective value identified by using the } LSCP                       \\
+                                            &&  U_i                                             &  =            & \begin{cases}
+                                                                                                                   1, \textrm{if demand location is covered twice}                             \\
+                                                                                                                   0, \textrm{if demand location is covered once}                              \\
+                                                                                                                 \end{cases}                                                                   \\
+                                            &&  a_{ij}                                          &  =            & \begin{cases}
+                                                                                                                   1, \textrm{if facility location } j \textrm{ covers demand location } i     \\
+                                                                                                                   0, \textrm{otherwise}                                                       \\
+                                                                                                                 \end{cases}                                                                   \\
+                                            &&  Y_j                                             &  =            & \begin{cases}
+                                                                                                                   1, \textrm{if a facility is sited at location } j                           \\
+                                                                                                                   0, \textrm{otherwise}                                                       \\
+                                                                                                                 \end{cases}
+       \end{array}
 
     Parameters
     ----------
@@ -430,19 +457,19 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
     solver : pulp.LpSolver
         A solver supported by ``pulp``.
     lscp_obj_value : float
-        Objective value returned from solved LSCP instance.
-    fac2cli : np.array
-        2-d array MxN, where m is number of facilities and n is number of clients.
-        Each row represents a facility and has an array containing clients index
-        meaning that the facility-i cover the entire array.
-    cli2fac : np.array
-        2-d MxN, where m is number of clients and n is number of facilities.
-        Each row represent a client and has an array containing facility index
-        meaning that the client is covered by the facility ith.
-    aij : np.array
+        The objective value returned from a solved ``LSCP`` instance.
+    fac2cli : numpy.array
+        A 2D array storing facility to client relationships where each
+        row represents a facility and contains an array of client indices
+        with which it is associated. An empty client array indicates
+        the facility is associated with no clients.
+    cli2fac : numpy.array
+        The inverse of ``fac2cli`` where client to facility relationships
+        are shown.
+    aij : numpy.array
         A cost matrix in the form of a 2D array between origins and destinations.
 
-    """
+    """  # noqa
 
     def __init__(
         self,
@@ -455,10 +482,10 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
 
     def __add_obj(self) -> None:
         """
-        Add objective function to model:
+        Add the objective function to the model:
         (Coverage Variable)
 
-        Maximize U1 + U2 + U3 + U4 + U5 + ... + Uj
+        Maximize U1 + U2 + ... + Uj
 
         Returns
         -------
@@ -484,22 +511,21 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
         Parameters
         ----------
 
-        cost_matrix : np.array
+        cost_matrix : numpy.array
             A cost matrix in the form of a 2D array between origins and destinations.
         service_radius : float
-            maximum acceptable service distance by problem
+            Maximum acceptable service distance.
         solver : pulp.LpSolver
             A solver supported by ``pulp``.
-        predefined_facilities_arr : numpy.array
+        predefined_facilities_arr : numpy.array (default None)
             Predefined facilities that must appear in the solution.
-            Default is ``None``.
-        name : str, default="LSCP-B"
-            name of the problem
+        name : str (default 'LSCP-B')
+            The problem name.
 
         Returns
         -------
 
-        spopt.locate.LSCPB
+        spopt.locate.coverage.LSCPB
 
         Examples
         --------
@@ -621,37 +647,38 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
         name: str = "LSCP-B",
     ):
         """
-        Create a LSCPB object based on geodataframes. Calculate the cost matrix
-        between demand and facility, and then use from_cost_matrix method.
+
+        Create an ``LSCPB`` object from ``geopandas.GeoDataFrame`` objects.
+        Calculate the cost matrix between demand and facility locations
+        before building the problem within the ``from_cost_matrix()`` method.
 
         Parameters
         ----------
 
         gdf_demand : geopandas.GeoDataFrame
-            demand geodataframe with point geometry
-        gdf_fac : geopandas.GeoDataframe
-            facility geodataframe with point geometry
+            Demand locations.
+        gdf_fac : geopandas.GeoDataFrame
+            Facility locations.
         demand_col : str
-            demand geometry column name
+            Demand sites geometry column name.
         facility_col : str
-            facility candidate sites geometry column name
+            Facility candidate sites geometry column name.
         service_radius : float
-            maximum acceptable service distance by problem
+             Maximum acceptable service distance.
         solver : pulp.LpSolver
             A solver supported by ``pulp``.
-        predefined_facility_col : str
+        predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
-            Default is ``None``.
-        distance_metric : str, default="euclidean"
-            metrics supported by :method: `scipy.spatial.distance.cdist` used for
-            the distance calculations
-        name : str, default="LSCP"
-            name of the problem
+        distance_metric : str (default 'euclidean')
+            A metric used for the distance calculations supported by
+            `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
+        name : str (default 'LSCP')
+            The name of the problem.
 
         Returns
         -------
 
-        spopt.locate.LSCPB
+        spopt.locate.coverage.LSCPB
 
         Examples
         --------
@@ -722,7 +749,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
         All clients are covered by 1 facility because only one facility
         is needed to solve the LSCP.
 
-        """
+        """  # noqa
 
         predefined_facilities_arr = None
         if predefined_facility_col is not None:
@@ -764,9 +791,10 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
     def facility_client_array(self) -> None:
         """
 
-        Create a 2D :math:`m \times n` array, where :math:`m` is number of
-        facilities and :math:`n` is number of clients. Each row represent a
-        facility and has an array containing a clients indices.
+        Create a 2D array storing **facility to client relationships** where each
+        row represents a facility and contains an array of client indices
+        with which it is associated. An empty client array indicates
+        the facility is associated with no clients.
 
         Returns
         -------
@@ -796,14 +824,14 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
         Parameters
         ----------
 
-        results : bool
+        results : bool (default True)
             If ``True`` it will create metainfo (which facilities cover
             which demand) and vice-versa, and the uncovered demand.
 
         Returns
         -------
 
-        spopt.locate.LSCPB
+        spopt.locate.coverage.LSCPB
 
         """
         self.problem.solve(self.solver)
@@ -818,8 +846,35 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
 
 
 class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
-    """
-    MCLP class implements Maximal Coverage Location optimization model and solve it.
+    r"""
+    Implement the Maximal Coverage Location Problem (*MCLP*) optimization model
+    and solve it. The *MCLP*, as adapted from :cite:`church_murray_2018`,
+    can be formulated as:
+
+    .. math::
+
+       \begin{array}{lllll}
+       \displaystyle \textbf{Maximize}      & \displaystyle \sum_{i=1}^{n}{a_iX_i}          &&              & (1)                                                                                   \\
+       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j \in N_i}{Y_j \geq X_i}  && \forall i    & (2)                                                                                   \\
+                                            & \displaystyle \sum_{j}{Y_j} = p               &&              & (3)                                                                                   \\
+                                            & X_i \in \{0, 1\}                              && \forall i    & (4)                                                                                   \\
+                                            & Y_j \in \{0, 1\}                              && \forall j    & (5)                                                                                   \\
+                                            &                                               &&              &                                                                                       \\
+       \displaystyle \textbf{Where}         &&  i                                           &  =            & \textrm{index of demand locations}                                                    \\
+                                            &&  j                                           &  =            & \textrm{index of facility sites}                                                      \\
+                                            &&  p                                           &  =            & \textrm{objective value identified by using the } LSCP                                \\
+                                            &&  S                                           &  =            & \textrm{maximum acceptable service distance or time standard}                         \\
+                                            &&  d_{ij}                                      &  =            & \textrm{shortest distance or travel time between locations } i \textrm{ and } j       \\
+                                            &&  N_i                                         &  =            & \{j | d_{ij} < S\}                                                                    \\
+                                            &&  X_i                                         &  =            & \begin{cases}
+                                                                                                                1, \textrm{if client location } i \textrm{is covered within service standard } S    \\
+                                                                                                                0, \textrm{otherwise}                                                               \\
+                                                                                                              \end{cases}                                                                           \\
+                                            &&  Y_j                                         &  =            & \begin{cases}
+                                                                                                                1, \textrm{if a facility is sited at location } j                                   \\
+                                                                                                                0, \textrm{otherwise}                                                               \\
+                                                                                                              \end{cases}
+       \end{array}
 
     Parameters
     ----------
@@ -834,24 +889,24 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
     ----------
 
     name : str
-        Problem name
+        The problem name.
     problem : pulp.LpProblem
-        Pulp instance of optimization model that contains constraints,
-        variables and objective function.
-    fac2cli : np.array
-        2-d array MxN, where m is number of facilities and n is number of clients.
-        Each row represents a facility and has an array containing clients index
-        meaning that the facility-i cover the entire array.
-    cli2fac : np.array
-        2-d MxN, where m is number of clients and n is number of facilities.
-        Each row represent a client and has an array containing facility index
-        meaning that the client is covered by the facility ith.
-    aij : np.array
+        A ``pulp`` instance of an optimization model that contains
+        constraints, variables, and an objective function.
+    fac2cli : numpy.array
+        A 2D array storing facility to client relationships where each
+        row represents a facility and contains an array of client indices
+        with which it is associated. An empty client array indicates
+        the facility is associated with no clients.
+    cli2fac : numpy.array
+        The inverse of ``fac2cli`` where client to facility relationships
+        are shown.
+    aij : numpy.array
         A cost matrix in the form of a 2D array between origins and destinations.
     n_cli_uncov : int
-        Specify how many clients points are not covered.
+        The number of uncovered client locations.
 
-    """
+    """  # noqa
 
     def __init__(self, name: str, problem: pulp.LpProblem):
         super().__init__(name, problem)
@@ -891,24 +946,23 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         Parameters
         ----------
 
-        cost_matrix : np.array
+        cost_matrix : numpy.array
             A cost matrix in the form of a 2D array between origins and destinations.
-        weights : np.array
-            one-dimensional service load or population demand
+        weights : numpy.array
+            A 1D array of service load or population demand.
         service_radius : float
-            maximum acceptable service distance by problem
+            Maximum acceptable service distance.
         p_facilities : int
-            number of facilities to be located
-        predefined_facilities_arr : numpy.array
+            The number of facilities to be located.
+        predefined_facilities_arr : numpy.array (default None)
             Predefined facilities that must appear in the solution.
-            Default is ``None``.
-        name : str, default="MCLP"
-            name of the problem
+        name : str (default 'MCLP')
+            The problem name.
 
         Returns
         -------
 
-        spopt.locate.MCLP
+        spopt.locate.coverage.MCLP
 
         Examples
         --------
@@ -1028,39 +1082,38 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         name: str = "MCLP",
     ):
         """
-        Create a MCLP object based on geodataframes. Calculate the cost matrix
-        between demand and facility, and then use from_cost_matrix method.
+
+        Create an ``MCLP`` object from ``geopandas.GeoDataFrame`` objects.
+        Calculate the cost matrix between demand and facility locations
+        before building the problem within the ``from_cost_matrix()`` method.
 
         Parameters
         ----------
 
         gdf_demand : geopandas.GeoDataFrame
-            demand geodataframe with point geometry
-        gdf_fac : geopandas.GeoDataframe
-            facility geodataframe with point geometry
+            Demand locations.
+        gdf_fac : geopandas.GeoDataFrame
+            Facility locations.
         demand_col : str
-            demand geometry column name
+            Demand sites geometry column name.
         facility_col : str
-            facility candidate sites geometry column name
+            Facility candidate sites geometry column name.
         weights_cols : str
-            weight column name representing service load or demand
+            The weight column name representing service load or demand.
         service_radius : float
-            maximum acceptable service distance by problem
-        p_facilities : int
-            number of facilities to be located
-        predefined_facility_col : str
+             Maximum acceptable service distance.
+        predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
-            Default is ``None``.
-        distance_metric : str, default="euclidean"
-            metrics supported by :method: `scipy.spatial.distance.cdist` used for
-            the distance calculations
-        name : str, default="MCLP"
-            name of the problem
+        distance_metric : str (default 'euclidean')
+            A metric used for the distance calculations supported by
+            `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
+        name : str (default 'MCLP')
+            The name of the problem.
 
         Returns
         -------
 
-        spopt.locate.MCLP
+        spopt.locate.coverage.MCLP
 
         Examples
         --------
@@ -1187,9 +1240,10 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
     def facility_client_array(self) -> None:
         """
 
-        Create a 2D :math:`m \times n` array, where :math:`m` is number of
-        facilities and :math:`n` is number of clients. Each row represent a
-        facility and has an array containing a clients indices.
+        Create a 2D array storing **facility to client relationships** where each
+        row represents a facility and contains an array of client indices
+        with which it is associated. An empty client array indicates
+        the facility is associated with no clients.
 
         Returns
         -------
@@ -1223,14 +1277,14 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
 
         solver : pulp.LpSolver
             A solver supported by ``pulp``.
-        results : bool
+        results : bool (default True)
             If ``True`` it will create metainfo (which facilities cover
             which demand) and vice-versa, and the uncovered demand.
 
         Returns
         -------
 
-        spopt.locate.MCLP
+        spopt.locate.coverage.MCLP
 
         """
         self.problem.solve(solver)

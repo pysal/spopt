@@ -20,10 +20,10 @@ def simulated_geo_points(
 
     in_data : geopandas.GeoDataFrame, shapely.geometry.{Polygon, MultiPolygon}
         The areal unit in which to generate points.
-    needed : int
-        The number of points to generate. Default is ``1``.
-    seed : int
-        The random state for number generation. Default is ``0``.
+    needed : int (default 1)
+        The number of points to generate.
+    seed : int (default 0)
+        The random state for number generation.
 
     Returns
     -------

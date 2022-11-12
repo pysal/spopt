@@ -3,7 +3,7 @@ import numpy as np
 import pulp
 from geopandas import GeoDataFrame
 
-from spopt.locate.base import (
+from .base import (
     BaseOutputMixin,
     LocateSolver,
     FacilityModelBuilder,
