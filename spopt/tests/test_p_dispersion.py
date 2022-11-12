@@ -138,9 +138,7 @@ class TestRealWorldLocate:
         self.p_facility = 4
 
     def test_optimality_p_dispersion_from_cost_matrix(self):
-        pdispersion = PDispersion.from_cost_matrix(
-            self.cost_matrix, p_fac=self.p_facility
-        )
+        pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, self.p_facility)
         pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         assert pdispersion.problem.status == pulp.LpStatusOptimal
 
@@ -151,7 +149,7 @@ class TestRealWorldLocate:
         assert known_solution_set == observed_solution_set
 
     def test_infeasibility_p_dispersion_from_cost_matrix(self):
-        pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, p_fac=17)
+        pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, 17)
         with pytest.raises(RuntimeError, match="Model is not solved:"):
             pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
 

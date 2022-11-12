@@ -10,8 +10,36 @@ import warnings
 
 
 class PCenter(LocateSolver, BaseOutputMixin):
-    """
-    Implements and solve the optimal :math:`p`-center facility location problem.
+    r"""
+    Implement the :math:`p`-center optimization model and solve it. The
+    :math:`p`-center problem, as adapted from :cite:`daskin_2013`,
+    can be formulated as:
+
+    .. math::
+
+       \begin{array}{lllll}
+       \displaystyle \textbf{Minimize}      & \displaystyle W                               &&                              & (1)                                                                               \\
+       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j}{X_{ij} = 1}            && \forall i                    & (2)                                                                               \\
+                                            & \displaystyle \sum_{j}{Y_j} = p               &&                              & (3)                                                                               \\
+                                            & X_{ij} \leq Y_{j}                             && \forall i \quad \forall j    & (4)                                                                               \\
+                                            & W \geq \displaystyle \sum_{j}{d_{ij}X_{ij}}   && \forall i                    & (5)                                                                               \\
+                                            & X_{ij} \in \{0, 1\}                           && \forall i \quad \forall j    & (6)                                                                               \\
+                                            & Y_j \in \{0, 1\}                              && \forall j                    & (7)                                                                               \\
+                                            &                                               &&                              &                                                                                   \\
+       \displaystyle \textbf{Where}         && i                                            & =                             & \textrm{index of demand locations}                                                \\
+                                            && j                                            & =                             & \textrm{index of facility sites}                                                  \\
+                                            && p                                            & =                             & \textrm{the number of facilities to be sited}                                     \\
+                                            && d_{ij}                                       & =                             & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
+                                            && X_{ij}                                       & =                             & \begin{cases}
+                                                                                                                                1, \textrm{if client location } i \textrm{ is served by facility } j            \\
+                                                                                                                                0, \textrm{otherwise}                                                           \\
+                                                                                                                              \end{cases}                                                                       \\
+                                            && Y_j                                          & =                             & \begin{cases}
+                                                                                                                                 1, \textrm{if a facility is sited at location } j                              \\
+                                                                                                                                 0, \textrm{otherwise}                                                          \\
+                                                                                                                               \end{cases}                                                                      \\
+                                            && W                                            & =                             & \textrm{maximum distance between any demand site and its associated facility}
+       \end{array}
 
     Parameters
     ----------
@@ -21,29 +49,29 @@ class PCenter(LocateSolver, BaseOutputMixin):
     problem : pulp.LpProblem
         A ``pulp`` instance of an optimization model that contains
         constraints, variables, and an objective function.
-    aij : np.array
+    aij : numpy.array
         A cost matrix in the form of a 2D array between origins and destinations.
 
     Attributes
     ----------
 
     name : str
-        Problem name
+        The problem name.
     problem : pulp.LpProblem
-        Pulp instance of optimization model that contains constraints,
-        variables and objective function.
-    fac2cli : np.array
-        2-d array MxN, where m is number of facilities and n is number of clients.
-        Each row represents a facility and has an array containing clients index
-        meaning that the facility-i cover the entire array.
-    cli2fac : np.array
-        2-d MxN, where m is number of clients and n is number of facilities.
-        Each row represent a client and has an array containing facility index
-        meaning that the client is covered by the facility ith.
-    aij : np.array
+        A ``pulp`` instance of an optimization model that contains
+        constraints, variables, and an objective function.
+    fac2cli : numpy.array
+        A 2D array storing facility to client relationships where each
+        row represents a facility and contains an array of client indices
+        with which it is associated. An empty client array indicates
+        the facility is associated with no clients.
+    cli2fac : numpy.array
+        The inverse of ``fac2cli`` where client to facility relationships
+        are shown.
+    aij : numpy.array
         A cost matrix in the form of a 2D array between origins and destinations.
 
-    """
+    """  # noqa
 
     def __init__(self, name: str, problem: pulp.LpProblem, aij: np.array):
         self.problem = problem
@@ -52,7 +80,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
     def __add_obj(self) -> None:
         """
-        Add objective function to the model:
+        Add the objective function to the model.
 
         Minimize W
 
@@ -80,20 +108,19 @@ class PCenter(LocateSolver, BaseOutputMixin):
         Parameters
         ----------
 
-        cost_matrix: np.array
+        cost_matrix: numpy.array
             A cost matrix in the form of a 2D array between origins and destinations.
-        p_facilities: int
-            number of facilities to be located
-        predefined_facilities_arr : numpy.array
+        p_facilities : int
+            The number of facilities to be located.
+        predefined_facilities_arr : numpy.array (default None)
             Predefined facilities that must appear in the solution.
-            Default is ``None``.
-        name: str, default="p-center"
-            name of the problem
+        name : str (default 'p-center')
+            The problem name.
 
         Returns
         -------
 
-        spopt.locate.PCenter
+        spopt.locate.p_center.PCenter
 
         Examples
         --------
@@ -206,35 +233,36 @@ class PCenter(LocateSolver, BaseOutputMixin):
         name: str = "p-center",
     ):
         """
-        Create a PCenter object based on geodataframes. Calculate the cost
-        matrix between demand and facility, and then use from_cost_matrix method.
+
+        Create an ``PCenter`` object from ``geopandas.GeoDataFrame`` objects.
+        Calculate the cost matrix between demand and facility locations
+        before building the problem within the ``from_cost_matrix()`` method.
 
         Parameters
         ----------
 
-        gdf_demand: geopandas.GeoDataFrame
-            demand geodataframe with point geometry
-        gdf_fac: geopandas.GeoDataframe
-            facility geodataframe with point geometry
-        demand_col: str
-            demand geometry column name
-        facility_col: str
-            facility candidate sites geometry column name
+        gdf_demand : geopandas.GeoDataFrame
+            Demand locations.
+        gdf_fac : geopandas.GeoDataFrame
+            Facility locations.
+        demand_col : str
+            Demand sites geometry column name.
+        facility_col : str
+            Facility candidate sites geometry column name.
         p_facilities: int
-            number of facilities to be located
-        predefined_facility_col: str
+           The number of facilities to be located.
+        predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
-            Default is ``None``.
-        distance_metric: str, default="euclidean"
-            metrics supported by :method: `scipy.spatial.distance.cdist`
-            used for the distance calculations
-        name: str, default="p-median"
-            name of the problem
+        distance_metric : str (default 'euclidean')
+            A metric used for the distance calculations supported by
+            `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
+        name : str (default 'p-center')
+            The name of the problem.
 
         Returns
         -------
 
-        spopt.locate.PCenter
+        spopt.locate.p_center.PCenter
 
         Examples
         --------
@@ -297,7 +325,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         facility 3 serving 0 clients
         facility 4 serving 26 clients
 
-        """
+        """  # noqa
 
         predefined_facilities_arr = None
         if predefined_facility_col is not None:
@@ -339,9 +367,10 @@ class PCenter(LocateSolver, BaseOutputMixin):
     def facility_client_array(self) -> None:
         """
 
-        Create a 2D :math:`m \times n` array, where :math:`m` is number of
-        facilities and :math:`n` is number of clients. Each row represent a
-        facility and has an array containing a clients indices.
+        Create a 2D array storing **facility to client relationships** where each
+        row represents a facility and contains an array of client indices
+        with which it is associated. An empty client array indicates
+        the facility is associated with no clients.
 
         Returns
         -------
@@ -373,14 +402,14 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         solver : pulp.LpSolver
             A solver supported by ``pulp``.
-        results : bool
+        results : bool (default True)
             If ``True`` it will create metainfo (which facilities cover
             which demand) and vice-versa, and the uncovered demand.
 
         Returns
         -------
 
-        spopt.locate.PCenter
+        spopt.locate.p_center.PCenter
 
         """
         self.problem.solve(solver)

@@ -28,15 +28,15 @@ class LSCP(LocateSolver, BaseOutputMixin):
        \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j\in N_i}{Y_j} \geq 1 && \forall i    & (2)                                                                               \\
                                             & Y_j \in \{0,1\}                           && \forall j    & (3)                                                                               \\
                                             &                                           &&              &                                                                                   \\
-       \displaystyle \textbf{Where}         &&  i                                       &  =            & \textrm{index of demand locations}                                                \\
-                                            &&  j                                       &  =            & \textrm{index of facility sites}                                                  \\
-                                            &&  S                                       &  =            & \textrm{maximum acceptable service distance or time standard}                     \\
-                                            &&  d_{ij}                                  &  =            & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
-                                            &&  N_i                                     &  =            & \{j | d_{ij} < S\}                                                                \\
-                                            &&  Y_j                                     &  =            & \begin{cases}
+       \displaystyle \textbf{Where}         && i                                        & =             & \textrm{index of demand locations}                                                \\
+                                            && j                                        & =             & \textrm{index of facility sites}                                                  \\
+                                            && S                                        & =             & \textrm{maximum acceptable service distance or time standard}                     \\
+                                            && d_{ij}                                   & =             & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
+                                            && N_i                                      & =             & \{j | d_{ij} < S\}                                                                \\
+                                            && Y_j                                      & =             & \begin{cases}
                                                                                                            1, \textrm{if a facility is sited at location } j                                \\
                                                                                                            0, \textrm{otherwise}                                                            \\
-                                                                                                         \end{cases}
+                                                                                                          \end{cases}
        \end{array}
 
     Parameters
@@ -74,7 +74,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
     def __add_obj(self) -> None:
         """
-        Add objective function to model:
+        Add the objective function to the model.
 
         Minimize y1 + y2 + ... + yj
 
@@ -418,21 +418,21 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
                                             & U_i \leq 1                                        && \forall i    & (4)                                                                          \\
                                             & Y_j \in \{0, 1\}                                  && \forall j    & (5)                                                                          \\
                                             &                                                   &&              &                                                                              \\
-       \displaystyle \textbf{Where}         &&  i                                               &  =            & \textrm{index of demand locations}                                           \\
-                                            &&  j                                               &  =            & \textrm{index of facility sites}                                             \\
-                                            &&  p                                               &  =            & \textrm{objective value identified by using the } LSCP                       \\
-                                            &&  U_i                                             &  =            & \begin{cases}
+       \displaystyle \textbf{Where}         && i                                                & =             & \textrm{index of demand locations}                                           \\
+                                            && j                                                & =             & \textrm{index of facility sites}                                             \\
+                                            && p                                                & =             & \textrm{objective value identified by using the } LSCP                       \\
+                                            && U_i                                              & =             & \begin{cases}
                                                                                                                    1, \textrm{if demand location is covered twice}                             \\
                                                                                                                    0, \textrm{if demand location is covered once}                              \\
-                                                                                                                 \end{cases}                                                                   \\
-                                            &&  a_{ij}                                          &  =            & \begin{cases}
+                                                                                                                  \end{cases}                                                                  \\
+                                            && a_{ij}                                           & =             & \begin{cases}
                                                                                                                    1, \textrm{if facility location } j \textrm{ covers demand location } i     \\
                                                                                                                    0, \textrm{otherwise}                                                       \\
-                                                                                                                 \end{cases}                                                                   \\
-                                            &&  Y_j                                             &  =            & \begin{cases}
+                                                                                                                  \end{cases}                                                                  \\
+                                            && Y_j                                              & =             & \begin{cases}
                                                                                                                    1, \textrm{if a facility is sited at location } j                           \\
                                                                                                                    0, \textrm{otherwise}                                                       \\
-                                                                                                                 \end{cases}
+                                                                                                                  \end{cases}
        \end{array}
 
     Parameters
@@ -482,8 +482,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
 
     def __add_obj(self) -> None:
         """
-        Add the objective function to the model:
-        (Coverage Variable)
+        Add the objective function to the model.
 
         Maximize U1 + U2 + ... + Uj
 
@@ -860,19 +859,19 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
                                             & X_i \in \{0, 1\}                              && \forall i    & (4)                                                                                   \\
                                             & Y_j \in \{0, 1\}                              && \forall j    & (5)                                                                                   \\
                                             &                                               &&              &                                                                                       \\
-       \displaystyle \textbf{Where}         &&  i                                           &  =            & \textrm{index of demand locations}                                                    \\
-                                            &&  j                                           &  =            & \textrm{index of facility sites}                                                      \\
-                                            &&  p                                           &  =            & \textrm{objective value identified by using the } LSCP                                \\
-                                            &&  S                                           &  =            & \textrm{maximum acceptable service distance or time standard}                         \\
-                                            &&  d_{ij}                                      &  =            & \textrm{shortest distance or travel time between locations } i \textrm{ and } j       \\
-                                            &&  N_i                                         &  =            & \{j | d_{ij} < S\}                                                                    \\
-                                            &&  X_i                                         &  =            & \begin{cases}
-                                                                                                                1, \textrm{if client location } i \textrm{is covered within service standard } S    \\
-                                                                                                                0, \textrm{otherwise}                                                               \\
+       \displaystyle \textbf{Where}         && i                                            & =             & \textrm{index of demand locations}                                                    \\
+                                            && j                                            & =             & \textrm{index of facility sites}                                                      \\
+                                            && p                                            & =             & \textrm{the number of facilities to be sited}                                         \\
+                                            && S                                            & =             & \textrm{maximum acceptable service distance or time standard}                         \\
+                                            && d_{ij}                                       & =             & \textrm{shortest distance or travel time between locations } i \textrm{ and } j       \\
+                                            && N_i                                          & =             & \{j | d_{ij} < S\}                                                                    \\
+                                            && X_i                                          & =             & \begin{cases}
+                                                                                                               1, \textrm{if client location } i \textrm{ is covered within service standard } S    \\
+                                                                                                               0, \textrm{otherwise}                                                                \\
                                                                                                               \end{cases}                                                                           \\
-                                            &&  Y_j                                         &  =            & \begin{cases}
-                                                                                                                1, \textrm{if a facility is sited at location } j                                   \\
-                                                                                                                0, \textrm{otherwise}                                                               \\
+                                            && Y_j                                          & =             & \begin{cases}
+                                                                                                               1, \textrm{if a facility is sited at location } j                                    \\
+                                                                                                               0, \textrm{otherwise}                                                                \\
                                                                                                               \end{cases}
        \end{array}
 
@@ -913,7 +912,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
 
     def __add_obj(self, weights: np.array, range_clients: range) -> None:
         """
-        Add objective function to model:
+        Add the objective function to the model.
 
         Maximize w1 * y1 + w2 * y2 +  ... + wi * yi
 
@@ -1102,6 +1101,8 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             The weight column name representing service load or demand.
         service_radius : float
              Maximum acceptable service distance.
+        p_facilities: int
+           The number of facilities to be located.
         predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
         distance_metric : str (default 'euclidean')

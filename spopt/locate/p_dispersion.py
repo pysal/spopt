@@ -10,8 +10,29 @@ import warnings
 
 
 class PDispersion(LocateSolver):
-    """
-    PDispersion class implements the p-dispersion optimization model and solves it.
+    r"""
+    Implement the :math:`p`-dispersion optimization model and solve it
+    :cite:`kuby_1987`. The :math:`p`-dispersion problem, as adapted from
+    :cite:`MALISZEWSKI2012331`, can be formulated as:
+
+    .. math::
+
+       \begin{array}{lllll}
+       \displaystyle \textbf{Maximize}      & \displaystyle D                       &&                                  & (1)                                                                               \\
+       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{i}{Y_i} = p       &&                                  & (2)                                                                               \\
+                                            & D \leq d_{ij} + M (2 - Y_{i} - Y_{j}) && \forall i \quad \forall j > i    & (3)                                                                               \\
+                                            & Y_i \in \{0, 1\}                      && \forall i                        & (4)                                                                               \\
+                                            &                                       &&                                  &                                                                                   \\
+       \displaystyle \textbf{Where}         && i, j                                 & =                                 & \textrm{index of potential facility sites}                                        \\
+                                            && p                                    & =                                 & \textrm{the number of facilities to be sited}                                     \\
+                                            && d_{ij}                               & =                                 & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
+                                            && D                                    & =                                 & \textrm{minimum distance between any two sited facilities } i \textrm{ and } j    \\
+                                            && M                                    & =                                 & \textrm{some large number; such that } M \geq \max_{ij}\{d_{ij}\}                 \\
+                                            && Y_i                                  & =                                 & \begin{cases}
+                                                                                                                           1, \textrm{if a facility is sited at location } i                                \\
+                                                                                                                           0, \textrm{otherwise}                                                            \\
+                                                                                                                          \end{cases}                                                                       \\
+       \end{array}
 
     Parameters
     ----------
@@ -26,12 +47,12 @@ class PDispersion(LocateSolver):
     ----------
 
     name : str
-        Problem name
+        The problem name.
     problem : pulp.LpProblem
-        Pulp instance of optimization model that contains constraints,
-        variables and objective function.
+        A ``pulp`` instance of an optimization model that contains
+        constraints, variables, and an objective function.
 
-    """
+    """  # noqa
 
     def __init__(self, name: str, problem: pulp.LpProblem, p_facilities: int):
         self.p_facilities = p_facilities
@@ -39,7 +60,7 @@ class PDispersion(LocateSolver):
 
     def __add_obj(self) -> None:
         """
-        Add objective function to model:
+        Add the objective function to the model.
 
         Maximize D
 
@@ -57,7 +78,7 @@ class PDispersion(LocateSolver):
     def from_cost_matrix(
         cls,
         cost_matrix: np.array,
-        p_fac: int,
+        p_facilities: int,
         predefined_facilities_arr: np.array = None,
         name: str = "P-Dispersion",
     ):
@@ -69,18 +90,17 @@ class PDispersion(LocateSolver):
 
         cost_matrix: np.array
             A cost matrix in the form of a 2D array between origins and destinations.
-        p_fac: int
-            number of facilities to be located
-        predefined_facilities_arr : numpy.array
+        p_facilities : int
+            The number of facilities to be located.
+        predefined_facilities_arr : numpy.array (default None)
             Predefined facilities that must appear in the solution.
-            Default is ``None``.
-        name: str, default="P-Dispersion"
-            name of the problem
+        name: str (default 'P-Dispersion')
+            The name of the problem.
 
         Returns
         -------
 
-        spopt.locate.PDispersion
+        spopt.locate.p_dispersion.PDispersion
 
         Examples
         --------
@@ -143,7 +163,7 @@ class PDispersion(LocateSolver):
         r_fac = range(cost_matrix.shape[1])
 
         model = pulp.LpProblem(name, pulp.LpMaximize)
-        p_dispersion = PDispersion(name, model, p_fac)
+        p_dispersion = PDispersion(name, model, p_facilities)
 
         FacilityModelBuilder.add_maximized_min_variable(p_dispersion)
         p_dispersion.__add_obj()
@@ -172,7 +192,7 @@ class PDispersion(LocateSolver):
         cls,
         gdf_fac: GeoDataFrame,
         facility_col: str,
-        p_fac: int,
+        p_facilities: int,
         predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
         name: str = "P-Dispersion",
@@ -184,25 +204,24 @@ class PDispersion(LocateSolver):
         Parameters
         ----------
 
-        gdf_fac: geopandas.GeoDataframe
-            facility geodataframe with point geometry
-        facility_col: str
-            facility candidate sites geometry column name
-        p_fac: int
-            number of facilities to be located
-        predefined_facility_col: str
+        gdf_fac : geopandas.GeoDataFrame
+            Facility locations.
+        facility_col : str
+            Facility candidate sites geometry column name.
+        p_facilities: int
+           The number of facilities to be located.
+        predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
-            Default is ``None``.
-        distance_metric: str, default="euclidean"
-            metrics supported by :method: `scipy.spatial.distance.cdist`
-            used for the distance calculations
-        name: str, default="P-Dispersion"
-            name of the problem
+        distance_metric : str (default 'euclidean')
+            A metric used for the distance calculations supported by
+            `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
+        name: str (default 'P-Dispersion')
+            The name of the problem.
 
         Returns
         -------
 
-        spopt.locate.PDispersion
+        spopt.locate.p_dispersion.PDispersion
 
         Examples
         --------
@@ -256,7 +275,7 @@ class PDispersion(LocateSolver):
         facility y_0_ is selected
         facility y_1_ is selected
 
-        """
+        """  # noqa
 
         predefined_facilities_arr = None
         if predefined_facility_col is not None:
@@ -281,7 +300,9 @@ class PDispersion(LocateSolver):
 
         distances = cdist(fac_data, fac_data, distance_metric)
 
-        return cls.from_cost_matrix(distances, p_fac, predefined_facilities_arr, name)
+        return cls.from_cost_matrix(
+            distances, p_facilities, predefined_facilities_arr, name
+        )
 
     def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
@@ -292,14 +313,14 @@ class PDispersion(LocateSolver):
 
         solver : pulp.LpSolver
             A solver supported by ``pulp``.
-        results : bool
+        results : bool (default True)
             If ``True`` it will create metainfo (which facilities cover
             which demand) and vice-versa, and the uncovered demand.
 
         Returns
         -------
 
-        spopt.locate.PDispersion
+        spopt.locate.p_dispersion.PDispersion
 
         """
         self.problem.solve(solver)
