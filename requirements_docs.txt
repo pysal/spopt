@@ -1,6 +1,6 @@
 nbsphinx
 numpydoc
 pandoc
-sphinx<=4.5.0
+sphinx<5.4.0
 sphinxcontrib-bibtex
 sphinx_bootstrap_theme
