@@ -810,21 +810,21 @@ def assert_feasible(solution, adj, n_regions=None):
     Parameters
     ----------
 
-    solution : :class:`numpy.ndarray`
-        Array of region labels.
-    adj : :class:`scipy.sparse.csr_matrix`
+    solution : numpy.ndarray
+        An array of region labels.
+    adj : scipy.sparse.csr_matrix
         Adjacency matrix representing the contiguity relation.
-    n_regions : `int` or `None`
-        An `int` represents the desired number of regions.
-        If `None`, then the number of regions is not checked.
+    n_regions : int (default None)
+        An ``int`` represents the desired number of regions.
+        If ``None``, then the number of regions is not checked.
 
     Raises
     ------
 
-    exc : `ValueError`
-        A `ValueError` is raised if clustering is not spatially contiguous.
-        Given the `n_regions` argument is not `None`, a `ValueError` is raised
-        also if the number of regions is not equal to the `n_regions` argument.
+    exc : ValueError
+        A ``ValueError`` is raised if clustering is not spatially contiguous.
+        Given the ``n_regions`` argument is not ``None``, a ``ValueError`` is raised
+        also if the number of regions is not equal to the ``n_regions`` argument.
 
     """
     if n_regions is not None:
@@ -892,6 +892,8 @@ def separate_components(adj, labels):
     Examples
     --------
 
+    >>> import networkx
+    >>> import numpy
     >>> edges_island1 = [(0, 1), (1, 2),          # 0 | 1 | 2
     ...                  (0, 3), (1, 4), (2, 5),  # ---------
     ...                  (3, 4), (4,5)]           # 3 | 4 | 5
@@ -900,21 +902,21 @@ def separate_components(adj, labels):
     ...                  (6, 8), (7, 9),          # -----
     ...                  (8, 9)]                  # 8 | 9
 
-    >>> graph = nx.Graph(edges_island1 + edges_island2)
-    >>> adj = nx.to_scipy_sparse_matrix(graph)
+    >>> graph = networkx.Graph(edges_island1 + edges_island2)
+    >>> adj = networkx.to_scipy_sparse_matrix(graph)
 
     >>> # island 1: island divided into regions 0, 1, and 2
     >>> sol_island1 = [area%3 for area in range(6)]
     >>> # island 2: all areas are in region 3
     >>> sol_island2 = [3 for area in range(6, 10)]
-    >>> labels = np.array(sol_island1 + sol_island2)
+    >>> labels = numpy.array(sol_island1 + sol_island2)
 
     >>> yielded = list(separate_components(adj, labels))
     >>> yielded.sort(key=lambda arr: arr[0], reverse=True)
-    >>> (yielded[0] == np.array([0, 1, 2, 0, 1, 2, -1, -1, -1, -1])).all()
+    >>> (yielded[0] == numpy.array([0, 1, 2, 0, 1, 2, -1, -1, -1, -1])).all()
     True
 
-    >>> (yielded[1] == np.array([-1, -1, -1, -1, -1, -1, 3, 3, 3, 3])).all()
+    >>> (yielded[1] == numpy.array([-1, -1, -1, -1, -1, -1, 3, 3, 3, 3])).all()
     True
 
     """
@@ -937,24 +939,27 @@ def pop_randomly_from(lst):
 
 
 def count(arr, el):
-    """
+    """Return the count occurence of a specific value in an array.
+
     Parameters
     ----------
 
-    arr : :class:`numpy.ndarray`
-
-    el : object
+    arr : numpy.ndarray
+        The array from which count occurence values.
+    el : int, float, str
+        The value to count.
 
     Returns
     -------
 
-    result : :class:`numpy.ndarray`
-        The number of occurences of `el` in `arr`.
+    result : int
+        The number of occurences of ``el`` in ``arr``.
 
     Examples
     --------
 
-    >>> arr = np.array([0, 0, 0, 1, 1])
+    >>> import numpy
+    >>> arr = numpy.array([0, 0, 0, 1, 1])
     >>> count(arr, 0)
     3
 
