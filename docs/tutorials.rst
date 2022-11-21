@@ -13,6 +13,8 @@ Tutorials
     notebooks/randomregion.ipynb
     notebooks/component_policy.ipynb
 
+.. toctree::
+    :maxdepth: 1
     :caption: Locate:
 
     notebooks/facloc-real-world.ipynb

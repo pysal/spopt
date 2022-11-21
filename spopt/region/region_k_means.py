@@ -137,6 +137,7 @@ class RegionKMeansHeuristic(BaseSpOptHeuristicSolver):
 
     Parameters
     ----------
+
     data : {numpy.ndarray, list}, required
         The observations to cluster shaped ``(n_samples, n_features)``.
     n_clusters : int

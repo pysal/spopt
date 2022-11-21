@@ -11,9 +11,11 @@ class ObjectiveFunction(ABC):
         """
         Parameters
         ----------
+
         metric : function or str or None, default: None
             Refer to the `metric` argument
             in :func:`region.util.get_metric_function`.
+
         """
         self.metric = get_metric_function(metric)
 
@@ -21,8 +23,10 @@ class ObjectiveFunction(ABC):
     def __call__(self, labels, attr):
         """
         Calculate the objective value given the instance's current data.
+
         Parameters
         ----------
+
         labels : :class:`numpy.ndarray`
             The areas' region labels. Shape: number of areas.
         attr : :class:`numpy.ndarray`
@@ -30,9 +34,11 @@ class ObjectiveFunction(ABC):
 
         Returns
         -------
+
         obj_val : float
             The objective value attained with the clustering defined by
             `labels`.
+
         """
 
     @abstractmethod
@@ -43,6 +49,7 @@ class ObjectiveFunction(ABC):
 
         Parameters
         ----------
+
         moving_area : int
             The area to move.
         recipient_region : int
@@ -54,9 +61,12 @@ class ObjectiveFunction(ABC):
 
         Returns
         -------
+
         diff : float
             The change in the objective function caused by moving `moving_area`
-            to `recipient_region`."""
+            to `recipient_region`.
+
+        """
 
 
 class ObjectiveFunctionPairwise(ObjectiveFunction):
@@ -64,6 +74,7 @@ class ObjectiveFunctionPairwise(ObjectiveFunction):
         """
         Examples
         --------
+
         >>> from sklearn.metrics.pairwise import distance_metrics
         >>> metric = distance_metrics()["manhattan"]
         >>> labels = np.array([0, 0, 0, 0, 1, 1])
@@ -71,6 +82,7 @@ class ObjectiveFunctionPairwise(ObjectiveFunction):
         >>> objective = ObjectiveFunctionPairwise(metric)
         >>> int(objective(labels, attr))
         11
+
         """
         regions_set = set(labels)
         obj_val = sum(
@@ -98,6 +110,7 @@ class ObjectiveFunctionCenter(ObjectiveFunction):
         """
         Parameters
         ----------
+
         metric : function
             Refer to the corresponding argument in
             :meth:`ObjectiveFunction.__init__`.
@@ -109,6 +122,7 @@ class ObjectiveFunctionCenter(ObjectiveFunction):
 
             * reducing the intraregional distances to a scalar and
             * reducing these scalars of the regions to one single scalar.
+
         """
         self.center = center
         self.reduction = reduction
@@ -118,6 +132,7 @@ class ObjectiveFunctionCenter(ObjectiveFunction):
         """
         Examples
         --------
+
         >>> from sklearn.metrics.pairwise import distance_metrics
         >>> metric = distance_metrics()["manhattan"]
         >>> labels = np.array([0, 1, 1])
@@ -129,6 +144,7 @@ class ObjectiveFunctionCenter(ObjectiveFunction):
         >>> objective = ObjectiveFunctionCenter(metric)
         >>> int(objective(labels, attr))
         1
+
         """
         regions = sorted(set(labels))
         objective_per_region = [

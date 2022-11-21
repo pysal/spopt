@@ -299,6 +299,7 @@ def plot_components(gdf, w):
 
     Parameters
     ----------
+
     gdf: geopandas.GeoDataframe
         Geodataframe of component data.
     w: libpysal.weights.W
@@ -346,6 +347,7 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
 
     Returns
     -------
+
     gdf: geopandas.GeoDataFrame
         Geodataframe containing modified data.
     w : libpysal.weights.W
@@ -385,6 +387,7 @@ def form_single_component(gdf, w, linkage="single"):
 
     Parameters
     ----------
+
     gdf : geopandas.GeoDataFrame
         Input area data.
     w : libysal.weights.W
@@ -399,6 +402,7 @@ def form_single_component(gdf, w, linkage="single"):
 
     Returns
     -------
+
     w : libpysal.weights.W
         PySAL weights object.
 

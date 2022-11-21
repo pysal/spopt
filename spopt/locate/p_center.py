@@ -3,48 +3,75 @@ import numpy as np
 import pulp
 from geopandas import GeoDataFrame
 
-from spopt.locate.base import BaseOutputMixin, LocateSolver, FacilityModelBuilder
+from .base import BaseOutputMixin, LocateSolver, FacilityModelBuilder
 from scipy.spatial.distance import cdist
 
 import warnings
 
 
 class PCenter(LocateSolver, BaseOutputMixin):
-    """
-    PCenter class implements P-Center optimization model and solve it.
+    r"""
+    Implement the :math:`p`-center optimization model and solve it. The
+    :math:`p`-center problem, as adapted from :cite:`daskin_2013`,
+    can be formulated as:
+
+    .. math::
+
+       \begin{array}{lllll}
+       \displaystyle \textbf{Minimize}      & \displaystyle W                               &&                              & (1)                                                                               \\
+       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j}{X_{ij} = 1}            && \forall i                    & (2)                                                                               \\
+                                            & \displaystyle \sum_{j}{Y_j} = p               &&                              & (3)                                                                               \\
+                                            & X_{ij} \leq Y_{j}                             && \forall i \quad \forall j    & (4)                                                                               \\
+                                            & W \geq \displaystyle \sum_{j}{d_{ij}X_{ij}}   && \forall i                    & (5)                                                                               \\
+                                            & X_{ij} \in \{0, 1\}                           && \forall i \quad \forall j    & (6)                                                                               \\
+                                            & Y_j \in \{0, 1\}                              && \forall j                    & (7)                                                                               \\
+                                            &                                               &&                              &                                                                                   \\
+       \displaystyle \textbf{Where}         && i                                            & =                             & \textrm{index of demand locations}                                                \\
+                                            && j                                            & =                             & \textrm{index of facility sites}                                                  \\
+                                            && p                                            & =                             & \textrm{the number of facilities to be sited}                                     \\
+                                            && d_{ij}                                       & =                             & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
+                                            && X_{ij}                                       & =                             & \begin{cases}
+                                                                                                                                1, \textrm{if client location } i \textrm{ is served by facility } j            \\
+                                                                                                                                0, \textrm{otherwise}                                                           \\
+                                                                                                                              \end{cases}                                                                       \\
+                                            && Y_j                                          & =                             & \begin{cases}
+                                                                                                                                 1, \textrm{if a facility is sited at location } j                              \\
+                                                                                                                                 0, \textrm{otherwise}                                                          \\
+                                                                                                                               \end{cases}                                                                      \\
+                                            && W                                            & =                             & \textrm{maximum distance between any demand site and its associated facility}
+       \end{array}
 
     Parameters
     ----------
 
-    name: str
-        problem name
-    problem: pulp.LpProblem
-        pulp instance of optimization model that contains constraints,
-        variables and objective function.
-    aij: np.array
-        two-dimensional array product of service load/population demand and
-        distance matrix between facility and demand.
+    name : str
+        The problem name.
+    problem : pulp.LpProblem
+        A ``pulp`` instance of an optimization model that contains
+        constraints, variables, and an objective function.
+    aij : numpy.array
+        A cost matrix in the form of a 2D array between origins and destinations.
 
     Attributes
     ----------
 
-    name: str
-        Problem name
-    problem: pulp.LpProblem
-        Pulp instance of optimization model that contains constraints,
-        variables and objective function.
-    fac2cli : np.array
-        2-d array MxN, where m is number of facilities and n is number of clients.
-        Each row represents a facility and has an array containing clients index
-        meaning that the facility-i cover the entire array.
-    cli2fac: np.array
-        2-d MxN, where m is number of clients and n is number of facilities.
-        Each row represent a client and has an array containing facility index
-        meaning that the client is covered by the facility ith.
-    aij: np.array
-        Cost matrix 2-d array
+    name : str
+        The problem name.
+    problem : pulp.LpProblem
+        A ``pulp`` instance of an optimization model that contains
+        constraints, variables, and an objective function.
+    fac2cli : numpy.array
+        A 2D array storing facility to client relationships where each
+        row represents a facility and contains an array of client indices
+        with which it is associated. An empty client array indicates
+        the facility is associated with no clients.
+    cli2fac : numpy.array
+        The inverse of ``fac2cli`` where client to facility relationships
+        are shown.
+    aij : numpy.array
+        A cost matrix in the form of a 2D array between origins and destinations.
 
-    """
+    """  # noqa
 
     def __init__(self, name: str, problem: pulp.LpProblem, aij: np.array):
         self.problem = problem
@@ -53,7 +80,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
     def __add_obj(self) -> None:
         """
-        Add objective function to the model:
+        Add the objective function to the model.
 
         Minimize W
 
@@ -76,25 +103,24 @@ class PCenter(LocateSolver, BaseOutputMixin):
         name: str = "p-center",
     ):
         """
-        Create PCenter object based on cost matrix
+        Create a ``PCenter`` object based on a cost matrix.
 
         Parameters
         ----------
 
-        cost_matrix: np.array
-            two-dimensional distance array between facility points and demand point
-        p_facilities: int
-            number of facilities to be located
-        predefined_facilities_arr : numpy.array
+        cost_matrix: numpy.array
+            A cost matrix in the form of a 2D array between origins and destinations.
+        p_facilities : int
+            The number of facilities to be located.
+        predefined_facilities_arr : numpy.array (default None)
             Predefined facilities that must appear in the solution.
-            Default is ``None``.
-        name: str, default="p-center"
-            name of the problem
+        name : str (default 'p-center')
+            The problem name.
 
         Returns
         -------
 
-        PCenter object
+        spopt.locate.p_center.PCenter
 
         Examples
         --------
@@ -105,7 +131,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         >>> import pulp
         >>> import spaghetti
 
-        Create regular lattice
+        Create a regular lattice.
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
@@ -116,12 +142,12 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ...     columns=["geometry"]
         ... )
 
-        Simulate points belong to lattice
+        Simulate points about the lattice.
 
         >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
         >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
-        Snap points to the network
+        Snap the points to the network of lattice edges.
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
         >>> clients_snapped = spaghetti.element_as_gdf(
@@ -132,14 +158,14 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ...     ntw, pp_name="facilities", snapped=True
         ... )
 
-        Calculate the cost matrix
+        Calculate the cost matrix from origins to destinations.
 
         >>> cost_matrix = ntw.allneighbordistances(
         ...    sourcepattern=ntw.pointpatterns["clients"],
         ...    destpattern=ntw.pointpatterns["facilities"]
         ... )
 
-        Create PCenter instance from cost matrix
+        Create and solve a ``PCenter`` instance from the cost matrix.
 
         >>> pcenter_from_cost_matrix = PCenter.from_cost_matrix(
         ...     cost_matrix, p_facilities=4
@@ -148,7 +174,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ...     pulp.PULP_CBC_CMD(msg=False)
         ... )
 
-        Get facility lookup demand coverage array
+        Get the facility-client associations.
 
         >>> for fac, cli in enumerate(pcenter_from_cost_matrix.fac2cli):
         ...     print(f"facility {fac} serving {len(cli)} clients")
@@ -207,35 +233,36 @@ class PCenter(LocateSolver, BaseOutputMixin):
         name: str = "p-center",
     ):
         """
-        Create a PCenter object based on geodataframes. Calculate the cost
-        matrix between demand and facility, and then use from_cost_matrix method.
+
+        Create an ``PCenter`` object from ``geopandas.GeoDataFrame`` objects.
+        Calculate the cost matrix between demand and facility locations
+        before building the problem within the ``from_cost_matrix()`` method.
 
         Parameters
         ----------
 
-        gdf_demand: geopandas.GeoDataFrame
-            demand geodataframe with point geometry
-        gdf_fac: geopandas.GeoDataframe
-            facility geodataframe with point geometry
-        demand_col: str
-            demand geometry column name
-        facility_col: str
-            facility candidate sites geometry column name
+        gdf_demand : geopandas.GeoDataFrame
+            Demand locations.
+        gdf_fac : geopandas.GeoDataFrame
+            Facility locations.
+        demand_col : str
+            Demand sites geometry column name.
+        facility_col : str
+            Facility candidate sites geometry column name.
         p_facilities: int
-            number of facilities to be located
-        predefined_facility_col: str
+           The number of facilities to be located.
+        predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
-            Default is ``None``.
-        distance_metric: str, default="euclidean"
-            metrics supported by :method: `scipy.spatial.distance.cdist`
-            used for the distance calculations
-        name: str, default="p-median"
-            name of the problem
+        distance_metric : str (default 'euclidean')
+            A metric used for the distance calculations supported by
+            `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
+        name : str (default 'p-center')
+            The name of the problem.
 
         Returns
         -------
 
-        PCenter object
+        spopt.locate.p_center.PCenter
 
         Examples
         --------
@@ -246,7 +273,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         >>> import pulp
         >>> import spaghetti
 
-        Create regular lattice
+        Create a regular lattice.
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
@@ -257,12 +284,13 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ...     columns=["geometry"]
         ... )
 
-        Simulate points belong to lattice
+        Simulate points about the lattice.
 
         >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
         >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
-        Snap points to the network
+        Snap the points to the network of lattice edges
+        and extract as ``GeoDataFrame`` objects.
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
         >>> clients_snapped = spaghetti.element_as_gdf(
@@ -273,7 +301,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ...     ntw, pp_name="facilities", snapped=True
         ... )
 
-        Create PCenter instance from geodataframe
+        Create and solve a ``PCenter`` instance from the ``GeoDataFrame`` objects.
 
         >>> pcenter_from_geodataframe = PCenter.from_geodataframe(
         ...     clients_snapped,
@@ -287,7 +315,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         ...     pulp.PULP_CBC_CMD(msg=False)
         ... )
 
-        Get facility-client associations
+        Get the facility-client associations.
 
         >>> for fac, cli in enumerate(pcenter_from_geodataframe.fac2cli):
         ...     print(f"facility {fac} serving {len(cli)} clients")
@@ -297,7 +325,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         facility 3 serving 0 clients
         facility 4 serving 26 clients
 
-        """
+        """  # noqa
 
         predefined_facilities_arr = None
         if predefined_facility_col is not None:
@@ -338,9 +366,11 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
     def facility_client_array(self) -> None:
         """
-        Create an array 2d MxN, where m is number of facilities and n is number of
-        clients. Each row represent a facility and has an array containing clients
-        index meaning that the facility-i cover the entire array.
+
+        Create a 2D array storing **facility to client relationships** where each
+        row represents a facility and contains an array of client indices
+        with which it is associated. An empty client array indicates
+        the facility is associated with no clients.
 
         Returns
         -------
@@ -365,21 +395,21 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
     def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
-        Solve the PCenter model
+        Solve the ``PCenter`` model.
 
         Parameters
         ----------
 
-        solver: pulp.LpSolver
-            solver supported by pulp package
-        results: bool
-            if True it will create metainfo - which facilities cover which demand
-            and vice-versa, and the uncovered demand - about the model results
+        solver : pulp.LpSolver
+            A solver supported by ``pulp``.
+        results : bool (default True)
+            If ``True`` it will create metainfo (which facilities cover
+            which demand) and vice-versa, and the uncovered demand.
 
         Returns
         -------
 
-        PCenter object
+        spopt.locate.p_center.PCenter
 
         """
         self.problem.solve(solver)

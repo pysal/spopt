@@ -1,3 +1,4 @@
+from . import locate
 from . import region
 
 from . import _version

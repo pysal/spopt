@@ -1,4 +1,7 @@
-# Openshaw, S. and Rao, L. (1995). Algorithms for reengineering 1991 census geography. Environment and Planning A, 27(3):425-446.
+"""
+Openshaw, S. and Rao, L. (1995). Algorithms for reengineering 1991 census geography.
+Environment and Planning A, 27(3):425-446.
+"""
 
 from ..BaseClass import BaseSpOptHeuristicSolver
 import abc
@@ -42,6 +45,7 @@ class AZP(BaseSpOptHeuristicSolver):
 
     Parameters
     ----------
+
     gdf : geopandas.GeoDataFrame
         Geodataframe containing original data.
 
@@ -72,6 +76,7 @@ class AZP(BaseSpOptHeuristicSolver):
 
     Attributes
     ----------
+
     labels_ : numpy.ndarray
         Each element is a region label specifying to which region the
         corresponding area was assigned to by the last run of a fit-method.
@@ -159,6 +164,7 @@ class AZP_orig:
 
     Attributes
     ----------
+
     labels_ : numpy.ndarray
         Each element is a region label specifying to which region the
         corresponding area was assigned to by the last run of a fit-method.
@@ -169,6 +175,7 @@ class AZP_orig:
         """
         Parameters
         ----------
+
         allow_move_strategy : None or AllowMoveStrategy
             If None, then the AZP algorithm in [OR1995]_ is chosen.
             For a different behavior for allowing moves an AllowMoveStrategy
@@ -211,6 +218,7 @@ class AZP_orig:
 
         Parameters
         ----------
+
         adj : scipy.sparse.csr_matrix
             Adjacency matrix representing the contiguity relation.
         attr : numpy.ndarray
@@ -275,6 +283,7 @@ class AZP_orig:
 
         Parameters
         ----------
+
         w : libpysal.weights.weights.W
             `W` object representing the contiguity relation.
         attr : numpy.ndarray
@@ -290,6 +299,7 @@ class AZP_orig:
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
+
         """
 
         adj = scipy_sparse_matrix_from_w(w)
@@ -310,6 +320,7 @@ class AZP_orig:
 
         Parameters
         ----------
+
         graph : networkx.Graph
             Graph representing the contiguity relation.
         attr : str, list, or dict
@@ -339,6 +350,7 @@ class AZP_orig:
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
+
         """
 
         adj = nx.to_scipy_sparse_matrix(graph)
@@ -363,6 +375,7 @@ class AZP_orig:
 
         Parameters
         ----------
+
         gdf : geopandas.GeoDataFrame
             Refer to the corresponding argument in
             ``AZP.fit_from_geodataframe``.
@@ -388,6 +401,7 @@ class AZP_orig:
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
+
         """
         w = w_from_gdf(gdf, contiguity)
         attr = array_from_df_col(gdf, attr)
@@ -408,6 +422,7 @@ class AZP_orig:
 
         Parameters
         ----------
+
         neighbor_dict : `dict`
             Each key is an area and each value is an iterable of the key area's
             neighbors.
@@ -425,6 +440,7 @@ class AZP_orig:
         objective_func : :class:`region.ObjectiveFunction`, default: ObjectiveFunctionPairwise()
             Refer to the corresponding argument in
             :meth:`fit_from_scipy_sparse_matrix`.
+
         """
         sorted_areas = sorted(neighbor_dict)
 
@@ -446,6 +462,7 @@ class AZP_orig:
 
         Parameters
         ----------
+
         adj : scipy.sparse.csr_matrix
             Adjacency matrix representing the contiguity relation. The matrix'
             shape is `(N, N)` where `N` denotes the number of areas in the
@@ -460,10 +477,12 @@ class AZP_orig:
 
         Returns
         -------
+
         labels : numpy.ndarray
             One-dimensional array of region labels after the AZP algorithm has
             been performed. Only region labels of the currently considered
             connected component are returned.
+
         """
         # if there is only one region in the initial solution, just return it.
         distinct_regions = list(np.unique(initial_clustering))
@@ -563,9 +582,11 @@ class AZPSimulatedAnnealing:
 
     Attributes
     ----------
+
     labels_ : numpy.ndarray
         Each element is a region label specifying to which region the
         corresponding area was assigned to by the last run of a fit-method.
+
     """
 
     def __init__(
@@ -580,6 +601,7 @@ class AZPSimulatedAnnealing:
         """
         Parameters
         ----------
+
         init_temperature : float
             The initial temperature used in the simulated annealing algorithm.
         max_iterations : int or float("inf")
@@ -599,6 +621,7 @@ class AZPSimulatedAnnealing:
             `repetitions_before_termination` times. Default is ``5``.
         random_state : None, int, str, bytes, or bytearray
             Random seed. Default is ``None``.
+
         """
         self.allow_move_strategy = None
         self.azp = None
@@ -635,6 +658,7 @@ class AZPSimulatedAnnealing:
         """
         Parameters
         ----------
+
         gdf : geopandas.GeoDataFrame
             Refer to the corresponding argument in
             ``AZP.fit_from_geodataframe``.
@@ -657,6 +681,7 @@ class AZPSimulatedAnnealing:
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
+
         """
         w = w_from_gdf(gdf, contiguity)
         attr = array_from_df_col(gdf, attr)
@@ -681,6 +706,7 @@ class AZPSimulatedAnnealing:
         """
         Parameters
         ----------
+
         neighbor_dict : dict
             Refer to the corresponding argument in ``AZP.fit_from_dict``.
         attr : dict
@@ -699,6 +725,7 @@ class AZPSimulatedAnnealing:
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
+
         """
         sorted_areas = sorted(neighbor_dict)
         adj = scipy_sparse_matrix_from_dict(neighbor_dict)
@@ -729,6 +756,7 @@ class AZPSimulatedAnnealing:
         """
         Parameters
         ----------
+
         graph : networkx.Graph
             Refer to the corresponding argument in
             ``AZP.fit_from_networkx``.
@@ -778,6 +806,7 @@ class AZPSimulatedAnnealing:
         """
         Parameters
         ----------
+
         adj : scipy.sparse.csr_matrix
             Refer to the corresponding argument in
             ``AZP.fit_from_scipy_sparse_matrix``.
@@ -798,6 +827,7 @@ class AZPSimulatedAnnealing:
         objective_func : region.ObjectiveFunction
             Refer to the corresponding argument in
             ``AZP.fit_from_scipy_sparse_matrix``.
+
         """
         if not (0 < cooling_factor < 1):
             raise ValueError(
@@ -864,6 +894,7 @@ class AZPSimulatedAnnealing:
         """
         Parameters
         ----------
+
         w : libpysal.weights.weights.W
             Refer to the corresponding argument in ``AZP.fit_from_w``.
         attr : numpy.ndarray
@@ -884,6 +915,7 @@ class AZPSimulatedAnnealing:
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
+
         """
         adj = scipy_sparse_matrix_from_w(w)
         self.fit_from_scipy_sparse_matrix(
@@ -934,9 +966,11 @@ class AZPBasicTabu(AZPTabu):
 
     Attributes
     ----------
+
     labels_ : numpy.ndarray
         Each element is a region label specifying to which region the
         corresponding area was assigned to by the last run of a fit-method.
+
     """
 
     def __init__(
@@ -945,6 +979,7 @@ class AZPBasicTabu(AZPTabu):
         """
         Parameters
         ----------
+
         tabu_length : numbers.Integral
             The size of the tabu list.
         repetitions_before_termination : numbers.integral
@@ -954,6 +989,7 @@ class AZPBasicTabu(AZPTabu):
         random_state : None, int, str, bytes, or bytearray
             Refer to the corresponding argument in
             ``AZP.__init__``. Default is ``None``.
+
         """
         self.tabu = deque([], tabu_length)
         self.visited = []
@@ -968,6 +1004,7 @@ class AZPBasicTabu(AZPTabu):
 
         Parameters
         ----------
+
         adj : scipy.sparse.csr_matrix
             Refer to the corresponding argument in
             ``AZP._azp_connected_component``.
@@ -980,8 +1017,10 @@ class AZPBasicTabu(AZPTabu):
 
         Returns
         -------
+
         labels : numpy.ndarray
             Refer to the return value in ``AZP._azp_connected_component``.
+
         """
         self.reset_tabu()
         # if there is only one region in the initial solution, just return it.
@@ -1089,15 +1128,18 @@ class AZPReactiveTabu(AZPTabu):
 
     Attributes
     ----------
+
     labels_ : numpy.ndarray
         Each element is a region label specifying to which region the
         corresponding area was assigned to by the last run of a fit-method.
+
     """
 
     def __init__(self, max_iterations, k1, k2, random_state=None):
         """
         Parameters
         ----------
+
         max_iterations : int
            Termination condition: The algorithm terminates after steps 3-11
            (see [OR1995]_) are repeated for `max_max_iterations` times.
@@ -1114,6 +1156,7 @@ class AZPReactiveTabu(AZPTabu):
         random_state : None, int, str, bytes, or bytearray
             Refer to the corresponding argument in
             ``AZP.__init__``. Default is ``None``.
+
         """
         self.tabu = deque([], maxlen=1)
         super().__init__(random_state=random_state)
@@ -1134,6 +1177,7 @@ class AZPReactiveTabu(AZPTabu):
 
         Parameters
         ----------
+
         adj : :class:`scipy.sparse.csr_matrix`
             Refer to the corresponding argument in
             :meth:`AZP._azp_connected_component`.
@@ -1146,8 +1190,10 @@ class AZPReactiveTabu(AZPTabu):
 
         Returns
         -------
+
         labels : :class:`numpy.ndarray`
             Refer to the return value in :meth:`AZP._azp_connected_component`.
+
         """
         self.reset_tabu(1)
         # if there is only one region in the initial solution, just return it.

@@ -74,8 +74,8 @@ def check_contiguity(w, neighbors, leaver):
                   in neighbors
     False       : if removing leaver from neighbors breaks contiguity
 
-    Example
-    -------
+    Examples
+    --------
 
     Setup imports and a 25x25 spatial weights matrix on a 5x5 square region.
 

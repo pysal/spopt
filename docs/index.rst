@@ -45,11 +45,31 @@ Regionalization, facility location, and transportation-oriented modeling
             </a>
         </div>
         <div class="col-sm-4 col-xs-14">
+            <a href="https://pysal.org/spopt/notebooks/lscp_gis.html" class="thumbnail">
+                <img src="_static/images/notebooks-lscp.png"
+                class="img-responsive center-block">
+                <div class="caption text-center">
+                <h6>Locating First Aid Stations in Toronto
+                </h6>
+                </div>
+            </a>
+        </div>
+        <div class="col-sm-4 col-xs-14">
             <a href="https://pysal.org/spopt/notebooks/facloc-real-world.html" class="thumbnail">
                 <img src="_static/images/notebooks-facloc-mclp.png"
                 class="img-responsive center-block">
                 <div class="caption text-center">
-                <h6>Locate Store Sites in San Francisco
+                <h6>Locating Store Sites in San Francisco
+                </h6>
+                </div>
+            </a>
+        </div>
+        <div class="col-sm-4 col-xs-14">
+            <a href="https://pysal.org/spopt/notebooks/lscpb.html" class="thumbnail">
+                <img src="_static/images/lscpb-predef.png"
+                class="img-responsive center-block">
+                <div class="caption text-center">
+                <h6>Backup Coverage and Predefined Locations
                 </h6>
                 </div>
             </a>

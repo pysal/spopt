@@ -40,6 +40,7 @@ def maxp(
 
     Parameters
     ----------
+
     gdf : geopandas.GeoDataFrame, required
         Geodataframe containing original data
 
@@ -79,6 +80,7 @@ def maxp(
 
     Returns
     -------
+
     max_p : int
         The number of regions.
 
@@ -163,6 +165,7 @@ def construction_phase(
 
     Parameters
     ----------
+
     arr : array, required
         An array of index of area units.
 
@@ -189,6 +192,7 @@ def construction_phase(
 
     Returns
     -------
+
     real_values : list
         ``realmaxpv``, ``realLabelsList``
 
@@ -270,6 +274,7 @@ def growClusterForPoly(
 
     Parameters
     ----------
+
     labels : list, required
         A list of current region labels
 
@@ -293,6 +298,7 @@ def growClusterForPoly(
 
     Returns
     -------
+
     cluster_info : tuple
         ``labeledID``, ``spatialAttrTotal``
 
@@ -338,6 +344,7 @@ def assignEnclave(
 
     Parameters
     ----------
+
     enclave : list, required
         A list of enclaves.
 
@@ -366,6 +373,7 @@ def assignEnclave(
 
     Returns
     -------
+
     region_info : list
         Deep copies of ``labels``, ``regionList``, and ``regionSpatialAttr``
 
@@ -407,6 +415,7 @@ def calculateWithinRegionDistance(regionList, distance_matrix):
 
     Parameters
     ----------
+
     regionList : dict, required
         A dictionary with key as region ID and value as a list of area
         units assigned to the region.
@@ -416,6 +425,7 @@ def calculateWithinRegionDistance(regionList, distance_matrix):
 
     Returns
     -------
+
     totalWithinRegionDistance : {int, float}
         the total within-region distance
 
@@ -442,6 +452,7 @@ def pickMoveArea(
 
     Parameters
     ----------
+
     labels : list, required
         A list of current region labels
 
@@ -464,6 +475,7 @@ def pickMoveArea(
 
     Returns
     -------
+
     potentialAreas : list
         a list of area units that can move without violating
         contiguity and threshold constraints
@@ -495,6 +507,7 @@ def checkMove(
 
     Parameters
     ----------
+
     poa : int, required
         The index of current area unit that can potentially move
 
@@ -519,6 +532,7 @@ def checkMove(
 
     Returns
     -------
+
     move_info : list
         ``lostDistance``, ``minAddedDistance``, and ``potentialMove``.
 
@@ -561,6 +575,7 @@ def performSA(
 
     Parameters
     ----------
+
     initLabels : list, required
         A list of initial region labels before SA
 
@@ -595,6 +610,7 @@ def performSA(
 
     Returns
     -------
+
     sa_res : list
         The results from simulated annealing including ``labels``,
         ``regionLists``, and ``regionSpatialAttrs``.
@@ -686,6 +702,7 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
 
     Parameters
     ----------
+
     gdf : geopandas.GeoDataFrame, required
         Geodataframe containing original data.
 
@@ -724,17 +741,17 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         modification (useful for debugging). ``'drop'`` removes areas in
         infeasible components before solving.
 
-
     Attributes
     ----------
+
     max_p : int
         The number of regions.
-
     labels_ : numpy.array
         Region IDs for observations.
 
     Examples
     --------
+
     >>> import numpy
     >>> import libpysal
     >>> import geopandas as gpd
