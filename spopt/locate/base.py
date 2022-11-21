@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from ..BaseClass import BaseSpOptSolver
+from ..BaseClass import BaseSpOptExactSolver
 from typing import TypeVar
 
 import numpy as np
@@ -17,7 +17,7 @@ STATUS_CODES = {
 }
 
 
-class LocateSolver(BaseSpOptSolver):
+class LocateSolver(BaseSpOptExactSolver):
     """Base class for the ``locate`` package."""
 
     def __init__(self, name: str, problem: pulp.LpProblem):
