@@ -54,14 +54,17 @@ class WardSpatial(BaseSpOptHeuristicSolver):
     >>> model = WardSpatial(chicago, w, attrs_name, n_clusters)
     >>> model.solve()
 
-    Get the region IDs for unit areas.
+    Get the counts of region IDs for unit areas.
 
-    >>> model.labels_
-
-    Show the clustering results.
-
-    >>> chicago['ward_new'] = model.labels_
-    >>> chicago.plot(column='ward_new', categorical=True, figsize=(12,8), edgecolor='w')
+    >>> numpy.array(numpy.unique(model.labels_, return_counts=True)).T
+    array([[ 0, 62],
+           [ 1,  6],
+           [ 2,  3],
+           [ 3,  1],
+           [ 4,  2],
+           [ 5,  1],
+           [ 6,  1],
+           [ 7,  1]])
 
     """
 
