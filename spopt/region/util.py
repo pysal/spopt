@@ -4,15 +4,15 @@ import itertools
 import random
 import types
 
-import scipy.sparse.csgraph as csg
-from sklearn.metrics.pairwise import distance_metrics
-from scipy.sparse import dok_matrix
-import numpy as np
 import networkx as nx
-from libpysal import weights
+import numpy as np
 import pulp
+import scipy.sparse.csgraph as csg
+from libpysal import weights
+from scipy.sparse import dok_matrix
+from sklearn.metrics.pairwise import distance_metrics
 
-from spopt.region.csgraph_utils import sub_adj_matrix, is_connected
+from spopt.region.csgraph_utils import is_connected, sub_adj_matrix
 
 Move = collections.namedtuple("move", "area old_region new_region")
 "A named tuple representing a move from `old_region` to `new_region`."  # sphinx
@@ -20,30 +20,31 @@ Move = collections.namedtuple("move", "area old_region new_region")
 
 def array_from_dict_values(dct, sorted_keys=None, flat_output=False, dtype=float):
     """
-    Return values of the dictionary passed as `dct` argument as an numpy array.
-    The values in the returned array are sorted by the keys of `dct`.
+    Return values of a dictionary as an array. The values in the returned
+    array are sorted by the keys of the input dictionary.
 
     Parameters
     ----------
 
     dct : dict
-
-    sorted_keys : iterable, optional
+        The input dictionary.
+    sorted_keys : iterable (default None)
         If passed, then the elements of the returned array will be sorted by
         this argument. Thus, this argument can be passed to suppress the
         sorting, or for getting a subset of the dictionary's values or to get
         repeated values.
-    flat_output : bool, default: False
-        If True, the returned array will be one-dimensional.
-        If False, the returned array will be two-dimensional with one row per
-        key in `dct`.
-    dtype : default: np.float64
-        The `dtype` of the returned array.
+    flat_output : bool (default False)
+        If ``True``, the returned array will be one-dimensional.
+        If ``False``, the returned array will be two-dimensional
+        with one row per key in ``dct``.
+    dtype : (default float)
+        The ``dtype`` of the returned array.
 
     Returns
     -------
 
-    array : :class:`numpy.ndarray`
+    array : numpy.ndarray
+        The resultant array.
 
     Examples
     --------
@@ -51,8 +52,7 @@ def array_from_dict_values(dct, sorted_keys=None, flat_output=False, dtype=float
     >>> dict_flat = {0: 0, 1: 10}
     >>> dict_it = {0: [0], 1: [10]}
     >>> desired_flat = np.array([0, 10])
-    >>> desired_2d = np.array([[0],
-    ...                        [10]])
+    >>> desired_2d = np.array([[0],[10]])
     >>> flat_flat = array_from_dict_values(dict_flat, flat_output=True)
     >>> (flat_flat == desired_flat).all()
     True
@@ -96,14 +96,21 @@ def scipy_sparse_matrix_from_dict(neighbors):
     Returns
     -------
 
-    adj : :class:`scipy.sparse.csr_matrix`
+    adj : scipy.sparse.csr_matrix
         Adjacency matrix representing the areas' contiguity relation.
 
     Examples
     --------
 
-    >>> neighbors = {0: {1, 3}, 1: {0, 2, 4}, 2: {1, 5},
-    ...              3: {0, 4}, 4: {1, 3, 5}, 5: {2, 4}}
+    >>> import numpy
+    >>> neighbors = {
+    ...     0: {1, 3},
+    ...     1: {0, 2, 4},
+    ...     2: {1, 5},
+    ...     3: {0, 4},
+    ...     4: {1, 3, 5},
+    ...     5: {2, 4}
+    ... }
     >>> obtained = scipy_sparse_matrix_from_dict(neighbors)
     >>> desired = np.array([[0, 1, 0, 1, 0, 0],
     ...                     [1, 0, 1, 0, 1, 0],
@@ -114,13 +121,15 @@ def scipy_sparse_matrix_from_dict(neighbors):
     >>> (obtained.todense() == desired).all()
     True
 
-    >>> neighbors = {"left": {"middle"},
-    ...              "middle": {"left", "right"},
-    ...              "right": {"middle"}}
+    >>> neighbors = {
+    ...     'left': {'middle'}, 'middle': {'left', 'right'}, 'right': {'middle'}
+    ... }
     >>> obtained = scipy_sparse_matrix_from_dict(neighbors)
-    >>> desired = np.array([[0, 1, 0],
-    ...                     [1, 0, 1],
-    ...                     [0, 1, 0]])
+    >>> desired = np.array(
+    ...     [[0, 1, 0],
+    ...      [1, 0, 1],
+    ...      [0, 1, 0]]
+    ... )
     >>> (obtained.todense() == desired).all()
     True
 
@@ -140,25 +149,26 @@ def scipy_sparse_matrix_from_w(w):
     Parameters
     ----------
 
-    w : :class:`libpysal.weights.weights.W`
-        A W object representing the areas' contiguity relation.
+    w : libpysal.weights.weights.W
+        A *W* object representing the areas' contiguity relation.
 
     Returns
     -------
 
-    adj : :class:`scipy.sparse.csr_matrix`
+    adj : scipy.sparse.csr_matrix
         Adjacency matrix representing the areas' contiguity relation.
 
     Examples
     --------
 
     >>> from libpysal import weights
+    >>> import numpy
     >>> neighbor_dict = {0: {1}, 1: {0, 2}, 2: {1}}
     >>> w = weights.W(neighbor_dict)
     >>> obtained = scipy_sparse_matrix_from_w(w)
-    >>> desired = np.array([[0., 1., 0.],
-    ...                     [1., 0., 1.],
-    ...                     [0., 1., 0.]])
+    >>> desired = numpy.array(
+    ...     [[0., 1., 0.], [1., 0., 1.], [0., 1., 0.]]
+    ... )
     >>> obtained.todense().all() == desired.all()
     True
 
@@ -168,19 +178,20 @@ def scipy_sparse_matrix_from_w(w):
 
 def dict_from_graph_attr(graph, attr, array_values=False):
     """
+
     Parameters
     ----------
 
     graph : networkx.Graph
-
+        Graph to convert to dictionary.
     attr : str, iterable, or dict
-        If str, then it specifies the an attribute of the graph's nodes.
-        If iterable of strings, then multiple attributes of the graph's nodes
-        are specified.
-        If dict, then each key is a node and each value the corresponding
-        attribute value. (This format is also this function's return format.)
-    array_values : bool, default: False
-        If True, then each value is transformed into a :class:`numpy.ndarray`.
+        If ``str``, then it specifies the an attribute of the graph's nodes.
+        If ``iterable`` of strings, then multiple attributes of the graph's nodes
+        are specified. If ``dict``, then each key is a node and each value the
+        corresponding attribute value.
+        (This format is also this function's return format.)
+    array_values : bool (default False)
+        If ``True``, then each value is transformed into a ``numpy.ndarray``.
 
     Returns
     -------
@@ -196,18 +207,18 @@ def dict_from_graph_attr(graph, attr, array_values=False):
     Examples
     --------
 
-    >>> import networkx as nx
+    >>> import networkx
     >>> edges = [(0, 1), (1, 2),          # 0 | 1 | 2
     ...          (0, 3), (1, 4), (2, 5),  # ---------
-    ...          (3, 4), (4,5)]           # 3 | 4 | 5
-    >>> graph = nx.Graph(edges)
+    ...          (3, 4), (4, 5)]          # 3 | 4 | 5
+    >>> graph = networkx.Graph(edges)
     >>> data_dict = {node: 10*node for node in graph}
-    >>> nx.set_node_attributes(graph, data_dict, "test_data")
+    >>> networkx.set_node_attributes(graph, data_dict, 'test_data')
     >>> desired = {key: [value] for key, value in data_dict.items()}
-    >>> dict_from_graph_attr(graph, "test_data") == desired
+    >>> dict_from_graph_attr(graph, 'test_data') == desired
     True
 
-    >>> dict_from_graph_attr(graph, ["test_data"]) == desired
+    >>> dict_from_graph_attr(graph, ['test_data']) == desired
     True
 
     """
@@ -232,42 +243,38 @@ def array_from_graph(graph, attr):
     ----------
 
     graph : networkx.Graph
-
+        Graph to convert to array.
     attr : str or iterable
-        If str, then it specifies the an attribute of the graph's nodes.
-        If iterable of strings, then multiple attributes of the graph's nodes
+        If ``str``, then it specifies the an attribute of the graph's nodes.
+        If ``iterable`` of strings, then multiple attributes of the graph's nodes
         are specified.
 
     Returns
     -------
 
-    array : :class:`numpy.ndarray`
-        Array with one row for each node in `graph`.
+    array : numpy.ndarray
+        Array with one row for each node in ``graph``.
 
     Examples
     --------
 
-    >>> import networkx as nx
+    >>> import networkx
+    >>> import numpy
     >>> edges = [(0, 1), (1, 2),          # 0 | 1 | 2
     ...          (0, 3), (1, 4), (2, 5),  # ---------
-    ...          (3, 4), (4,5)]           # 3 | 4 | 5
-    >>> graph = nx.Graph(edges)
+    ...          (3, 4), (4, 5)]          # 3 | 4 | 5
+    >>> graph = networkx.Graph(edges)
     >>> data_dict = {node: 10*node for node in graph}
-    >>> nx.set_node_attributes(graph, data_dict, "test_data")
-    >>> desired = np.array([[0],
-    ...                     [10],
-    ...                     [20],
-    ...                     [30],
-    ...                     [40],
-    ...                     [50]])
-    >>> (array_from_graph(graph, "test_data") == desired).all()
+    >>> networkx.set_node_attributes(graph, data_dict, 'test_data')
+    >>> desired = np.array([[0], [10], [20], [30], [40], [50]])
+    >>> (array_from_graph(graph, 'test_data') == desired).all()
     True
 
-    >>> (array_from_graph(graph, ["test_data"]) == desired).all()
+    >>> (array_from_graph(graph, ['test_data']) == desired).all()
     True
 
-    >>> (array_from_graph(graph, ["test_data", "test_data"]) ==
-    ...  np.hstack((desired, desired))).all()
+    >>> (array_from_graph(graph, ['test_data', 'test_data']) ==
+    ...  numpy.hstack((desired, desired))).all()
     True
 
     """
@@ -292,21 +299,21 @@ def array_from_region_list(region_list):
     Parameters
     ----------
 
-    region_list : `list`
+    region_list : list
         Each list element is an iterable of a region's areas.
 
     Returns
     -------
 
-    labels : :class:`numpy.ndarray`
+    labels : numpy.ndarray
         Each element specifies the region of the corresponding area.
 
     Examples
     --------
 
-    >>> import numpy as np
+    >>> import numpy
     >>> obtained = array_from_region_list([{0, 1, 2, 5}, {3, 4}])
-    >>> desired = np.array([ 0, 0, 0, 1, 1, 0])
+    >>> desired = numpy.array([ 0, 0, 0, 1, 1, 0])
     >>> (obtained == desired).all()
     True
 
@@ -321,51 +328,47 @@ def array_from_region_list(region_list):
 
 def array_from_df_col(df, attr):
     """
-    Extract one or more columns from a DataFrame as numpy array.
+    Extract one or more columns from a DataFrame as a ``numpy.array``.
 
     Parameters
     ----------
 
     df : Union[DataFrame, GeoDataFrame]
-
+        Dataframe to convert to dictionary.
     attr : Union[str, Sequence[str]]
         The columns' names to extract.
 
     Returns
     -------
 
-    col : :class:`numpy.ndarray`
+    col : numpy.ndarray
         The specified column(s) of the array.
 
     Examples
     --------
 
-    >>> import pandas as pd
-    >>> df = pd.DataFrame({"col1": [1, 2, 3],
-    ...                    "col2": [7, 8, 9]})
-    >>> (array_from_df_col(df, "col1") == np.array([[1],
-    ...                                         [2],
-    ...                                         [3]])).all()
+    >>> import pandas
+    >>> import numpy
+    >>> df = pandas.DataFrame({'col1': [1, 2, 3], 'col2': [7, 8, 9]})
+    >>> array = numpy.array([[1], [2], [3]])
+    >>> (array_from_df_col(df, 'col1') == array).all()
     True
 
-    >>> (array_from_df_col(df, ["col1"]) == np.array([[1],
-    ...                                           [2],
-    ...                                           [3]])).all()
+    >>> (array_from_df_col(df, ['col1']) == array).all()
     True
 
-    >>> (array_from_df_col(df, ["col1", "col2"]) == np.array([[1, 7],
-    ...                                                   [2, 8],
-    ...                                                   [3, 9]])).all()
+    >>> array = numpy.array([[1, 7], [2, 8], [3, 9]])
+    >>> (array_from_df_col(df, ['col1', 'col2']) == array).all()
     True
 
     """
     value_error = ValueError(
-        "The attr argument has to be of one of the "
-        "following types: str or a sequence of strings."
+        "The `attr` argument has to be of one of the "
+        "following types: `str` or a sequence of strings."
     )
     if isinstance(attr, str):
         attr = [attr]
-    elif isinstance(attr, collections.Sequence):
+    elif isinstance(attr, collections.abc.Sequence):
         if not all(isinstance(el, str) for el in attr):
             raise value_error
     else:
@@ -375,21 +378,22 @@ def array_from_df_col(df, attr):
 
 def w_from_gdf(gdf, contiguity):
     """
-    Get a `W` object from a GeoDataFrame.
+    Get a *W* object from a GeoDataFrame.
 
     Parameters
     ----------
 
     gdf : GeoDataFrame
-
-    contiguity : {"rook", "queen"}
+        GeoDataframe to convert to ``libpysal.weights.W``.
+    contiguity : str
+        Either ``'rook'`` or ``'queen'``.
 
     Returns
     -------
 
-    cweights : `W`
-        The contiguity information contained in the `gdf` argument in the form
-        of a W object.
+    cweights : libpysal.weights.W
+        The contiguity information contained in the ``gdf``
+        argument in the form of a *W* object.
 
     """
     if not isinstance(contiguity, str) or contiguity.lower() not in ["rook", "queen"]:
@@ -410,36 +414,35 @@ def dataframe_to_dict(df, cols):
     Parameters
     ----------
 
-    df : Union[:class:`pandas.DataFrame`, :class:`geopandas.GeoDataFrame`]
-
-    cols : Union[`str`,  `list`]
-        If `str`, then it is the name of a column of `df`.
-        If `list`, then it is a list of strings. Each string is the name of a
-        column of `df`.
+    df : Union[pandas.DataFrame, geopandas.GeoDataFrame]
+        Dataframe to convert to dictionary.
+    cols : Union[str, list]
+        If ``str``, then it is the name of a column of ``df``.
+        If ``list``, then it is a list of strings. Each string is the name of a
+        column of ``df``.
 
     Returns
     -------
 
     result : dict
         The keys are the elements of the DataFrame's index.
-        Each value is a :class:`numpy.ndarray` holding the corresponding values
-        in the columns specified by `cols`.
+        Each value is a ``numpy.ndarray`` holding the corresponding values
+        in the columns specified by ``cols``.
 
     Examples
     --------
 
-    >>> import pandas as pd
-    >>> df = pd.DataFrame({"data": [100, 120, 115]})
+    >>> import pandas
+    >>> df = pandas.DataFrame({'data': [100, 120, 115]})
     >>> result = dataframe_to_dict(df, "data")
     >>> result == {0: 100, 1: 120, 2: 115}
     True
 
-    >>> import numpy as np
-    >>> df = pd.DataFrame({"data": [100, 120],
-    ...                    "other": [1, 2]})
-    >>> actual = dataframe_to_dict(df, ["data", "other"])
-    >>> desired = {0: np.array([100, 1]), 1: np.array([120, 2])}
-    >>> all(np.array_equal(actual[i], desired[i]) for i in desired)
+    >>> import numpy
+    >>> df = pandas.DataFrame({'data': [100, 120], 'other': [1, 2]})
+    >>> actual = dataframe_to_dict(df, ['data', 'other'])
+    >>> desired = {0: numpy.array([100, 1]), 1: numpy.array([120, 2])}
+    >>> all(numpy.array_equal(actual[i], desired[i]) for i in desired)
     True
 
     """
@@ -452,26 +455,25 @@ def find_sublist_containing(el, lst, index=False):
     Parameters
     ----------
 
-    el :
+    el : int
         The element to search for in the sublists of `lst`.
     lst : collections.Sequence
         A sequence of sequences or sets.
-    index : bool, default: False
-        If False (default), the subsequence or subset containing `el` is
-        returned.
-        If True, the index of the subsequence or subset in `lst` is returned.
+    index : bool (default False)
+        If ``False``, the subsequence or subset containing ``el`` is returned.
+        If ``True``, the index of the subsequence or subset in ``lst`` is returned.
 
     Returns
     -------
 
-    result : collections.Sequence, collections.Set or int
+    result : collections.Sequence, collections.Set, or int
         See the `index` argument for more information.
 
     Raises
     ------
 
     exc : LookupError
-        If `el` is not in any of the elements of `lst`.
+        If ``el`` is not in any of the elements of ``lst``.
 
     Examples
     --------
@@ -501,19 +503,19 @@ def get_metric_function(metric=None):
     Parameters
     ----------
 
-    metric : str or function or None, default: None
-        Using None is equivalent to using "euclidean".
+    metric : str or function (default None)
+        Using None is equivalent to using ``'euclidean'``.
 
         If str, then this string specifies the distance metric (from
         scikit-learn) to use for calculating the objective function.
         Possible values are:
 
-        * "cityblock" for sklearn.metrics.pairwise.manhattan_distances
-        * "cosine" for sklearn.metrics.pairwise.cosine_distances
-        * "euclidean" for sklearn.metrics.pairwise.euclidean_distances
-        * "l1" for sklearn.metrics.pairwise.manhattan_distances
-        * "l2" for sklearn.metrics.pairwise.euclidean_distances
-        * "manhattan" for sklearn.metrics.pairwise.manhattan_distances
+        * ``'cityblock'`` for ``sklearn.metrics.pairwise.manhattan_distances``
+        * ``'cosine'`` for ``sklearn.metrics.pairwise.cosine_distances``
+        * ``'euclidean'`` for ``sklearn.metrics.pairwise.euclidean_distances``
+        * ``'l1'`` for ``sklearn.metrics.pairwise.manhattan_distances``
+        * ``'l2'`` for ``sklearn.metrics.pairwise.euclidean_distances``
+        * ``'manhattan'`` for ``sklearn.metrics.pairwise.manhattan_distances``
 
         If function, then this function should take two arguments and return a
         scalar value. Furthermore, the following conditions must be fulfilled:
@@ -527,9 +529,9 @@ def get_metric_function(metric=None):
     -------
 
     metric_func : function
-        If the `metric` argument is a function, it is returned.
-        If the `metric` argument is a string, then the corresponding distance
-        metric function from `sklearn.metrics.pairwise` is returned.
+        If the ``metric`` argument is a function, it is returned.
+        If the ``metric`` argument is a string, then the corresponding distance
+        metric function from ``sklearn.metrics.pairwise`` is returned.
 
     """
     if metric is None:
@@ -570,26 +572,26 @@ def raise_distance_metric_not_set(x, y):
 
 def make_move(moving_area, new_label, labels):
     """
-    Modify the `labels` argument in place (no return value!) such that the
-    area `moving_area` has the new region label `new_label`.
+    Modify the ``labels`` argument in place (no return value!) such that the
+    area ``moving_area`` has the new region label ``new_label``.
 
     Parameters
     ----------
 
-    moving_area :
+    moving_area : int
         The area to be moved (assigned to a new region).
-    new_label : `int`
-        The new region label of area `moving_area`.
-    labels : :class:`numpy.ndarray`
+    new_label : int
+        The new region label of area ``moving_area``.
+    labels : numpy.ndarray
         Each element is a region label of the area corresponding array index.
 
     Examples
     --------
 
-    >>> import numpy as np
-    >>> labels = np.array([0, 0, 0, 0, 1, 1])
+    >>> import numpy
+    >>> labels = numpy.array([0, 0, 0, 0, 1, 1])
     >>> make_move(3, 1, labels)
-    >>> (labels == np.array([0, 0, 0, 1, 1, 1])).all()
+    >>> (labels == numpy.array([0, 0, 0, 1, 1, 1])).all()
     True
 
     """
@@ -615,6 +617,7 @@ def distribute_regions_among_components(component_labels, n_regions):
           `-------´         `---´
 
     n_regions : int
+        The desired number of clusters. Must be > 0 and <= number of nodes.
 
     Returns
     -------
@@ -653,14 +656,15 @@ def generate_initial_sol(adj, n_regions):
     Parameters
     ----------
 
-    adj : :class:`scipy.sparse.csr_matrix`
-
+    adj : scipy.sparse.csr_matrix
+        Adjacency matrix.
     n_regions : int
+        The desired number of clusters. Must be > 0 and <= number of nodes.
 
     Yields
     ------
 
-    region_labels : :class:`numpy.ndarray`
+    region_labels : numpy.ndarray
         An array with -1 for areas which are not part of the yielded
         component and an integer >= 0 specifying the region of areas within the
         yielded component.
@@ -710,12 +714,12 @@ def generate_initial_sol(adj, n_regions):
 
 def _randomly_divide_connected_graph(adj, n_regions):
     """
-    Divide the provided connected graph into `n_regions` regions.
+    Divide the provided connected graph into ``n_regions`` regions.
 
     Parameters
     ----------
 
-    adj : :class:`scipy.sparse.csr_matrix`
+    adj : scipy.sparse.csr_matrix
         Adjacency matrix.
     n_regions : int
         The desired number of clusters. Must be > 0 and <= number of nodes.
@@ -723,8 +727,8 @@ def _randomly_divide_connected_graph(adj, n_regions):
     Returns
     -------
 
-    labels : :class:`numpy.ndarray`
-        Each element (an integer in {0, ..., `n_regions` - 1}) specifies the
+    labels : numpy.ndarray
+        Each element (an integer in ``{0, ..., ``n_regions - 1}``) specifies the
         region an area (defined by the index in the array) belongs to.
 
     Examples
@@ -790,7 +794,7 @@ def copy_func(f):
     -------
 
     g : function
-        Copy of `f`.
+        Copy of ``f``.
 
     """
     g = types.FunctionType(
@@ -877,26 +881,28 @@ def separate_components(adj, labels):
     Parameters
     ----------
 
-    adj : :class:`scipy.sparse.csr_matrix`
+    adj : scipy.sparse.csr_matrix
         Adjacency matrix representing the contiguity relation.
-    labels : :class:`numpy.ndarray`
+    labels : numpy.ndarray
+        An array of area labels.
 
     Yields
     ------
 
-    comp_dict : :class:`numpy.ndarray`
-        Each yielded dict represents one connected component of the graph
-        specified by the `adj` argument. In a yielded dict, each key is an area
-        and each value is the corresponding region-ID.
+    comp_dict : numpy.ndarray
+        Each yielded ``dict`` represents one connected component of the
+        graph specified by the ``adj`` argument. In a yielded ``dict``,
+        each key is an area and each value is the corresponding region ID.
 
     Examples
     --------
 
     >>> import networkx
     >>> import numpy
+
     >>> edges_island1 = [(0, 1), (1, 2),          # 0 | 1 | 2
     ...                  (0, 3), (1, 4), (2, 5),  # ---------
-    ...                  (3, 4), (4,5)]           # 3 | 4 | 5
+    ...                  (3, 4), (4, 5)]          # 3 | 4 | 5
 
     >>> edges_island2 = [(6, 7),                  # 6 | 7
     ...                  (6, 8), (7, 9),          # -----
