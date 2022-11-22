@@ -289,8 +289,8 @@ def array_from_graph_or_dict(graph, attr):
         return array_from_dict_values(attr)
     else:
         raise ValueError(
-            "The `attr` argument must be a string, a list of "
-            "strings or a dictionary."
+            f"The `attr` argument was set to `{attr}`, but must be "
+            "a string, a list of strings or a dictionary."
         )
 
 
@@ -363,8 +363,8 @@ def array_from_df_col(df, attr):
 
     """
     value_error = ValueError(
-        "The `attr` argument has to be of one of the "
-        "following types: `str` or a sequence of strings."
+        f"The `attr` argument was set to `{attr}`, but has to be "
+        "one of the following types: `str` or a sequence of strings."
     )
     if isinstance(attr, str):
         attr = [attr]
@@ -398,9 +398,8 @@ def w_from_gdf(gdf, contiguity):
     """
     if not isinstance(contiguity, str) or contiguity.lower() not in ["rook", "queen"]:
         raise ValueError(
-            "The contiguity argument must be either None "
-            "or one of the following strings: "
-            '"rook" or"queen".'
+            f"The contiguity argument was set to `{contiguity}`, but it must "
+            "be either `None` or one of the following strings: 'rook' or 'queen'."
         )
     if contiguity.lower() == "rook":
         cweights = weights.Rook.from_dataframe(gdf)
@@ -495,7 +494,7 @@ def find_sublist_containing(el, lst, index=False):
     for idx, sublst in enumerate(lst):
         if el in sublst:
             return idx if index else sublst
-    raise LookupError("{} not found in any of the sublists of {}".format(el, lst))
+    raise LookupError(f"{el} not found in any of the sublists of {lst}.")
 
 
 def get_metric_function(metric=None):
@@ -541,24 +540,19 @@ def get_metric_function(metric=None):
         try:
             return distance_metrics()[metric]
         except KeyError:
+            accetpable_names = tuple(
+                name for name in distance_metrics().keys() if name != "precomputed"
+            )
             raise ValueError(
-                "{} is not a known metric. Please use rather one of the "
-                "following metrics: {}".format(
-                    metric,
-                    tuple(
-                        name
-                        for name in distance_metrics().keys()
-                        if name != "precomputed"
-                    ),
-                )
+                f"'{metric}' is not a known metric. Please use one "
+                f"of the following metrics: {accetpable_names}."
             )
     elif callable(metric):
         return metric
     else:
         raise ValueError(
-            "A {} was passed as `metric` argument. "
-            "Please pass a string or a function "
-            "instead.".format(type(metric))
+            f"A {type(metric)} was passed as `metric` argument. "
+            "Please pass a string or a function instead."
         )
 
 
@@ -676,9 +670,8 @@ def generate_initial_sol(adj, n_regions):
         raise ValueError("There must be at least one area.")
     if n_areas < n_regions:
         raise ValueError(
-            "The number of regions ({}) must be "
-            "less than or equal to the number of areas "
-            "({}).".format(n_regions, n_areas)
+            f"The number of regions ({n_regions}) must be less than "
+            f"or equal to the number of areas ({n_areas})."
         )
     if n_regions == 1:
         yield {area: 0 for area in range(n_areas)}
@@ -687,9 +680,8 @@ def generate_initial_sol(adj, n_regions):
     n_comps, comp_labels = csg.connected_components(adj)
     if n_comps > n_regions:
         raise ValueError(
-            "The number of regions ({}) must not be "
-            "less than the number of connected components "
-            "({}).".format(n_regions, n_comps)
+            f"The number of regions ({n_regions}) must not be less than "
+            f"the number of connected components ({n_comps})."
         )
     n_regions_per_comp = distribute_regions_among_components(comp_labels, n_regions)
 
@@ -728,7 +720,7 @@ def _randomly_divide_connected_graph(adj, n_regions):
     -------
 
     labels : numpy.ndarray
-        Each element (an integer in ``{0, ..., ``n_regions - 1}``) specifies the
+        Each element (an integer in ``{0, ..., n_regions - 1}``) specifies the
         region an area (defined by the index in the array) belongs to.
 
     Examples
@@ -747,15 +739,13 @@ def _randomly_divide_connected_graph(adj, n_regions):
 
     """
     if not n_regions > 0:
-        msg = "n_regions is {} but must be positive.".format(n_regions)
-        raise ValueError(msg)
+        raise ValueError(f"`n_regions` is {n_regions} but must be positive.")
     n_areas = adj.shape[0]
     if not n_regions <= n_areas:
-        msg = (
-            "n_regions is {} but must less than or equal to "
-            + "the number of nodes which is {}".format(n_regions, n_areas)
+        raise ValueError(
+            f"`n_regions` is {n_regions} but must less than or "
+            f"equal to the number of nodes which is {n_areas}."
         )
-        raise ValueError(msg)
     mst = csg.minimum_spanning_tree(adj)
     for _ in range(n_regions - 1):
         # try different links to cut and pick the one leading to the most
@@ -834,8 +824,7 @@ def assert_feasible(solution, adj, n_regions=None):
     if n_regions is not None:
         if len(set(solution)) != n_regions:
             raise ValueError(
-                "The number of regions is {} but "
-                "should be {}".format(len(solution), n_regions)
+                f"The number of regions is {len(solution)} but should be {n_regions}."
             )
 
     for region_label in set(solution):
@@ -843,9 +832,7 @@ def assert_feasible(solution, adj, n_regions=None):
 
         # check right contiguity
         if not is_connected(aux):
-            raise ValueError(
-                "Region {} is not spatially " "contiguous.".format(region_label)
-            )
+            raise ValueError(f"Region {region_label} is not spatially contiguous.")
 
 
 def boolean_assert_feasible(solution, adj, n_regions=None):
@@ -855,8 +842,7 @@ def boolean_assert_feasible(solution, adj, n_regions=None):
     if n_regions is not None:
         if len(set(solution)) != n_regions:
             raise ValueError(
-                "The number of regions is {} but "
-                "should be {}".format(len(solution), n_regions)
+                f"The number of regions is {len(solution)} but should be {n_regions}."
             )
 
     for region_label in set(solution):
