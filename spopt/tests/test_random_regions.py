@@ -168,7 +168,7 @@ class TestRandomRegionSynthetic:
             RandomRegion([0, 1], cardinality=[4])
 
     def test_random_regions_error_contig(self):
-        with pytest.raises(ValueError, match="Order of 'area_ids'"):
+        with pytest.raises(ValueError, match="Order of `area_ids`"):
 
             class _shell_w_:
                 def __init__(self):
