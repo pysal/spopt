@@ -20,7 +20,7 @@
      strategy:
        matrix:
          os: [ubuntu-latest]
-         environment-file: [.ci/38.yaml, .ci/39.yaml, .ci/310.yaml, .ci/311.yaml, .ci/311-DEV.yaml, .ci/311-DEV_shapely_dev.yaml]
+         environment-file: [.ci/38.yaml, .ci/39.yaml, .ci/310.yaml, .ci/310-DEV_shapely_dev.yaml, .ci/311.yaml, .ci/311-DEV.yaml]
          include:
            - environment-file: .ci/311.yaml
              os: macos-latest
