@@ -11,7 +11,6 @@ dependencies:
   - pip
   - scikit-learn>=0.22
   - scipy>=1.0
-  - spenc
   - spaghetti
   # testing
   - codecov
