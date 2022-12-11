@@ -1,4 +1,4 @@
-"""Base classes for spopt/region"""
+"""Base classes and functions for spopt/region"""
 
 import libpysal
 import numpy
@@ -205,7 +205,7 @@ def _closest(data, centroids):
 
 
 def _seeds(areas, k, seed):
-    """Randomly select `k` seeds from a sequence of areas.
+    """Randomly select ``k`` seeds from a sequence of areas.
 
     Parameters
     ----------
@@ -237,7 +237,7 @@ def is_neighbor(area, region, w):
     ----------
 
     area : int, numpy.int64
-        Area label
+        The area label.
     region : list
         Region members.
     w : libpysal.weights.W
@@ -265,16 +265,16 @@ def infeasible_components(gdf, w, threshold_var, threshold):
     Parameters
     ----------
 
-    gdf : geopandas.GeoDataFrame, required
+    gdf : geopandas.GeoDataFrame
         Geodataframe containing original data.
-    w : libpysal.weights.W, required
+    w : libpysal.weights.W
         Weights object created from given data.
-    attrs_name : list, required
+    attrs_name : list
         Strings for attribute names to measure similarity
         (cols of ``geopandas.GeoDataFrame``).
-    threshold_var : string, requied
+    threshold_var : str
         The name of the spatial extensive attribute variable.
-    threshold : {int, float}, required
+    threshold : {int, float}
         The threshold value.
 
     Returns
@@ -334,8 +334,8 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
         The name of the spatial extensive attribute variable.
     threshold : {int, float}
         The threshold value.
-    policy: str
-        ``'single'`` (default) will attach an infeasible component to a feasible
+    policy: str (default 'single')
+        ``'single'`` will attach an infeasible component to a feasible
         component based on a single join using the minimum nearest
         neighbor distance between areas of infeasible components and
         areas in the largest component. ``'multiple'`` will form a join
@@ -393,12 +393,12 @@ def form_single_component(gdf, w, linkage="single"):
     w : libysal.weights.W
         PySAL weights object.
     linkage : str
-         `single`: a small component will be joined with the largest
-         component by adding a single join based on minimum nearest
-         neighbor relation between areas in the small component and
-         the largest component. 'multiple': joins are added between each
-         area in the small component and their nearest neighbor in the
-         largest component.
+        `single`: a small component will be joined with the largest
+        component by adding a single join based on minimum nearest
+        neighbor relation between areas in the small component and
+        the largest component. 'multiple': joins are added between each
+        area in the small component and their nearest neighbor in the
+        largest component.
 
     Returns
     -------
