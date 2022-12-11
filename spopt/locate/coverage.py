@@ -344,7 +344,6 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         """  # noqa
 
-
         demand_quantity_arr = None
         if demand_quantity_col is not None:
             demand_quantity_arr = gdf_demand[demand_quantity_col].to_numpy()
