@@ -53,115 +53,100 @@ class SPENC(clust.SpectralClustering):
         kernel function such the Gaussian (aka RBF) kernel of the euclidean
         distanced ``d(X, X)``::
 
-                np.exp(-gamma * d(X,X) ** 2)
+                numpy.exp(-gamma * d(X,X) ** 2)
 
-        or a k-nearest neighbors connectivity matrix.
+        or a :math:`k`-nearest neighbors connectivity matrix.
 
         Alternatively, using ``precomputed``, a user-provided affinity
-        matrix can be used.
-
-        Read more in the scikit-learn user guide on spectral clustering
+        matrix can be used. Read more in the ``scikit-learn`` user guide
+        on spectral clustering.
 
         Parameters
         -----------
 
-        n_clusters : integer, optional
-            The number of clusters to search for.
-
-        eigen_solver : {None, 'arpack', 'lobpcg', or 'amg'}
-            NOTE: ignored unless fitting using the `breakme` flag. So, do not use.
-            The eigenvalue decomposition strategy to use. AMG requires pyamg
-            to be installed. It can be faster on very large, sparse problems,
-            but may also lead to instabilities
-
-        random_state : int, RandomState instance or None, optional, default: None
-            A pseudo random number generator used for the initialization of the
-            lobpcg eigen vectors decomposition when eigen_solver == 'amg' and by
-            the K-Means initialization.  If int, random_state is the seed used by
-            the random number generator; If RandomState instance, random_state is
-            the random number generator; If None, the random number generator is
-            the RandomState instance used by `np.random`.
-
-        n_init : int, optional, default: 10
-            Number of time the k-means algorithm will be run with different
-            centroid seeds. The final results will be the best output of
-            n_init consecutive runs in terms of inertia.
-
+        n_clusters : int (default 5)
+            The number of clusters to form.
+        eigen_solver : str (default None)
+            The eigenvalue decomposition strategy to use. Valid values include
+            ``{'arpack', 'lobpcg', 'amg'}``. AMG requires ``pyamg`` to be installed,
+            which may be faster on very large, sparse problems, but may also lead to
+            instabilities. *Note* – ``eigen_solver`` is ignored unless fitting using
+            the ``breakme`` flag in the ``.fit()`` method (so do not use then).
+        random_state : int or numpy.random.RandomState (default None)
+            A pseudo random number generator used for the initialization of the lobpcg
+            eigen vectors decomposition when ``eigen_solver='amg'`` and by the
+            :math:`k`-Means initialization.  If ``int``, ``random_state`` is the seed
+            used by the random number generator; If ``numpy.random.RandomState``,
+            ``random_state`` is the random number generator; If ``None``,
+            the random number generator is the numpy.random.RandomState
+            instance used by ``numpy.random``.
+        n_init : int (default 10)
+            The number of times the :math:`k`-means algorithm will be run with
+            different centroid seeds. The final results will be the best output of
+            ``n_init`` consecutive runs in terms of inertia.
         gamma : float, default=1.0
             Kernel coefficient for rbf, poly, sigmoid, laplacian and chi2 kernels.
             Ignored for ``affinity='nearest_neighbors'``.
-
-        affinity : string, array-like or callable, default 'rbf'
-            If a string, this may be one of 'nearest_neighbors', 'precomputed',
-            'rbf' or one of the kernels supported by
-            `sklearn.metrics.pairwise_kernels`.
-
-            Only kernels that produce similarity scores (non-negative values that
-            increase with similarity) should be used. This property is not checked
-            by the clustering algorithm.
-
-        n_neighbors : integer
-            Number of neighbors to use when constructing the affinity matrix using
+        affinity : str, array-like, callable (default 'rbf')
+            If a ``str``, valid values include
+            ``{'nearest_neighbors', 'precomputed', 'rbf'}`` or one of the kernels
+            supported by ``sklearn.metrics.pairwise_kernels``. Only kernels that
+            produce similarity scores (non-negative values that increase with
+            similarity) should be used. *This property is not checked
+            by the clustering algorithm*.
+        n_neighbors : int (default 10)
+            The number of neighbors to use when constructing the affinity matrix using
             the nearest neighbors method. Ignored for ``affinity='rbf'``.
-
-        eigen_tol : float, optional, default: 1e-7
-            Stopping criterion for eigendecomposition of the Laplacian matrix
-            when using arpack eigen_solver.
-
-        assign_labels : {'kmeans', 'discretize', 'hierarchical'}, default: 'discretize'
+        eigen_tol : float (default 1e-7)
+            Stopping criterion for eigen decomposition of the Laplacian matrix
+            when using ``'arpack'`` as the ``eigen_solver``.
+        assign_labels : str (default 'discretize')
             The strategy to use to assign labels in the embedding
             space. There are three ways to assign labels after the laplacian
-            embedding.
-            1. k-means can be applied and is a popular choice. But it can
-                also be sensitive to initialization.
-            2. Discretization is another approach which is less sensitive to
-                random initialization, and which usually finds better clusters.
-            3. Hierarchical decomposition repeatedly bi-partitions the graph,
-                instead of finding the decomposition all at once, as suggested in
-                Shi & Malik (2000).
+            embedding: ``{'kmeans', 'discretize', 'hierarchical'}``:
 
-        degree : float, default=3
+            * ``'kmeans'`` can be applied and is a popular choice. But it can also be sensitive to initialization.
+            * ``'discretize'`` is another approach which is less sensitive to random initialization, and which usually finds better clusters.
+            * ``'hierarchical'`` decomposition repeatedly bi-partitions the graph, instead of finding the decomposition all at once, as suggested in :cite:`shi_malik_2000`.
+
+        degree : float (default 3)
             Degree of the polynomial affinity kernel. Ignored by other kernels.
-
-        coef0 : float, default=1
+        coef0 : float (default 1)
             Zero coefficient for polynomial and sigmoid affinity kernels.
             Ignored by other kernels.
-
-        kernel_params : dictionary of string to any, optional
+        kernel_params : dict (default None)
             Parameters (keyword arguments) and values for affinity kernel passed as
             callable object. Ignored by other affinity kernels.
-
-        n_jobs : int, optional (default = 1)
+        n_jobs : int (default 1)
             The number of parallel jobs to run for the nearest-neighbors
-            affinity kernel, if used.
-            If ``-1``, then the number of jobs is set to the number of CPU cores.
+            affinity kernel, if used. If ``-1``, then the number of jobs
+            is set to the number of CPU cores.
 
         Attributes
         ----------
 
-        affinity_matrix_ : array-like, shape (n_samples, n_samples)
-            Affinity matrix used for clustering. Available only if after calling
-            ``fit``.
-
-        labels_ :
-            Labels of each point
+        affinity_matrix_ : array-like
+            Affinity matrix used for clustering in the shape of
+            ``(n_samples, n_samples)``. Available only if after calling ``fit``.
+        labels_ : list
+            Cluster labels of each point or area.
 
         Notes
         -----
 
         If you have an affinity matrix, such as a distance matrix,
-        for which 0 means identical elements, and high values means
+        for which ``0`` means identical elements, and high values mean
         very dissimilar elements, it can be transformed in a
         similarity matrix that is well suited for the algorithm by
         applying the Gaussian (RBF, heat) kernel::
 
-            np.exp(- dist_matrix ** 2 / (2. * delta ** 2))
+            numpy.exp(-dist_matrix ** 2 / (2. * delta ** 2))
 
         Where ``delta`` is a free parameter representing the width of the Gaussian
         kernel.
 
-        Another alternative is to take a symmetric version of the k
-        nearest neighbors connectivity matrix of the points.
+        Another alternative is to take a symmetric version of the
+        :math:`k`-nearest neighbors connectivity matrix of the points/areas.
 
         References
         ----------
@@ -179,6 +164,7 @@ class SPENC(clust.SpectralClustering):
           http://www1.icsi.berkeley.edu/~stellayu/publication/doc/2003kwayICCV.pdf
 
         """
+
         self.n_clusters = n_clusters
         self.eigen_solver = eigen_solver
         self.random_state = random_state
@@ -223,7 +209,6 @@ class SPENC(clust.SpectralClustering):
         shift_invert    : bool, default True
                           boolean governing whether or not to use shift-invert
                           trick to finding sparse eigenvectors
-
         breakme         : bool, default False
                           Whether or not to simply pipe down to the sklearn spectral
                           clustering class. Will likely break the formal guarantees

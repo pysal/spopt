@@ -12,7 +12,6 @@ dependencies:
   - scikit-learn>=0.22
   - scipy>=1.0
   - shapely
-  - spenc
   - spaghetti
   # testing
   - codecov
