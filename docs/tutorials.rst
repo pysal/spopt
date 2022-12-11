@@ -13,10 +13,18 @@ Tutorials
     notebooks/randomregion.ipynb
     notebooks/component_policy.ipynb
 
+.. toctree::
+    :maxdepth: 1
     :caption: Locate:
 
     notebooks/facloc-real-world.ipynb
     notebooks/lscp.ipynb
+    notebooks/lscp_gis.ipynb
     notebooks/mclp.ipynb
+    notebooks/mclp_gis.ipynb
     notebooks/p-center.ipynb
     notebooks/p-median.ipynb
+    notebooks/lscpb.ipynb
+    notebooks/facloc-lscpb-real-world.ipynb
+    notebooks/p-dispersion.ipynb
+    notebooks/facloc-disperse-real-world.ipynb

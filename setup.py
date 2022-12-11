@@ -27,6 +27,7 @@ def setup_package():
         "docs": "requirements_docs.txt",  # requirements for building docs
         "dev": "requirements_dev.txt",  # requirements for development
         "tests": "requirements_tests.txt",  # requirements for testing
+        "tests": "requirements_notebooks.txt",  # requirements for notebooks/binders
     }
     reqs = _get_requirements_from_files(_groups_files)
     install_reqs = reqs.pop("base")
@@ -53,7 +54,6 @@ def setup_package():
             "Topic :: Scientific/Engineering :: GIS",
             "License :: OSI Approved :: BSD License",
             "Programming Language :: Python",
-            "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             "Programming Language :: Python :: 3.9",
             "Programming Language :: Python :: 3.10",

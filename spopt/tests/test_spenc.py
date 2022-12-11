@@ -1,7 +1,7 @@
 import geopandas
 import libpysal
 import numpy
-import unittest
+import pytest
 
 from spopt.region import Spenc
 
@@ -13,8 +13,8 @@ pth = libpysal.examples.get_path("mexicojoin.shp")
 MEXICO = geopandas.read_file(pth)
 
 
-class TestSpenc(unittest.TestCase):
-    def setUp(self):
+class TestSpenc:
+    def setup_method(self):
 
         # Mexico
         self.mexico = MEXICO.copy()

@@ -8,7 +8,7 @@
 #### Regionalization, facility location, and transportation-oriented modeling
 
 ![tag](https://img.shields.io/github/v/release/pysal/spopt?include_prereleases&sort=semver)
-[![unittests](https://github.com/pysal/spopt/workflows/.github/workflows/unittests.yml/badge.svg)](https://github.com/pysal/spopt/actions?query=workflow%3A.github%2Fworkflows%2Funittests.yml)
+[![Continuous Integration](https://github.com/pysal/spopt/actions/workflows/testing.yml/badge.svg)](https://github.com/pysal/spopt/actions/workflows/testing.yml)
 [![codecov](https://codecov.io/gh/pysal/spopt/branch/main/graph/badge.svg)](https://codecov.io/gh/pysal/spopt)
 [![Documentation](https://img.shields.io/static/v1.svg?label=docs&message=current&color=9cf)](http://pysal.org/spopt/)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
@@ -39,31 +39,25 @@ mexico.plot(column="maxp_new", categorical=True, figsize=(12,8), ec="w");
 
 ### Locate
 ```python
-from spopt.locate.coverage import MCLP
+from spopt.locate import MCLP
 from spopt.locate.util import simulated_geo_points
-import numpy
-import geopandas
-import pulp
-import spaghetti
+import numpy, geopandas, pulp, spaghetti
 
-solver = pulp.PULP_CBC_CMD(msg=False)
+solver = pulp.PULP_CBC_CMD(msg=False, warmStart=True)
 lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
 ntw = spaghetti.Network(in_data=lattice)
 street = spaghetti.element_as_gdf(ntw, arcs=True)
 street_buffered = geopandas.GeoDataFrame(
-    geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
+    geopandas.GeoSeries(street["geometry"].buffer(0.5).unary_union),
     crs=street.crs,
     columns=["geometry"],
 )
-client_points = simulated_geo_points(street_buffered, needed=CLIENT_COUNT, seed=CLIENT_SEED)
-facility_points = simulated_geo_points(
-    street_buffered, needed=FACILITY_COUNT, seed=FACILITY_SEED
-)
+client_points = simulated_geo_points(street_buffered, needed=100, seed=5)
 ntw.snapobservations(client_points, "clients", attribute=True)
 clients_snapped = spaghetti.element_as_gdf(
     ntw, pp_name="clients", snapped=True
 )
-
+facility_points = simulated_geo_points(street_buffered, needed=10, seed=6)
 ntw.snapobservations(facility_points, "facilities", attribute=True)
 facilities_snapped = spaghetti.element_as_gdf(
     ntw, pp_name="facilities", snapped=True
@@ -72,11 +66,14 @@ cost_matrix = ntw.allneighbordistances(
     sourcepattern=ntw.pointpatterns["clients"],
     destpattern=ntw.pointpatterns["facilities"],
 )
-mclp_from_cost_matrix = MCLP.from_cost_matrix(cost_matrix, ai, MAX_COVERAGE, p_facilities=P_FACILITIES)
+numpy.random.seed(0)
+ai = numpy.random.randint(1, 12, 100)
+mclp_from_cost_matrix = MCLP.from_cost_matrix(cost_matrix, ai, 4, p_facilities=4)
 mclp_from_cost_matrix = mclp_from_cost_matrix.solve(solver)
 ```
+*see [notebook](https://github.com/pysal/spopt/blob/main/notebooks/mclp.ipynb) for plotting code*
 <p align="center">
-<img src="docs/_static/images/mclp.svg" height="350" />
+<img src="docs/_static/images/mclp.png" height="350" />
 </p>
 
 ## Examples
@@ -112,6 +109,15 @@ You may also install the latest stable spopt via conda-forge channel by running:
 ```
 $ conda install --channel conda-forge spopt
 ```
+
+## Related packages
+
+* Region
+* Locate
+  * [`allagash`](https://github.com/apulverizer/allagash)
+  * [`maximum-coverage-location`](https://github.com/cyang-kth/maximum-coverage-location)
+  * [`p-center`](https://github.com/antoniomedrano/p-center)
+  * [`pyspatialopt`](https://github.com/apulverizer/pyspatialopt)
 
 ## Contribute
 

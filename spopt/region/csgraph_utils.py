@@ -13,30 +13,36 @@ def is_connected(adj):
     """
     Parameters
     ----------
+
     adj : :class:`scipy.sparse.csr_matrix`
         Adjacency matrix.
 
     Returns
     -------
+
     connected : `bool`
         `True` if graph defined by adjecency matrix `adj` is connected.
         `False` otherwise.
 
     Examples
     --------
+
     >>> import numpy as np
     >>> from scipy.sparse import csr_matrix
     >>> connected = csr_matrix(np.array([[0, 1],
     ...                                  [1, 0]]))
     >>> is_connected(connected)
     True
+
     >>> disconnected = csr_matrix(np.array([[0, 0],
     ...                                     [0, 0]]))
     >>> is_connected(disconnected)
     False
+
     """
-    n_connected_components = csg.connected_components(adj, directed=False,
-                                                      return_labels=False)
+    n_connected_components = csg.connected_components(
+        adj, directed=False, return_labels=False
+    )
     return True if n_connected_components == 1 else False
 
 
@@ -44,6 +50,7 @@ def neighbors(adj, area):
     """
     Parameters
     ----------
+
     adj : :class:`scipy.sparse.csr_matrix`
         Adjacency matrix.
     area : int
@@ -52,11 +59,13 @@ def neighbors(adj, area):
 
     Returns
     -------
+
     neighs : :class:`numpy.ndarray`
         The neighbors of `area`.
 
     Examples
     --------
+
     >>> import numpy as np
     >>> from scipy.sparse import csr_matrix
     >>> adjacency_matrix = csr_matrix(np.array([[0, 1, 1],
@@ -64,8 +73,10 @@ def neighbors(adj, area):
     ...                                         [1, 0, 0]]))
     >>> (neighbors(adjacency_matrix, 0) == np.array([1, 2])).all()
     True
+
     >>> (neighbors(adjacency_matrix, 1) == np.array([0])).all()
     True
+
     """
     return adj[area].nonzero()[1]
 
@@ -74,6 +85,7 @@ def sub_adj_matrix(adj, nodes, wo_nodes=None):
     """
     Parameters
     ----------
+
     adj : :class:`scipy.sparse.csr_matrix`
         Adjacency matrix.
     nodes : :class:`numpy.ndarray`
@@ -85,12 +97,14 @@ def sub_adj_matrix(adj, nodes, wo_nodes=None):
 
     Returns
     -------
+
     sub_adj : :class:`scipy.sparse.csr_matrix`
         Adjacency matrix of the subgraph consisting of only the nodes in the
         `nodes` argument.
 
     Examples
     --------
+
     >>> import numpy as np
     >>> from scipy.sparse import csr_matrix
     >>> adjacency_matrix = csr_matrix(np.array([[0, 1, 1],
@@ -102,14 +116,17 @@ def sub_adj_matrix(adj, nodes, wo_nodes=None):
     ...                     [1, 0]])
     >>> (obtained.todense() == desired).all()
     True
+
     >>> nodes = np.array([1, 2])
     >>> obtained = sub_adj_matrix(adjacency_matrix, nodes)
     >>> desired = np.array([[0, 0],
     ...                     [0, 0]])
     >>> (obtained.todense() == desired).all()
     True
+
     >>> type(obtained) == csr_matrix
     True
+
     >>> # tests for `wo_nodes` argument
     >>> all_nodes = np.arange(adjacency_matrix.shape[0])
     >>> neglected_nodes = np.array([1])
@@ -118,10 +135,10 @@ def sub_adj_matrix(adj, nodes, wo_nodes=None):
     ...                     [1, 0]])
     >>> (obtained.todense() == desired).all()
     True
+
     """
     if wo_nodes is not None:
         mask = np.in1d(nodes, wo_nodes, invert=True)
         nodes = nodes[mask]
     nodes = nodes[:, None]
     return csr_matrix(adj[nodes, nodes.T])
-

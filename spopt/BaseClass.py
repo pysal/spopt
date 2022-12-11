@@ -2,9 +2,7 @@ from abc import ABC, abstractmethod
 
 
 class BaseSpOptSolver(ABC):
-    """Base class for all spatial optimization model solvers.
-
-    """
+    """Base class for all spatial optimization model solvers."""
 
     @abstractmethod
     def solve(self):
@@ -13,15 +11,7 @@ class BaseSpOptSolver(ABC):
 
 
 class BaseSpOptExactSolver(BaseSpOptSolver):
-    """Base class for all spatial optimization model exact solvers.
-
-    Attributes
-    ----------
-
-    spOptSolver : pywraplp.Solver
-        The or-tools MIP solver.
-
-    """
+    """Base class for all spatial optimization model exact solvers."""
 
     def __init__(self, name):
         """Initialize.
@@ -31,23 +21,12 @@ class BaseSpOptExactSolver(BaseSpOptSolver):
         name : str
             The desired name for the model.
         """
-        try:
-            from ortools.linear_solver import pywraplp
-
-            self.spOptSolver = pywraplp.Solver(
-                name, pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
-            )
-        except ImportError:
-            raise ImportError(
-                "ortools is a requirement for exact solvers. "
-                "you can install it with `pip install ortools`"
-            )
-
         self.name = name
 
+    @abstractmethod
     def solve(self):
         """Solve the optimization model."""
-        self.spOptSolver.Solve()
+        pass
 
 
 class BaseSpOptHeuristicSolver(BaseSpOptSolver):

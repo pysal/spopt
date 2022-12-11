@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from spopt.BaseClass import BaseSpOptSolver
+from ..BaseClass import BaseSpOptExactSolver
 from typing import TypeVar
 
 import numpy as np
@@ -17,10 +17,8 @@ STATUS_CODES = {
 }
 
 
-class LocateSolver(BaseSpOptSolver):
-    """
-    Base Class for locate package
-    """
+class LocateSolver(BaseSpOptExactSolver):
+    """Base class for the ``locate`` package."""
 
     def __init__(self, name: str, problem: pulp.LpProblem):
         self.name = name
@@ -30,16 +28,19 @@ class LocateSolver(BaseSpOptSolver):
     @abstractmethod
     def solve(self, solver: pulp.LpSolver):
         """
-        Solve the optimization model
+        Solve the optimization model.
 
         Parameters
         ----------
-        solver: pulp.LpSolver
-                solver supported by pulp package
+
+        solver : pulp.apis.LpSolver
+            A solver supported by ``pulp``.
 
         Returns
         -------
+
         None
+
         """
         pass
 
@@ -56,17 +57,25 @@ class LocateSolver(BaseSpOptSolver):
 
 
 class BaseOutputMixin:
-    """
-    Base Mixin used by all models
-    """
+    """Base Mixin used by all models with clients."""
 
     def client_facility_array(self) -> None:
         """
-        Create an array 2d MxN, where m is number of clients and n is number of facilities.
 
-        Note
-        ----
-        This functions requires `fac2cli` attribute to work properly. This attribute is set using `facility_client_array` method which is located inside the model classes. When solve method is used with `results=True` it will already set automatically, if not, you have to call the method.
+        Create a 2D array storing **client to facility relationships** where each
+        row represents a client and contains an array of facility indices
+        with which it is associated. An empty facility array indicates
+        the client is associated with no facility.
+
+        Notes
+        -----
+
+        This function requires ``fac2cli`` attribute to work properly.
+        This attribute is set using ``facility_client_array`` method
+        which is located inside the model classes. When the ``solve``
+        method is called with ``results=True`` it will be called automatically,
+        if not, you have to call the method manually post-solve.
+
         """
         if hasattr(self, "fac2cli"):
             self.cli2fac = [[] for i in range(self.aij.shape[0])]
@@ -76,7 +85,8 @@ class BaseOutputMixin:
                     self.cli2fac[fac_site].append(i)
         else:
             raise AttributeError(
-                "The attribute `fac2cli` is not set. See `facility_client_array` method to set the attribute"
+                "The attribute `fac2cli` is not set. "
+                "See `facility_client_array` method to set the attribute"
             )
 
 
@@ -84,9 +94,13 @@ class CoveragePercentageMixin:
     """
     Mixin to calculate the percentage of area covered.
 
-    Note
-    ----
-    This Mixin requires `n_cli_uncov` attribute to work properly. This attribute is set using `uncovered_clients` method which is located inside the model classes. When solve method is used with `results=True` it will already set automatically, if not, you have to call the method.
+    Notes
+    -----
+
+    This Mixin requires the ``n_cli_uncov`` attribute.
+    This attribute is set using the ``uncovered_clients`` method which is located
+    inside the model classes. When the ``solve`` method is called with ``results=True``
+    it will already set automatically, if not, you have to call the method.
 
     """
 
@@ -94,9 +108,15 @@ class CoveragePercentageMixin:
         """
         Calculate how many clients points are not covered.
 
-        Note
-        ----
-        This function requires `fac2cli` attribute to work properly. This attribute is set using `facility_client_array` method which is located inside the model classes. When solve method is used with `results=True` it will already set automatically, if not, you have to call the method.
+        Notes
+        -----
+
+        This method requires ``fac2cli`` attribute to work properly.
+        This attribute is set using ``facility_client_array`` method
+        which is located inside the model classes. When the ``solve``
+        method is called with ``results=True`` it will be called automatically,
+        if not, you have to call the method manually post-solve.
+
         """
 
         if hasattr(self, "fac2cli"):
@@ -107,68 +127,69 @@ class CoveragePercentageMixin:
             self.n_cli_uncov = self.aij.shape[0] - len(set_cov)
         else:
             raise AttributeError(
-                "The attribute `fac2cli` is not set. See `facility_client_array` method to set the attribute"
+                "The attribute `fac2cli` is not set. See `facility_client_array` "
+                "method to set the attribute."
             )
 
     def get_percentage(self):
-        """
-        Calculate the percentage
-        """
+        """Calculate the percentage of covered clients."""
         if hasattr(self, "n_cli_uncov"):
-            self.percentage = 1 - (self.n_cli_uncov / self.aij.shape[0])
+            self.perc_cov = (1 - (self.n_cli_uncov / self.aij.shape[0])) * 100.0
         else:
             raise AttributeError(
-                "The attribute `n_cli_uncov` is not set. See `uncovered_clients` method to set the attribute."
+                "The attribute `n_cli_uncov` is not set. See `uncovered_clients` "
+                "method to set the attribute."
             )
 
 
 class MeanDistanceMixin:
     """
-    Mixin to calculate the mean distance between demand and facility sites chosen
+    Mixin to calculate the mean distance between demand and selected facility sites.
     """
 
-    def get_mean_distance(self, weight: np.array):
-        """
-        Calculate the mean distance
-        Parameters
-        ----------
-        weight: np.array
-                weight of all demand points
+    def get_mean_distance(self):
+        """Calculate the mean distance."""
+        self.mean_dist = self.problem.objective.value() / self.ai_sum
 
-        Returns
-        -------
-        None
-        """
-        self.mean_dist = self.problem.objective.value() / weight.sum()
+
+class BackupPercentageMixinMixin:
+    """
+    Mixin to calculate the percentage of clients being covered by
+    more the one facility (*LSCP-B*).
+    """
+
+    def get_percentage(self):
+        """Calculate the percentage of clients with backup."""
+        self.backup_perc = (self.problem.objective.value() / len(self.cli_vars)) * 100.0
 
 
 T_FacModel = TypeVar("T_FacModel", bound=LocateSolver)
 
 
 class FacilityModelBuilder:
-    """
-    Set facility locations' variables and constraints
-    """
+    """Set facility location modeling variables and constraints."""
 
     @staticmethod
     def add_facility_integer_variable(
-        obj: T_FacModel, range_facility, var_name
+        obj: T_FacModel, range_facility: range, var_name: str
     ) -> None:
-        """
+        """Facility integer decision variables.
 
         Parameters
         ----------
+
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
         range_facility: range
-            range of facility points quantity
+            The range of facility points.
         var_name: str
-            formatted string
-            facility variable name
+            A formatted string for the facility variable name.
 
         Returns
         -------
+
         None
+
         """
         fac_vars = [
             pulp.LpVariable(
@@ -180,22 +201,26 @@ class FacilityModelBuilder:
         setattr(obj, "fac_vars", fac_vars)
 
     @staticmethod
-    def add_client_integer_variable(obj: T_FacModel, range_client, var_name) -> None:
-        """
+    def add_client_integer_variable(
+        obj: T_FacModel, range_client: range, var_name: str
+    ) -> None:
+        """Client integer decision variables.
 
         Parameters
         ----------
+
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
         range_client: range
-            range of demand points quantity
+            The range of demand points.
         var_name: str
-            formatted string
-            demand variable name
+            A formatted string for the demand variable name.
 
         Returns
         -------
+
         None
+
         """
         cli_vars = [
             pulp.LpVariable(
@@ -209,30 +234,33 @@ class FacilityModelBuilder:
     @staticmethod
     def add_client_assign_integer_variable(
         obj: T_FacModel,
-        range_client,
-        range_facility,
-        var_name,
+        range_client: range,
+        range_facility: range,
+        var_name: str,
         lp_category=pulp.LpInteger,
     ) -> None:
-        """
+        """Client assignment integer decision variables (used for allocation).
 
         Parameters
         ----------
+
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
         range_client: range
-            range of demand points quantity
+            The range of demand points.
         range_facility: range
-            range of facility points quantity
+            The range of facility points.
         var_name: str
-            formatted string
-            client assigning variable name
+            A formatted string for the  client assignment variable name.
         lp_category: pulp.LpVariable parameter
-            The category this variable is in, pulp.LpInteger or pulp.LpContinuous
+            The category this variable is in,
+            ``pulp.LpInteger`` or ``pulp.LpContinuous``.
 
         Returns
         -------
+
         None
+
         """
 
         cli_assgn_vars = [
@@ -249,20 +277,41 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_weight_continuous_variable(obj: T_FacModel) -> None:
-        """
+        """Maximized minimum variable (p-center).
 
         Parameters
         ----------
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
 
         Returns
         -------
+
         None
+
         """
         weight_var = pulp.LpVariable("W", lowBound=0, cat=pulp.LpContinuous)
 
         setattr(obj, "weight_var", weight_var)
+
+    @staticmethod
+    def add_maximized_min_variable(obj: T_FacModel) -> None:
+        """Maximized minimum variable (p-dispersion).
+
+        Parameters
+        ----------
+
+        obj: T_FacModel
+            A bounded type of the ``LocateSolver`` class.
+
+        Returns
+        -------
+
+        None
+
+        """
+        D = pulp.LpVariable("D", lowBound=0, cat=pulp.LpContinuous)
+        setattr(obj, "disperse_var", D)
 
     @staticmethod
     def add_set_covering_constraint(
@@ -273,24 +322,28 @@ class FacilityModelBuilder:
         range_client: range,
     ) -> None:
         """
-        set covering constraint:
-        n1_1 * fac_var1 + n1_2 * fac_var1 + ... + nij * fac_varj >= 1
+        Create set covering constraints.
+
+        ni0 * y0 + ni1 * y1 + ... + nij * yj >= 1
 
         Parameters
         ----------
+
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
         model: pulp.LpProblem
-            optimization model problem
-        ni: np.array
-            two-dimensional array that defines candidate sites between facility points within a distance to supply {i}
-            demand point
+            A ``pulp`` instance of an optimization model.
+        ni: numpy.array
+            A 2D array that defines candidate sites between facility
+            points within a distance to supply demand points.
         range_facility: range
-            range of facility points quantity
+            The range of facility points.
         range_client: range
-            range of demand points quantity
+            The range of demand points.
+
         Returns
         -------
+
         None
 
         """
@@ -302,7 +355,7 @@ class FacilityModelBuilder:
                 )
         else:
             raise AttributeError(
-                "before setting constraints must set facility variable"
+                "Before setting coverage constraints facility variables must be set."
             )
 
     @staticmethod
@@ -314,24 +367,28 @@ class FacilityModelBuilder:
         range_client: range,
     ) -> None:
         """
-        backup covering constraint:
-        - coverage_0 + facility_1 + facility_3 + facility_4 + facility_6 + facility_7 + facility_9 >= 1
+        Create backup covering constraints.
+
+        - u_i + ni0 * y_0 + ni1 * y_1 + ... + nij * y_j >= 1
 
         Parameters
         ----------
+
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
         model: pulp.LpProblem
-            optimization model problem
-        ni: np.array
-            two-dimensional array that defines candidate sites between facility points within a distance to supply {i}
-            demand point
+            A ``pulp`` instance of an optimization model.
+        ni: numpy.array
+            A 2D array that defines candidate sites between facility
+            points within a distance to supply demand points.
         range_facility: range
-            range of facility points quantity
+            The range of facility points.
         range_client: range
-            range of demand points quantity
+            The range of demand points.
+
         Returns
         -------
+
         None
 
         """
@@ -355,7 +412,8 @@ class FacilityModelBuilder:
                     )
         else:
             raise AttributeError(
-                "before setting constraints must set facility variable"
+                "Before setting backup coverage constraints "
+                "facility variables must be set."
             )
 
     @staticmethod
@@ -363,28 +421,32 @@ class FacilityModelBuilder:
         obj: T_FacModel, model: pulp.LpProblem, p_facilities: int
     ) -> None:
         """
-        set facility constraint:
-        fac_var1 + fac_var2 + fac_var3 + ... + fac_varj == p
+        Create the facility constraint.
+
+        y0 + y1 + ... + yj == p
 
         Parameters
         ----------
+
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
         model: pulp.LpProblem
-            optimization model problem
+            A ``pulp`` instance of an optimization model.
         p_facilities: int
-            maximum number of facilities can be used
+            The number of facilities to be sited.
 
         Returns
         -------
+
         None
+
         """
         if hasattr(obj, "fac_vars"):
             fac_vars = getattr(obj, "fac_vars")
             model += pulp.lpSum(fac_vars) == p_facilities
         else:
             raise AttributeError(
-                "before setting constraints must set facility variable"
+                "Before setting facility constraint facility variables must be set."
             )
 
     @staticmethod
@@ -392,20 +454,23 @@ class FacilityModelBuilder:
         obj: T_FacModel, model: pulp.LpProblem, predefined_fac: np.array
     ) -> None:
         """
-        predefined demand constraint
+        Create predefined demand constraints.
 
         Parameters
         ----------
+
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
         model: pulp.LpProblem
-            optimization model problem
-        facility_indexes: np.array
-            facility indexes zeroindexed already located
+            A ``pulp`` instance of an optimization model.
+        facility_indexes: numpy.array
+            Indexes of facilities that are already located (zero-indexed).
 
         Returns
         -------
+
         None
+
         """
         if hasattr(obj, "fac_vars"):
             fac_vars = getattr(obj, "fac_vars")
@@ -415,7 +480,8 @@ class FacilityModelBuilder:
                     fac_vars[ind].fixValue()
         else:
             raise AttributeError(
-                "before predefined facility must set facility variable"
+                "Before setting predefined facility constraints "
+                "facility variables must be set."
             )
 
     @staticmethod
@@ -496,28 +562,37 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_maximal_coverage_constraint(
-        obj: T_FacModel, model, ni, range_facility, range_client
+        obj: T_FacModel,
+        model: pulp.LpProblem,
+        ni: np.array,
+        range_facility: range,
+        range_client: range,
     ) -> None:
         """
-        set maximal constraint:
-        n1_1 * fac_var1 + n1_2 * fac_var1 + ... + nij * fac_varj >= dem_var[i]
+        Create maximal coverage constraints:
+
+        ni_1 * y1 + ni_2 * y1 + ... + nij * yj >= xi
 
         Parameters
         ----------
+
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
         model: pulp.LpProblem
-            optimization model problem
-        ni: np.array
-            two-dimensional array that defines candidate sites between facility points within a distance to supply {i} demand point
+            A ``pulp`` instance of an optimization model.
+        ni: numpy.array
+            A 2D array that defines candidate sites between facility
+            points within a distance to supply demand points.
         range_facility: range
-            range of facility points quantity
+            The range of facility points.
         range_client: range
-            range of demand points quantity
+            The range of demand points.
 
         Returns
         -------
+
         None
+
         """
         if hasattr(obj, "fac_vars") and hasattr(obj, "cli_vars"):
             fac_vars = getattr(obj, "fac_vars")
@@ -530,31 +605,39 @@ class FacilityModelBuilder:
                 )
         else:
             raise AttributeError(
-                "before setting constraints must set facility and demand variable"
+                "Before setting maximal coverage constraints facility "
+                "and demand variables must be set."
             )
 
     @staticmethod
     def add_assignment_constraint(
-        obj: T_FacModel, model, range_facility, range_client
+        obj: T_FacModel,
+        model: pulp.LpProblem,
+        range_facility: range,
+        range_client: range,
     ) -> None:
         """
-        set assignment constraint:
-        x1_1 + x_1_2 + x1_3 + x1_j == 1
+        Create assignment constraints.
+
+        x_i_0 + x_i_1 + ... + x_i_j == 1
 
         Parameters
         ----------
+
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
         model: pulp.LpProblem
-            optimization model problem
+            A ``pulp`` instance of an optimization model.
         range_facility: range
-            range of facility points quantity
+            The range of facility points.
         range_client: range
-            range of demand points quantity
+            The range of demand points.
 
         Returns
         -------
+
         None
+
         """
         if hasattr(obj, "cli_assgn_vars"):
             cli_assgn_vars = getattr(obj, "cli_assgn_vars")
@@ -563,31 +646,39 @@ class FacilityModelBuilder:
                 model += pulp.lpSum([cli_assgn_vars[i][j] for j in range_facility]) == 1
         else:
             raise AttributeError(
-                "before setting constraints must set client assignment variable"
+                "Before setting assignment constraints "
+                "client assignment variables must be set."
             )
 
     @staticmethod
     def add_opening_constraint(
-        obj: T_FacModel, model, range_facility, range_client
+        obj: T_FacModel,
+        model: pulp.LpProblem,
+        range_facility: range,
+        range_client: range,
     ) -> None:
         """
-        set opening constraint to model:
-        fac_var_j >= xi_j
+        Create opening constraints.
+
+        y_j >= xi_j
 
         Parameters
         ----------
+
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
         model: pulp.LpProblem
-            optimization model problem
+            A ``pulp`` instance of an optimization model.
         range_facility: range
-            range of facility points quantity
+            The range of facility points.
         range_client: range
-            range of demand points quantity
+            The range of demand points.
 
         Returns
         -------
+
         None
+
         """
         if hasattr(obj, "cli_assgn_vars"):
             cli_assgn_vars = getattr(obj, "cli_assgn_vars")
@@ -598,37 +689,48 @@ class FacilityModelBuilder:
                     model += fac_vars[j] - cli_assgn_vars[i][j] >= 0
         else:
             raise AttributeError(
-                "before setting constraints must set client assignment variable"
+                "Before setting opening constraints "
+                "client assignment variables must be set."
             )
 
     @staticmethod
     def add_minimized_maximum_constraint(
-        obj: T_FacModel, model, cost_matrix, range_facility, range_client
+        obj: T_FacModel,
+        model: pulp.LpProblem,
+        cost_matrix: np.array,
+        range_facility: range,
+        range_client: range,
     ) -> None:
         """
-        set minimized maximum constraint:
-        x1_1 * d1_1 + x1_2 * d1_2 + ... + xi_j * di_j <= W
+        Create minimized maximum constraints.
+
+        xi_0 * di_0 + xi_1 * di_1 + ... + xi_j * di_j <= W
 
         Parameters
         ----------
+
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
         model: pulp.LpProblem
-            optimization model problem
-        cost_matrix: np.array
-            two-dimensional distance array between facility points and demand point
+            A ``pulp`` instance of an optimization model.
+        cost_matrix : numpy.array
+            A cost matrix in the form of a 2D array between origins and destinations.
         range_facility: range
-            range of facility points quantity
+            The range of facility points.
         range_client: range
-            range of demand points quantity
+            The range of demand points.
 
         Returns
         -------
+
         None
 
         Notes
         -----
-        See explanation W variable in ``spopt.locate.base.add_weight_continuous_variable``
+
+        See an explanation for the ``W`` variable in
+        ``spopt.locate.base.add_weight_continuous_variable``
+
         """
         if hasattr(obj, "cli_assgn_vars") and hasattr(obj, "weight_var"):
             cli_assgn_vars = getattr(obj, "cli_assgn_vars")
@@ -646,5 +748,57 @@ class FacilityModelBuilder:
                 )
         else:
             raise AttributeError(
-                "before setting constraints must set weight and client assignment variables"
+                "Before setting minimized maximum constraints weight "
+                "and client assignment variables must be set."
+            )
+
+    @staticmethod
+    def add_p_dispersion_interfacility_constraint(
+        obj: T_FacModel,
+        model: pulp.LpProblem,
+        cost_matrix: np.array,
+        range_facility: range,
+    ) -> None:
+        """
+        Create p-dispersion interfacility distance constraints.
+
+        dij + M (2 - y_0 - y_1) >= D
+
+        Parameters
+        ----------
+
+        obj: T_FacModel
+            A bounded type of the ``LocateSolver`` class.
+        model: pulp.LpProblem
+            A ``pulp`` instance of an optimization model.
+        cost_matrix : numpy.array
+            A cost matrix in the form of a 2D array between all facility points.
+        range_facility: range
+            The range of facility points.
+
+        Returns
+        -------
+
+        None
+
+        """
+        if hasattr(obj, "disperse_var") and hasattr(obj, "fac_vars"):
+            M = cost_matrix.max()
+
+            for i in range_facility:
+                for j in range_facility:
+                    if j <= i:
+                        continue
+                    else:
+                        dij = cost_matrix[i][j]
+                        model += (
+                            pulp.lpSum(
+                                [(dij + M * (2 - obj.fac_vars[i] - obj.fac_vars[j]))]
+                            )
+                            >= obj.disperse_var
+                        )
+        else:
+            raise AttributeError(
+                "Before setting interfacility distance constraints dispersion "
+                "objective value and facility assignment variables must be set."
             )

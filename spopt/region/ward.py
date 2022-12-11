@@ -1,27 +1,26 @@
-from ..BaseClass import BaseSpOptHeuristicSolver
 from sklearn.cluster import AgglomerativeClustering
+
+from ..BaseClass import BaseSpOptHeuristicSolver
 
 
 class WardSpatial(BaseSpOptHeuristicSolver):
-    """Agglomerative clustering using Ward linkage with a spatial connectivity constraint.
+    """Agglomerative clustering using Ward
+    linkage with a spatial connectivity constraint.
 
     Parameters
     ----------
 
-    gdf : geopandas.GeoDataFrame, required
-        Geodataframe containing original data
-
-    w : libpysal.weights.W, required
-        Weights object created from given data
-
-    attrs_name : list, required
+    gdf : geopandas.GeoDataFrame
+        Geodataframe containing original data.
+    w : libpysal.weights.W
+        Weights object created from given data.
+    attrs_name : list
         Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
-
-    n_clusters : int, optional, default: 5
+    n_clusters : int (default 5)
         The number of clusters to form.
-
-    clustering_kwds: dictionary, optional, default: dict()
-        Other parameters about clustering could be used in sklearn.cluster.AgglometariveClustering.
+    clustering_kwds: dict
+        Other parameters about clustering could be used in
+        ``sklearn.cluster.AgglometariveClustering.``
 
     Returns
     -------
@@ -33,13 +32,14 @@ class WardSpatial(BaseSpOptHeuristicSolver):
     Examples
     --------
 
-    >>> import numpy as np
+    >>> import geopandas
     >>> import libpysal
-    >>> import geopandas as gpd
+    >>> import numpy
     >>> from spopt.region import WardSpatial
 
     Read the data.
 
+    >>> libpysal.examples.load_example('AirBnB')
     >>> pth = libpysal.examples.get_path('airbnb_Chicago 2015.shp')
     >>> chicago = gpd.read_file(pth)
 
@@ -49,19 +49,22 @@ class WardSpatial(BaseSpOptHeuristicSolver):
     >>> attrs_name = ['num_spots']
     >>> n_clusters = 8
 
-    Run the skater algorithm.
+    Run the ``WardSpatial`` algorithm.
 
     >>> model = WardSpatial(chicago, w, attrs_name, n_clusters)
     >>> model.solve()
 
-    Get the region IDs for unit areas.
+    Get the counts of region IDs for unit areas.
 
-    >>> model.labels_
-
-    Show the clustering results.
-
-    >>> chicago['ward_new'] = model.labels_
-    >>> chicago.plot(column='ward_new', categorical=True, figsize=(12,8), edgecolor='w')
+    >>> numpy.array(numpy.unique(model.labels_, return_counts=True)).T
+    array([[ 0, 62],
+           [ 1,  6],
+           [ 2,  3],
+           [ 3,  1],
+           [ 4,  2],
+           [ 5,  1],
+           [ 6,  1],
+           [ 7,  1]])
 
     """
 

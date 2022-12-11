@@ -3,7 +3,7 @@ import numpy as np
 import pulp
 from geopandas import GeoDataFrame
 
-from spopt.locate.base import (
+from .base import (
     BaseOutputMixin,
     LocateSolver,
     FacilityModelBuilder,
@@ -11,57 +11,104 @@ from spopt.locate.base import (
 )
 from scipy.spatial.distance import cdist
 
+from typing import Union
 import warnings
 
 
 class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
-    """
-    PMedian class implements P-Median optimization model and solve it.
+    r"""
+    Implement the :math:`p`-median optimization model and solve it. The
+    :math:`p`-median problem, as adapted from :cite:`daskin_2013`,
+    can be formulated as:
+
+    .. math::
+
+       \begin{array}{lllll}
+       \displaystyle \textbf{Minimize}      & \displaystyle \sum_{i}\sum_{j}{a_i d_{ij} X_{ij}} &&                              & (1)                                                                               \\
+       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j}{X_{ij} = 1}                && \forall i                    & (2)                                                                               \\
+                                            & \displaystyle \sum_{j}{Y_j} = p                   &&                              & (3)                                                                               \\
+                                            & X_{ij} \leq Y_{j}                                 && \forall i \quad \forall j    & (4)                                                                               \\
+                                            & X_{ij} \in \{0, 1\}                               && \forall i \quad \forall j    & (5)                                                                               \\
+                                            & Y_j \in \{0, 1\}                                  && \forall j                    & (6)                                                                               \\
+                                            &                                                   &&                              &                                                                                   \\
+       \displaystyle \textbf{Where}         && i                                                & =                             & \textrm{index of demand locations}                                                \\
+                                            && j                                                & =                             & \textrm{index of facility sites}                                                  \\
+                                            && p                                                & =                             & \textrm{the number of facilities to be sited}                                     \\
+                                            && a_i                                              & =                             & \textrm{service load or population demand at client location } i \\
+                                            && d_{ij}                                           & =                             & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
+                                            && X_{ij}                                           & =                             & \begin{cases}
+                                                                                                                                   1, \textrm{if client location } i \textrm{ is served by facility } j             \\
+                                                                                                                                   0, \textrm{otherwise}                                                            \\
+                                                                                                                                  \end{cases}                                                                       \\
+                                            && Y_j                                              & =                             & \begin{cases}
+                                                                                                                                   1, \textrm{if a facility is sited at location } j                                \\
+                                                                                                                                   0, \textrm{otherwise}                                                            \\
+                                                                                                                                  \end{cases}                                                                       \\
+       \end{array}
 
     Parameters
     ----------
-    name: str
-        problem name
-    problem: pulp.LpProblem
-        pulp instance of optimization model that contains constraints, variables and objective function.
-    aij: np.array
-        two-dimensional array product of service load/population demand and distance matrix between facility and demand.
+
+    name : str
+        The problem name.
+    problem : pulp.LpProblem
+        A ``pulp`` instance of an optimization model that contains
+        constraints, variables, and an objective function.
+    aij : numpy.array
+        A cost matrix in the form of a 2D array between origins and destinations.
 
     Attributes
     ----------
-    name: str
-        Problem name
-    problem: pulp.LpProblem
-        Pulp instance of optimization model that contains constraints, variables and objective function.
-    fac2cli : np.array
-        2-d array MxN, where m is number of facilities and n is number of clients. Each row represents a facility and has an array containing clients index meaning that the facility-i cover the entire array.
-    cli2fac: np.array
-        2-d MxN, where m is number of clients and n is number of facilities. Each row represent a client and has an array containing facility index meaning that the client is covered by the facility ith.
-    aij: np.array
-        Cost matrix 2-d array 
 
-    """
+    name : str
+        The problem name.
+    problem : pulp.LpProblem
+        A ``pulp`` instance of an optimization model that contains
+        constraints, variables, and an objective function.
+    fac2cli : numpy.array
+        A 2D array storing facility to client relationships where each
+        row represents a facility and contains an array of client indices
+        with which it is associated. An empty client array indicates
+        the facility is associated with no clients.
+    cli2fac : numpy.array
+        The inverse of ``fac2cli`` where client to facility relationships
+        are shown.
+    aij : numpy.array
+        A cost matrix in the form of a 2D array between origins and destinations.
 
-    def __init__(self, name: str, problem: pulp.LpProblem, aij: np.array):
+    """  # noqa
+
+    def __init__(
+        self,
+        name: str,
+        problem: pulp.LpProblem,
+        aij: np.array,
+        weights_sum: Union[int, float],
+    ):
         self.aij = aij
+        self.ai_sum = weights_sum
         self.name = name
         self.problem = problem
 
     def __add_obj(self, range_clients: range, range_facility: range) -> None:
         """
-        Add objective function to model
-        Minimize s1_1 * z1_1 + s1_2 * z1_2 + ... + si_j * zi_j
+        Add the objective function to the model.
+
+        Minimize s0_0 * z0_0 + s0_1 * z0_1 + ... + si_j * zi_j
 
         Parameters
         ----------
+
         range_clients: range
-            range of demand points quantity
+            The range of demand points.
         range_facility: range
-            range of demand facility quantity
+            The range of facility point.
 
         Returns
         -------
+
         None
+
         """
         cli_assgn_vars = getattr(self, "cli_assgn_vars")
 
@@ -82,90 +129,126 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         cost_matrix: np.array,
         weights: np.array,
         p_facilities: int,
+        predefined_facilities_arr: np.array = None,
         name: str = "p-median",
     ):
         """
-        Create PMedian object based on cost matrix
+        Create a ``PMedian`` object based on a cost matrix.
 
         Parameters
         ----------
-        cost_matrix: np.array
-            two-dimensional distance array between facility points and demand point
-        weights: np.array
-            one-dimensional service load or population demand
-        p_facilities: int
-            number of facilities to be located
-        name: str, default="p-median"
-            name of the problem
+
+        cost_matrix: numpy.array
+            A cost matrix in the form of a 2D array between origins and destinations.
+        weights : numpy.array
+            A 1D array of service load or population demand.
+        p_facilities : int
+            The number of facilities to be located.
+        predefined_facilities_arr : numpy.array (default None)
+            Predefined facilities that must appear in the solution.
+        name : str (default 'p-median')
+            The problem name.
 
         Returns
         -------
-        PMedian object
+
+        spopt.locate.p_median.PMedian
 
         Examples
         --------
 
         >>> from spopt.locate import PMedian
         >>> from spopt.locate.util import simulated_geo_points
+        >>> import geopandas
+        >>> import numpy
         >>> import pulp
         >>> import spaghetti
 
-        Create regular lattice
+        Create a regular lattice.
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
-        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
-        >>> street_buffered = geopandas.GeoDataFrame(
-        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
-        ...                            crs=street.crs,
-        ...                            columns=["geometry"])
+        >>> streets = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> streets_buffered = geopandas.GeoDataFrame(
+        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),
+        ...     crs=streets.crs,
+        ...     columns=["geometry"]
+        ... )
 
-        Simulate points belong to lattice
+        Simulate points about the lattice.
 
-        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
-        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+        >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
-        Snap points to the network
+        Snap the points to the network of lattice edges.
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
-        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="clients", snapped=True
+        ... )
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
-        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="facilities", snapped=True
+        ... )
 
-        Calculate the cost matrix
+        Calculate the cost matrix from origins to destinations.
 
         >>> cost_matrix = ntw.allneighbordistances(
         ...    sourcepattern=ntw.pointpatterns["clients"],
-        ...    destpattern=ntw.pointpatterns["facilities"])
+        ...    destpattern=ntw.pointpatterns["facilities"]
+        ... )
 
-        Simulate demand weights from 1 to 12
+        Simulate demand weights from ``1`` to ``12``.
 
         >>> ai = numpy.random.randint(1, 12, 100)
 
-        Create PMedian instance from cost matrix
+        Create and solve a ``PMedian`` instance from the cost matrix.
 
-        >>> pmedian_from_cost_matrix = PMedian.from_cost_matrix(cost_matrix, ai, p_facilities=4)
-        >>> pmedian_from_cost_matrix = pmedian_from_cost_matrix.solve(pulp.PULP_CBC_CMD(msg=False))
+        >>> pmedian_from_cost_matrix = PMedian.from_cost_matrix(
+        ...     cost_matrix, ai, p_facilities=4
+        ... )
+        >>> pmedian_from_cost_matrix = pmedian_from_cost_matrix.solve(
+        ...     pulp.PULP_CBC_CMD(msg=False)
+        ... )
 
-        Get facility lookup demand coverage array
+        Get the facility-client associations.
 
-        >>> pmedian_from_cost_matrix.facility_client_array()
-        >>> pmedian_from_cost_matrix.fac2cli
+        >>> for fac, cli in enumerate(pmedian_from_cost_matrix.fac2cli):
+        ...     print(f"facility {fac} serving {len(cli)} clients")
+        facility 0 serving 14 clients
+        facility 1 serving 29 clients
+        facility 2 serving 31 clients
+        facility 3 serving 0 clients
+        facility 4 serving 26 clients
+
+        Get the total and average weighted travel cost.
+
+        >>> round(pmedian_from_cost_matrix.problem.objective.value(), 3)
+        1870.747
+        >>> round(pmedian_from_cost_matrix.mean_dist, 3)
+        3.027
+
         """
         r_cli = range(cost_matrix.shape[0])
         r_fac = range(cost_matrix.shape[1])
 
         model = pulp.LpProblem(name, pulp.LpMinimize)
 
+        weights_sum = weights.sum()
         weights = np.reshape(weights, (cost_matrix.shape[0], 1))
         aij = weights * cost_matrix
 
-        p_median = PMedian(name, model, aij)
+        p_median = PMedian(name, model, aij, weights_sum)
 
         FacilityModelBuilder.add_facility_integer_variable(p_median, r_fac, "y[{i}]")
         FacilityModelBuilder.add_client_assign_integer_variable(
             p_median, r_cli, r_fac, "z[{i}_{j}]"
         )
+
+        if predefined_facilities_arr is not None:
+            FacilityModelBuilder.add_predefined_facility_constraint(
+                p_median, p_median.problem, predefined_facilities_arr
+            )
 
         p_median.__add_obj(r_cli, r_fac)
 
@@ -190,88 +273,117 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         facility_col: str,
         weights_cols: str,
         p_facilities: int,
+        predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
         name: str = "p-median",
     ):
         """
-        Create a PMedian object based on geodataframes. Calculate the cost matrix between demand and facility,
-        and then use from_cost_matrix method.
+
+        Create an ``PMedian`` object from ``geopandas.GeoDataFrame`` objects.
+        Calculate the cost matrix between demand and facility locations
+        before building the problem within the ``from_cost_matrix()`` method.
 
         Parameters
         ----------
-        gdf_demand: geopandas.GeoDataFrame
-            demand geodataframe with point geometry
-        gdf_fac: geopandas.GeoDataframe
-            facility geodataframe with point geometry
-        demand_col: str
-            demand geometry column name
-        facility_col: str
-            facility candidate sites geometry column name
-        weights_cols: str
-            weight column name representing service load or demand
+
+        gdf_demand : geopandas.GeoDataFrame
+            Demand locations.
+        gdf_fac : geopandas.GeoDataFrame
+            Facility locations.
+        demand_col : str
+            Demand sites geometry column name.
+        facility_col : str
+            Facility candidate sites geometry column name.
+        weights_cols : str
+            The weight column name representing service load or demand.
         p_facilities: int
-            number of facilities to be located
-        distance_metric: str, default="euclidean"
-            metrics supported by :method: `scipy.spatial.distance.cdist` used for the distance calculations
-        name: str, default="p-median"
-            name of the problem
+           The number of facilities to be located.
+        predefined_facility_col : str (default None)
+            Column name representing facilities are already defined.
+        distance_metric : str (default 'euclidean')
+            A metric used for the distance calculations supported by
+            `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
+        name : str (default 'p-median')
+            The name of the problem.
 
         Returns
         -------
-        PMedian object
+
+        spopt.locate.p_median.PMedian
 
         Examples
         --------
 
         >>> from spopt.locate import PMedian
         >>> from spopt.locate.util import simulated_geo_points
+        >>> import geopandas
+        >>> import numpy
         >>> import pulp
         >>> import spaghetti
 
-        Create regular lattice
+        Create a regular lattice.
 
         >>> lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         >>> ntw = spaghetti.Network(in_data=lattice)
-        >>> street = spaghetti.element_as_gdf(ntw, arcs=True)
-        >>> street_buffered = geopandas.GeoDataFrame(
-        ...                            geopandas.GeoSeries(street["geometry"].buffer(0.2).unary_union),
-        ...                            crs=street.crs,
-        ...                            columns=["geometry"])
+        >>> streets = spaghetti.element_as_gdf(ntw, arcs=True)
+        >>> streets_buffered = geopandas.GeoDataFrame(
+        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),
+        ...     crs=streets.crs,
+        ...     columns=["geometry"]
+        ... )
 
-        Simulate points belong to lattice
+        Simulate points about the lattice.
 
-        >>> demand_points = simulated_geo_points(street_buffered, needed=100, seed=5)
-        >>> facility_points = simulated_geo_points(street_buffered, needed=5, seed=6)
+        >>> demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)
+        >>> facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)
 
-        Snap points to the network
+        Snap the points to the network of lattice edges
+        and extract as ``GeoDataFrame`` objects.
 
         >>> ntw.snapobservations(demand_points, "clients", attribute=True)
-        >>> clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+        >>> clients_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="clients", snapped=True
+        ... )
         >>> ntw.snapobservations(facility_points, "facilities", attribute=True)
-        >>> facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+        >>> facilities_snapped = spaghetti.element_as_gdf(
+        ...     ntw, pp_name="facilities", snapped=True
+        ... )
 
-        Simulate demand weights from 1 to 12
+        Simulate demand weights from ``1`` to ``12``.
 
         >>> ai = numpy.random.randint(1, 12, 100)
         >>> clients_snapped['weights'] = ai
 
-        Create PMedian instance from cost matrix
+        Create and solve a ``PMedian`` instance from the ``GeoDataFrame`` object.
 
         >>> pmedian_from_geodataframe = PMedian.from_geodataframe(
-        ...                                         clients_snapped,
-        ...                                         facilities_snapped,
-        ...                                         "geometry",
-        ...                                         "geometry",
-        ...                                         "weights",
-        ...                                         p_facilities=P_FACILITIES,
-        ...                                         distance_metric="euclidean")
-        >>> pmedian_from_geodataframe = pmedian_from_geodataframe.solve(pulp.PULP_CBC_CMD(msg=False))
+        ...    clients_snapped,
+        ...    facilities_snapped,
+        ...    "geometry",
+        ...    "geometry",
+        ...    "weights",
+        ...    p_facilities=4,
+        ...    distance_metric="euclidean"
+        ... )
+        >>> pmedian_from_geodataframe = pmedian_from_geodataframe.solve(
+        ...     pulp.PULP_CBC_CMD(msg=False)
+        ... )
 
-        Get facility lookup demand coverage array
+        Get the facility-client associations.
 
-        >>> pmedian_from_geodataframe.facility_client_array()
-        >>> pmedian_from_geodataframe.fac2cli
-        """
+        >>> for fac, cli in enumerate(pmedian_from_geodataframe.fac2cli):
+        ...     print(f"facility {fac} serving {len(cli)} clients")
+        facility 0 serving 13 clients
+        facility 1 serving 29 clients
+        facility 2 serving 31 clients
+        facility 3 serving 0 clients
+        facility 4 serving 27 clients
+
+        """  # noqa
+
+        predefined_facilities_arr = None
+        if predefined_facility_col is not None:
+            predefined_facilities_arr = gdf_fac[predefined_facility_col].to_numpy()
 
         service_load = gdf_demand[weights_cols].to_numpy()
         dem = gdf_demand[demand_col]
@@ -280,18 +392,16 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         dem_type_geom = dem.geom_type.unique()
         fac_type_geom = fac.geom_type.unique()
 
+        _msg = (
+            " geodataframe contains mixed type geometries or is not a point. Be "
+            "sure deriving centroid from geometries doesn't affect the results."
+        )
         if len(dem_type_geom) > 1 or not "Point" in dem_type_geom:
-            warnings.warn(
-                "Demand geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
-                Warning,
-            )
+            warnings.warn(f"Demand{_msg}", UserWarning)
             dem = dem.centroid
 
         if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
-            warnings.warn(
-                "Facility geodataframe contains mixed type geometries or is not a point. Be sure deriving centroid from geometries doesn't affect the results.",
-                Warning,
-            )
+            warnings.warn(f"Facility{_msg}", UserWarning)
             fac = fac.centroid
 
         dem_data = np.array([dem.x.to_numpy(), dem.y.to_numpy()]).T
@@ -299,20 +409,29 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 
         if gdf_demand.crs != gdf_fac.crs:
             raise ValueError(
-                f"geodataframes crs are different: gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
+                "Geodataframes crs are different: "
+                f"gdf_demand-{gdf_demand.crs}, gdf_fac-{gdf_fac.crs}"
             )
 
         distances = cdist(dem_data, fac_data, distance_metric)
 
-        return cls.from_cost_matrix(distances, service_load, p_facilities, name)
+        return cls.from_cost_matrix(
+            distances, service_load, p_facilities, predefined_facilities_arr, name
+        )
 
     def facility_client_array(self) -> None:
         """
-        Create an array 2d MxN, where m is number of facilities and n is number of clients. Each row represent a facility and has an array containing clients index meaning that the facility-i cover the entire array.
+
+        Create a 2D array storing **facility to client relationships** where each
+        row represents a facility and contains an array of client indices
+        with which it is associated. An empty client array indicates
+        the facility is associated with no clients.
 
         Returns
         -------
+
         None
+
         """
         fac_vars = getattr(self, "fac_vars")
         cli_vars = getattr(self, "cli_assgn_vars")
@@ -329,21 +448,24 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 
             self.fac2cli.append(array_cli)
 
-    def solve(self, solver: pulp.LpSolver, results: bool=True):
+    def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
-        Solve the PMedian model
+        Solve the ``PMedian`` model.
 
         Parameters
         ----------
-        solver: pulp.LpSolver
-            solver supported by pulp package
 
-        results: bool
-            if True it will create metainfo - which facilities cover which demand and vice-versa, and the uncovered demand - about the model results
+        solver : pulp.LpSolver
+            A solver supported by ``pulp``.
+        results : bool (default True)
+            If ``True`` it will create metainfo (which facilities cover
+            which demand) and vice-versa, and the uncovered demand.
 
         Returns
         -------
-        PMedian object
+
+        spopt.locate.p_median.PMedian
+
         """
         self.problem.solve(solver)
         self.check_status()
@@ -351,5 +473,6 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         if results:
             self.facility_client_array()
             self.client_facility_array()
+            self.get_mean_distance()
 
         return self
