@@ -557,7 +557,7 @@ class FacilityModelBuilder:
                 model += pulp.lpSum([cli_assn_vars[i][j] for j in range_facility]) == 1
         else:
             raise AttributeError(
-                "before setting constraints must set facility variable and demand quantity variable"  # might want to update this message later
+"The facility variable and demand quantity variable most both be set in order to add a client demand satisfaction constraint."
             )
 
     @staticmethod
