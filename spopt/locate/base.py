@@ -233,7 +233,11 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_client_assign_integer_variable(
-        obj: T_FacModel, range_client: range, range_facility: range, var_name: str
+        obj: T_FacModel,
+        range_client: range,
+        range_facility: range,
+        var_name: str,
+        lp_category=pulp.LpInteger,
     ) -> None:
         """Client assignment integer decision variables (used for allocation).
 
@@ -248,6 +252,9 @@ class FacilityModelBuilder:
             The range of facility points.
         var_name: str
             A formatted string for the  client assignment variable name.
+        lp_category: pulp.LpVariable parameter
+            The category this variable is in,
+            ``pulp.LpInteger`` or ``pulp.LpContinuous``.
 
         Returns
         -------
@@ -255,10 +262,11 @@ class FacilityModelBuilder:
         None
 
         """
+
         cli_assgn_vars = [
             [
                 pulp.LpVariable(
-                    var_name.format(i=i, j=j), lowBound=0, upBound=1, cat=pulp.LpInteger
+                    var_name.format(i=i, j=j), lowBound=0, upBound=1, cat=lp_category
                 )
                 for j in range_facility
             ]
@@ -474,6 +482,82 @@ class FacilityModelBuilder:
             raise AttributeError(
                 "Before setting predefined facility constraints "
                 "facility variables must be set."
+            )
+
+    @staticmethod
+    def add_facility_capacity_constraint(
+        obj: T_FacModel, model, ni, cl_ni, dq_ni, range_facility, range_client
+    ) -> None:
+        """
+        set facility capacity constraint:
+        In plain-ish English :
+        Demand at (i) multiplied by the fraction of demand (i) assigned to facility (j) must be <= to facility (j)'s capacity. a_i(Z_i_j) <= C_j(X_j)
+        n1_1 * fac_var1 + n1_2 * fac_var1 + ... + nij * fac_varj >= dem_var[i]
+
+        Parameters
+        ----------
+        obj: T_FacModel
+            bounded type of LocateSolver class
+        model: pulp.LpProblem
+            optimization model problem
+        ni: np.array
+            two-dimensional array that defines candidate sites between facility points within a distance to supply {i} demand point
+        cl_ni: np.array
+            one-dimensional array that defines capacity limits of facility points
+        dq_ni: np.array
+            one-dimensional array that defines demand quantities for demand points
+        range_facility: range
+            range of facility points quantity
+        range_client: range
+            range of demand points quantity
+
+        Returns
+        -------
+        None
+        """
+        if hasattr(obj, "fac_vars") and hasattr(obj, "cli_assgn_vars"):
+            fac_vars = getattr(obj, "fac_vars")
+            cli_assn_vars = getattr(obj, "cli_assgn_vars")
+
+            for j in range_facility:
+                model += (
+                    pulp.lpSum([dq_ni[i] * cli_assn_vars[i][j] for i in range_client])
+                    <= cl_ni[j] * fac_vars[j]
+                )
+        else:
+            raise AttributeError(
+                "before setting constraints must set facility variable and demand quantity variable"  # might want to update this message later
+            )
+
+    @staticmethod
+    def add_client_demand_satisfaction_constraint(
+        obj: T_FacModel, model, range_client, range_facility
+    ) -> None:
+        """
+
+        Parameters
+        ----------
+        obj: T_FacModel
+            bounded type of LocateSolver class
+        model: pulp.LpProblem
+            optimization model problem
+        range_client: range
+            range of demand points quantity
+        range_facility: range
+            range of facility points quantity
+
+        Returns
+        -------
+        None
+        """
+        if hasattr(obj, "fac_vars") and hasattr(obj, "cli_assgn_vars"):
+            cli_assn_vars = getattr(obj, "cli_assgn_vars")
+
+            for i in range_client:
+                model += pulp.lpSum([cli_assn_vars[i][j] for j in range_facility]) == 1
+        else:
+            raise AttributeError(
+                "The facility variable and demand quantity variable most both be set in order to add a client demand satisfaction constraint."
             )
 
     @staticmethod
