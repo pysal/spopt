@@ -281,6 +281,7 @@ class FacilityModelBuilder:
 
         Parameters
         ----------
+
         obj: T_FacModel
             A bounded type of the ``LocateSolver`` class.
 
@@ -513,7 +514,9 @@ class FacilityModelBuilder:
 
         Returns
         -------
+
         None
+
         """
         if hasattr(obj, "fac_vars") and hasattr(obj, "cli_assgn_vars"):
             fac_vars = getattr(obj, "fac_vars")
@@ -526,7 +529,8 @@ class FacilityModelBuilder:
                 )
         else:
             raise AttributeError(
-                "before setting constraints must set facility variable and demand quantity variable"  # might want to update this message later
+                "Facility variable and client assignment variables must "
+                "be set prior adding facility capacity constraints."
             )
 
     @staticmethod
