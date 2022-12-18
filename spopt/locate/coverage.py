@@ -223,7 +223,11 @@ class LSCP(LocateSolver, BaseOutputMixin):
             )
 
             FacilityModelBuilder.add_client_demand_satisfaction_constraint(
-                lscp, lscp.problem, r_cli, r_fac
+                lscp,
+                lscp.problem,
+                lscp.aij,
+                r_cli,
+                r_fac,  ###############################################
             )
 
         else:

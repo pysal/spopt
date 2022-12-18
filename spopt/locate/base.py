@@ -487,30 +487,43 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_facility_capacity_constraint(
-        obj: T_FacModel, model, ni, cl_ni, dq_ni, range_facility, range_client
+        obj: T_FacModel,
+        model: pulp.LpProblem,
+        ni: np.array,
+        cl_ni: np.array,
+        dq_ni: np.array,
+        range_facility: range,
+        range_client: range,
     ) -> None:
         """
-        set facility capacity constraint:
-        In plain-ish English :
-        Demand at (i) multiplied by the fraction of demand (i) assigned to facility (j) must be <= to facility (j)'s capacity. a_i(Z_i_j) <= C_j(X_j)
+        Create the facility capacity constraints:
+
+        Demand at :math:`i` multiplied by the fraction of demand :math:`i`
+        assigned to facility :math:`j` must be less than or equal to the
+        capacity at facility :math:`j`.
+
+        :math:`a_i Z_{ij} \leq C_j X_j`
+
         n1_1 * fac_var1 + n1_2 * fac_var1 + ... + nij * fac_varj >= dem_var[i]
 
         Parameters
         ----------
+
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
         model: pulp.LpProblem
-            optimization model problem
-        ni: np.array
-            two-dimensional array that defines candidate sites between facility points within a distance to supply {i} demand point
-        cl_ni: np.array
-            one-dimensional array that defines capacity limits of facility points
-        dq_ni: np.array
-            one-dimensional array that defines demand quantities for demand points
-        range_facility: range
-            range of facility points quantity
-        range_client: range
-            range of demand points quantity
+            A ``pulp`` instance of an optimization model.
+        ni : numpy.array
+            A 2D array that defines candidate sites between facility points
+            within a distance to supply :math:`i` demand point.
+        cl_ni : numpy.array
+            A 1D array that defines capacity limits of facility points.
+        dq_ni : numpy.array
+            A 1D array that defines demand quantities for demand points.
+        range_facility : range
+            The range of facility points.
+        range_client : range
+            The range of demand points.
 
         Returns
         -------
@@ -520,48 +533,62 @@ class FacilityModelBuilder:
         """
         if hasattr(obj, "fac_vars") and hasattr(obj, "cli_assgn_vars"):
             fac_vars = getattr(obj, "fac_vars")
-            cli_assn_vars = getattr(obj, "cli_assgn_vars")
-
+            cli_assgn_vars = getattr(obj, "cli_assgn_vars")
             for j in range_facility:
                 model += (
-                    pulp.lpSum([dq_ni[i] * cli_assn_vars[i][j] for i in range_client])
+                    pulp.lpSum([dq_ni[i] * cli_assgn_vars[i][j] for i in range_client])
                     <= cl_ni[j] * fac_vars[j]
                 )
         else:
             raise AttributeError(
-                "Facility variable and client assignment variables must "
-                "be set prior adding facility capacity constraints."
+                "Facility and client assignment variables must "
+                "be set prior to adding facility capacity constraints."
             )
 
     @staticmethod
     def add_client_demand_satisfaction_constraint(
-        obj: T_FacModel, model, range_client, range_facility
+        obj: T_FacModel,
+        model: pulp.LpProblem,
+        ni: np.array,  ###############################################################################
+        range_client: range,
+        range_facility: range,
     ) -> None:
         """
+        Create the client demand satisfaction constraints.
 
         Parameters
         ----------
+
         obj: T_FacModel
-            bounded type of LocateSolver class
+            A bounded type of the ``LocateSolver`` class.
         model: pulp.LpProblem
-            optimization model problem
-        range_client: range
-            range of demand points quantity
-        range_facility: range
-            range of facility points quantity
+            A ``pulp`` instance of an optimization model.
+
+
+        range_client : range
+            The range of demand points.
+        range_facility : range
+            The range of facility points.
 
         Returns
         -------
+
         None
+
         """
         if hasattr(obj, "fac_vars") and hasattr(obj, "cli_assgn_vars"):
-            cli_assn_vars = getattr(obj, "cli_assgn_vars")
-
+            cli_assgn_vars = getattr(obj, "cli_assgn_vars")
             for i in range_client:
-                model += pulp.lpSum([cli_assn_vars[i][j] for j in range_facility]) == 1
+                model += (
+                    pulp.lpSum(
+                        [int(ni[i][j]) * cli_assgn_vars[i][j] for j in range_facility]
+                    )
+                    == 1
+                )
         else:
             raise AttributeError(
-                "The facility variable and demand quantity variable most both be set in order to add a client demand satisfaction constraint."
+                "Facility and client assignment variables must be set "
+                "prior to adding client demand satisfaction constraints."
             )
 
     @staticmethod
