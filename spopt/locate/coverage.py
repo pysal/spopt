@@ -208,6 +208,15 @@ class LSCP(LocateSolver, BaseOutputMixin):
             )
 
         if demand_quantity_arr is not None:
+
+            sum_demand = demand_quantity_arr.sum()
+            sum_capacity = facility_capacity_arr.sum()
+            if sum_demand > sum_capacity:
+                raise ValueError(
+                    f"Infeasible model. Demand greater than capacity "
+                    f"({sum_demand} > {sum_capacity})."
+                )
+
             FacilityModelBuilder.add_client_assign_integer_variable(
                 lscp, r_cli, r_fac, "z[{i}_{j}]", lp_category=pulp.LpContinuous
             )
@@ -215,7 +224,6 @@ class LSCP(LocateSolver, BaseOutputMixin):
             FacilityModelBuilder.add_facility_capacity_constraint(
                 lscp,
                 lscp.problem,
-                lscp.aij,
                 facility_capacity_arr,
                 demand_quantity_arr,
                 r_fac,
@@ -223,7 +231,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
             )
 
             FacilityModelBuilder.add_client_demand_satisfaction_constraint(
-                lscp, lscp.problem, r_cli, r_fac
+                lscp, lscp.problem, lscp.aij, r_cli, r_fac
             )
 
         else:
