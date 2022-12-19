@@ -489,7 +489,6 @@ class FacilityModelBuilder:
     def add_facility_capacity_constraint(
         obj: T_FacModel,
         model: pulp.LpProblem,
-        ni: np.array,
         cl_ni: np.array,
         dq_ni: np.array,
         range_facility: range,
@@ -513,9 +512,6 @@ class FacilityModelBuilder:
             A bounded type of the ``LocateSolver`` class.
         model: pulp.LpProblem
             A ``pulp`` instance of an optimization model.
-        ni : numpy.array
-            A 2D array that defines candidate sites between facility points
-            within a distance to supply :math:`i` demand point.
         cl_ni : numpy.array
             A 1D array that defines capacity limits of facility points.
         dq_ni : numpy.array
@@ -549,7 +545,7 @@ class FacilityModelBuilder:
     def add_client_demand_satisfaction_constraint(
         obj: T_FacModel,
         model: pulp.LpProblem,
-        ni: np.array,  ###############################################################################
+        ni: np.array,
         range_client: range,
         range_facility: range,
     ) -> None:
@@ -563,8 +559,9 @@ class FacilityModelBuilder:
             A bounded type of the ``LocateSolver`` class.
         model: pulp.LpProblem
             A ``pulp`` instance of an optimization model.
-
-
+        ni : numpy.array
+            A 2D array that defines candidate sites between facility points
+            within a distance to supply :math:`i` demand point.
         range_client : range
             The range of demand points.
         range_facility : range
