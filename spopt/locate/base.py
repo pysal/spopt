@@ -486,7 +486,7 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_facility_capacity_constraint(
-        obj: T_FacModel, model, ni, cl_ni, dq_ni, range_facility, range_client
+        obj: T_FacModel, model, cl_ni, dq_ni, range_facility, range_client
     ) -> None:
         """
         set facility capacity constraint:
@@ -500,8 +500,6 @@ class FacilityModelBuilder:
             bounded type of LocateSolver class
         model: pulp.LpProblem
             optimization model problem
-        ni: np.array
-            two-dimensional array that defines candidate sites between facility points within a distance to supply {i} demand point
         cl_ni: np.array
             one-dimensional array that defines capacity limits of facility points
         dq_ni: np.array
@@ -531,7 +529,7 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_client_demand_satisfaction_constraint(
-        obj: T_FacModel, model, range_client, range_facility
+        obj: T_FacModel, model, ni, range_client, range_facility
     ) -> None:
         """
 
@@ -541,6 +539,8 @@ class FacilityModelBuilder:
             bounded type of LocateSolver class
         model: pulp.LpProblem
             optimization model problem
+        ni: np.array
+            two-dimensional array that defines candidate sites between facility points within a distance to supply {i} demand point
         range_client: range
             range of demand points quantity
         range_facility: range
@@ -554,7 +554,12 @@ class FacilityModelBuilder:
             cli_assn_vars = getattr(obj, "cli_assgn_vars")
 
             for i in range_client:
-                model += pulp.lpSum([cli_assn_vars[i][j] for j in range_facility]) == 1
+                model += (
+                    pulp.lpSum(
+                        [int(ni[i][j]) * cli_assn_vars[i][j] for j in range_facility]
+                    )
+                    == 1
+                )
         else:
             raise AttributeError(
                 "The facility variable and demand quantity variable most both be set in order to add a client demand satisfaction constraint."
