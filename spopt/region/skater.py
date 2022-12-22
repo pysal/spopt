@@ -27,23 +27,24 @@ class SpanningForest(object):
         Parameters
         ----------
 
-        dissimilarity : a callable distance metric
-        affinity : an callable affinity metric between 0,1.
-                   Will be inverted to provide a
-                   dissimilarity metric.
-        reduction: the reduction applied over all clusters
+        dissimilarity : callable (default sklearn.metrics.pairwise.manhattan_distances)
+            A callable distance metric.
+        affinity : callable (default None)
+            A callable affinity metric between 0 and 1, which is
+            inverted to provide a dissimilarity metric.
+        reduction : the reduction applied over all clusters
                    to provide the map score.
-        center:    way to compute the center of each region in attribute space
+        center :    way to compute the center of each region in attribute space
 
-        verbose: bool/int describing how much output to provide to the user,
+        verbose : bool/int describing how much output to provide to the user,
                  in terms of print statements or progressbars.
 
         Notes
         -----
 
-        Optimization occurs with respect to a *dissimilarity* metric, so the reduction should
-        yield some kind of score where larger values are *less desirable* than smaller values.
-        Typically, this means we use addition.
+        Optimization occurs with respect to a *dissimilarity* metric, so the
+        reduction should yield some kind of score where larger values are
+        *less desirable* than smaller values. Typically, this means we use addition.
 
         """
         if affinity is not None:
@@ -58,8 +59,9 @@ class SpanningForest(object):
         self.verbose = verbose
 
     def __repr__(self):
-        return "Minimum_Spanning_Tree_Pruning(metric = {}, reduction = {}, center = {})".format(
-            self.metric, self.reduction, self.center
+        return (
+            f"Minimum_Spanning_Tree_Pruning(metric={self.metric}, "
+            f"reduction={self.reduction}, center={self.center})"
         )
 
     def fit(
@@ -112,40 +114,39 @@ class SpanningForest(object):
         end_W = time.time() - start_W
 
         if super_verbose:
-            print("Computing Affinity Kernel took {:.2f}s".format(end_W))
+            print(f"Computing Affinity Kernel took {end_W:.2f}s")
 
         tree_time = time.time()
         MSF = cg.minimum_spanning_tree(dissim)
         tree_time = time.time() - tree_time
         if super_verbose:
-            print("Computing initial MST took {:.2f}s".format(tree_time))
+            print(f"Computing initial MST took {tree_time:.2f}s")
 
-        initial_component_time = time.time()
+        init_component_time = time.time()
         current_n_subtrees, current_labels = cg.connected_components(
             MSF, directed=False
         )
-        initial_component_time = time.time() - initial_component_time
+        init_component_time = time.time() - init_component_time
 
         if super_verbose:
-            print(
-                "Computing connected components took {:.2f}s.".format(
-                    initial_component_time
-                )
-            )
+            print(f"Computing connected components took {init_component_time:.2f}s.")
 
         if current_n_subtrees > 1:
             island_warnings = [
-                "Increasing `n_clusters` from {} to {} in order to account for islands.".format(
-                    n_clusters, n_clusters + current_n_subtrees
+                (
+                    f"Increasing `n_clusters` from {n_clusters} to "
+                    f"{n_clusters + current_n_subtrees} in order to "
+                    "account for islands."
                 ),
-                "Counting islands towards the remaining {} clusters.".format(
-                    n_clusters - (current_n_subtrees)
+                (
+                    "Counting islands towards the remaining "
+                    f"{n_clusters - current_n_subtrees} clusters."
                 ),
             ]
             ignoring_islands = int(islands.lower() == "ignore")
             chosen_warning = island_warnings[ignoring_islands]
             warn(
-                "By default, the graph is disconnected! {}".format(chosen_warning),
+                f"By default, the graph is disconnected! {chosen_warning}",
                 OptimizeWarning,
                 stacklevel=2,
             )
@@ -154,8 +155,8 @@ class SpanningForest(object):
             _, island_populations = np.unique(current_labels, return_counts=True)
             if (island_populations < quorum).any():
                 raise ValueError(
-                    "Islands must be larger than the quorum. If not, drop the small islands and solve for"
-                    " clusters in the remaining field."
+                    "Islands must be larger than the quorum. If not, drop the small "
+                    "islands and solve for clusters in the remaining field."
                 )
         if trace:
             self._trace.append((current_labels, deletion(np.nan, np.nan, np.inf)))
@@ -173,7 +174,7 @@ class SpanningForest(object):
             if np.isfinite(best_deletion.score):  # if our search succeeds
                 # accept the best move as *the* move
                 if super_verbose:
-                    print("making cut {}...".format(best_deletion))
+                    print(f"making cut {best_deletion}...")
                 MSF, current_n_subtrees, current_labels = self.make_cut(
                     *best_deletion, MSF=MSF
                 )
@@ -182,9 +183,11 @@ class SpanningForest(object):
                     MSF, directed=False
                 )
                 warn(
-                    "MSF contains no valid moves after finding {} subtrees."
-                    "Decrease the size of your quorum to find the remaining {} subtrees.".format(
-                        current_n_subtrees, n_clusters - current_n_subtrees
+                    (
+                        "MSF contains no valid moves after finding "
+                        f"{current_n_subtrees} subtrees. Decrease the "
+                        f"size of your quorum to find the remaining "
+                        f"{n_clusters - current_n_subtrees} subtrees."
                     ),
                     OptimizeWarning,
                     stacklevel=2,
@@ -203,12 +206,13 @@ class SpanningForest(object):
 
     def score(self, data, labels=None, quorum=-np.inf):
         """
-        This yields a score for the data, given the labels provided. If no labels are provided,
-        and the object has been fit, then the labels discovered from the previous fit are used.
+        This yields a score for the data, given the labels provided.
+        If no labels are provided, and the object has been fit, then
+        the labels discovered from the previous fit are used.
 
         If a quorum is not passed, it is assumed to be irrelevant.
 
-        If a quorum is passed and the labels do not meet quorum, the score is inf.
+        If a quorum is passed and the labels do not meet quorum, the score is ``inf``.
 
         Parameters
         ----------
@@ -230,13 +234,15 @@ class SpanningForest(object):
                 labels = self.current_labels_
             except AttributeError:
                 raise ValueError(
-                    "Labels not provided and MSF_Prune object has not been fit to data yet."
+                    "Labels not provided and ``MSF_Prune object`` "
+                    "has not been fit to data yet."
                 )
-        assert data.shape[0] == len(
-            labels
-        ), "Length of label array ({}) does not match " "length of data ({})! ".format(
-            labels.shape[0], data.shape[0]
+
+        assert data.shape[0] == len(labels), (
+            f"Length of label array ({labels.shape[0]}) "
+            f"does not match length of data ({data.shape[0]})!"
         )
+
         _, subtree_quorums = np.unique(labels, return_counts=True)
         n_subtrees = len(subtree_quorums)
         if (subtree_quorums < quorum).any():
@@ -293,9 +299,8 @@ class SpanningForest(object):
 
         if (labels is None) != (target_label is None):
             raise ValueError(
-                "Both labels and target_label must be supplied! Only {} provided.".format(
-                    ["labels", "target_label"][int(target_label is None)]
-                )
+                "Both ``labels`` and ``target_label`` must be supplied! Only "
+                f"{['labels', 'target_label'][int(target_label is None)]} provided."
             )
         if self.verbose:
             try:
@@ -380,16 +385,13 @@ class Skater(BaseSpOptHeuristicSolver):
     Parameters
     ----------
 
-    gdf : geopandas.GeoDataFrame, required
-        Geodataframe containing original data.
-
-    w : libpysal.weights.W, required
+    gdf : geopandas.GeoDataFrame
+        A Geodataframe containing original data.
+    w : libpysal.weights.W
         Weights object created from given data.
-
-    attrs_name : list, required
-        Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
-
-    n_clusters : int, optional, default: 5
+    attrs_name : list
+        Strings for attribute names (columns of ``geopandas.GeoDataFrame``).
+    n_clusters : int (default 5)
         The number of clusters to form.
 
     floor: floor on the size of regions, default: -inf
