@@ -178,11 +178,11 @@ class FacilityModelBuilder:
         Parameters
         ----------
 
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        range_facility: range
+        range_facility : range
             The range of facility points.
-        var_name: str
+        var_name : str
             A formatted string for the facility variable name.
 
         Returns
@@ -209,11 +209,11 @@ class FacilityModelBuilder:
         Parameters
         ----------
 
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        range_client: range
+        range_client : range
             The range of demand points.
-        var_name: str
+        var_name : str
             A formatted string for the demand variable name.
 
         Returns
@@ -244,15 +244,15 @@ class FacilityModelBuilder:
         Parameters
         ----------
 
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        range_client: range
+        range_client : range
             The range of demand points.
-        range_facility: range
+        range_facility : range
             The range of facility points.
-        var_name: str
+        var_name : str
             A formatted string for the  client assignment variable name.
-        lp_category: pulp.LpVariable parameter
+        lp_category : pulp.LpVariable parameter
             The category this variable is in,
             ``pulp.LpInteger`` or ``pulp.LpContinuous``.
 
@@ -263,15 +263,20 @@ class FacilityModelBuilder:
 
         """
 
-        cli_assgn_vars = [
+        cli_assgn_vars = np.array(
             [
-                pulp.LpVariable(
-                    var_name.format(i=i, j=j), lowBound=0, upBound=1, cat=lp_category
-                )
-                for j in range_facility
+                [
+                    pulp.LpVariable(
+                        var_name.format(i=i, j=j),
+                        lowBound=0,
+                        upBound=1,
+                        cat=lp_category,
+                    )
+                    for j in range_facility
+                ]
+                for i in range_client
             ]
-            for i in range_client
-        ]
+        )
 
         setattr(obj, "cli_assgn_vars", cli_assgn_vars)
 
@@ -281,7 +286,7 @@ class FacilityModelBuilder:
 
         Parameters
         ----------
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
 
         Returns
@@ -301,7 +306,7 @@ class FacilityModelBuilder:
         Parameters
         ----------
 
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
 
         Returns
@@ -316,10 +321,8 @@ class FacilityModelBuilder:
     @staticmethod
     def add_set_covering_constraint(
         obj: T_FacModel,
-        model: pulp.LpProblem,
-        ni: np.array,
-        range_facility: range,
         range_client: range,
+        range_facility: range,
     ) -> None:
         """
         Create set covering constraints.
@@ -329,17 +332,12 @@ class FacilityModelBuilder:
         Parameters
         ----------
 
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model: pulp.LpProblem
-            A ``pulp`` instance of an optimization model.
-        ni: numpy.array
-            A 2D array that defines candidate sites between facility
-            points within a distance to supply demand points.
-        range_facility: range
-            The range of facility points.
-        range_client: range
+        range_client : range
             The range of demand points.
+        range_facility : range
+            The range of facility points.
 
         Returns
         -------
@@ -349,9 +347,11 @@ class FacilityModelBuilder:
         """
         if hasattr(obj, "fac_vars"):
             fac_vars = getattr(obj, "fac_vars")
+            model = getattr(obj, "problem")
+            ni = getattr(obj, "aij")
             for i in range_client:
                 model += (
-                    pulp.lpSum([ni[i][j] * fac_vars[j] for j in range_facility]) >= 1
+                    pulp.lpSum([ni[i, j] * fac_vars[j] for j in range_facility]) >= 1
                 )
         else:
             raise AttributeError(
@@ -374,16 +374,16 @@ class FacilityModelBuilder:
         Parameters
         ----------
 
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model: pulp.LpProblem
+        model : pulp.LpProblem
             A ``pulp`` instance of an optimization model.
-        ni: numpy.array
+        ni : numpy.array
             A 2D array that defines candidate sites between facility
             points within a distance to supply demand points.
-        range_facility: range
+        range_facility : range
             The range of facility points.
-        range_client: range
+        range_client : range
             The range of demand points.
 
         Returns
@@ -428,11 +428,11 @@ class FacilityModelBuilder:
         Parameters
         ----------
 
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model: pulp.LpProblem
+        model : pulp.LpProblem
             A ``pulp`` instance of an optimization model.
-        p_facilities: int
+        p_facilities : int
             The number of facilities to be sited.
 
         Returns
@@ -451,7 +451,7 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_predefined_facility_constraint(
-        obj: T_FacModel, model: pulp.LpProblem, predefined_fac: np.array
+        obj: T_FacModel, predefined_fac: np.array
     ) -> None:
         """
         Create predefined demand constraints.
@@ -459,11 +459,9 @@ class FacilityModelBuilder:
         Parameters
         ----------
 
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model: pulp.LpProblem
-            A ``pulp`` instance of an optimization model.
-        facility_indexes: numpy.array
+        facility_indexes : numpy.array
             Indexes of facilities that are already located (zero-indexed).
 
         Returns
@@ -474,6 +472,7 @@ class FacilityModelBuilder:
         """
         if hasattr(obj, "fac_vars"):
             fac_vars = getattr(obj, "fac_vars")
+            model = getattr(obj, "problem")
             for ind in range(len(predefined_fac)):
                 if predefined_fac[ind]:
                     fac_vars[ind].setInitialValue(1)
@@ -486,7 +485,7 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_facility_capacity_constraint(
-        obj: T_FacModel, model, cl_ni, dq_ni, range_facility, range_client
+        obj: T_FacModel, dq_ni, cl_ni, range_client, range_facility
     ) -> None:
         """
         set facility capacity constraint:
@@ -496,30 +495,31 @@ class FacilityModelBuilder:
 
         Parameters
         ----------
-        obj: T_FacModel
+        obj : T_FacModel
             bounded type of LocateSolver class
-        model: pulp.LpProblem
-            optimization model problem
-        cl_ni: np.array
-            one-dimensional array that defines capacity limits of facility points
-        dq_ni: np.array
+        dq_ni : np.array
             one-dimensional array that defines demand quantities for demand points
-        range_facility: range
-            range of facility points quantity
-        range_client: range
+        cl_ni : np.array
+            one-dimensional array that defines capacity limits of facility points
+        range_client : range
             range of demand points quantity
+        range_facility : range
+            range of facility points quantity
 
         Returns
         -------
+
         None
+
         """
         if hasattr(obj, "fac_vars") and hasattr(obj, "cli_assgn_vars"):
             fac_vars = getattr(obj, "fac_vars")
             cli_assn_vars = getattr(obj, "cli_assgn_vars")
+            model = getattr(obj, "problem")
 
             for j in range_facility:
                 model += (
-                    pulp.lpSum([dq_ni[i] * cli_assn_vars[i][j] for i in range_client])
+                    pulp.lpSum([dq_ni[i] * cli_assn_vars[i, j] for i in range_client])
                     <= cl_ni[j] * fac_vars[j]
                 )
         else:
@@ -529,34 +529,34 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_client_demand_satisfaction_constraint(
-        obj: T_FacModel, model, ni, range_client, range_facility
+        obj: T_FacModel, range_client, range_facility
     ) -> None:
         """
 
         Parameters
         ----------
-        obj: T_FacModel
+        obj : T_FacModel
             bounded type of LocateSolver class
-        model: pulp.LpProblem
-            optimization model problem
-        ni: np.array
-            two-dimensional array that defines candidate sites between facility points within a distance to supply {i} demand point
-        range_client: range
+        range_client : range
             range of demand points quantity
-        range_facility: range
+        range_facility : range
             range of facility points quantity
 
         Returns
         -------
+
         None
+
         """
         if hasattr(obj, "fac_vars") and hasattr(obj, "cli_assgn_vars"):
             cli_assn_vars = getattr(obj, "cli_assgn_vars")
+            model = getattr(obj, "problem")
+            aij = getattr(obj, "aij")
 
             for i in range_client:
                 model += (
                     pulp.lpSum(
-                        [int(ni[i][j]) * cli_assn_vars[i][j] for j in range_facility]
+                        [int(aij[i, j]) * cli_assn_vars[i, j] for j in range_facility]
                     )
                     == 1
                 )
@@ -581,16 +581,16 @@ class FacilityModelBuilder:
         Parameters
         ----------
 
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model: pulp.LpProblem
+        model : pulp.LpProblem
             A ``pulp`` instance of an optimization model.
-        ni: numpy.array
+        ni : numpy.array
             A 2D array that defines candidate sites between facility
             points within a distance to supply demand points.
-        range_facility: range
+        range_facility : range
             The range of facility points.
-        range_client: range
+        range_client : range
             The range of demand points.
 
         Returns
@@ -629,13 +629,13 @@ class FacilityModelBuilder:
         Parameters
         ----------
 
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model: pulp.LpProblem
+        model : pulp.LpProblem
             A ``pulp`` instance of an optimization model.
-        range_facility: range
+        range_facility : range
             The range of facility points.
-        range_client: range
+        range_client : range
             The range of demand points.
 
         Returns
@@ -670,13 +670,13 @@ class FacilityModelBuilder:
         Parameters
         ----------
 
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model: pulp.LpProblem
+        model : pulp.LpProblem
             A ``pulp`` instance of an optimization model.
-        range_facility: range
+        range_facility : range
             The range of facility points.
-        range_client: range
+        range_client : range
             The range of demand points.
 
         Returns
@@ -714,15 +714,15 @@ class FacilityModelBuilder:
         Parameters
         ----------
 
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model: pulp.LpProblem
+        model : pulp.LpProblem
             A ``pulp`` instance of an optimization model.
         cost_matrix : numpy.array
             A cost matrix in the form of a 2D array between origins and destinations.
-        range_facility: range
+        range_facility : range
             The range of facility points.
-        range_client: range
+        range_client : range
             The range of demand points.
 
         Returns
@@ -772,13 +772,13 @@ class FacilityModelBuilder:
         Parameters
         ----------
 
-        obj: T_FacModel
+        obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model: pulp.LpProblem
+        model : pulp.LpProblem
             A ``pulp`` instance of an optimization model.
         cost_matrix : numpy.array
             A cost matrix in the form of a 2D array between all facility points.
-        range_facility: range
+        range_facility : range
             The range of facility points.
 
         Returns

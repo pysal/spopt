@@ -181,8 +181,9 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         """
 
+        n_cli = cost_matrix.shape[0]
+        r_cli = range(n_cli)
         r_fac = range(cost_matrix.shape[1])
-        r_cli = range(cost_matrix.shape[0])
 
         model = pulp.LpProblem(name, pulp.LpMinimize)
         lscp = LSCP(name, model)
@@ -198,13 +199,13 @@ class LSCP(LocateSolver, BaseOutputMixin):
         lscp.aij[cost_matrix <= service_radius] = 1
 
         if (demand_quantity_arr is None) and (facility_capacity_arr is not None):
-            demand_quantity_arr = np.ones(cost_matrix.shape[0])
+            demand_quantity_arr = np.ones(n_cli)
 
         FacilityModelBuilder.add_facility_integer_variable(lscp, r_fac, "y[{i}]")
 
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
-                lscp, lscp.problem, predefined_facilities_arr
+                lscp, predefined_facilities_arr
             )
 
         if demand_quantity_arr is not None:
@@ -222,22 +223,15 @@ class LSCP(LocateSolver, BaseOutputMixin):
             )
 
             FacilityModelBuilder.add_facility_capacity_constraint(
-                lscp,
-                lscp.problem,
-                facility_capacity_arr,
-                demand_quantity_arr,
-                r_fac,
-                r_cli,
+                lscp, demand_quantity_arr, facility_capacity_arr, r_cli, r_fac
             )
 
             FacilityModelBuilder.add_client_demand_satisfaction_constraint(
-                lscp, lscp.problem, lscp.aij, r_cli, r_fac
+                lscp, r_cli, r_fac
             )
 
         else:
-            FacilityModelBuilder.add_set_covering_constraint(
-                lscp, lscp.problem, lscp.aij, r_fac, r_cli
-            )
+            FacilityModelBuilder.add_set_covering_constraint(lscp, r_cli, r_fac)
 
         lscp.__add_obj()
 
@@ -432,7 +426,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
             array_cli = []
             if fac_vars[j].value() > 0:
                 for i in range(self.aij.shape[0]):
-                    if self.aij[i][j] > 0:
+                    if self.aij[i, j] > 0:
                         array_cli.append(i)
 
             self.fac2cli.append(array_cli)
@@ -666,8 +660,8 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
             lscp = LSCP.from_cost_matrix(cost_matrix, service_radius)
         lscp.solve(solver)
 
-        r_fac = range(cost_matrix.shape[1])
         r_cli = range(cost_matrix.shape[0])
+        r_fac = range(cost_matrix.shape[1])
 
         model = pulp.LpProblem(name, pulp.LpMaximize)
 
@@ -682,7 +676,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
 
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
-                lscpb, lscpb.problem, predefined_facilities_arr
+                lscpb, predefined_facilities_arr
             )
 
         lscpb.__add_obj()
@@ -874,7 +868,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
             array_cli = []
             if fac_vars[j].value() > 0:
                 for i in range(self.aij.shape[0]):
-                    if self.aij[i][j] > 0:
+                    if self.aij[i, j] > 0:
                         array_cli.append(i)
 
             self.fac2cli.append(array_cli)
@@ -1101,8 +1095,10 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         99.0
 
         """
+
+        n_cli = cost_matrix.shape[0]
+        r_cli = range(n_cli)
         r_fac = range(cost_matrix.shape[1])
-        r_cli = range(cost_matrix.shape[0])
 
         model = pulp.LpProblem(name, pulp.LpMaximize)
         mclp = MCLP(name, model)
@@ -1112,13 +1108,13 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
 
         mclp.aij = np.zeros(cost_matrix.shape)
         mclp.aij[cost_matrix <= service_radius] = 1
-        weights = np.reshape(weights, (cost_matrix.shape[0], 1))
+        weights = np.reshape(weights, (n_cli, 1))
 
         mclp.__add_obj(weights, r_cli)
 
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
-                mclp, mclp.problem, predefined_facilities_arr
+                mclp, predefined_facilities_arr
             )
 
         FacilityModelBuilder.add_maximal_coverage_constraint(
@@ -1327,7 +1323,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             if fac_vars[j].value() > 0:
                 for i in range(self.aij.shape[0]):
                     if cli_vars[i].value() > 0:
-                        if self.aij[i][j] > 0:
+                        if self.aij[i, j] > 0:
                             array_cli.append(i)
 
             self.fac2cli.append(array_cli)

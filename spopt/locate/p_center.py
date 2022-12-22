@@ -200,7 +200,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
-                p_center, p_center.problem, predefined_facilities_arr
+                p_center, predefined_facilities_arr
             )
 
         p_center.__add_obj()
@@ -388,7 +388,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
             array_cli = []
             if fac_vars[j].value() > 0:
                 for i in range(len(cli_vars)):
-                    if cli_vars[i][j].value() > 0:
+                    if cli_vars[i, j].value() > 0:
                         array_cli.append(i)
 
             self.fac2cli.append(array_cli)

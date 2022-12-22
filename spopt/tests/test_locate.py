@@ -869,10 +869,10 @@ class TestErrorsWarnings:
     def test_attribute_error_add_set_covering_constraint(self):
         with pytest.raises(AttributeError, match="Before setting coverage constraints"):
             dummy_class = LSCP("dummy", pulp.LpProblem("name"))
-            dummy_matrix = numpy.array([])
+            dummy_class.aij = numpy.array([])
             dummy_range = range(1)
             FacilityModelBuilder.add_set_covering_constraint(
-                dummy_class, dummy_class.problem, dummy_matrix, dummy_range, dummy_range
+                dummy_class, dummy_range, dummy_range
             )
 
     def test_attribute_error_add_facility_constraint(self):
