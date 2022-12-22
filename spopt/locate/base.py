@@ -361,8 +361,6 @@ class FacilityModelBuilder:
     @staticmethod
     def add_backup_covering_constraint(
         obj: T_FacModel,
-        model: pulp.LpProblem,
-        ni: np.array,
         range_facility: range,
         range_client: range,
     ) -> None:
@@ -376,11 +374,6 @@ class FacilityModelBuilder:
 
         obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model : pulp.LpProblem
-            A ``pulp`` instance of an optimization model.
-        ni : numpy.array
-            A 2D array that defines candidate sites between facility
-            points within a distance to supply demand points.
         range_facility : range
             The range of facility points.
         range_client : range
@@ -395,6 +388,8 @@ class FacilityModelBuilder:
         if hasattr(obj, "fac_vars"):
             fac_vars = getattr(obj, "fac_vars")
             cli_vars = getattr(obj, "cli_vars")
+            model = getattr(obj, "problem")
+            ni = getattr(obj, "aij")
             for i in range_client:
                 if sum(ni[i]) >= 2:
                     model += (
