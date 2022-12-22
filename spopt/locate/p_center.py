@@ -207,11 +207,9 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         FacilityModelBuilder.add_facility_constraint(p_center, p_facilities)
         FacilityModelBuilder.add_assignment_constraint(p_center, r_fac, r_cli)
-        FacilityModelBuilder.add_opening_constraint(
-            p_center, p_center.problem, r_fac, r_cli
-        )
+        FacilityModelBuilder.add_opening_constraint(p_center, r_fac, r_cli)
         FacilityModelBuilder.add_minimized_maximum_constraint(
-            p_center, p_center.problem, cost_matrix, r_fac, r_cli
+            p_center, cost_matrix, r_fac, r_cli
         )
 
         return p_center

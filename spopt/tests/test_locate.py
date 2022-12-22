@@ -904,21 +904,21 @@ class TestErrorsWarnings:
 
     def test_attribute_error_add_opening_constraint(self):
         with pytest.raises(AttributeError, match="Before setting opening constraints"):
-            dummy_class = LSCP("dummy", pulp.LpProblem("name"))
+            dummy_class = PMedian("dummy", pulp.LpProblem("name"), numpy.array([]), 1)
             dummy_range = range(1)
             FacilityModelBuilder.add_opening_constraint(
-                dummy_class, dummy_class.problem, dummy_range, dummy_range
+                dummy_class, dummy_range, dummy_range
             )
 
     def test_attribute_error_add_minimized_maximum_constraint(self):
         with pytest.raises(
             AttributeError, match="Before setting minimized maximum constraints"
         ):
-            dummy_class = LSCP("dummy", pulp.LpProblem("name"))
             dummy_matrix = numpy.array([])
+            dummy_class = PCenter("dummy", pulp.LpProblem("name"), dummy_matrix)
             dummy_range = range(1)
             FacilityModelBuilder.add_minimized_maximum_constraint(
-                dummy_class, dummy_class.problem, dummy_matrix, dummy_range, dummy_range
+                dummy_class, dummy_matrix, dummy_range, dummy_range
             )
 
     def test_error_lscp_different_crs(self):

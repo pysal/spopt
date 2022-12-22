@@ -204,7 +204,6 @@ class TestErrorsWarnings:
             dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
             FacilityModelBuilder.add_p_dispersion_interfacility_constraint(
                 dummy_class,
-                dummy_class.problem,
                 dummy_matrix,
                 dummy_range,
             )

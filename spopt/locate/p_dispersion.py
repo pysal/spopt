@@ -182,7 +182,7 @@ class PDispersion(LocateSolver):
             )
 
         FacilityModelBuilder.add_p_dispersion_interfacility_constraint(
-            p_dispersion, p_dispersion.problem, cost_matrix, r_fac
+            p_dispersion, cost_matrix, r_fac
         )
 
         return p_dispersion

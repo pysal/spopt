@@ -643,7 +643,6 @@ class FacilityModelBuilder:
     @staticmethod
     def add_opening_constraint(
         obj: T_FacModel,
-        model: pulp.LpProblem,
         range_facility: range,
         range_client: range,
     ) -> None:
@@ -657,8 +656,6 @@ class FacilityModelBuilder:
 
         obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model : pulp.LpProblem
-            A ``pulp`` instance of an optimization model.
         range_facility : range
             The range of facility points.
         range_client : range
@@ -673,10 +670,11 @@ class FacilityModelBuilder:
         if hasattr(obj, "cli_assgn_vars"):
             cli_assgn_vars = getattr(obj, "cli_assgn_vars")
             fac_vars = getattr(obj, "fac_vars")
+            model = getattr(obj, "problem")
 
             for i in range_client:
                 for j in range_facility:
-                    model += fac_vars[j] - cli_assgn_vars[i][j] >= 0
+                    model += fac_vars[j] - cli_assgn_vars[i, j] >= 0
         else:
             raise AttributeError(
                 "Before setting opening constraints "
@@ -686,7 +684,6 @@ class FacilityModelBuilder:
     @staticmethod
     def add_minimized_maximum_constraint(
         obj: T_FacModel,
-        model: pulp.LpProblem,
         cost_matrix: np.array,
         range_facility: range,
         range_client: range,
@@ -701,8 +698,6 @@ class FacilityModelBuilder:
 
         obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model : pulp.LpProblem
-            A ``pulp`` instance of an optimization model.
         cost_matrix : numpy.array
             A cost matrix in the form of a 2D array between origins and destinations.
         range_facility : range
@@ -725,12 +720,13 @@ class FacilityModelBuilder:
         if hasattr(obj, "cli_assgn_vars") and hasattr(obj, "weight_var"):
             cli_assgn_vars = getattr(obj, "cli_assgn_vars")
             weight_var = getattr(obj, "weight_var")
+            model = getattr(obj, "problem")
 
             for i in range_client:
                 model += (
                     pulp.lpSum(
                         [
-                            cli_assgn_vars[i][j] * cost_matrix[i][j]
+                            cli_assgn_vars[i, j] * cost_matrix[i, j]
                             for j in range_facility
                         ]
                     )
@@ -745,7 +741,6 @@ class FacilityModelBuilder:
     @staticmethod
     def add_p_dispersion_interfacility_constraint(
         obj: T_FacModel,
-        model: pulp.LpProblem,
         cost_matrix: np.array,
         range_facility: range,
     ) -> None:
@@ -759,8 +754,6 @@ class FacilityModelBuilder:
 
         obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model : pulp.LpProblem
-            A ``pulp`` instance of an optimization model.
         cost_matrix : numpy.array
             A cost matrix in the form of a 2D array between all facility points.
         range_facility : range
@@ -774,13 +767,14 @@ class FacilityModelBuilder:
         """
         if hasattr(obj, "disperse_var") and hasattr(obj, "fac_vars"):
             M = cost_matrix.max()
+            model = getattr(obj, "problem")
 
             for i in range_facility:
                 for j in range_facility:
                     if j <= i:
                         continue
                     else:
-                        dij = cost_matrix[i][j]
+                        dij = cost_matrix[i, j]
                         model += (
                             pulp.lpSum(
                                 [(dij + M * (2 - obj.fac_vars[i] - obj.fac_vars[j]))]

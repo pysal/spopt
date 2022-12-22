@@ -255,9 +255,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 
         FacilityModelBuilder.add_facility_constraint(p_median, p_facilities)
         FacilityModelBuilder.add_assignment_constraint(p_median, r_fac, r_cli)
-        FacilityModelBuilder.add_opening_constraint(
-            p_median, p_median.problem, r_fac, r_cli
-        )
+        FacilityModelBuilder.add_opening_constraint(p_median, r_fac, r_cli)
 
         return p_median
 
