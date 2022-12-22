@@ -173,7 +173,7 @@ class PDispersion(LocateSolver):
         )
 
         FacilityModelBuilder.add_facility_constraint(
-            p_dispersion, p_dispersion.problem, p_dispersion.p_facilities
+            p_dispersion, p_dispersion.p_facilities
         )
 
         if predefined_facilities_arr is not None:

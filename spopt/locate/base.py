@@ -417,9 +417,7 @@ class FacilityModelBuilder:
             )
 
     @staticmethod
-    def add_facility_constraint(
-        obj: T_FacModel, model: pulp.LpProblem, p_facilities: int
-    ) -> None:
+    def add_facility_constraint(obj: T_FacModel, p_facilities: int) -> None:
         """
         Create the facility constraint.
 
@@ -430,8 +428,6 @@ class FacilityModelBuilder:
 
         obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model : pulp.LpProblem
-            A ``pulp`` instance of an optimization model.
         p_facilities : int
             The number of facilities to be sited.
 
@@ -443,6 +439,7 @@ class FacilityModelBuilder:
         """
         if hasattr(obj, "fac_vars"):
             fac_vars = getattr(obj, "fac_vars")
+            model = getattr(obj, "problem")
             model += pulp.lpSum(fac_vars) == p_facilities
         else:
             raise AttributeError(

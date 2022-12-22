@@ -680,9 +680,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
             )
 
         lscpb.__add_obj()
-        FacilityModelBuilder.add_facility_constraint(
-            lscpb, lscpb.problem, lscpb.lscp_obj_value
-        )
+        FacilityModelBuilder.add_facility_constraint(lscpb, lscpb.lscp_obj_value)
         FacilityModelBuilder.add_backup_covering_constraint(
             lscpb, lscpb.problem, lscpb.aij, r_fac, r_cli
         )
@@ -1121,7 +1119,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             mclp, mclp.problem, mclp.aij, r_fac, r_cli
         )
 
-        FacilityModelBuilder.add_facility_constraint(mclp, mclp.problem, p_facilities)
+        FacilityModelBuilder.add_facility_constraint(mclp, p_facilities)
 
         return mclp
 

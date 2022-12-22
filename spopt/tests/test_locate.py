@@ -877,11 +877,9 @@ class TestErrorsWarnings:
 
     def test_attribute_error_add_facility_constraint(self):
         with pytest.raises(AttributeError, match="Before setting facility constraint"):
-            dummy_class = LSCP("dummy", pulp.LpProblem("name"))
+            dummy_class = MCLP("dummy", pulp.LpProblem("name"))
             dummy_p_facility = 1
-            FacilityModelBuilder.add_facility_constraint(
-                dummy_class, dummy_class.problem, 1
-            )
+            FacilityModelBuilder.add_facility_constraint(dummy_class, 1)
 
     def test_attribute_error_add_maximal_coverage_constraint(self):
         with pytest.raises(
