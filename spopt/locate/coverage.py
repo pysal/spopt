@@ -1113,9 +1113,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
                 mclp, predefined_facilities_arr
             )
 
-        FacilityModelBuilder.add_maximal_coverage_constraint(
-            mclp, mclp.problem, mclp.aij, r_fac, r_cli
-        )
+        FacilityModelBuilder.add_maximal_coverage_constraint(mclp, r_fac, r_cli)
 
         FacilityModelBuilder.add_facility_constraint(mclp, p_facilities)
 

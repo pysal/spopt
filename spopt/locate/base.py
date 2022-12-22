@@ -394,14 +394,14 @@ class FacilityModelBuilder:
                 if sum(ni[i]) >= 2:
                     model += (
                         pulp.lpSum(
-                            [int(ni[i][j]) * fac_vars[j] for j in range_facility]
+                            [int(ni[i, j]) * fac_vars[j] for j in range_facility]
                         )
                         >= 1 + 1 * cli_vars[i]
                     )
                 else:
                     model += (
                         pulp.lpSum(
-                            [int(ni[i][j]) * fac_vars[j] for j in range_facility]
+                            [int(ni[i, j]) * fac_vars[j] for j in range_facility]
                         )
                         >= 1 + 0 * cli_vars[i]
                     )
@@ -560,8 +560,6 @@ class FacilityModelBuilder:
     @staticmethod
     def add_maximal_coverage_constraint(
         obj: T_FacModel,
-        model: pulp.LpProblem,
-        ni: np.array,
         range_facility: range,
         range_client: range,
     ) -> None:
@@ -575,11 +573,6 @@ class FacilityModelBuilder:
 
         obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model : pulp.LpProblem
-            A ``pulp`` instance of an optimization model.
-        ni : numpy.array
-            A 2D array that defines candidate sites between facility
-            points within a distance to supply demand points.
         range_facility : range
             The range of facility points.
         range_client : range
@@ -594,6 +587,8 @@ class FacilityModelBuilder:
         if hasattr(obj, "fac_vars") and hasattr(obj, "cli_vars"):
             fac_vars = getattr(obj, "fac_vars")
             dem_vars = getattr(obj, "cli_vars")
+            model = getattr(obj, "problem")
+            ni = getattr(obj, "aij")
 
             for i in range_client:
                 model += (
@@ -609,7 +604,6 @@ class FacilityModelBuilder:
     @staticmethod
     def add_assignment_constraint(
         obj: T_FacModel,
-        model: pulp.LpProblem,
         range_facility: range,
         range_client: range,
     ) -> None:
@@ -623,8 +617,6 @@ class FacilityModelBuilder:
 
         obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        model : pulp.LpProblem
-            A ``pulp`` instance of an optimization model.
         range_facility : range
             The range of facility points.
         range_client : range
@@ -638,9 +630,10 @@ class FacilityModelBuilder:
         """
         if hasattr(obj, "cli_assgn_vars"):
             cli_assgn_vars = getattr(obj, "cli_assgn_vars")
+            model = getattr(obj, "problem")
 
             for i in range_client:
-                model += pulp.lpSum([cli_assgn_vars[i][j] for j in range_facility]) == 1
+                model += pulp.lpSum([cli_assgn_vars[i, j] for j in range_facility]) == 1
         else:
             raise AttributeError(
                 "Before setting assignment constraints "

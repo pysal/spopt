@@ -885,21 +885,21 @@ class TestErrorsWarnings:
         with pytest.raises(
             AttributeError, match="Before setting maximal coverage constraints"
         ):
-            dummy_class = LSCP("dummy", pulp.LpProblem("name"))
-            dummy_matrix = numpy.array([])
+            dummy_class = MCLP("dummy", pulp.LpProblem("name"))
+            dummy_class.aij = numpy.array([])
             dummy_range = range(1)
             FacilityModelBuilder.add_maximal_coverage_constraint(
-                dummy_class, dummy_class.problem, dummy_matrix, dummy_range, dummy_range
+                dummy_class, dummy_range, dummy_range
             )
 
     def test_attribute_error_add_assignment_constraint(self):
         with pytest.raises(
             AttributeError, match="Before setting assignment constraints"
         ):
-            dummy_class = LSCP("dummy", pulp.LpProblem("name"))
+            dummy_class = PMedian("dummy", pulp.LpProblem("name"), numpy.array([]), 1)
             dummy_range = range(1)
             FacilityModelBuilder.add_assignment_constraint(
-                dummy_class, dummy_class.problem, dummy_range, dummy_range
+                dummy_class, dummy_range, dummy_range
             )
 
     def test_attribute_error_add_opening_constraint(self):

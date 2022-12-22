@@ -115,7 +115,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         self.problem += (
             pulp.lpSum(
                 [
-                    self.aij[i][j] * cli_assgn_vars[i][j]
+                    self.aij[i, j] * cli_assgn_vars[i, j]
                     for i in range_clients
                     for j in range_facility
                 ]
@@ -254,9 +254,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         p_median.__add_obj(r_cli, r_fac)
 
         FacilityModelBuilder.add_facility_constraint(p_median, p_facilities)
-        FacilityModelBuilder.add_assignment_constraint(
-            p_median, p_median.problem, r_fac, r_cli
-        )
+        FacilityModelBuilder.add_assignment_constraint(p_median, r_fac, r_cli)
         FacilityModelBuilder.add_opening_constraint(
             p_median, p_median.problem, r_fac, r_cli
         )

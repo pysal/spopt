@@ -206,9 +206,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         p_center.__add_obj()
 
         FacilityModelBuilder.add_facility_constraint(p_center, p_facilities)
-        FacilityModelBuilder.add_assignment_constraint(
-            p_center, p_center.problem, r_fac, r_cli
-        )
+        FacilityModelBuilder.add_assignment_constraint(p_center, r_fac, r_cli)
         FacilityModelBuilder.add_opening_constraint(
             p_center, p_center.problem, r_fac, r_cli
         )
