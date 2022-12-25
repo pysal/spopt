@@ -330,18 +330,15 @@ class TestErrorsWarnings:
                 pulp.PULP_CBC_CMD(msg=False),
             )
 
-    def test_attribute_error_add_facility_constraint(self):
+    def test_attribute_error_add_backup_covering_constraint(self):
         with pytest.raises(AttributeError, match="Before setting backup coverage"):
             dummy_class = LSCPB(
                 "dummy", pulp.LpProblem("name"), pulp.PULP_CBC_CMD(msg=False)
             )
-            dummy_p_facility = 1
             dummy_fac_r = 0
             dummy_cli_r = 0
             FacilityModelBuilder.add_backup_covering_constraint(
                 dummy_class,
-                dummy_class.problem,
-                dummy_p_facility,
                 dummy_fac_r,
                 dummy_cli_r,
             )
