@@ -49,9 +49,9 @@ class SpanningForest(object):
         if affinity is not None:
             # invert the 0,1 affinity to
             # to an unbounded positive dissimilarity
-            metric = lambda x: -np.log(affinity(x))
+            metric = lambda x, y: -np.log(affinity(x, y))
         else:
-            metric = dissimilarity
+            metric = lambda x, y: dissimilarity(x, y)
         self.metric = metric
         self.reduction = reduction
         self.center = center
@@ -100,7 +100,7 @@ class SpanningForest(object):
             attribute_kernel = np.ones((W.n, W.n))
             data = np.ones((W.n, 1))
         else:
-            attribute_kernel = self.metric(data)
+            attribute_kernel = self.metric(data, None)
         W.transform = "b"
         W = W.sparse
         start = time.time()
@@ -244,8 +244,8 @@ class SpanningForest(object):
         part_scores = [
             self.reduction(
                 self.metric(
-                    X=data[labels == l],
-                    Y=self.center(data[labels == l], axis=0).reshape(1, -1),
+                    data[labels == l],
+                    self.center(data[labels == l], axis=0).reshape(1, -1),
                 )
             )
             for l in range(n_subtrees)
