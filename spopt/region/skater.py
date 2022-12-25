@@ -182,7 +182,7 @@ class SpanningForest(object):
                     MSF, directed=False
                 )
                 warn(
-                    "MSF contains no valid moves after finding {} subtrees."
+                    "MSF contains no valid moves after finding {} subtrees. "
                     "Decrease the size of your quorum to find the remaining {} subtrees.".format(
                         current_n_subtrees, n_clusters - current_n_subtrees
                     ),
