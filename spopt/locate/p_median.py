@@ -99,9 +99,9 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         Parameters
         ----------
 
-        range_clients: range
+        range_clients : range
             The range of demand points.
-        range_facility: range
+        range_facility : range
             The range of facility point.
 
         Returns
@@ -115,7 +115,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         self.problem += (
             pulp.lpSum(
                 [
-                    self.aij[i][j] * cli_assgn_vars[i][j]
+                    self.aij[i, j] * cli_assgn_vars[i, j]
                     for i in range_clients
                     for j in range_facility
                 ]
@@ -138,7 +138,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         Parameters
         ----------
 
-        cost_matrix: numpy.array
+        cost_matrix : numpy.array
             A cost matrix in the form of a 2D array between origins and destinations.
         weights : numpy.array
             A 1D array of service load or population demand.
@@ -229,13 +229,14 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         3.027
 
         """
-        r_cli = range(cost_matrix.shape[0])
+        n_cli = cost_matrix.shape[0]
+        r_cli = range(n_cli)
         r_fac = range(cost_matrix.shape[1])
 
         model = pulp.LpProblem(name, pulp.LpMinimize)
 
         weights_sum = weights.sum()
-        weights = np.reshape(weights, (cost_matrix.shape[0], 1))
+        weights = np.reshape(weights, (n_cli, 1))
         aij = weights * cost_matrix
 
         p_median = PMedian(name, model, aij, weights_sum)
@@ -247,20 +248,14 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
-                p_median, p_median.problem, predefined_facilities_arr
+                p_median, predefined_facilities_arr
             )
 
         p_median.__add_obj(r_cli, r_fac)
 
-        FacilityModelBuilder.add_facility_constraint(
-            p_median, p_median.problem, p_facilities
-        )
-        FacilityModelBuilder.add_assignment_constraint(
-            p_median, p_median.problem, r_fac, r_cli
-        )
-        FacilityModelBuilder.add_opening_constraint(
-            p_median, p_median.problem, r_fac, r_cli
-        )
+        FacilityModelBuilder.add_facility_constraint(p_median, p_facilities)
+        FacilityModelBuilder.add_assignment_constraint(p_median, r_fac, r_cli)
+        FacilityModelBuilder.add_opening_constraint(p_median, r_fac, r_cli)
 
         return p_median
 
@@ -443,7 +438,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             array_cli = []
             if fac_vars[j].value() > 0:
                 for i in range(len(cli_vars)):
-                    if cli_vars[i][j].value() > 0:
+                    if cli_vars[i, j].value() > 0:
                         array_cli.append(i)
 
             self.fac2cli.append(array_cli)
