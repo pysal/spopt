@@ -88,13 +88,13 @@ class PDispersion(LocateSolver):
         Parameters
         ----------
 
-        cost_matrix: np.array
+        cost_matrix : np.array
             A cost matrix in the form of a 2D array between origins and destinations.
         p_facilities : int
             The number of facilities to be located.
         predefined_facilities_arr : numpy.array (default None)
             Predefined facilities that must appear in the solution.
-        name: str (default 'P-Dispersion')
+        name : str (default 'P-Dispersion')
             The name of the problem.
 
         Returns
@@ -173,16 +173,16 @@ class PDispersion(LocateSolver):
         )
 
         FacilityModelBuilder.add_facility_constraint(
-            p_dispersion, p_dispersion.problem, p_dispersion.p_facilities
+            p_dispersion, p_dispersion.p_facilities
         )
 
         if predefined_facilities_arr is not None:
             FacilityModelBuilder.add_predefined_facility_constraint(
-                p_dispersion, p_dispersion.problem, predefined_facilities_arr
+                p_dispersion, predefined_facilities_arr
             )
 
         FacilityModelBuilder.add_p_dispersion_interfacility_constraint(
-            p_dispersion, p_dispersion.problem, cost_matrix, r_fac
+            p_dispersion, cost_matrix, r_fac
         )
 
         return p_dispersion
@@ -208,14 +208,14 @@ class PDispersion(LocateSolver):
             Facility locations.
         facility_col : str
             Facility candidate sites geometry column name.
-        p_facilities: int
+        p_facilities : int
            The number of facilities to be located.
         predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
         distance_metric : str (default 'euclidean')
             A metric used for the distance calculations supported by
             `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
-        name: str (default 'P-Dispersion')
+        name : str (default 'P-Dispersion')
             The name of the problem.
 
         Returns

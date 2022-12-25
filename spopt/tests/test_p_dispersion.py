@@ -192,11 +192,7 @@ class TestErrorsWarnings:
         with pytest.raises(AttributeError, match="Before setting facility constraint"):
             dummy_p_facility = 1
             dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
-            FacilityModelBuilder.add_facility_constraint(
-                dummy_class,
-                dummy_class.problem,
-                dummy_p_facility,
-            )
+            FacilityModelBuilder.add_facility_constraint(dummy_class, dummy_p_facility)
 
     def test_attribute_error_add_p_dispersion_interfacility_constraint(self):
         with pytest.raises(
@@ -208,7 +204,6 @@ class TestErrorsWarnings:
             dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
             FacilityModelBuilder.add_p_dispersion_interfacility_constraint(
                 dummy_class,
-                dummy_class.problem,
                 dummy_matrix,
                 dummy_range,
             )
@@ -218,9 +213,7 @@ class TestErrorsWarnings:
             dummy_p_facility = 1
             dummy_matrix = numpy.array([])
             dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
-            FacilityModelBuilder.add_facility_constraint(
-                dummy_class, dummy_class.problem, dummy_matrix
-            )
+            FacilityModelBuilder.add_facility_constraint(dummy_class, dummy_matrix)
 
     def test_warning_facility_geodataframe(self):
         with pytest.warns(
