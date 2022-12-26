@@ -7,3 +7,4 @@ pulp
 scikit-learn>=0.22
 scipy>=0.11
 spaghetti
+tqdm>=4.27.0

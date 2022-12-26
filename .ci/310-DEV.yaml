@@ -12,6 +12,7 @@ dependencies:
   - scikit-learn>=0.22
   - scipy>=1.0
   - spaghetti
+  - tqdm>=4.27.0
   # testing
   - codecov
   - coverage

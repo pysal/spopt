@@ -13,6 +13,7 @@ dependencies:
   - scipy>=1.0
   - shapely
   - spaghetti
+  - tqdm=>4.27.0
   # testing
   - codecov
   - coverage
