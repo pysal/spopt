@@ -24,7 +24,6 @@
             .ci/38-MIN.yaml,
             .ci/39.yaml,
             .ci/310.yaml,
-            .ci/310-DEV_shapely_dev.yaml,
             .ci/311.yaml,
             .ci/311-DEV.yaml,
             .ci/311-DEV_shapely_dev.yaml,
