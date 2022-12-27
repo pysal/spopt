@@ -1,4 +1,4 @@
-geopandas>=0.7
+geopandas>=0.8.0
 libpysal
 networkx
 numpy>=1.21

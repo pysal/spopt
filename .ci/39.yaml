@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.9
-  - geopandas>=0.7.0
+  - geopandas>=0.8.0
   - libpysal
   - matplotlib
   - networkx
