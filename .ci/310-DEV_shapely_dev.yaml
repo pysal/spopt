@@ -11,7 +11,7 @@ dependencies:
   - pandas>=1
   - pip
   - scikit-learn>=0.22
-  - scipy>=1.2.1
+  - scipy>=1.3.2
   - shapely>=2.0b1
   - spaghetti
   - tqdm>=4.27.0
