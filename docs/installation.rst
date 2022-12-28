@@ -3,7 +3,7 @@
 Installation
 ============
 
-spopt supports Python 3.8_, 3.9_, and 3.10_. Please make sure that you are
+spopt supports Python 3.8_, 3.9_, 3.10_, and 3.11_. Please make sure that you are
 operating in a Python >= 3.8 environment.
 
 Installing released version
@@ -46,6 +46,7 @@ contribute to spopt development.
 .. _3.8: https://docs.python.org/3.8/
 .. _3.9: https://docs.python.org/3.9/
 .. _3.10: https://docs.python.org/3.10/
+.. _3.11: https://docs.python.org/3.11/
 .. _Python Package Index: https://pypi.org/project/spopt/
 .. _pysal/spopt: https://github.com/pysal/spopt
 .. _fork: https://help.github.com/articles/fork-a-repo/ 
