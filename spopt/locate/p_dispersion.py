@@ -19,7 +19,7 @@ class PDispersion(LocateSolver):
 
        \begin{array}{lllll}
        \displaystyle \textbf{Maximize}      & \displaystyle D                       &&                                      & (1)                                                                               \\
-       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{i}{Y_i} = p       &&                                      & (2)                                                                               \\
+       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{i \in I}{Y_i} = p &&                                      & (2)                                                                               \\
                                             & D \leq d_{ij} + M (2 - Y_{i} - Y_{j}) && \forall i \in I \quad \forall j > i  & (3)                                                                               \\
                                             & Y_i \in \{0, 1\}                      && \forall i \in I                      & (4)                                                                               \\
                                             &                                       &&                                      &                                                                                   \\

@@ -28,19 +28,19 @@ class LSCP(LocateSolver, BaseOutputMixin):
     .. math::
 
        \begin{array}{lllll}
-       \displaystyle \textbf{Minimize}      & \displaystyle \sum_{j}{Y_j}               &&                  & (1)                                                                               \\
-       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j\in N_i}{Y_j} \geq 1 && \forall i \in I  & (2)                                                                               \\
-                                            & Y_j \in \{0,1\}                           && \forall j \in J  & (3)                                                                               \\
-                                            &                                           &&                  &                                                                                   \\
-       \displaystyle \textbf{Where}         && i                                        & =                 & \textrm{index of demand points/areas/objects in set } I                           \\
-                                            && j                                        & =                 & \textrm{index of potential facility sites in set } J                              \\
-                                            && S                                        & =                 & \textrm{maximum acceptable service distance or time standard}                     \\
-                                            && d_{ij}                                   & =                 & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
-                                            && N_i                                      & =                 & \{j | d_{ij} < S\}                                                                \\
-                                            && Y_j                                      & =                 & \begin{cases}
-                                                                                                               1, \textrm{if a facility is sited at location } j                                \\
-                                                                                                               0, \textrm{otherwise}                                                            \\
-                                                                                                              \end{cases}
+       \displaystyle \textbf{Minimize}      & \displaystyle \sum_{j \in J}{Y_j}             &&                  & (1)                                                                               \\
+       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j \in N_i}{Y_j} \geq 1    && \forall i \in I  & (2)                                                                               \\
+                                            & Y_j \in \{0,1\}                               && \forall j \in J  & (3)                                                                               \\
+                                            &                                               &&                  &                                                                                   \\
+       \displaystyle \textbf{Where}         && i                                            & =                 & \textrm{index of demand points/areas/objects in set } I                           \\
+                                            && j                                            & =                 & \textrm{index of potential facility sites in set } J                              \\
+                                            && S                                            & =                 & \textrm{maximum acceptable service distance or time standard}                     \\
+                                            && d_{ij}                                       & =                 & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
+                                            && N_i                                          & =                 & \{j | d_{ij} < S\}                                                                \\
+                                            && Y_j                                          & =                 & \begin{cases}
+                                                                                                                   1, \textrm{if a facility is sited at location } j                                \\
+                                                                                                                   0, \textrm{otherwise}                                                            \\
+                                                                                                                  \end{cases}
        \end{array}
 
     The *CLSCP-SO*, as adapted from :cite:`church_murray_2018`
@@ -49,9 +49,9 @@ class LSCP(LocateSolver, BaseOutputMixin):
     .. math::
 
        \begin{array}{lllll}
-       \displaystyle \textbf{Minimize}      & \displaystyle \sum_{j}{Y_j}                           &&                                          & (1)                                                                           \\
-       \displaystyle \textbf{Subject to}    & \displaystyle \sum_{j\in N_i}{z_{ij}} = 1             && \forall i \in I                          & (2)                                                                           \\
-                                            & \displaystyle \sum_{i\in I} a_i z_{ij} \leq C_jx_j    && \forall j \in J                          & (3)                                                                           \\
+       \displaystyle \textbf{Minimize}      & \displaystyle \sum_{j \in J}{Y_j}                      &&                                          & (1)                                                                           \\
+       \displaystyle \textbf{Subject to}    & \displaystyle \sum_{j \in N_i}{z_{ij}} = 1            && \forall i \in I                          & (2)                                                                           \\
+                                            & \displaystyle \sum_{i \in I} a_i z_{ij} \leq C_jx_j   && \forall j \in J                          & (3)                                                                           \\
                                             & Y_j \in {0,1}                                         && \forall j \in J                          & (4)                                                                           \\
                                             & z_{ij} \geq 0                                         && \forall i \in I \quad \forall j \in N_i  & (5)                                                                           \\
                                             &                                                       &&                                          &                                                                               \\
@@ -514,27 +514,27 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
     .. math::
 
        \begin{array}{lllll}
-       \displaystyle \textbf{Maximize}      & \displaystyle \sum_{i}{U_i}                       &&                  & (1)                                                                          \\
-       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j}{a_{ij}}{Y_j} \geq 1 + U_i  && \forall i \in I  & (2)                                                                          \\
-                                            & \displaystyle \sum_{j}{Y_j} = p                   &&                  & (3)                                                                          \\
-                                            & U_i \leq 1                                        && \forall i \in I  & (4)                                                                          \\
-                                            & Y_j \in \{0, 1\}                                  && \forall j \in J  & (5)                                                                          \\
-                                            &                                                   &&                  &                                                                              \\
-       \displaystyle \textbf{Where}         && i                                                & =                 & \textrm{index of demand points/areas/objects in set } I                      \\
-                                            && j                                                & =                 & \textrm{index of potential facility sites in set } J                         \\
-                                            && p                                                & =                 & \textrm{objective value identified by using the } LSCP                       \\
-                                            && U_i                                              & =                 & \begin{cases}
-                                                                                                                       1, \textrm{if demand location is covered twice}                             \\
-                                                                                                                       0, \textrm{if demand location is covered once}                              \\
-                                                                                                                      \end{cases}                                                                  \\
-                                            && a_{ij}                                           & =                 & \begin{cases}
-                                                                                                                       1, \textrm{if facility location } j \textrm{ covers demand location } i     \\
-                                                                                                                       0, \textrm{otherwise}                                                       \\
-                                                                                                                      \end{cases}                                                                  \\
-                                            && Y_j                                              & =                 & \begin{cases}
-                                                                                                                       1, \textrm{if a facility is sited at location } j                           \\
-                                                                                                                       0, \textrm{otherwise}                                                       \\
-                                                                                                                      \end{cases}
+       \displaystyle \textbf{Maximize}      & \displaystyle \sum_{i \in I}{U_i}                         &&                  & (1)                                                                          \\
+       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j \in J}{a_{ij}}{Y_j} \geq 1 + U_i    && \forall i \in I  & (2)                                                                          \\
+                                            & \displaystyle \sum_{j \in J}{Y_j} = p                     &&                  & (3)                                                                          \\
+                                            & U_i \leq 1                                                && \forall i \in I  & (4)                                                                          \\
+                                            & Y_j \in \{0, 1\}                                          && \forall j \in J  & (5)                                                                          \\
+                                            &                                                           &&                  &                                                                              \\
+       \displaystyle \textbf{Where}         && i                                                        & =                 & \textrm{index of demand points/areas/objects in set } I                      \\
+                                            && j                                                        & =                 & \textrm{index of potential facility sites in set } J                         \\
+                                            && p                                                        & =                 & \textrm{objective value identified by using the } LSCP                       \\
+                                            && U_i                                                      & =                 & \begin{cases}
+                                                                                                                               1, \textrm{if demand location is covered twice}                             \\
+                                                                                                                               0, \textrm{if demand location is covered once}                              \\
+                                                                                                                              \end{cases}                                                                  \\
+                                            && a_{ij}                                                   & =                 & \begin{cases}
+                                                                                                                               1, \textrm{if facility location } j \textrm{ covers demand location } i     \\
+                                                                                                                               0, \textrm{otherwise}                                                       \\
+                                                                                                                              \end{cases}                                                                  \\
+                                            && Y_j                                                      & =                 & \begin{cases}
+                                                                                                                               1, \textrm{if a facility is sited at location } j                           \\
+                                                                                                                               0, \textrm{otherwise}                                                       \\
+                                                                                                                              \end{cases}
        \end{array}
 
     Parameters
@@ -951,9 +951,9 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
     .. math::
 
        \begin{array}{lllll}
-       \displaystyle \textbf{Maximize}      & \displaystyle \sum_{i}{a_iX_i}                &&                  & (1)                                                                                   \\
+       \displaystyle \textbf{Maximize}      & \displaystyle \sum_{i \in I}{a_iX_i}          &&                  & (1)                                                                                   \\
        \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j \in N_i}{Y_j \geq X_i}  && \forall i \in I  & (2)                                                                                   \\
-                                            & \displaystyle \sum_{j}{Y_j} = p               &&                  & (3)                                                                                   \\
+                                            & \displaystyle \sum_{j \in J}{Y_j} = p         &&                  & (3)                                                                                   \\
                                             & X_i \in \{0, 1\}                              && \forall i \in I  & (4)                                                                                   \\
                                             & Y_j \in \{0, 1\}                              && \forall j \in J  & (5)                                                                                   \\
                                             &                                               &&                  &                                                                                       \\
