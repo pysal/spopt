@@ -24,26 +24,26 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
     .. math::
 
        \begin{array}{lllll}
-       \displaystyle \textbf{Minimize}      & \displaystyle \sum_{i}\sum_{j}{a_i d_{ij} X_{ij}} &&                              & (1)                                                                               \\
-       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j}{X_{ij} = 1}                && \forall i                    & (2)                                                                               \\
-                                            & \displaystyle \sum_{j}{Y_j} = p                   &&                              & (3)                                                                               \\
-                                            & X_{ij} \leq Y_{j}                                 && \forall i \quad \forall j    & (4)                                                                               \\
-                                            & X_{ij} \in \{0, 1\}                               && \forall i \quad \forall j    & (5)                                                                               \\
-                                            & Y_j \in \{0, 1\}                                  && \forall j                    & (6)                                                                               \\
-                                            &                                                   &&                              &                                                                                   \\
-       \displaystyle \textbf{Where}         && i                                                & =                             & \textrm{index of demand locations}                                                \\
-                                            && j                                                & =                             & \textrm{index of facility sites}                                                  \\
-                                            && p                                                & =                             & \textrm{the number of facilities to be sited}                                     \\
-                                            && a_i                                              & =                             & \textrm{service load or population demand at client location } i \\
-                                            && d_{ij}                                           & =                             & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
-                                            && X_{ij}                                           & =                             & \begin{cases}
-                                                                                                                                   1, \textrm{if client location } i \textrm{ is served by facility } j             \\
-                                                                                                                                   0, \textrm{otherwise}                                                            \\
-                                                                                                                                  \end{cases}                                                                       \\
-                                            && Y_j                                              & =                             & \begin{cases}
-                                                                                                                                   1, \textrm{if a facility is sited at location } j                                \\
-                                                                                                                                   0, \textrm{otherwise}                                                            \\
-                                                                                                                                  \end{cases}                                                                       \\
+       \displaystyle \textbf{Minimize}      & \displaystyle \sum_{i}\sum_{j}{a_i d_{ij} X_{ij}} &&                                          & (1)                                                                               \\
+       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j}{X_{ij} = 1}                && \forall i \in I                          & (2)                                                                               \\
+                                            & \displaystyle \sum_{j}{Y_j} = p                   &&                                          & (3)                                                                               \\
+                                            & X_{ij} \leq Y_{j}                                 && \forall i \in I \quad \forall j \in J    & (4)                                                                               \\
+                                            & X_{ij} \in \{0, 1\}                               && \forall i \in I \quad \forall j \in J    & (5)                                                                               \\
+                                            & Y_j \in \{0, 1\}                                  && \forall j \in J                          & (6)                                                                               \\
+                                            &                                                   &&                                          &                                                                                   \\
+       \displaystyle \textbf{Where}         && i                                                & =                                         & \textrm{index of demand points/areas/objects in set } I                           \\
+                                            && j                                                & =                                         & \textrm{index of potential facility sites in set } J                              \\
+                                            && p                                                & =                                         & \textrm{the number of facilities to be sited}                                     \\
+                                            && a_i                                              & =                                         & \textrm{service load or population demand at client location } i \\
+                                            && d_{ij}                                           & =                                         & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
+                                            && X_{ij}                                           & =                                         & \begin{cases}
+                                                                                                                                               1, \textrm{if client location } i \textrm{ is served by facility } j             \\
+                                                                                                                                               0, \textrm{otherwise}                                                            \\
+                                                                                                                                              \end{cases}                                                                       \\
+                                            && Y_j                                              & =                                         & \begin{cases}
+                                                                                                                                               1, \textrm{if a facility is sited at location } j                                \\
+                                                                                                                                               0, \textrm{otherwise}                                                            \\
+                                                                                                                                              \end{cases}                                                                       \\
        \end{array}
 
     Parameters
