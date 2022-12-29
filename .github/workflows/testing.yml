@@ -20,7 +20,14 @@
      strategy:
        matrix:
          os: [ubuntu-latest]
-         environment-file: [.ci/38.yaml, .ci/39.yaml, .ci/310.yaml, .ci/310-DEV_shapely_dev.yaml, .ci/311.yaml, .ci/311-DEV.yaml]
+         environment-file: [
+            .ci/38-MIN.yaml,
+            .ci/39.yaml,
+            .ci/310.yaml,
+            .ci/311.yaml,
+            .ci/311-DEV.yaml,
+            .ci/311-DEV_shapely_dev.yaml,
+         ]
          include:
            - environment-file: .ci/311.yaml
              os: macos-latest
@@ -43,7 +50,7 @@
          shell: bash -l {0}
          run: pip install pulp 
        
-       - name: install bleeding edge libpysal (only Ubuntu / Python 3.10)
+       - name: install bleeding edge libpysal (only Ubuntu w/ latest Python)
          shell: bash -l {0}
          run: pip install git+https://github.com/pysal/libpysal.git@master
          if: matrix.os == 'ubuntu-latest' && contains(matrix.environment-file, 'DEV')
