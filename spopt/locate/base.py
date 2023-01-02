@@ -500,10 +500,10 @@ class FacilityModelBuilder:
 
         obj: T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        cl_ni : numpy.array
-            A 1D array that defines capacity limits of facility points.
         dq_ni : numpy.array
             A 1D array that defines demand quantities for demand points.
+        cl_ni : numpy.array
+            A 1D array that defines capacity limits of facility points.
         range_client : range
             The range of demand points.
         range_facility : range
