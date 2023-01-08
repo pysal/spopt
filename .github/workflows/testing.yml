@@ -27,7 +27,7 @@
             .ci/311.yaml,
             .ci/311-DEV.yaml,
             .ci/311-DEV_shapely_dev.yaml,
-            ]
+         ]
          include:
            - environment-file: .ci/311.yaml
              os: macos-latest

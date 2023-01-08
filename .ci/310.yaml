@@ -23,6 +23,6 @@ dependencies:
   # docs
   - nbsphinx
   - numpydoc
-  - sphinx<=4.5.0
+  - sphinx
   - sphinxcontrib-bibtex
   - sphinx_bootstrap_theme
