@@ -20,9 +20,3 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
-  # docs
-  - nbsphinx
-  - numpydoc
-  - sphinx<=4.5.0
-  - sphinxcontrib-bibtex
-  - sphinx_bootstrap_theme
