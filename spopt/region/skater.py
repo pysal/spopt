@@ -4,10 +4,10 @@ from sklearn.metrics import pairwise as skm
 from scipy.sparse import csgraph as cg
 from scipy.optimize import OptimizeWarning
 from collections import namedtuple
-from warnings import warn
 import time
 import numpy as np
 import copy
+import warnings
 
 deletion = namedtuple("deletion", ("in_node", "out_node", "score"))
 
@@ -30,8 +30,9 @@ class SpanningForest(object):
         dissimilarity : callable (default sklearn.metrics.pairwise.manhattan_distances)
             A callable distance metric.
         affinity : callable (default None)
-            A callable affinity metric between 0 and 1, which is
-            inverted to provide a dissimilarity metric.
+            A callable affinity metric between 0 and 1, which is inverted to provide a
+            dissimilarity metric. Either ``affinity`` or ``dissimilarity`` should be
+            provided. If both arguments are provided ``dissimilarity`` is chosen.
         reduction : callable (default numpy.sum())
             The reduction applied over all clusters to provide the map score.
         center : callable (default numpy.mean())
@@ -49,12 +50,21 @@ class SpanningForest(object):
         *less desirable* than smaller values. Typically, this means we use addition.
 
         """
+
+        if affinity is not None and dissimilarity is not None:
+            warnings.warn(
+                "Both the `affinity` and `dissimilarity` arguments "
+                "were passed in. Defaulting `dissimilarity`.",
+                UserWarning,
+            )
+            affinity = None
+
         if affinity is not None:
-            # invert the 0,1 affinity to
-            # to an unbounded positive dissimilarity
-            metric = lambda x: -np.log(affinity(x))
+            # invert the 0,1 affinity to an unbounded positive dissimilarity
+            metric = lambda x, y: -np.log(affinity(x, y))
         else:
-            metric = dissimilarity
+            metric = lambda x, y: dissimilarity(x, y)
+
         self.metric = metric
         self.reduction = reduction
         self.center = center
@@ -113,7 +123,7 @@ class SpanningForest(object):
             attribute_kernel = np.ones((W.n, W.n))
             data = np.ones((W.n, 1))
         else:
-            attribute_kernel = self.metric(data)
+            attribute_kernel = self.metric(data, None)
         W.transform = "b"
         W = W.sparse
         start = time.time()
@@ -156,7 +166,7 @@ class SpanningForest(object):
             ]
             ignoring_islands = int(islands.lower() == "ignore")
             chosen_warning = island_warnings[ignoring_islands]
-            warn(
+            warnings.warn(
                 f"By default, the graph is disconnected! {chosen_warning}",
                 OptimizeWarning,
                 stacklevel=2,
@@ -195,7 +205,7 @@ class SpanningForest(object):
                 current_n_subtrees, current_labels = cg.connected_components(
                     MSF, directed=False
                 )
-                warn(
+                warnings.warn(
                     (
                         "MSF contains no valid moves after finding "
                         f"{current_n_subtrees} subtrees. Decrease the "
@@ -267,8 +277,8 @@ class SpanningForest(object):
         part_scores = [
             self.reduction(
                 self.metric(
-                    X=data[labels == l],
-                    Y=self.center(data[labels == l], axis=0).reshape(1, -1),
+                    data[labels == l],
+                    self.center(data[labels == l], axis=0).reshape(1, -1),
                 )
             )
             for l in range(n_subtrees)
@@ -330,7 +340,7 @@ class SpanningForest(object):
             )
         if self.verbose:
             try:
-                from tqdm import tqdm
+                from tqdm.auto import tqdm
             except ImportError:
 
                 def tqdm(noop, desc=""):
