@@ -300,9 +300,9 @@ def plot_components(gdf, w):
     Parameters
     ----------
 
-    gdf: geopandas.GeoDataframe
+    gdf : geopandas.GeoDataframe
         Geodataframe of component data.
-    w: libpysal.weights.W
+    w : libpysal.weights.W
         PySAL weights object defined on ``gdf``.
 
     Returns
@@ -334,7 +334,7 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
         The name of the spatial extensive attribute variable.
     threshold : {int, float}
         The threshold value.
-    policy: str (default 'single')
+    policy : str (default 'single')
         ``'single'`` will attach an infeasible component to a feasible
         component based on a single join using the minimum nearest
         neighbor distance between areas of infeasible components and
@@ -348,7 +348,7 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
     Returns
     -------
 
-    gdf: geopandas.GeoDataFrame
+    gdf : geopandas.GeoDataFrame
         Geodataframe containing modified data.
     w : libpysal.weights.W
         Weights object created from given data.
