@@ -375,7 +375,9 @@ class SpanningForest(object):
             )
 
             if local_n_subtrees <= current_n_subtrees:
-                raise Exception("Malformed MSF!")
+                raise ValueError(
+                    "Malformed MSF! `local_n_subtrees <= current_n_subtrees`"
+                )
 
             # compute the score of these components
             score = self.score(data, labels=local_labels, quorum=quorum)
