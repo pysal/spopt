@@ -193,7 +193,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         p_center = PCenter(name, model, cost_matrix)
 
         FacilityModelBuilder.add_facility_integer_variable(p_center, r_fac, "y[{i}]")
-        FacilityModelBuilder.add_client_assign_integer_variable(
+        FacilityModelBuilder.add_client_assign_variable(
             p_center, r_cli, r_fac, "z[{i}_{j}]"
         )
         FacilityModelBuilder.add_weight_continuous_variable(p_center)

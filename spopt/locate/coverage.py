@@ -256,8 +256,13 @@ class LSCP(LocateSolver, BaseOutputMixin):
                     f"({sum_demand} > {sum_capacity})."
                 )
 
-            FacilityModelBuilder.add_client_assign_integer_variable(
-                lscp, r_cli, r_fac, "z[{i}_{j}]", lp_category=pulp.LpContinuous
+            FacilityModelBuilder.add_client_assign_variable(
+                lscp,
+                r_cli,
+                r_fac,
+                "z[{i}_{j}]",
+                up_bound=None,
+                lp_category=pulp.LpContinuous,
             )
 
             FacilityModelBuilder.add_facility_capacity_constraint(

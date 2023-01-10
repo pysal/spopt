@@ -232,11 +232,13 @@ class FacilityModelBuilder:
         setattr(obj, "cli_vars", cli_vars)
 
     @staticmethod
-    def add_client_assign_integer_variable(
+    def add_client_assign_variable(
         obj: T_FacModel,
         range_client: range,
         range_facility: range,
         var_name: str,
+        low_bound=0,
+        up_bound=1,
         lp_category=pulp.LpInteger,
     ) -> None:
         """Client assignment integer decision variables (used for allocation).
@@ -252,6 +254,10 @@ class FacilityModelBuilder:
             The range of facility points.
         var_name : str
             A formatted string for the  client assignment variable name.
+        low_bound : int (default 0)
+            The lower bound for variable values. Set to ``None`` for no lower bound.
+        up_bound : int (default 1)
+            The upper bound for variable values. Set to ``None`` for no upper bound.
         lp_category : pulp.LpVariable parameter
             The category this variable is in,
             ``pulp.LpInteger`` or ``pulp.LpContinuous``.
@@ -268,8 +274,8 @@ class FacilityModelBuilder:
                 [
                     pulp.LpVariable(
                         var_name.format(i=i, j=j),
-                        lowBound=0,
-                        upBound=1,
+                        lowBound=low_bound,
+                        upBound=up_bound,
                         cat=lp_category,
                     )
                     for j in range_facility

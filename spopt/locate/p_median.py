@@ -242,7 +242,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         p_median = PMedian(name, model, aij, weights_sum)
 
         FacilityModelBuilder.add_facility_integer_variable(p_median, r_fac, "y[{i}]")
-        FacilityModelBuilder.add_client_assign_integer_variable(
+        FacilityModelBuilder.add_client_assign_variable(
             p_median, r_cli, r_fac, "z[{i}_{j}]"
         )
 
