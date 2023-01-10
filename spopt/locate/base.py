@@ -286,6 +286,7 @@ class FacilityModelBuilder:
 
         Parameters
         ----------
+
         obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
 
@@ -477,26 +478,36 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_facility_capacity_constraint(
-        obj: T_FacModel, dq_ni, cl_ni, range_client, range_facility
+        obj: T_FacModel,
+        dq_ni: np.array,
+        cl_ni: np.array,
+        range_client: range,
+        range_facility: range,
     ) -> None:
         """
-        set facility capacity constraint:
-        In plain-ish English :
-        Demand at (i) multiplied by the fraction of demand (i) assigned to facility (j) must be <= to facility (j)'s capacity. a_i(Z_i_j) <= C_j(X_j)
+        Create the facility capacity constraints:
+
+        Demand at :math:`i` multiplied by the fraction of demand :math:`i`
+        assigned to facility :math:`j` must be less than or equal to the
+        capacity at facility :math:`j`.
+
+        :math:`a_i Z_{ij} \leq C_j X_j`
+
         n1_1 * fac_var1 + n1_2 * fac_var1 + ... + nij * fac_varj >= dem_var[i]
 
         Parameters
         ----------
-        obj : T_FacModel
-            bounded type of LocateSolver class
-        dq_ni : np.array
-            one-dimensional array that defines demand quantities for demand points
-        cl_ni : np.array
-            one-dimensional array that defines capacity limits of facility points
+
+        obj: T_FacModel
+            A bounded type of the ``LocateSolver`` class.
+        dq_ni : numpy.array
+            A 1D array that defines demand quantities for demand points.
+        cl_ni : numpy.array
+            A 1D array that defines capacity limits of facility points.
         range_client : range
-            range of demand points quantity
+            The range of demand points.
         range_facility : range
-            range of facility points quantity
+            The range of facility points.
 
         Returns
         -------
@@ -516,23 +527,28 @@ class FacilityModelBuilder:
                 )
         else:
             raise AttributeError(
-                "before setting constraints must set facility variable and demand quantity variable"  # might want to update this message later
+                "Facility and client assignment variables must "
+                "be set prior to adding facility capacity constraints."
             )
 
     @staticmethod
     def add_client_demand_satisfaction_constraint(
-        obj: T_FacModel, range_client, range_facility
+        obj: T_FacModel,
+        range_client: range,
+        range_facility: range,
     ) -> None:
         """
+        Create the client demand satisfaction constraints.
 
         Parameters
         ----------
-        obj : T_FacModel
-            bounded type of LocateSolver class
+
+        obj: T_FacModel
+            A bounded type of the ``LocateSolver`` class.
         range_client : range
-            range of demand points quantity
+            The range of demand points.
         range_facility : range
-            range of facility points quantity
+            The range of facility points.
 
         Returns
         -------
@@ -554,7 +570,8 @@ class FacilityModelBuilder:
                 )
         else:
             raise AttributeError(
-                "The facility variable and demand quantity variable most both be set in order to add a client demand satisfaction constraint."
+                "Facility and client assignment variables must be set "
+                "prior to adding client demand satisfaction constraints."
             )
 
     @staticmethod

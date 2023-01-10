@@ -18,20 +18,20 @@ class PDispersion(LocateSolver):
     .. math::
 
        \begin{array}{lllll}
-       \displaystyle \textbf{Maximize}      & \displaystyle D                       &&                                  & (1)                                                                               \\
-       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{i}{Y_i} = p       &&                                  & (2)                                                                               \\
-                                            & D \leq d_{ij} + M (2 - Y_{i} - Y_{j}) && \forall i \quad \forall j > i    & (3)                                                                               \\
-                                            & Y_i \in \{0, 1\}                      && \forall i                        & (4)                                                                               \\
-                                            &                                       &&                                  &                                                                                   \\
-       \displaystyle \textbf{Where}         && i, j                                 & =                                 & \textrm{index of potential facility sites}                                        \\
-                                            && p                                    & =                                 & \textrm{the number of facilities to be sited}                                     \\
-                                            && d_{ij}                               & =                                 & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
-                                            && D                                    & =                                 & \textrm{minimum distance between any two sited facilities } i \textrm{ and } j    \\
-                                            && M                                    & =                                 & \textrm{some large number; such that } M \geq \max_{ij}\{d_{ij}\}                 \\
-                                            && Y_i                                  & =                                 & \begin{cases}
-                                                                                                                           1, \textrm{if a facility is sited at location } i                                \\
-                                                                                                                           0, \textrm{otherwise}                                                            \\
-                                                                                                                          \end{cases}                                                                       \\
+       \displaystyle \textbf{Maximize}      & \displaystyle D                       &&                                      & (1)                                                                               \\
+       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{i \in I}{Y_i} = p &&                                      & (2)                                                                               \\
+                                            & D \leq d_{ij} + M (2 - Y_{i} - Y_{j}) && \forall i \in I \quad \forall j > i  & (3)                                                                               \\
+                                            & Y_i \in \{0, 1\}                      && \forall i \in I                      & (4)                                                                               \\
+                                            &                                       &&                                      &                                                                                   \\
+       \displaystyle \textbf{Where}         && i, j                                 & =                                     & \textrm{index of potential facility sites in set } I                              \\
+                                            && p                                    & =                                     & \textrm{the number of facilities to be sited}                                     \\
+                                            && d_{ij}                               & =                                     & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
+                                            && D                                    & =                                     & \textrm{minimum distance between any two sited facilities } i \textrm{ and } j    \\
+                                            && M                                    & =                                     & \textrm{some large number; such that } M \geq \max_{ij}\{d_{ij}\}                 \\
+                                            && Y_i                                  & =                                     & \begin{cases}
+                                                                                                                               1, \textrm{if a facility is sited at location } i                                \\
+                                                                                                                               0, \textrm{otherwise}                                                            \\
+                                                                                                                              \end{cases}                                                                       \\
        \end{array}
 
     Parameters

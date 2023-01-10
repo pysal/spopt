@@ -17,14 +17,15 @@ Tutorials
     :maxdepth: 1
     :caption: Locate:
 
-    notebooks/facloc-real-world.ipynb
     notebooks/lscp.ipynb
     notebooks/lscp_gis.ipynb
+    notebooks/lscp_capacity.ipynb
+    notebooks/lscpb.ipynb
     notebooks/mclp.ipynb
     notebooks/mclp_gis.ipynb
     notebooks/p-center.ipynb
     notebooks/p-median.ipynb
-    notebooks/lscpb.ipynb
-    notebooks/facloc-lscpb-real-world.ipynb
     notebooks/p-dispersion.ipynb
+    notebooks/facloc-real-world.ipynb
+    notebooks/facloc-lscpb-real-world.ipynb
     notebooks/facloc-disperse-real-world.ipynb
