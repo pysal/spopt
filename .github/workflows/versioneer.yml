@@ -20,11 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
       - name: Install and run versioneer
         run: |
-          pip install versioneer[toml]
+          pip install versioneer
           versioneer install
       - name: Blacken code
         uses: psf/black@stable
