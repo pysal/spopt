@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-from distutils.command.build_py import build_py
 import versioneer
 
 package = "spopt"  # name of package
@@ -34,9 +33,9 @@ def setup_package():
     extras_reqs = reqs
 
     setup(
-        name=package,
+        name=package,  # needed by GitHub dependency graph
         version=versioneer.get_version(),
-        cmdclass=versioneer.get_cmdclass({"build_py": build_py}),
+        cmdclass=versioneer.get_cmdclass(),
         description="Spatial Optimization in PySAL",
         long_description=long_description,
         long_description_content_type="text/markdown",
