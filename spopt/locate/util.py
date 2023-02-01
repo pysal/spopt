@@ -85,7 +85,6 @@ def simulated_geo_points(
     numpy.random.seed(seed)
 
     while not simulated_points_all:
-
         # generate (x,y) coordinates within bounding box of ``geom``
         x = numpy.random.uniform(xmin, xmax, 1)
         y = numpy.random.uniform(ymin, ymax, 1)

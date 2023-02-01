@@ -5,7 +5,6 @@ from spopt.locate.util import simulated_geo_points
 
 class TestSimulatedGeoPoints:
     def setup_method(self) -> None:
-
         lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
         ntw = spaghetti.Network(in_data=lattice)
         gdf = spaghetti.element_as_gdf(ntw, arcs=True)

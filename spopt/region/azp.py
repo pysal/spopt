@@ -131,7 +131,6 @@ class AZP(BaseSpOptHeuristicSolver):
         initial_labels=None,
         objective_func=ObjectiveFunctionPairwise(),
     ):
-
         self.gdf = gdf
         self.w = w
         self.attrs_name = attrs_name
@@ -862,7 +861,6 @@ class AZPSimulatedAnnealing:
                 initial_labels = self.azp.labels_
 
                 if old_sol is not None:
-
                     if (old_sol == initial_labels).all():
                         break
             # added termination condition (not in Openshaw & Rao (1995))
@@ -1096,7 +1094,6 @@ class AZPBasicTabu(AZPTabu):
                     if self.allow_move_strategy(
                         aspiration_move.area, aspiration_move.new_region, labels
                     ):
-
                         self._make_move(
                             aspiration_move.area,
                             aspiration_move.new_region,

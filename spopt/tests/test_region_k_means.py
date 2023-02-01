@@ -12,7 +12,6 @@ RANDOM_STATE = 12345
 
 class TestRegionKMeansHeuristic:
     def setup_method(self):
-
         # small 3 x 3 example w/ 3 regions
         dim_small = 3
         self.w_small = libpysal.weights.lat2W(dim_small, dim_small)

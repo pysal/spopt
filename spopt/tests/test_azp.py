@@ -16,7 +16,6 @@ MEXICO = geopandas.read_file(pth)
 
 class TestAZP:
     def setup_method(self):
-
         self.mexico = MEXICO.copy()
 
         # labels for from_w:
