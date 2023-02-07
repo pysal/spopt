@@ -64,7 +64,6 @@ class AllowMoveAZP(AllowMoveStrategy):
             self.objective_val += diff
             return True
         else:
-
             return False
 
 
@@ -86,7 +85,6 @@ class AllowMoveAZPSimulatedAnnealing(AllowMoveStrategy):
             self.notify_move_made()
             return True
         else:
-
             prob = math.exp(-diff / self.t)
             move_allowed = random.random() < prob
             if move_allowed:

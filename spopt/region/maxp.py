@@ -310,7 +310,6 @@ def growClusterForPoly(
     i = 0
 
     while i < len(NeighborPolys):
-
         if spatialAttrTotal >= spatialThre:
             break
         Pn = NeighborPolys[i]
@@ -802,7 +801,6 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
         verbose=False,
         policy="single",
     ):
-
         self.gdf = gdf
         self.w = w
         self.attrs_name = attrs_name

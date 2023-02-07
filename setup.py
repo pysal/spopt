@@ -20,7 +20,6 @@ def _get_requirements_from_files(groups_files):
 
 
 def setup_package():
-
     _groups_files = {
         "base": "requirements.txt",  # basic requirements
         "docs": "requirements_docs.txt",  # requirements for building docs

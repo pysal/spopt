@@ -247,7 +247,6 @@ class LSCP(LocateSolver, BaseOutputMixin):
             )
 
         if demand_quantity_arr is not None:
-
             sum_demand = demand_quantity_arr.sum()
             sum_capacity = facility_capacity_arr.sum()
             if sum_demand > sum_capacity:

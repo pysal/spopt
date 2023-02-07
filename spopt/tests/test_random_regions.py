@@ -21,7 +21,6 @@ SYNTH_IDS = SYNTH_W.id_order
 # Empirical tests ------------------------------------------------------------------------
 class TestRandomRegionEmpirical:
     def setup_method(self):
-
         self.mexico = MEXICO.copy()
         self.cards = self.mexico.groupby(by="HANSON03").count().NAME.values.tolist()
         self.ids = self.mexico.index.values.tolist()
@@ -71,7 +70,6 @@ class TestRandomRegionEmpirical:
 
 class TestRandomRegionsEmpirical:
     def setup_method(self):
-
         self.mexico = MEXICO.copy()
         self.cards = self.mexico.groupby(by="HANSON03").count().NAME.values.tolist()
         self.ids = self.mexico.index.values.tolist()
@@ -98,7 +96,6 @@ class TestRandomRegionsEmpirical:
 # Synthetic tests ------------------------------------------------------------------------
 class TestRandomRegionSynthetic:
     def setup_method(self):
-
         self.nregs = N_REGIONS
         self.cards = SYNTH_CARDS
         self.w = SYNTH_W
@@ -183,7 +180,6 @@ class TestRandomRegionSynthetic:
 
 class TestRandomRegionsSynthetic:
     def setup_method(self):
-
         self.nregs = N_REGIONS
         self.cards = SYNTH_CARDS
         self.w = SYNTH_W

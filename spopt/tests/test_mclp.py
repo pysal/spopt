@@ -127,7 +127,6 @@ class TestSyntheticLocate:
         )
 
     def test_mclp_from_geodataframe(self):
-
         mclp = MCLP.from_geodataframe(
             self.clients_snapped,
             self.facilities_snapped,
@@ -394,7 +393,6 @@ class TestRealWorldLocate:
 
 class TestErrorsWarnings:
     def setup_method(self) -> None:
-
         pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
         pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
         pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])

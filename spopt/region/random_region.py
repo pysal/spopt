@@ -141,7 +141,6 @@ class RandomRegions:
         max_swaps=1000000,
         permutations=99,
     ):
-
         solutions = []
         for i in range(permutations):
             solutions.append(
@@ -280,7 +279,6 @@ class RandomRegion:
         compact=False,
         max_swaps=1000000,
     ):
-
         self.n = len(area_ids)
         ids = copy.copy(area_ids)
         self.ids = list(np.random.permutation(ids))
@@ -439,7 +437,6 @@ class RandomRegion:
             grow_region = self.grow_free
         iter = 0
         while iter < maxiter:
-
             # regionalization setup
             regions = []
             size_pre = 0
@@ -461,7 +458,6 @@ class RandomRegion:
                     size_pre = len(regions)
                 # test if swapping is needed
                 if counter == len(candidates):
-
                     # start swapping
                     # -- swapping simply changes the candidate list
                     swap_in = None  # area to become new candidate
