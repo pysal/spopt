@@ -148,7 +148,6 @@ class TestSyntheticLocate:
         )
 
     def test_pcenter_preselected_facility_client_array_from_geodataframe(self):
-
         known_objval = 6.2520432
         known_solution_set = ["y_2_", "y_3_", "y_4_"]
 
@@ -255,7 +254,6 @@ class TestRealWorldLocate:
 
 class TestErrorsWarnings:
     def setup_method(self) -> None:
-
         pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
         pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
         pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])

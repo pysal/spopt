@@ -15,7 +15,6 @@ MEXICO = geopandas.read_file(pth)
 
 class TestSpenc:
     def setup_method(self):
-
         # Mexico
         self.mexico = MEXICO.copy()
         self.w_mexico = libpysal.weights.Queen.from_dataframe(self.mexico)

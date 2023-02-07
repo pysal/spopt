@@ -79,7 +79,6 @@ class TestSyntheticLocate:
         assert isinstance(result, PDispersion)
 
     def test_p_dispersion_preselected_facility_array_from_geodataframe(self):
-
         known_objval = 4.213464
         known_solution_set = ["y_1_", "y_3_", "y_4_"]
 
@@ -180,7 +179,6 @@ class TestRealWorldLocate:
 
 class TestErrorsWarnings:
     def setup_method(self) -> None:
-
         pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
         pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
         pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])

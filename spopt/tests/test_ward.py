@@ -14,7 +14,6 @@ MEXICO = geopandas.read_file(pth)
 
 class TestWard:
     def setup_method(self):
-
         self.mexico = MEXICO.copy()
         self.mexico["count"] = 1
         self.attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]

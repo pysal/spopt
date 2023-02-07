@@ -69,7 +69,6 @@ class WardSpatial(BaseSpOptHeuristicSolver):
     """
 
     def __init__(self, gdf, w, attrs_name, n_clusters=5, clustering_kwds=dict()):
-
         self.gdf = gdf
         self.w = w
         self.attrs_name = attrs_name

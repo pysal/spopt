@@ -15,7 +15,6 @@ MEXICO = geopandas.read_file(pth)
 
 class TestMaxPHeuristic:
     def setup_method(self):
-
         self.mexico = MEXICO.copy()
         self.mexico["count"] = 1
         self.w = libpysal.weights.Queen.from_dataframe(self.mexico)
