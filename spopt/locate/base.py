@@ -469,13 +469,35 @@ class FacilityModelBuilder:
         None
 
         """
+        if predefined_fac.ndim == 2:
+            n,k = predefined_fac.shape
+            assert k = 1, "predefined facilties array must only be of shape (n_supply, 1) or (n_supply,)"
+            predefined_fac = predefined_fac.squeeze()
+        
+        n_predefined = len(predefined_fac)
+
         if hasattr(obj, "fac_vars"):
             fac_vars = getattr(obj, "fac_vars")
-            model = getattr(obj, "problem")
-            for ind in range(len(predefined_fac)):
-                if predefined_fac[ind]:
-                    fac_vars[ind].setInitialValue(1)
-                    fac_vars[ind].fixValue()
+
+            n_facilities = len(fac_vars)
+            
+            if n_facilities < n_predefined: # treat as indices
+                dummies = numpy.zeros_like(fac_vars)
+                dummies[predefined_fac] = 1
+            elif n_facilities == n_predefined: # treat as dummies
+                dummies = predefined_fac.copy()
+            else:
+                raise ValueError(
+                        "More preselected facilities were provided than supply sites. "
+                        "Expected fewer preselected facilities than supply sites. Check"
+                        " the shape of the predefined faciltiies & supply sites provided."
+                        )
+                
+            
+            for i, dummy in enumerate(dummies):
+                if dummy:
+                    fac_vars[i].setInitialValue(1)
+                    fac_vars[i].fixValue()
         else:
             raise AttributeError(
                 "Before setting predefined facility constraints "
