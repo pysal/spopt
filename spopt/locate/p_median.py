@@ -130,6 +130,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         weights: np.array,
         p_facilities: int,
         predefined_facilities_arr: np.array = None,
+        facility_capacities: np.array = None,
         name: str = "p-median",
     ):
         """
@@ -250,7 +251,14 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             FacilityModelBuilder.add_predefined_facility_constraint(
                 p_median, predefined_facilities_arr
             )
-
+        if facility_capacities is not None:
+            FacilityModelBuilder.add_facility_capacity_constraint(
+                p_median,
+                weights,
+                facility_capacities,
+                range(len(weights)),
+                range(len(facility_capacities))
+                )
         p_median.__add_obj(r_cli, r_fac)
 
         FacilityModelBuilder.add_facility_constraint(p_median, p_facilities)
@@ -268,6 +276,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         facility_col: str,
         weights_cols: str,
         p_facilities: int,
+        facility_capacity_col: str,
         predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
         name: str = "p-median",
@@ -295,6 +304,8 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
            The number of facilities to be located.
         predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
+        facility_capacities_col: str (default None)
+            Column name representing the capacities of each facility. 
         distance_metric : str (default 'euclidean')
             A metric used for the distance calculations supported by
             `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
@@ -380,6 +391,10 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         if predefined_facility_col is not None:
             predefined_facilities_arr = gdf_fac[predefined_facility_col].to_numpy()
 
+        facility_capacities = None
+        if facility_capacities_col is not None:
+            facility_capacities = gdf_fac[facility_capacities_col].to_numpy()
+
         service_load = gdf_demand[weights_cols].to_numpy()
         dem = gdf_demand[demand_col]
         fac = gdf_fac[facility_col]
@@ -411,7 +426,15 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         distances = cdist(dem_data, fac_data, distance_metric)
 
         return cls.from_cost_matrix(
-            distances, service_load, p_facilities, predefined_facilities_arr, name
+            cost_matrix=distances, 
+            weights=service_load, 
+            p_facilities=p_facilities, 
+            predefined_facilities_arr = predefined_facilities_arr, 
+            facility_capcities=facility_capacities
+            name=("capacitated" + name 
+                  if facility_capacities is not None 
+                  else name
+                )
         )
 
     def facility_client_array(self) -> None:

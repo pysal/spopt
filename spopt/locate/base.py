@@ -471,7 +471,7 @@ class FacilityModelBuilder:
         """
         if predefined_fac.ndim == 2:
             n,k = predefined_fac.shape
-            assert k = 1, "predefined facilties array must only be of shape (n_supply, 1) or (n_supply,)"
+            assert k == 1, "predefined facilties array must only be of shape (n_supply, 1) or (n_supply,)"
             predefined_fac = predefined_fac.squeeze()
         
         n_predefined = len(predefined_fac)
