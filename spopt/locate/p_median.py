@@ -276,7 +276,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         facility_col: str,
         weights_cols: str,
         p_facilities: int,
-        facility_capacity_col: str,
+        facility_capacity_col: str = None,
         predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
         name: str = "p-median",
