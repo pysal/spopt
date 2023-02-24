@@ -392,7 +392,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             predefined_facilities_arr = gdf_fac[predefined_facility_col].to_numpy()
 
         facility_capacities = None
-        if facility_capacities_col is not None:
+        if facility_capacity_col is not None:
             facility_capacities = gdf_fac[facility_capacities_col].to_numpy()
 
         service_load = gdf_demand[weights_cols].to_numpy()
