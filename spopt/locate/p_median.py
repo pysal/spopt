@@ -430,7 +430,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             weights=service_load, 
             p_facilities=p_facilities, 
             predefined_facilities_arr = predefined_facilities_arr, 
-            facility_capcities=facility_capacities
+            facility_capcities=facility_capacities,
             name=("capacitated" + name 
                   if facility_capacities is not None 
                   else name
