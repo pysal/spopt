@@ -26,3 +26,6 @@ lib64
 __pycache__
 
 .coverage
+
+.ruff_cache
+.pytest_cache

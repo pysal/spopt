@@ -1,8 +1,0 @@
-folium
-glpk
-inequality
-matplotlib
-matplotlib-scalebar
-overpy
-routingpy
-seaborn
