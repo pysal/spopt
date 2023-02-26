@@ -16,7 +16,7 @@
      runs-on: ${{ matrix.os }}
      timeout-minutes: 30
      env:
-       RUN_TEST: pytest spopt -v -r a -n auto --cov spopt --cov-config .coveragerc --cov-report xml --color yes --cov-append --cov-report term-missing
+       RUN_TEST: pytest spopt -v -r a -n auto --cov spopt --cov-report xml --color yes --cov-append --cov-report term-missing
      strategy:
        matrix:
          os: [ubuntu-latest]
@@ -26,7 +26,6 @@
             .ci/310.yaml,
             .ci/311.yaml,
             .ci/311-DEV.yaml,
-            .ci/311-DEV_shapely_dev.yaml,
          ]
          include:
            - environment-file: .ci/311.yaml

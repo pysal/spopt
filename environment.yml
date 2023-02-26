@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies: 
   - python=3.10
-  - geopandas>=0.10.0
+  - geopandas>=0.12.0
   - jupyterlab
   - libpysal
   - mapclassify
@@ -14,6 +14,7 @@ dependencies:
   - pulp
   - scikit-learn>=0.22
   - scipy>=1.3.2
+  - shapely>=2.0
   - tqdm>=4.27.0
   
   # notebook/binder specific
