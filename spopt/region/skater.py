@@ -277,11 +277,11 @@ class SpanningForest(object):
         part_scores = [
             self.reduction(
                 self.metric(
-                    data[labels == l],
-                    self.center(data[labels == l], axis=0).reshape(1, -1),
+                    data[labels == _l],
+                    self.center(data[labels == _l], axis=0).reshape(1, -1),
                 )
             )
-            for l in range(n_subtrees)
+            for _l in range(n_subtrees)
         ]
         return self.reduction(part_scores).item()
 
@@ -506,7 +506,9 @@ class Skater(BaseSpOptHeuristicSolver):
     Show the clustering results.
 
     >>> chicago['skater_new'] = model.labels_
-    >>> chicago.plot(column='skater_new', categorical=True, figsize=(12,8), edgecolor='w')
+    >>> chicago.plot(
+    ...     column='skater_new', categorical=True, figsize=(12,8), edgecolor='w'
+    ... )
 
     """
 

@@ -11,12 +11,10 @@ __email__ = "sjsrey@gmail.com"
 from ..BaseClass import BaseSpOptHeuristicSolver
 
 from scipy.spatial.distance import pdist, squareform
-from scipy.spatial import KDTree
 from scipy.sparse.csgraph import connected_components
-import libpysal
 import numpy as np
 from copy import deepcopy
-from .base import infeasible_components, plot_components, modify_components
+from .base import modify_components
 
 ITERCONSTRUCT = 999
 ITERSA = 10
@@ -34,9 +32,10 @@ def maxp(
     verbose=False,
     policy="single",
 ):
-    """The max-p-regions involves the aggregation of n areas into an unknown maximum number of
-    homogeneous regions, while ensuring that each region is contiguous and satisfies a minimum
-    threshold value imposed on a predefined spatially extensive attribute.
+    """The max-p-regions involves the aggregation of n areas into an unknown maximum
+     number of homogeneous regions, while ensuring that each region is contiguous and
+     satisfies a minimum threshold value imposed on a predefined spatially extensive
+    attribute.
 
     Parameters
     ----------
@@ -48,7 +47,8 @@ def maxp(
         Weights object created from given data
 
     attrs_name : list, required
-        Strings for attribute names to measure similarity (cols of ``geopandas.GeoDataFrame``).
+        Strings for attribute names to measure similarity
+        (cols of ``geopandas.GeoDataFrame``).
 
     threshold_name : string, requied
         The name of the spatial extensive attribute variable.
@@ -237,8 +237,8 @@ def construction_phase(
                     regionSpatialAttr[C] = spatialAttrTotal
         num_regions = len(regionList)
 
-        for i, l in enumerate(labels):
-            if l == -1:
+        for i, _l in enumerate(labels):
+            if _l == -1:
                 enclave.append(i)
 
         if num_regions < max_p:

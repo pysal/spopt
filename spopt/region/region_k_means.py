@@ -20,7 +20,6 @@ from .base import (
     _centroid,
     _closest,
     _seeds,
-    is_neighbor,
 )
 
 
@@ -68,7 +67,6 @@ def region_k_means(X, n_clusters, w, drop_islands=True, seed=0):
     for i, seed in enumerate(seeds):
         label[seed] = i
     to_assign = areas[label == -1]
-    c = 0
     while to_assign.size > 0:
         assignments = defaultdict(list)
         for rid in range(k):
@@ -101,7 +99,6 @@ def region_k_means(X, n_clusters, w, drop_islands=True, seed=0):
         to_assign = areas[label == -1]
 
     # reassignment phase
-    changed = []
     g = w_to_g(w)
 
     iters = 1

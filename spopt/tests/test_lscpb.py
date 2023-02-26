@@ -6,7 +6,7 @@ import spaghetti
 from shapely.geometry import Point, Polygon
 
 from spopt.locate import LSCPB
-from spopt.locate.base import FacilityModelBuilder, LocateSolver
+from spopt.locate.base import FacilityModelBuilder
 from spopt.locate.util import simulated_geo_points
 
 import os

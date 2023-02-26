@@ -1,5 +1,4 @@
-from pyproj import crs
-from spopt.locate.base import FacilityModelBuilder, LocateSolver, T_FacModel
+from spopt.locate.base import FacilityModelBuilder
 import numpy
 import geopandas
 import pandas
@@ -419,7 +418,7 @@ class TestErrorsWarnings:
         with pytest.raises(AttributeError, match="Before setting facility constraint"):
             dummy_class = MCLP("dummy", pulp.LpProblem("name"))
             dummy_p_facility = 1
-            FacilityModelBuilder.add_facility_constraint(dummy_class, 1)
+            FacilityModelBuilder.add_facility_constraint(dummy_class, dummy_p_facility)
 
     def test_attribute_error_add_maximal_coverage_constraint(self):
         with pytest.raises(

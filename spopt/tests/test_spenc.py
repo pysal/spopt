@@ -1,7 +1,6 @@
 import geopandas
 import libpysal
 import numpy
-import pytest
 
 from spopt.region import Spenc
 

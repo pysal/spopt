@@ -289,8 +289,8 @@ def infeasible_components(gdf, w, threshold_var, threshold):
     gb = gdf.groupby(by="_components").sum(numeric_only=True)
     gdf.drop(columns="_components", inplace=True)
     if gb[threshold_var].min() < threshold:
-        l = gb[gb[threshold_var] < threshold]
-        return l.index.values.tolist()
+        _l = gb[gb[threshold_var] < threshold]
+        return _l.index.values.tolist()
     return []
 
 

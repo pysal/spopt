@@ -471,7 +471,6 @@ class FacilityModelBuilder:
         """
         if hasattr(obj, "fac_vars"):
             fac_vars = getattr(obj, "fac_vars")
-            model = getattr(obj, "problem")
             for ind in range(len(predefined_fac)):
                 if predefined_fac[ind]:
                     fac_vars[ind].setInitialValue(1)

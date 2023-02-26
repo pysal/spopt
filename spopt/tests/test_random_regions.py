@@ -18,7 +18,7 @@ SYNTH_W = libpysal.weights.lat2W(10, 10, rook=True)
 SYNTH_IDS = SYNTH_W.id_order
 
 
-# Empirical tests ------------------------------------------------------------------------
+# Empirical tests ---------------------------------------------------------------------
 class TestRandomRegionEmpirical:
     def setup_method(self):
         self.mexico = MEXICO.copy()
@@ -93,7 +93,7 @@ class TestRandomRegionsEmpirical:
         )
 
 
-# Synthetic tests ------------------------------------------------------------------------
+# Synthetic tests ---------------------------------------------------------------------
 class TestRandomRegionSynthetic:
     def setup_method(self):
         self.nregs = N_REGIONS

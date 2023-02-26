@@ -101,9 +101,13 @@ class Spenc(BaseSpOptHeuristicSolver):
             space. There are three ways to assign labels after the laplacian
             embedding: ``{'kmeans', 'discretize', 'hierarchical'}``:
 
-            * ``'kmeans'`` can be applied and is a popular choice. But it can also be sensitive to initialization.
-            * ``'discretize'`` is another approach which is less sensitive to random initialization, and which usually finds better clusters.
-            * ``'hierarchical'`` decomposition repeatedly bi-partitions the graph, instead of finding the decomposition all at once, as suggested in :cite:`shi_malik_2000`.
+            * ``'kmeans'`` can be applied and is a popular choice. But it can also be
+            sensitive to initialization.
+            * ``'discretize'`` is another approach which is less sensitive to random
+            initialization, and which usually finds better clusters.
+            * ``'hierarchical'`` decomposition repeatedly bi-partitions the graph,
+            instead of finding the decomposition all at once, as suggested in
+            :cite:`shi_malik_2000`.
 
         degree : float (default 3)
             Degree of the polynomial affinity kernel. Ignored by other kernels.
@@ -156,7 +160,7 @@ class Spenc(BaseSpOptHeuristicSolver):
         - :cite:`yu_shi_2003` Multiclass spectral clustering, 2003
           Stella X. Yu, Jianbo Shi – https://doi.org/10.1109/ICCV.2003.1238361
 
-        """  # noqa E402
+        """
 
         self.gdf = gdf
         self.w = w

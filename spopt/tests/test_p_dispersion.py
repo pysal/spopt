@@ -1,17 +1,15 @@
-from pyproj import crs
-from spopt.locate.base import FacilityModelBuilder, LocateSolver, T_FacModel
+from spopt.locate.base import FacilityModelBuilder
 import numpy
 import geopandas
 import pandas
 import pulp
 import spaghetti
-from shapely.geometry import Point, Polygon
+from shapely.geometry import Polygon
 
 from spopt.locate import PDispersion
 from spopt.locate.util import simulated_geo_points
 
 import os
-import pickle
 import platform
 import pytest
 

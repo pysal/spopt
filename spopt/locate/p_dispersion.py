@@ -285,7 +285,7 @@ class PDispersion(LocateSolver):
 
         fac_type_geom = fac.geom_type.unique()
 
-        if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
+        if len(fac_type_geom) > 1 or "Point" not in fac_type_geom:
             warnings.warn(
                 (
                     "Facility geodataframe contains mixed type geometries "

@@ -106,7 +106,9 @@ class AZP(BaseSpOptHeuristicSolver):
 
     Run the skater algorithm.
 
-    >>> model = AZP(mexico, w, attrs_name, n_clusters, allow_move_strategy, random_state)
+    >>> model = AZP(
+    ...     mexico, w, attrs_name, n_clusters, allow_move_strategy, random_state
+    ... )
     >>> model.solve()
 
     Get the region IDs for unit areas.
@@ -436,7 +438,7 @@ class AZP_orig:
             corresponding area is assigned to at the beginning of the
             algorithm.
             If None, then a random initial clustering will be generated.
-        objective_func : :class:`region.ObjectiveFunction`, default: ObjectiveFunctionPairwise()
+        objective_func : region.ObjectiveFunction, default: ObjectiveFunctionPairwise()
             Refer to the corresponding argument in
             :meth:`fit_from_scipy_sparse_matrix`.
 
