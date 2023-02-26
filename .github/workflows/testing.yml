@@ -16,7 +16,7 @@
      runs-on: ${{ matrix.os }}
      timeout-minutes: 30
      env:
-       RUN_TEST: pytest spopt -v -r a -n auto --cov spopt --cov-report xml --color yes --cov-append --cov-report term-missing
+       RUN_TEST: pytest spopt -v -r a -n auto --cov spopt --cov-report xml --color yes --cov-report term-missing
      strategy:
        matrix:
          os: [ubuntu-latest]
@@ -25,7 +25,8 @@
             .ci/39.yaml,
             .ci/310.yaml,
             .ci/311.yaml,
-            .ci/311-DEV.yaml,
+            .ci/311-DEV-master.yaml,
+            .ci/311-DEV-main.yaml,
          ]
          include:
            - environment-file: .ci/311.yaml
@@ -49,10 +50,15 @@
          shell: bash -l {0}
          run: pip install pulp 
        
-       - name: install bleeding edge libpysal (only Ubuntu w/ latest Python)
+       - name: install bleeding edge libpysal@master (only Ubuntu w/ latest Python)
          shell: bash -l {0}
          run: pip install git+https://github.com/pysal/libpysal.git@master
-         if: matrix.os == 'ubuntu-latest' && contains(matrix.environment-file, 'DEV')
+         if: matrix.os == 'ubuntu-latest' && contains(matrix.environment-file, 'DEV-master')
+      
+       - name: install bleeding edge libpysal@main (only Ubuntu w/ latest Python)
+         shell: bash -l {0}
+         run: pip install git+https://github.com/pysal/libpysal.git@main
+         if: matrix.os == 'ubuntu-latest' && contains(matrix.environment-file, 'DEV-main')
        
        - name: environment info
          shell: bash -l {0}
