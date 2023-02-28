@@ -16,7 +16,7 @@
      runs-on: ${{ matrix.os }}
      timeout-minutes: 30
      env:
-       RUN_TEST: pytest spopt -v -r a -n auto --cov spopt --cov-report xml --color yes --cov-report term-missing
+       RUN_TEST: pytest spopt -v -r a -n auto --cov spopt --color yes --cov-report term-missing --cov-append --cov-report xml .
      strategy:
        matrix:
          os: [ubuntu-latest]
@@ -25,8 +25,7 @@
             .ci/39.yaml,
             .ci/310.yaml,
             .ci/311.yaml,
-            .ci/311-DEV-master.yaml,
-            .ci/311-DEV-main.yaml,
+            .ci/311-DEV.yaml,
          ]
          include:
            - environment-file: .ci/311.yaml
@@ -48,17 +47,12 @@
 
        - name: install pulp via pip
          shell: bash -l {0}
-         run: pip install pulp 
-       
-       - name: install bleeding edge libpysal@master (only Ubuntu w/ latest Python)
-         shell: bash -l {0}
-         run: pip install git+https://github.com/pysal/libpysal.git@master
-         if: matrix.os == 'ubuntu-latest' && contains(matrix.environment-file, 'DEV-master')
+         run: pip install pulp
       
        - name: install bleeding edge libpysal@main (only Ubuntu w/ latest Python)
          shell: bash -l {0}
          run: pip install git+https://github.com/pysal/libpysal.git@main
-         if: matrix.os == 'ubuntu-latest' && contains(matrix.environment-file, 'DEV-main')
+         if: matrix.os == 'ubuntu-latest' && contains(matrix.environment-file, 'DEV')
        
        - name: environment info
          shell: bash -l {0}
@@ -85,4 +79,14 @@
          with:
            token: ${{ secrets.CODECOV_TOKEN }}
            file: ./coverage.xml
-           name: spot-codecov
+           name: spopt-codecov
+
+       - name: Generate and publish the report
+         if: |
+           failure()
+           && steps.status.outcome == 'failure'
+           && github.event_name == 'schedule'
+           && github.repository_owner == 'pysal'
+         uses: xarray-contrib/issue-from-pytest-log@v1
+         with:
+           log-path: pytest-log.jsonl
