@@ -3,6 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.11
+  - folium
   - matplotlib
   - numpy>=1.21
   - pandas>=1.0.5
@@ -20,4 +21,5 @@ dependencies:
     - git+https://github.com/geopandas/geopandas.git
     - git+https://github.com/networkx/networkx.git
     - git+https://github.com/pysal/libpysal.git
+    - git+https://github.com/pysal/mapclassify.git
     - git+https://github.com/pysal/spaghetti.git
