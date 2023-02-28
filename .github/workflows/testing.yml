@@ -48,11 +48,6 @@
        - name: install pulp via pip
          shell: bash -l {0}
          run: pip install pulp
-      
-       - name: install bleeding edge libpysal@main (only Ubuntu w/ latest Python)
-         shell: bash -l {0}
-         run: pip install git+https://github.com/pysal/libpysal.git@main
-         if: matrix.os == 'ubuntu-latest' && contains(matrix.environment-file, 'DEV')
        
        - name: environment info
          shell: bash -l {0}
