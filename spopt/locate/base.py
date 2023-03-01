@@ -16,6 +16,8 @@ STATUS_CODES = {
     -3: "Undefined",
 }
 
+class SpecificationError(pulp.PulpError):
+    pass
 
 class LocateSolver(BaseSpOptExactSolver):
     """Base class for the ``locate`` package."""
