@@ -1,18 +1,17 @@
-import numpy as np
+import warnings
 
+import numpy as np
 import pulp
 from geopandas import GeoDataFrame
-
-from .base import (
-    BaseOutputMixin,
-    CoveragePercentageMixin,
-    BackupPercentageMixinMixin,
-    LocateSolver,
-    FacilityModelBuilder,
-)
 from scipy.spatial.distance import cdist
 
-import warnings
+from .base import (
+    BackupPercentageMixinMixin,
+    BaseOutputMixin,
+    CoveragePercentageMixin,
+    FacilityModelBuilder,
+    LocateSolver,
+)
 
 
 class LSCP(LocateSolver, BaseOutputMixin):
@@ -1365,9 +1364,8 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             array_cli = []
             if fac_vars[j].value() > 0:
                 for i in range(self.aij.shape[0]):
-                    if cli_vars[i].value() > 0:
-                        if self.aij[i, j] > 0:
-                            array_cli.append(i)
+                    if cli_vars[i].value() > 0 and self.aij[i, j] > 0:
+                        array_cli.append(i)
 
             self.fac2cli.append(array_cli)
 

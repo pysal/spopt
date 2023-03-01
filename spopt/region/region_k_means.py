@@ -10,16 +10,18 @@ __email__ = "sjsrey@gmail.com"
 
 
 from collections import defaultdict
+
 import numpy
+
 from ..BaseClass import BaseSpOptHeuristicSolver
 from .base import (
-    w_to_g,
-    move_ok,
-    ok_moves,
-    region_neighbors,
     _centroid,
     _closest,
     _seeds,
+    move_ok,
+    ok_moves,
+    region_neighbors,
+    w_to_g,
 )
 
 

@@ -1,11 +1,12 @@
+from typing import Union
+
 import geopandas
 import numpy
-from shapely.geometry import Point, Polygon, MultiPolygon
-from typing import Union
+from shapely.geometry import MultiPolygon, Point, Polygon
 
 
 def simulated_geo_points(
-    in_data: Union[geopandas.GeoDataFrame, geopandas.GeoSeries, Polygon, MultiPolygon],
+    in_data: geopandas.GeoDataFrame | geopandas.GeoSeries | Polygon | MultiPolygon,
     needed: int = 1,
     seed: int = 0,
 ) -> geopandas.GeoDataFrame:
@@ -67,13 +68,11 @@ def simulated_geo_points(
             raise ValueError(msg)
 
     # create single areal entity and isolate bounding box
-    if isinstance(in_data, geopandas.GeoDataFrame) or isinstance(
-        in_data, geopandas.GeoSeries
-    ):
+    if isinstance(in_data, (geopandas.GeoDataFrame, geopandas.GeoSeries)):
         geom = in_data.geometry.unary_union
         xmin, ymin, xmax, ymax = tuple(in_data.total_bounds)
         crs = in_data.crs
-    elif isinstance(in_data, Polygon) or isinstance(in_data, MultiPolygon):
+    elif isinstance(in_data, (Polygon, MultiPolygon)):
         geom = in_data
         xmin, ymin, xmax, ymax = in_data.bounds
         crs = None

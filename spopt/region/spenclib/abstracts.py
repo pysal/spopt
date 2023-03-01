@@ -1,17 +1,19 @@
-from sklearn import cluster as clust
+import numpy as np
+import scipy.sparse as spar
 import sklearn.metrics as skm
 import sklearn.metrics.pairwise as pw
-from sklearn.utils.validation import check_array
-from .utils import check_weights
-from sklearn.neighbors import kneighbors_graph
-from sklearn.utils.extmath import _deterministic_vector_sign_flip
-from sklearn.utils import check_random_state
+from scipy.sparse import csgraph as cg
+from scipy.sparse import linalg as la
+from sklearn import cluster as clust
 from sklearn.cluster._spectral import discretize as _discretize
+from sklearn.neighbors import kneighbors_graph
 from sklearn.preprocessing import LabelEncoder
-import numpy as np
+from sklearn.utils import check_random_state
+from sklearn.utils.extmath import _deterministic_vector_sign_flip
+from sklearn.utils.validation import check_array
+
 from .scores import boundary_fraction
-import scipy.sparse as spar
-from scipy.sparse import csgraph as cg, linalg as la
+from .utils import check_weights
 
 
 class SPENC(clust.SpectralClustering):
@@ -186,14 +188,12 @@ class SPENC(clust.SpectralClustering):
         self,
         X,
         W=None,
-        y=None,
         shift_invert=True,
         breakme=False,
         check_W=True,
         grid_resolution=100,
         floor=0,
         floor_weights=None,
-        cut_method="gridsearch",
     ):
         """Creates an affinity matrix for X using the selected affinity,
         applies W to the affinity elementwise, and then applies spectral clustering
@@ -207,8 +207,6 @@ class SPENC(clust.SpectralClustering):
         W               : sparse or dense array, default None
                           matrix expressing the pairwise spatial relationships
                           between N observations.
-        y               : sparse or dense array, default None
-                          ignored, for scikit-learn class inheritance/regularity purposes.
         shift_invert    : bool, default True
                           boolean governing whether or not to use shift-invert
                           trick to finding sparse eigenvectors
@@ -232,19 +230,6 @@ class SPENC(clust.SpectralClustering):
         floor_weights   : np.ndarray of shape (n,), default np.ones((n,))
                           array containing weights for each observation used to
                           determine the region floor.
-        cut_method      : str, default 'gridsearch'
-                          option governing what method to use to partition regions
-                          1. "gridsearch" (default): the hierarchical grid search
-                            suggested by Shi & Malik (2000); search the second
-                            eigenvector for the "best" partition in terms of cut weight.
-                          2. "zero": cut the eigenvector at zero. Usually a
-                            passable solution, since the second eigenvector is usually
-                            centered around zero.
-                          3. "median": cut the eigenvector through its median.
-                             This means the regions will always be divided into two
-                             halves with equal numbers of elemental units.
-                          "gridsearch" may be slow when grid_resolution is large.
-                          "zero" is the best method for large data.
 
         Notes
         -----
@@ -445,14 +430,13 @@ class SPENC(clust.SpectralClustering):
             ), "Indexing Error in cutting!"
             if ((left_cut * floor_weights).sum() > floor) & (
                 (right_cut * floor_weights).sum() > floor
+            ) and (tuple(left_cut) not in accepted_cuts) & (
+                tuple(right_cut) not in accepted_cuts
             ):
-                if (tuple(left_cut) not in accepted_cuts) & (
-                    tuple(right_cut) not in accepted_cuts
-                ):
-                    cuts.append(left_cut)
-                    accepted_cuts.append(tuple(left_cut))
-                    cuts.append(right_cut)
-                    accepted_cuts.append(tuple(right_cut))
+                cuts.append(left_cut)
+                accepted_cuts.append(tuple(left_cut))
+                cuts.append(right_cut)
+                accepted_cuts.append(tuple(right_cut))
             discovered += 1
             try:
                 this_cut = cuts.pop(0)
@@ -472,7 +456,6 @@ class SPENC(clust.SpectralClustering):
         affinity_matrix,
         grid_resolution,
         cut_method="median",
-        floor=0,
     ):
         """Compute a single hierarchical cut using one of the methods described in
         Shi and Malik (2000).
@@ -560,7 +543,7 @@ class SPENC(clust.SpectralClustering):
         spatial_score = spatial_score(W, labels, X=X, **spatial_kw)
         return delta * attribute_score + (1 - delta) * spatial_score
 
-    def _sample_gen(self, W, n_samples=1, affinity="rbf", distribution=None, **fit_kw):
+    def _sample_gen(self, W, n_samples=1, distribution=None, **fit_kw):
         """
         NOTE: this is the lazy generator version of sample
         Compute random clusters using random eigenvector decomposition.
@@ -578,9 +561,6 @@ class SPENC(clust.SpectralClustering):
                            undefined if not.
         n_samples        : int, default 1
                            integer describing how many samples to construct
-        affinity         : string or callable, default is 'rbf'
-                           passed down to the underlying SPENC class when spectral
-                           spatial clusters are found.
         distribution     : callable default is numpy.random.normal(0,1, size=(N,1))
                            function when called with no arguments that draws
                            the random weights used to
@@ -633,12 +613,11 @@ class SPENC(clust.SpectralClustering):
         """  # noqa E501
 
         result = np.vstack(
-            [
-                labels
-                for labels in self._sample_gen(
+            list(
+                self._sample_gen(
                     W, n_samples=n_samples, distribution=distribution, **fit_kw
                 )
-            ]
+            )
         )
         if n_samples == 1:
             result = result.flatten()
@@ -690,10 +669,5 @@ class AgglomerativeClustering(clust.AgglomerativeClustering):
         """  # noqa E501
 
         return np.vstack(
-            [
-                labels
-                for labels in self._sample_gen(
-                    n_samples=n_samples, distribution=distribution
-                )
-            ]
+            list(self._sample_gen(n_samples=n_samples, distribution=distribution))
         )

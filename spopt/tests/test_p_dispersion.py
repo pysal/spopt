@@ -59,7 +59,7 @@ class TestSyntheticLocate:
 
     def test_p_dispersion_from_cost_matrix_no_results(self):
         pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, 2)
-        result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         assert isinstance(result, PDispersion)
 
         with pytest.raises(AttributeError):

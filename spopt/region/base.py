@@ -1,13 +1,14 @@
 """Base classes and functions for spopt/region"""
 
-import libpysal
-import numpy
 import copy
+
+import libpysal
 import networkx
+import numpy
 from scipy.spatial import KDTree
 
 
-class RegionMixin(object):
+class RegionMixin:
     """Mixin class for all region solvers."""
 
     _solver_type = "regionalizer"
@@ -373,7 +374,7 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
         gdf = gdf.iloc[keep_ids]
         cw = libpysal.weights.w_subset(w, keep_ids)
         new_neigh = {}
-        old_new = dict([(o, n) for n, o in enumerate(keep_ids)])
+        old_new = {o: n for n, o in enumerate(keep_ids)}
         for old in keep_ids:
             new_key = old_new[old]
             new_neigh[new_key] = [old_new[j] for j in cw.neighbors[old]]
@@ -426,6 +427,7 @@ def form_single_component(gdf, w, linkage="single"):
                 zip(
                     gdf.iloc[wcl == lcl].geometry.centroid.x,
                     gdf.iloc[wcl == lcl].geometry.centroid.y,
+                    strict=True,
                 )
             )
         )
@@ -445,6 +447,7 @@ def form_single_component(gdf, w, linkage="single"):
                 zip(
                     gdf.iloc[wcl == cl].geometry.centroid.x,
                     gdf.iloc[wcl == cl].geometry.centroid.y,
+                    strict=True,
                 )
             )
             dd, jj = tree.query(query_pnts, k=1)
@@ -459,7 +462,7 @@ def form_single_component(gdf, w, linkage="single"):
                 i = clas[min_idx]
                 joins.append((i, j))
             else:
-                pairs = zip(clas, jj)
+                pairs = zip(clas, jj, strict=True)
                 joins.extend(list(pairs))
 
         neighbors = copy.deepcopy(w.neighbors)

@@ -88,11 +88,23 @@ line-length = 88
 line-length = 88
 select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
 target-version = "py311"
-ignore = ["B006", "F401", "F403"]
+ignore = [
+    "B006",
+    "B008",
+    "B009",
+    "B010",
+    "C408",
+    "E731",
+    "F401",
+    "F403",
+    "N803",
+    "N806",
+    "N999"
+]
 exclude = ["spopt/tests/*", "docs/*"]
 
 [tool.coverage.run]
-source = ["spopt"]
+source = ["./spopt"]
 
 [tool.coverage.report]
 exclude_lines = [

@@ -3,40 +3,41 @@ Openshaw, S. and Rao, L. (1995). Algorithms for reengineering 1991 census geogra
 Environment and Planning A, 27(3):425-446.
 """
 
-from ..BaseClass import BaseSpOptHeuristicSolver
 import abc
-from collections import deque
 import math
 import random
+from collections import deque
 
-import numpy as np
 import networkx as nx
+import numpy as np
 
-from spopt.region.csgraph_utils import sub_adj_matrix, neighbors, is_connected
-from spopt.region.objective_function import ObjectiveFunctionPairwise
 from spopt.region.azp_util import (
-    AllowMoveStrategy,
     AllowMoveAZP,
     AllowMoveAZPSimulatedAnnealing,
+    AllowMoveStrategy,
 )
+from spopt.region.csgraph_utils import is_connected, neighbors, sub_adj_matrix
+from spopt.region.objective_function import ObjectiveFunctionPairwise
 from spopt.region.util import (
+    Move,
     array_from_df_col,
     array_from_dict_values,
+    array_from_graph_or_dict,
     assert_feasible,
     boolean_assert_feasible,
     copy_func,
     count,
     generate_initial_sol,
     make_move,
-    Move,
     pop_randomly_from,
     random_element_from,
+    scipy_sparse_matrix_from_dict,
     scipy_sparse_matrix_from_w,
     separate_components,
     w_from_gdf,
-    array_from_graph_or_dict,
-    scipy_sparse_matrix_from_dict,
 )
+
+from ..BaseClass import BaseSpOptHeuristicSolver
 
 
 class AZP(BaseSpOptHeuristicSolver):
@@ -147,8 +148,7 @@ class AZP(BaseSpOptHeuristicSolver):
         data = self.gdf
         X = data[self.attrs_name].values
 
-        ##########
-        model = AZP_orig(self.allow_move_strategy, self.random_state)
+        model = AZPOrig(self.allow_move_strategy, self.random_state)
         model.fit_from_w(
             self.w,
             X,
@@ -159,7 +159,7 @@ class AZP(BaseSpOptHeuristicSolver):
         self.labels_ = model.labels_
 
 
-class AZP_orig:
+class AZPOrig:
     """
     Class offering the implementation of the AZP algorithm.
 
@@ -456,7 +456,7 @@ class AZP_orig:
             adj, attr_arr, n_regions, initial_labels, objective_func=objective_func
         )
 
-    def _azp_connected_component(self, adj, initial_clustering, attr):
+    def _azp_connected_component(self, adj, initial_clustering, attr):  # noqa ARG002
         """
         Implementation of the AZP algorithm for a spatially connected set of
         areas (i.e. for every area there is a path to every other area).
@@ -527,10 +527,9 @@ class AZP_orig:
                         sub_adj = sub_adj_matrix(
                             adj, np.where(labels == neigh_region)[0], wo_nodes=neigh
                         )
-                        if is_connected(sub_adj):
-                            # if area is alone in its region, it must stay
-                            if count(labels, neigh_region) > 1:
-                                candidates.append(neigh)
+                        # if area is alone in its region, it must stay
+                        if is_connected(sub_adj) and count(labels, neigh_region) > 1:
+                            candidates.append(neigh)
                     # step 5: randomly select zones from this list until either
                     # there is a local improvement in the current value of the
                     # objective function or a move that is equivalently as good
@@ -558,14 +557,14 @@ class AZP_orig:
                             )
 
                             donor_region_areas = set(np.where(labels == donor)[0])
-                            not_donor_neighs_anymore = set(
+                            not_donor_neighs_anymore = {
                                 area
                                 for area in neighs_of_cand
                                 if not any(
                                     a in donor_region_areas
                                     for a in neighbors(adj, area)
                                 )
-                            )
+                            }
                             region_neighbors[donor].difference_update(
                                 not_donor_neighs_anymore
                             )
@@ -862,9 +861,8 @@ class AZPSimulatedAnnealing:
                 )
                 initial_labels = self.azp.labels_
 
-                if old_sol is not None:
-                    if (old_sol == initial_labels).all():
-                        break
+                if old_sol is not None and (old_sol == initial_labels).all():
+                    break
             # added termination condition (not in Openshaw & Rao (1995))
             if (
                 self.visited.count(tuple(initial_labels))
@@ -1207,7 +1205,7 @@ class AZPReactiveTabu(AZPTabu):
         obj_val_start = float("inf")
         # step 12: Repeat steps 3-11 until either no further improvements are
         # made or a maximum number of iterations are exceeded.
-        for it in range(self.maxit):
+        for _it in range(self.maxit):
             obj_val_end = self.objective_func(labels, attr)
             if not obj_val_end < obj_val_start:
                 break  # step 12

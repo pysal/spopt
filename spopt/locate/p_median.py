@@ -1,18 +1,17 @@
-import numpy as np
+import warnings
+from typing import Union
 
+import numpy as np
 import pulp
 from geopandas import GeoDataFrame
+from scipy.spatial.distance import cdist
 
 from .base import (
     BaseOutputMixin,
-    LocateSolver,
     FacilityModelBuilder,
+    LocateSolver,
     MeanDistanceMixin,
 )
-from scipy.spatial.distance import cdist
-
-from typing import Union
-import warnings
 
 
 class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
@@ -83,7 +82,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         name: str,
         problem: pulp.LpProblem,
         aij: np.array,
-        weights_sum: Union[int, float],
+        weights_sum: int | float,
     ):
         self.aij = aij
         self.ai_sum = weights_sum

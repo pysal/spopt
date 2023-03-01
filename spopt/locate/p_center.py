@@ -1,12 +1,11 @@
-import numpy as np
+import warnings
 
+import numpy as np
 import pulp
 from geopandas import GeoDataFrame
-
-from .base import BaseOutputMixin, LocateSolver, FacilityModelBuilder
 from scipy.spatial.distance import cdist
 
-import warnings
+from .base import BaseOutputMixin, FacilityModelBuilder, LocateSolver
 
 
 class PCenter(LocateSolver, BaseOutputMixin):

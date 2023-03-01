@@ -8,12 +8,13 @@ Journal of Geographical Information Science. Accepted 2020-04-12.
 __author__ = ["Ran Wei", "Serge Rey", "Elijah Knaap"]
 __email__ = "sjsrey@gmail.com"
 
-from ..BaseClass import BaseSpOptHeuristicSolver
-
-from scipy.spatial.distance import pdist, squareform
-from scipy.sparse.csgraph import connected_components
-import numpy as np
 from copy import deepcopy
+
+import numpy as np
+from scipy.sparse.csgraph import connected_components
+from scipy.spatial.distance import pdist, squareform
+
+from ..BaseClass import BaseSpOptHeuristicSolver
 from .base import modify_components
 
 ITERCONSTRUCT = 999
@@ -122,8 +123,8 @@ def maxp(
         label, regionList, regionSpatialAttr = rl
         if verbose:
             print(irl)
-        for saiter in range(max_iterations_sa):
-            finalLabel, finalRegionList, finalRegionSpatialAttr = performSA(
+        for _saiter in range(max_iterations_sa):
+            finalLabel, finalRegionList, finalRegionSpatialAttr = perform_sa(
                 label,
                 regionList,
                 regionSpatialAttr,
@@ -135,7 +136,7 @@ def maxp(
                 tabuLength,
                 max_no_move,
             )
-            totalWithinRegionDistance = calculateWithinRegionDistance(
+            totalWithinRegionDistance = calculate_within_region_distance(
                 finalRegionList, distance_matrix
             )
             if verbose:
@@ -153,7 +154,7 @@ def maxp(
 
 def construction_phase(
     arr,
-    attr,
+    attr,  # noqa ARG001
     threshold_array,
     distance_matrix,
     weight,
@@ -216,7 +217,7 @@ def construction_phase(
 
         for arr_index in range(0, len(threshold_array)):
             P = arr[arr_index]
-            if not (labels[P] == 0):
+            if labels[P] != 0:
                 continue
 
             NeighborPolys = deepcopy(weight.neighbors[P])
@@ -225,7 +226,7 @@ def construction_phase(
                 labels[P] = -1
             else:
                 C += 1
-                labeledID, spatialAttrTotal = growClusterForPoly(
+                labeledID, spatialAttrTotal = grow_cluster_for_poly(
                     labels, threshold_array, P, NeighborPolys, C, weight, spatialThre
                 )
 
@@ -245,7 +246,7 @@ def construction_phase(
             continue
         else:
             max_p = num_regions
-            maxp_labels, maxp_regionList, maxp_regionSpatialAttr = assignEnclave(
+            maxp_labels, maxp_regionList, maxp_regionSpatialAttr = assign_enclave(
                 enclave,
                 labels,
                 regionList,
@@ -267,7 +268,7 @@ def construction_phase(
     return real_values
 
 
-def growClusterForPoly(
+def grow_cluster_for_poly(
     labels, threshold_array, P, NeighborPolys, C, weight, spatialThre
 ):
     """Grow one region until threshold constraint is satisfied.
@@ -329,7 +330,7 @@ def growClusterForPoly(
     return cluster_info
 
 
-def assignEnclave(
+def assign_enclave(
     enclave,
     labels,
     regionList,
@@ -409,7 +410,7 @@ def assignEnclave(
     return region_info
 
 
-def calculateWithinRegionDistance(regionList, distance_matrix):
+def calculate_within_region_distance(regionList, distance_matrix):
     """Calculate total wthin-region distance/dissimilarity.
 
     Parameters
@@ -430,7 +431,7 @@ def calculateWithinRegionDistance(regionList, distance_matrix):
 
     """
     totalWithinRegionDistance = 0
-    for k, v in regionList.items():
+    for _k, v in regionList.items():
         nv = np.array(v)
         regionDistance = distance_matrix[nv, :][:, nv].sum() / 2
         totalWithinRegionDistance += regionDistance
@@ -438,13 +439,13 @@ def calculateWithinRegionDistance(regionList, distance_matrix):
     return totalWithinRegionDistance
 
 
-def pickMoveArea(
-    labels,
+def pick_move_area(
+    labels,  # noqa ARG001
     regionLists,
     regionSpatialAttrs,
     threshold_array,
     weight,
-    distance_matrix,
+    distance_matrix,  # noqa ARG001
     threshold,
 ):
     """Pick a spatial unit that can move from one region to another.
@@ -499,8 +500,14 @@ def pickMoveArea(
     return potentialAreas
 
 
-def checkMove(
-    poa, labels, regionLists, threshold_array, weight, distance_matrix, threshold
+def check_move(
+    poa,
+    labels,
+    regionLists,
+    threshold_array,  # noqa ARG001
+    weight,
+    distance_matrix,
+    threshold,  # noqa ARG001
 ):
     """Calculate the dissimilarity increase/decrease from one potential move.
 
@@ -558,7 +565,7 @@ def checkMove(
     return move_info
 
 
-def performSA(
+def perform_sa(
     initLabels,
     initRegionList,
     initRegionSpatialAttr,
@@ -627,7 +634,7 @@ def performSA(
 
     while ni_move_ct <= max_no_move:
         if len(potentialAreas) == 0:
-            potentialAreas = pickMoveArea(
+            potentialAreas = pick_move_area(
                 labels,
                 regionLists,
                 regionSpatialAttrs,
@@ -640,7 +647,7 @@ def performSA(
         if len(potentialAreas) == 0:
             break
         poa = potentialAreas[np.random.randint(len(potentialAreas))]
-        lostDistance, minAddedDistance, potentialMove = checkMove(
+        lostDistance, minAddedDistance, potentialMove = check_move(
             poa,
             labels,
             regionLists,
