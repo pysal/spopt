@@ -19,3 +19,7 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
+  # with pip
+  - pip
+  - pip:
+    - pulp

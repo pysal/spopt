@@ -231,11 +231,11 @@ class AZPOrig:
             One-dimensional array of labels at the beginning of the algorithm.
             If ``None``, then a random initial clustering will be generated.
             Default is ``None``.
-        objective_func : region.objective_function.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             The objective function to use. Default is
             ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
 
         if attr.ndim == 1:
             attr = attr.reshape(adj.shape[0], -1)
@@ -296,12 +296,12 @@ class AZPOrig:
         initial_labels : numpy.ndarray or None
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``. Default is ``None``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
 
         adj = scipy_sparse_matrix_from_w(w)
         self.fit_from_scipy_sparse_matrix(
@@ -347,12 +347,12 @@ class AZPOrig:
             key area is assigned to at the beginning of the algorithm.
             If ``None``, then a random initial clustering will be generated.
             Default is ``None``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
 
         adj = nx.to_scipy_sparse_matrix(graph)
         attr = array_from_graph_or_dict(graph, attr)
@@ -398,12 +398,12 @@ class AZPOrig:
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``None``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
         w = w_from_gdf(gdf, contiguity)
         attr = array_from_df_col(gdf, attr)
         self.fit_from_w(
@@ -438,11 +438,11 @@ class AZPOrig:
             corresponding area is assigned to at the beginning of the
             algorithm.
             If None, then a random initial clustering will be generated.
-        objective_func : region.ObjectiveFunction, default: ObjectiveFunctionPairwise()
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             :meth:`fit_from_scipy_sparse_matrix`.
 
-        """
+        """  # noqa E501
         sorted_areas = sorted(neighbor_dict)
 
         adj = scipy_sparse_matrix_from_dict(neighbor_dict)
@@ -677,12 +677,12 @@ class AZPSimulatedAnnealing:
         cooling_factor : float
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``. Default is ``0.85``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
         w = w_from_gdf(gdf, contiguity)
         attr = array_from_df_col(gdf, attr)
         self.fit_from_w(
@@ -721,12 +721,12 @@ class AZPSimulatedAnnealing:
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``0.85``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
         sorted_areas = sorted(neighbor_dict)
         adj = scipy_sparse_matrix_from_dict(neighbor_dict)
         attr_arr = array_from_dict_values(attr, sorted_areas)
@@ -774,12 +774,12 @@ class AZPSimulatedAnnealing:
             Refer to the corresponding argument in
             ``AZP.fit_from_networkx``.
             Default is ``0.85``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``AZP.fit_from_networkx``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
 
         adj = nx.to_scipy_sparse_matrix(graph)
         attr = array_from_graph_or_dict(graph, attr)
@@ -824,11 +824,11 @@ class AZPSimulatedAnnealing:
             Float :math:`\\in (0, 1)` specifying the cooling factor for the
             simulated annealing.
             Default is ``0.85``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``AZP.fit_from_scipy_sparse_matrix``.
 
-        """
+        """  # noqa E501
         if not (0 < cooling_factor < 1):
             raise ValueError(
                 "The cooling_factor argument must be greater than 0 and less than 1"
@@ -909,12 +909,12 @@ class AZPSimulatedAnnealing:
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``0.85``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
         adj = scipy_sparse_matrix_from_w(w)
         self.fit_from_scipy_sparse_matrix(
             adj,

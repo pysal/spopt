@@ -44,10 +44,12 @@
            environment-file: ${{ matrix.environment-file }}
            micromamba-version: 'latest'
            channel-priority: 'flexible'
-
-       - name: install pulp via pip
-         shell: bash -l {0}
-         run: pip install pulp
+        
+       ##############################################################################
+       #- name: install pulp via pip
+       #  shell: bash -l {0}
+       #  run: pip install pulp
+       ##############################################################################
        
        - name: environment info
          shell: bash -l {0}
