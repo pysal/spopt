@@ -1,0 +1,119 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+[project]
+name = "spopt"
+dynamic = ["version"]
+authors = [
+    { name = "James D. Gaboardi", email = "jgaboardi@gmail.com" },
+    { name = "Xin Feng", email = "xin.feng@ucr.edu" },
+]
+
+maintainers = [{ name = "spopt contributors" }]
+license = { text = "BSD 3-Clause" }
+description = "Spatial Optimization in PySAL"
+keywords = ["spatial optimization"]
+readme = { text = """\
+Spopt is an open-source Python library for solving optimization problems with spatial data. Originating from the `region` module in `PySAL`_ (Python Spatial Analysis Library), it is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions.
+
+.. _PySAL: http://pysal.org
+""", content-type = "text/x-rst" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "geopandas>=0.10.0",
+    "libpysal",
+    "mapclassify",
+    "networkx",
+    "numpy>=1.21",
+    "pandas>=1.0.5",
+    "pulp",
+    "scikit-learn>=0.22",
+    "scipy>=1.3.2",
+    "spaghetti",
+    "tqdm>=4.27.0",
+]
+
+
+[project.urls]
+Home = "https://pysal.org/spopt/"
+Repository = "https://github.com/pysal/spopt"
+
+[project.optional-dependencies]
+tests = [
+    "codecov",
+    "coverage",
+    "pytest",
+    "pytest-cov",
+    "pytest-xdist",
+]
+dev = ["pre-commit"]
+docs = [
+    "nbsphinx",
+    "numpydoc",
+    "pandoc",
+    "sphinx",
+    "sphinxcontrib-bibtex",
+    "sphinx_bootstrap_theme",
+]
+notebooks = [
+    "folium",
+    "glpk",
+    "inequality",
+    "matplotlib",
+    "matplotlib-scalebar",
+    "overpy",
+    "routingpy",
+    "seaborn",
+    "watermark",
+]
+
+
+[tool.setuptools.packages.find]
+include = ["spopt", "spopt.*"]
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
+target-version = "py38"
+ignore = [
+    "B006",
+    "B008",
+    "B009",
+    "B010",
+    "C408",
+    "E731",
+    "F401",
+    "F403",
+    "N803",
+    "N806",
+    "N999",
+    "UP007"
+]
+exclude = ["spopt/tests/*", "docs/*"]
+
+[tool.coverage.run]
+source = ["./spopt"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if self.debug:",
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "except ModuleNotFoundError:",
+    "except ImportError",
+]
+ignore_errors = true
+omit = ["spopt/tests/*", "docs/conf.py"]

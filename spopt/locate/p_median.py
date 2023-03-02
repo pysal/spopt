@@ -1,18 +1,17 @@
-import numpy as np
+import warnings
+from typing import Union
 
+import numpy as np
 import pulp
 from geopandas import GeoDataFrame
+from scipy.spatial.distance import cdist
 
 from .base import (
     BaseOutputMixin,
-    LocateSolver,
     FacilityModelBuilder,
+    LocateSolver,
     MeanDistanceMixin,
 )
-from scipy.spatial.distance import cdist
-
-from typing import Union
-import warnings
 
 
 class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
@@ -391,11 +390,11 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             " geodataframe contains mixed type geometries or is not a point. Be "
             "sure deriving centroid from geometries doesn't affect the results."
         )
-        if len(dem_type_geom) > 1 or not "Point" in dem_type_geom:
+        if len(dem_type_geom) > 1 or "Point" not in dem_type_geom:
             warnings.warn(f"Demand{_msg}", UserWarning)
             dem = dem.centroid
 
-        if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
+        if len(fac_type_geom) > 1 or "Point" not in fac_type_geom:
             warnings.warn(f"Facility{_msg}", UserWarning)
             fac = fac.centroid
 

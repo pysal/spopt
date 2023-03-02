@@ -2,7 +2,6 @@ import libpysal
 import geopandas
 import networkx
 import numpy
-import pulp
 import pytest
 
 import spopt.region.util as util

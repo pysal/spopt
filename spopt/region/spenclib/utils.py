@@ -1,10 +1,11 @@
-import scipy.sparse.csgraph as csg
-import scipy.sparse as sp
-from warnings import warn as Warn
+from warnings import warn
+
 import numpy as np
+import scipy.sparse as sp
+import scipy.sparse.csgraph as csg
 
 
-def check_weights(W, X=None, transform=None):
+def check_weights(W, X=None):
     if X is not None:
         assert (
             W.shape[0] == X.shape[0]
@@ -13,7 +14,7 @@ def check_weights(W, X=None, transform=None):
     graph.eliminate_zeros()
     components, labels = csg.connected_components(graph)
     if components > 1:
-        Warn(
+        warn(
             "Spatial affinity matrix is disconnected, and has {} subcomponents."
             "This will certainly affect the solution output."
         )
@@ -24,8 +25,8 @@ def lattice(x, y):
     """
     Construct a lattice of unit squares of dimension (x,y)
     """
-    from shapely.geometry import Polygon
     import geopandas as gpd
+    from shapely.geometry import Polygon
 
     x = np.arange(x) * 1.0
     y = np.arange(y) * 1.0

@@ -3,40 +3,41 @@ Openshaw, S. and Rao, L. (1995). Algorithms for reengineering 1991 census geogra
 Environment and Planning A, 27(3):425-446.
 """
 
-from ..BaseClass import BaseSpOptHeuristicSolver
 import abc
-from collections import deque
 import math
 import random
+from collections import deque
 
-import numpy as np
 import networkx as nx
+import numpy as np
 
-from spopt.region.csgraph_utils import sub_adj_matrix, neighbors, is_connected
-from spopt.region.objective_function import ObjectiveFunctionPairwise
 from spopt.region.azp_util import (
-    AllowMoveStrategy,
     AllowMoveAZP,
     AllowMoveAZPSimulatedAnnealing,
+    AllowMoveStrategy,
 )
+from spopt.region.csgraph_utils import is_connected, neighbors, sub_adj_matrix
+from spopt.region.objective_function import ObjectiveFunctionPairwise
 from spopt.region.util import (
+    Move,
     array_from_df_col,
     array_from_dict_values,
+    array_from_graph_or_dict,
     assert_feasible,
     boolean_assert_feasible,
     copy_func,
     count,
     generate_initial_sol,
     make_move,
-    Move,
     pop_randomly_from,
     random_element_from,
+    scipy_sparse_matrix_from_dict,
     scipy_sparse_matrix_from_w,
     separate_components,
     w_from_gdf,
-    array_from_graph_or_dict,
-    scipy_sparse_matrix_from_dict,
 )
+
+from ..BaseClass import BaseSpOptHeuristicSolver
 
 
 class AZP(BaseSpOptHeuristicSolver):
@@ -106,7 +107,9 @@ class AZP(BaseSpOptHeuristicSolver):
 
     Run the skater algorithm.
 
-    >>> model = AZP(mexico, w, attrs_name, n_clusters, allow_move_strategy, random_state)
+    >>> model = AZP(
+    ...     mexico, w, attrs_name, n_clusters, allow_move_strategy, random_state
+    ... )
     >>> model.solve()
 
     Get the region IDs for unit areas.
@@ -145,8 +148,7 @@ class AZP(BaseSpOptHeuristicSolver):
         data = self.gdf
         X = data[self.attrs_name].values
 
-        ##########
-        model = AZP_orig(self.allow_move_strategy, self.random_state)
+        model = AZPOrig(self.allow_move_strategy, self.random_state)
         model.fit_from_w(
             self.w,
             X,
@@ -157,7 +159,7 @@ class AZP(BaseSpOptHeuristicSolver):
         self.labels_ = model.labels_
 
 
-class AZP_orig:
+class AZPOrig:
     """
     Class offering the implementation of the AZP algorithm.
 
@@ -229,11 +231,11 @@ class AZP_orig:
             One-dimensional array of labels at the beginning of the algorithm.
             If ``None``, then a random initial clustering will be generated.
             Default is ``None``.
-        objective_func : region.objective_function.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             The objective function to use. Default is
             ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
 
         if attr.ndim == 1:
             attr = attr.reshape(adj.shape[0], -1)
@@ -294,12 +296,12 @@ class AZP_orig:
         initial_labels : numpy.ndarray or None
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``. Default is ``None``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
 
         adj = scipy_sparse_matrix_from_w(w)
         self.fit_from_scipy_sparse_matrix(
@@ -345,12 +347,12 @@ class AZP_orig:
             key area is assigned to at the beginning of the algorithm.
             If ``None``, then a random initial clustering will be generated.
             Default is ``None``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
 
         adj = nx.to_scipy_sparse_matrix(graph)
         attr = array_from_graph_or_dict(graph, attr)
@@ -396,12 +398,12 @@ class AZP_orig:
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``None``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
         w = w_from_gdf(gdf, contiguity)
         attr = array_from_df_col(gdf, attr)
         self.fit_from_w(
@@ -436,11 +438,11 @@ class AZP_orig:
             corresponding area is assigned to at the beginning of the
             algorithm.
             If None, then a random initial clustering will be generated.
-        objective_func : :class:`region.ObjectiveFunction`, default: ObjectiveFunctionPairwise()
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             :meth:`fit_from_scipy_sparse_matrix`.
 
-        """
+        """  # noqa E501
         sorted_areas = sorted(neighbor_dict)
 
         adj = scipy_sparse_matrix_from_dict(neighbor_dict)
@@ -454,7 +456,7 @@ class AZP_orig:
             adj, attr_arr, n_regions, initial_labels, objective_func=objective_func
         )
 
-    def _azp_connected_component(self, adj, initial_clustering, attr):
+    def _azp_connected_component(self, adj, initial_clustering, attr):  # noqa ARG002
         """
         Implementation of the AZP algorithm for a spatially connected set of
         areas (i.e. for every area there is a path to every other area).
@@ -525,10 +527,9 @@ class AZP_orig:
                         sub_adj = sub_adj_matrix(
                             adj, np.where(labels == neigh_region)[0], wo_nodes=neigh
                         )
-                        if is_connected(sub_adj):
-                            # if area is alone in its region, it must stay
-                            if count(labels, neigh_region) > 1:
-                                candidates.append(neigh)
+                        # if area is alone in its region, it must stay
+                        if is_connected(sub_adj) and count(labels, neigh_region) > 1:
+                            candidates.append(neigh)
                     # step 5: randomly select zones from this list until either
                     # there is a local improvement in the current value of the
                     # objective function or a move that is equivalently as good
@@ -556,14 +557,14 @@ class AZP_orig:
                             )
 
                             donor_region_areas = set(np.where(labels == donor)[0])
-                            not_donor_neighs_anymore = set(
+                            not_donor_neighs_anymore = {
                                 area
                                 for area in neighs_of_cand
                                 if not any(
                                     a in donor_region_areas
                                     for a in neighbors(adj, area)
                                 )
-                            )
+                            }
                             region_neighbors[donor].difference_update(
                                 not_donor_neighs_anymore
                             )
@@ -676,12 +677,12 @@ class AZPSimulatedAnnealing:
         cooling_factor : float
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``. Default is ``0.85``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
         w = w_from_gdf(gdf, contiguity)
         attr = array_from_df_col(gdf, attr)
         self.fit_from_w(
@@ -720,12 +721,12 @@ class AZPSimulatedAnnealing:
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``0.85``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
         sorted_areas = sorted(neighbor_dict)
         adj = scipy_sparse_matrix_from_dict(neighbor_dict)
         attr_arr = array_from_dict_values(attr, sorted_areas)
@@ -773,12 +774,12 @@ class AZPSimulatedAnnealing:
             Refer to the corresponding argument in
             ``AZP.fit_from_networkx``.
             Default is ``0.85``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``AZP.fit_from_networkx``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
 
         adj = nx.to_scipy_sparse_matrix(graph)
         attr = array_from_graph_or_dict(graph, attr)
@@ -823,11 +824,11 @@ class AZPSimulatedAnnealing:
             Float :math:`\\in (0, 1)` specifying the cooling factor for the
             simulated annealing.
             Default is ``0.85``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``AZP.fit_from_scipy_sparse_matrix``.
 
-        """
+        """  # noqa E501
         if not (0 < cooling_factor < 1):
             raise ValueError(
                 "The cooling_factor argument must be greater than 0 and less than 1"
@@ -860,9 +861,8 @@ class AZPSimulatedAnnealing:
                 )
                 initial_labels = self.azp.labels_
 
-                if old_sol is not None:
-                    if (old_sol == initial_labels).all():
-                        break
+                if old_sol is not None and (old_sol == initial_labels).all():
+                    break
             # added termination condition (not in Openshaw & Rao (1995))
             if (
                 self.visited.count(tuple(initial_labels))
@@ -909,12 +909,12 @@ class AZPSimulatedAnnealing:
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``0.85``.
-        objective_func : region.ObjectiveFunction
+        objective_func : :class:`region.ObjectiveFunction` (default ObjectiveFunctionPairwise())
             Refer to the corresponding argument in
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """
+        """  # noqa E501
         adj = scipy_sparse_matrix_from_w(w)
         self.fit_from_scipy_sparse_matrix(
             adj,
@@ -1205,7 +1205,7 @@ class AZPReactiveTabu(AZPTabu):
         obj_val_start = float("inf")
         # step 12: Repeat steps 3-11 until either no further improvements are
         # made or a maximum number of iterations are exceeded.
-        for it in range(self.maxit):
+        for _it in range(self.maxit):
             obj_val_end = self.objective_func(labels, attr)
             if not obj_val_end < obj_val_start:
                 break  # step 12

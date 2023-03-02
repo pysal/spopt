@@ -1,5 +1,4 @@
-from pyproj import crs
-from spopt.locate.base import FacilityModelBuilder, LocateSolver, T_FacModel
+from spopt.locate.base import FacilityModelBuilder
 import numpy
 import geopandas
 import pandas

@@ -4,9 +4,9 @@ Utility functions for graph-related operations with sparse adjacency matrices
 [compressed sparse graph routines](
 https://docs.scipy.org/doc/scipy/reference/sparse.csgraph.html).
 """
+import numpy as np
 from scipy.sparse import csgraph as csg
 from scipy.sparse import csr_matrix
-import numpy as np
 
 
 def is_connected(adj):
@@ -43,7 +43,7 @@ def is_connected(adj):
     n_connected_components = csg.connected_components(
         adj, directed=False, return_labels=False
     )
-    return True if n_connected_components == 1 else False
+    return n_connected_components == 1
 
 
 def neighbors(adj, area):

@@ -1,12 +1,11 @@
-import numpy as np
+import warnings
 
+import numpy as np
 import pulp
 from geopandas import GeoDataFrame
-
-from .base import BaseOutputMixin, LocateSolver, FacilityModelBuilder
 from scipy.spatial.distance import cdist
 
-import warnings
+from .base import BaseOutputMixin, FacilityModelBuilder, LocateSolver
 
 
 class PCenter(LocateSolver, BaseOutputMixin):
@@ -335,11 +334,11 @@ class PCenter(LocateSolver, BaseOutputMixin):
             " geodataframe contains mixed type geometries or is not a point. Be "
             "sure deriving centroid from geometries doesn't affect the results."
         )
-        if len(dem_type_geom) > 1 or not "Point" in dem_type_geom:
+        if len(dem_type_geom) > 1 or "Point" not in dem_type_geom:
             warnings.warn(f"Demand{_msg}", UserWarning)
             dem = dem.centroid
 
-        if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
+        if len(fac_type_geom) > 1 or "Point" not in fac_type_geom:
             warnings.warn(f"Facility{_msg}", UserWarning)
             fac = fac.centroid
 

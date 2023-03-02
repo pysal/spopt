@@ -1,13 +1,14 @@
 """Base classes and functions for spopt/region"""
 
-import libpysal
-import numpy
 import copy
+
+import libpysal
 import networkx
+import numpy
 from scipy.spatial import KDTree
 
 
-class RegionMixin(object):
+class RegionMixin:
     """Mixin class for all region solvers."""
 
     _solver_type = "regionalizer"
@@ -289,8 +290,8 @@ def infeasible_components(gdf, w, threshold_var, threshold):
     gb = gdf.groupby(by="_components").sum(numeric_only=True)
     gdf.drop(columns="_components", inplace=True)
     if gb[threshold_var].min() < threshold:
-        l = gb[gb[threshold_var] < threshold]
-        return l.index.values.tolist()
+        _l = gb[gb[threshold_var] < threshold]
+        return _l.index.values.tolist()
     return []
 
 
@@ -373,7 +374,7 @@ def modify_components(gdf, w, threshold_var, threshold, policy="single"):
         gdf = gdf.iloc[keep_ids]
         cw = libpysal.weights.w_subset(w, keep_ids)
         new_neigh = {}
-        old_new = dict([(o, n) for n, o in enumerate(keep_ids)])
+        old_new = {o: n for n, o in enumerate(keep_ids)}
         for old in keep_ids:
             new_key = old_new[old]
             new_neigh[new_key] = [old_new[j] for j in cw.neighbors[old]]

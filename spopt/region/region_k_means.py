@@ -10,17 +10,18 @@ __email__ = "sjsrey@gmail.com"
 
 
 from collections import defaultdict
+
 import numpy
+
 from ..BaseClass import BaseSpOptHeuristicSolver
 from .base import (
-    w_to_g,
-    move_ok,
-    ok_moves,
-    region_neighbors,
     _centroid,
     _closest,
     _seeds,
-    is_neighbor,
+    move_ok,
+    ok_moves,
+    region_neighbors,
+    w_to_g,
 )
 
 
@@ -68,7 +69,6 @@ def region_k_means(X, n_clusters, w, drop_islands=True, seed=0):
     for i, seed in enumerate(seeds):
         label[seed] = i
     to_assign = areas[label == -1]
-    c = 0
     while to_assign.size > 0:
         assignments = defaultdict(list)
         for rid in range(k):
@@ -101,7 +101,6 @@ def region_k_means(X, n_clusters, w, drop_islands=True, seed=0):
         to_assign = areas[label == -1]
 
     # reassignment phase
-    changed = []
     g = w_to_g(w)
 
     iters = 1

@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def boundary_fraction(W, labels, X=None):
+def boundary_fraction(W, labels):
     """"""
     boundary = 0
     for row, own_label in zip(W, labels):
@@ -10,7 +10,7 @@ def boundary_fraction(W, labels, X=None):
     return boundary / W.shape[0]
 
 
-def boundary_score(W, labels, X=None):
+def boundary_score(W, labels):
     """
     Returns a version of boundary_fraction unbounded on the negative end using
     the log of the fraction:

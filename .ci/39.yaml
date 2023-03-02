@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.9
-  - geopandas>=0.10.0
+  - geopandas
   - libpysal
   - matplotlib
   - networkx
@@ -20,3 +20,7 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
+  # with pip
+  - pip
+  - pip:
+    - pulp

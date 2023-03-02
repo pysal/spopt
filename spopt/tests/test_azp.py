@@ -1,9 +1,7 @@
 import libpysal
 import geopandas
 import numpy
-import pytest
 
-import spopt
 from spopt.region import AZP
 
 
@@ -25,7 +23,9 @@ class TestAZP:
 
         # labels for:
         # n_clusters=3, simulated annealing AZP variant
-        # self.simann_from_w_labels = [0, 0, 0, 0, 0, 1, 2, 1, 1, 2, 2, 0, 2, 1, 1, 1, 1]
+        # self.simann_from_w_labels = [
+        #    0, 0, 0, 0, 0, 1, 2, 1, 1, 2, 2, 0, 2, 1, 1, 1, 1
+        # ]
         # self.simann_from_w_labels += [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2]
 
     def test_azp_basic_from_w(self):
