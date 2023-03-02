@@ -99,7 +99,8 @@ ignore = [
     "F403",
     "N803",
     "N806",
-    "N999"
+    "N999",
+    "UP007"
 ]
 exclude = ["spopt/tests/*", "docs/*"]
 

@@ -445,7 +445,7 @@ def dataframe_to_dict(df, cols):
     True
 
     """
-    return dict(zip(df.index, np.array(df[cols]), strict=True))
+    return dict(zip(df.index, np.array(df[cols])))
 
 
 def find_sublist_containing(el, lst, index=False):
