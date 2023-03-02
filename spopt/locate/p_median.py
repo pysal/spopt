@@ -82,7 +82,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         name: str,
         problem: pulp.LpProblem,
         aij: np.array,
-        weights_sum: int | float,
+        weights_sum: Union[int, float],
     ):
         self.aij = aij
         self.ai_sum = weights_sum
