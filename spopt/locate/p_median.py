@@ -132,6 +132,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         p_facilities: int,
         predefined_facilities_arr: np.array = None,
         facility_capacities: np.array = None,
+        fulfill_predefined_fac: bool = False,
         name: str = "p-median",
     ):
         """
@@ -148,6 +149,10 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             The number of facilities to be located.
         predefined_facilities_arr : numpy.array (default None)
             Predefined facilities that must appear in the solution.
+        facility_capacity : numpy.array (default None)
+            The capacity of each facility.
+        fulfill_predefined_fac : bool (default False)
+            If the predefined facilities need to be fulfilled.
         name : str (default 'p-median')
             The problem name.
 
@@ -249,9 +254,24 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         )
 
         if predefined_facilities_arr is not None:
-            FacilityModelBuilder.add_predefined_facility_constraint(
-                p_median, predefined_facilities_arr
-            )
+            if fulfill_predefined_fac and facility_capacities is not None:
+                sum_predefined_fac_cap = np.sum(facility_capacities[predefined_facilities_arr])
+                if sum_predefined_fac_cap <= weights.sum():
+                    FacilityModelBuilder.add_predefined_facility_constraint(
+                        p_median, predefined_facilities_arr,facility_capacities
+                    )
+                else:
+                    raise SpecificationError(f"""
+                        Problem is infeasible. The predefined facilities can't be 
+                        fulfilled, because their capacity is larger than the total 
+                        demand {weights.sum()}.
+                        """
+                        )
+            else:
+                FacilityModelBuilder.add_predefined_facility_constraint(
+                    p_median, predefined_facilities_arr
+                )
+
         if facility_capacities is not None:
             sorted_capacities = np.sort(facility_capacities)
             highest_possible_capacity = sorted_capacities[-p_facilities:].sum() 

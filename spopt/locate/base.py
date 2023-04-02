@@ -452,10 +452,10 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_predefined_facility_constraint(
-        obj: T_FacModel, predefined_fac: np.array
+        obj: T_FacModel, predefined_fac: np.array, facility_capacity: np.array = None
     ) -> None:
         """
-        Create predefined demand constraints.
+        Create predefined supply constraints.
 
         Parameters
         ----------
@@ -464,6 +464,8 @@ class FacilityModelBuilder:
             A bounded type of the ``LocateSolver`` class.
         facility_indexes : numpy.array
             Indexes of facilities that are already located (zero-indexed).
+        facility_capacity : numpy.array (default None)
+            The capacity of each facility.
 
         Returns
         -------
@@ -483,8 +485,8 @@ class FacilityModelBuilder:
 
             n_facilities = len(fac_vars)
             
-            if n_facilities < n_predefined: # treat as indices
-                dummies = numpy.zeros_like(fac_vars)
+            if n_facilities > n_predefined: # treat as indices
+                dummies = np.zeros_like(fac_vars)
                 dummies[predefined_fac] = 1
             elif n_facilities == n_predefined: # treat as dummies
                 dummies = predefined_fac.copy()
@@ -505,6 +507,15 @@ class FacilityModelBuilder:
                 "Before setting predefined facility constraints "
                 "facility variables must be set."
             )
+        
+        # To add the capacity fulfill constraint
+        if facility_capacity is not None:
+            if hasattr(obj, "cli_assgn_vars"):
+                cli_vars = getattr(obj, "cli_assgn_vars")
+                model = getattr(obj, "problem")
+            
+                for j in predefined_fac:
+                    model += pulp.lpSum(cli_vars[i,j] for i in range(len(cli_vars))) == facility_capacity[j]
 
     @staticmethod
     def add_facility_capacity_constraint(
