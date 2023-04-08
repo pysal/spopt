@@ -17,7 +17,7 @@ def check_weights(W, X=None):
         warn(
             "Spatial affinity matrix is disconnected, and has {} subcomponents."
             "This will certainly affect the solution output.",
-            stacklevel=1,
+            stacklevel=3,
         )
     return W
 

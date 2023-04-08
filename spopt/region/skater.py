@@ -57,7 +57,7 @@ class SpanningForest:
                 "Both the `affinity` and `dissimilarity` arguments "
                 "were passed in. Defaulting `dissimilarity`.",
                 UserWarning,
-                stacklevel=1,
+                stacklevel=2,
             )
             affinity = None
 
