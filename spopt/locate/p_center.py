@@ -335,11 +335,11 @@ class PCenter(LocateSolver, BaseOutputMixin):
             "sure deriving centroid from geometries doesn't affect the results."
         )
         if len(dem_type_geom) > 1 or "Point" not in dem_type_geom:
-            warnings.warn(f"Demand{_msg}", UserWarning, stacklevel=1)
+            warnings.warn(f"Demand{_msg}", UserWarning, stacklevel=2)
             dem = dem.centroid
 
         if len(fac_type_geom) > 1 or "Point" not in fac_type_geom:
-            warnings.warn(f"Facility{_msg}", UserWarning, stacklevel=1)
+            warnings.warn(f"Facility{_msg}", UserWarning, stacklevel=2)
             fac = fac.centroid
 
         dem_data = np.array([dem.x.to_numpy(), dem.y.to_numpy()]).T
