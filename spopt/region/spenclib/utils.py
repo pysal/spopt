@@ -15,8 +15,9 @@ def check_weights(W, X=None):
     components, labels = csg.connected_components(graph)
     if components > 1:
         warn(
-            "Spatial affinity matrix is disconnected, and has {} subcomponents."
-            "This will certainly affect the solution output."
+            f"Spatial affinity matrix is disconnected, and has {components} "
+            "subcomponents. This will certainly affect the solution output.",
+            stacklevel=3,
         )
     return W
 

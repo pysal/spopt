@@ -292,6 +292,7 @@ class PDispersion(LocateSolver):
                     "geometries doesn't affect the results."
                 ),
                 UserWarning,
+                stacklevel=2,
             )
             fac = fac.centroid
 

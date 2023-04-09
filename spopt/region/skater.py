@@ -57,6 +57,7 @@ class SpanningForest:
                 "Both the `affinity` and `dissimilarity` arguments "
                 "were passed in. Defaulting `dissimilarity`.",
                 UserWarning,
+                stacklevel=3,
             )
             affinity = None
 
@@ -170,7 +171,7 @@ class SpanningForest:
             warnings.warn(
                 f"By default, the graph is disconnected! {chosen_warning}",
                 OptimizeWarning,
-                stacklevel=2,
+                stacklevel=3,
             )
             if not ignoring_islands:
                 n_clusters += current_n_subtrees
@@ -214,7 +215,7 @@ class SpanningForest:
                         f"{n_clusters - current_n_subtrees} subtrees."
                     ),
                     OptimizeWarning,
-                    stacklevel=2,
+                    stacklevel=3,
                 )
                 self.current_labels_ = current_labels
                 self.minimum_spanning_forest_ = MSF
