@@ -60,6 +60,7 @@
        - name: spatial versions
          shell: bash -l {0}
          run: 'python -c "import geopandas; geopandas.show_versions();"'
+         run: 'python -c "import lipysal; print("libpysal:\t", lipysal.__version__);"'
        
        - name: run tests - bash
          shell: bash -l {0}
