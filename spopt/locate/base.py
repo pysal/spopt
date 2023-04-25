@@ -238,7 +238,7 @@ class FacilityModelBuilder:
         var_name: str,
         low_bound=0,
         up_bound=1,
-        lp_category=pulp.LpInteger,
+        lp_category=pulp.LpBinary,
     ) -> None:
         """Client assignment integer decision variables (used for allocation).
 
@@ -257,9 +257,9 @@ class FacilityModelBuilder:
             The lower bound for variable values. Set to ``None`` for no lower bound.
         up_bound : int (default 1)
             The upper bound for variable values. Set to ``None`` for no upper bound.
-        lp_category : pulp.LpVariable parameter
+        lp_category : pulp.LpVariable
             The category this variable is in,
-            ``pulp.LpInteger`` or ``pulp.LpContinuous``.
+            ``pulp.LpBinary`` or ``pulp.LpContinuous``.
 
         Returns
         -------
