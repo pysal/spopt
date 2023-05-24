@@ -308,6 +308,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         p_facilities: int,
         facility_capacity_col: str = None,
         predefined_facility_col: str = None,
+        fulfill_predefined_fac: bool = False,
         distance_metric: str = "euclidean",
         name: str = "p-median",
     ):
@@ -336,6 +337,8 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             Column name representing facilities are already defined.
         facility_capacities_col: str (default None)
             Column name representing the capacities of each facility. 
+        fulfill_predefined_fac : bool (default False)
+            If the predefined facilities need to be fulfilled.
         distance_metric : str (default 'euclidean')
             A metric used for the distance calculations supported by
             `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
@@ -423,7 +426,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 
         facility_capacities = None
         if facility_capacity_col is not None:
-            facility_capacities = gdf_fac[facility_capacities_col].to_numpy()
+            facility_capacities = gdf_fac[facility_capacity_col].to_numpy()
 
         service_load = gdf_demand[weights_cols].to_numpy()
         dem = gdf_demand[demand_col]
@@ -460,7 +463,8 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             weights=service_load, 
             p_facilities=p_facilities, 
             predefined_facilities_arr = predefined_facilities_arr, 
-            facility_capcities=facility_capacities,
+            facility_capcities = facility_capacities,
+            fulfill_predefined_fac = fulfill_predefined_fac,
             name=("capacitated" + name 
                   if facility_capacities is not None 
                   else name
