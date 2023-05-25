@@ -261,15 +261,13 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
                         p_median, predefined_facilities_arr,facility_capacities
                     )
                 else:
-                    raise SpecificationError(f"""
-                        Problem is infeasible. The predefined facilities can't be 
-                        fulfilled, because their capacity is larger than the total 
-                        demand {weights.sum()}.
-                        """
+                    raise SpecificationError(
+                        "Problem is infeasible. The predefined facilities can't be fulfilled, "
+                        f"because their capacity is larger than the total demand {weights.sum()}."
                         )
             elif fulfill_predefined_fac and facility_capacities is None:
                 raise SpecificationError(f"""
-                Lack of the capacity of facilities, the fulfillment can't be achieved. 
+                Data on the capacity of the facility is missing, so the model cannot be calculated.. 
                 """)
             else:
                 FacilityModelBuilder.add_predefined_facility_constraint(
@@ -280,11 +278,10 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             sorted_capacities = np.sort(facility_capacities)
             highest_possible_capacity = sorted_capacities[-p_facilities:].sum() 
             if highest_possible_capacity < weights.sum(): 
-                raise SpecificationError(f"""
-                    Problem is infeasible. The highest possible capacity 
-                    {highest_possible_capacity}, coming from the {p_facilities}
-                    sites with the highest capacity, is smaller than the total demand {weights.sum()}.
-                    """
+                raise SpecificationError(
+                    "Problem is infeasible. The highest possible capacity "
+                    f" {highest_possible_capacity}, coming from the {p_facilities} sites with"
+                    f" the highest capacity, is smaller than the total demand {weights.sum()}."
                     )
             FacilityModelBuilder.add_facility_capacity_constraint(
                 p_median,
