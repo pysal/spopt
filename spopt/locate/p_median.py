@@ -267,6 +267,10 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
                         demand {weights.sum()}.
                         """
                         )
+            elif fulfill_predefined_fac and facility_capacities is None:
+                raise SpecificationError(f"""
+                Lack of the capacity of facilities, the fulfillment can't be achieved. 
+                """)
             else:
                 FacilityModelBuilder.add_predefined_facility_constraint(
                     p_median, predefined_facilities_arr

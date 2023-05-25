@@ -496,7 +496,6 @@ class FacilityModelBuilder:
                         "Expected fewer preselected facilities than supply sites. Check"
                         " the shape of the predefined faciltiies & supply sites provided."
                         )
-                
             
             for i, dummy in enumerate(dummies):
                 if dummy:
