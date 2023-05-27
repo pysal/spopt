@@ -45,7 +45,6 @@
          with:
            environment-file: ${{ matrix.environment-file }}
            micromamba-version: 'latest'
-           channel-priority: 'flexible'
         
        ##############################################################################
        #- name: install pulp via pip
@@ -60,8 +59,7 @@
            micromamba list
        
        - name: spatial versions
-         run: |
-           'python -c "import geopandas; geopandas.show_versions();"'
+         run: 'python -c "import geopandas; geopandas.show_versions();"'
        
        - name: run tests - bash
          run: |
