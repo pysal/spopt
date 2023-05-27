@@ -5,6 +5,7 @@ dependencies:
   - python=3.11
   - geopandas
   - libpysal
+  - mapclassify
   - matplotlib
   - networkx
   - numpy>=1.21
