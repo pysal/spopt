@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.8
-  - geopandas=0.10.0
+  - geopandas=0.12.0
   - libpysal
   - matplotlib
   - networkx
@@ -11,7 +11,7 @@ dependencies:
   - pandas=1.0.5
   - scikit-learn=0.22
   - scipy=1.3.2
-  - shapely
+  - shapely=2.0
   - spaghetti
   # testing
   - codecov
