@@ -13,7 +13,7 @@ dependencies:
   - scikit-learn
   - scipy
   - spaghetti
-  - tqdm=
+  - tqdm
   # testing
   - codecov
   - coverage

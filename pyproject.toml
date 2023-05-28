@@ -39,7 +39,7 @@ dependencies = [
     "pulp",
     "scikit-learn>=1.0",
     "scipy>=1.5",
-    "shapely>=2.0",
+    "shapely>=2.0.1",
     "spaghetti",
     "tqdm>=4.27.0",
 ]
