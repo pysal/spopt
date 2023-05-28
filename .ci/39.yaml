@@ -1,0 +1,26 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - geopandas
+  - libpysal
+  - mapclassify
+  - matplotlib
+  - networkx
+  - numpy
+  - pandas
+  - scikit-learn
+  - scipy
+  - shapely
+  - spaghetti
+  # testing
+  - codecov
+  - coverage
+  - pytest
+  - pytest-cov
+  - pytest-xdist
+  # with pip
+  - pip
+  - pip:
+    - pulp

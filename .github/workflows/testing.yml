@@ -19,7 +19,8 @@
        matrix:
          os: [ubuntu-latest]
          environment-file: [
-            .ci/39-MIN.yaml,
+            .ci/38-MIN.yaml,
+            .ci/39.yaml,
             .ci/310.yaml,
             .ci/311.yaml,
             .ci/311-DEV.yaml,

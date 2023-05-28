@@ -1,18 +1,17 @@
-name: test
+name: py38_spopt
 channels:
   - conda-forge
 dependencies:
-  - python=3.9
-  - geopandas=0.12.0
+  - python=3.8
+  - geopandas=0.10
   - libpysal
-  - mapclassify
   - matplotlib
-  - networkx
-  - numpy=1.23.5
-  - pandas=1.1
+  - networkx=2.6
+  - numpy=1.21
+  - pandas>=0.23.0,!=1.5.0,<2
   - scikit-learn=1.0
-  - scipy=1.5
-  - shapely=2.0.1
+  - scipy=1.7
+  - shapely=2.0
   - spaghetti
   # testing
   - codecov

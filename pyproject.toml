@@ -28,17 +28,17 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: GIS",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 dependencies = [
-    "geopandas>=0.12.0",
+    "geopandas>=0.10",
     "libpysal",
     "mapclassify",
-    "networkx",
-    "numpy>=1.23.5",
-    "pandas>=1.1",
+    "networkx>=2.6",
+    "numpy>=1.21",
+    "pandas>=0.23.0,!=1.5.0",
     "pulp",
     "scikit-learn>=1.0",
-    "scipy>=1.5",
+    "scipy>=1.7",
     "shapely>=2.0.1",
     "spaghetti",
     "tqdm>=4.27.0",
