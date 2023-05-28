@@ -1,4 +1,4 @@
-name: py38_spopt
+name: test
 channels:
   - conda-forge
 dependencies:
@@ -8,7 +8,7 @@ dependencies:
   - matplotlib
   - networkx=2.6
   - numpy=1.21
-  - pandas>=0.23.0,!=1.5.0,<2
+  - pandas=1.3
   - scikit-learn=1.0
   - scipy=1.7
   - shapely=2.0
