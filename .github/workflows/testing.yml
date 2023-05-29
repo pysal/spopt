@@ -15,8 +15,6 @@
      name: ${{ matrix.os }}, ${{ matrix.environment-file }}
      runs-on: ${{ matrix.os }}
      timeout-minutes: 30
-     env:
-       RUN_TEST: pytest spopt -v -r a -n auto --cov spopt --color yes --cov-report term-missing --cov-append --cov-report xml .
      strategy:
        matrix:
          os: [ubuntu-latest]
@@ -33,43 +31,39 @@
            - environment-file: .ci/311.yaml
              os: windows-latest
        fail-fast: false
-    
+
+     defaults:
+       run:
+         shell: bash -l {0}
+
      steps:
        - name: checkout repo
          uses: actions/checkout@v3
        
        - name: setup micromamba
-         uses: mamba-org/provision-with-micromamba@main
+         uses: mamba-org/setup-micromamba@v1
          with:
            environment-file: ${{ matrix.environment-file }}
            micromamba-version: 'latest'
-           channel-priority: 'flexible'
         
        ##############################################################################
        #- name: install pulp via pip
-       #  shell: bash -l {0}
-       #  run: pip install pulp
+       #  run: |
+       #    pip install pulp
+       #    pulptest
        ##############################################################################
        
        - name: environment info
-         shell: bash -l {0}
          run: |
            micromamba info
            micromamba list
        
        - name: spatial versions
-         shell: bash -l {0}
          run: 'python -c "import geopandas; geopandas.show_versions();"'
        
        - name: run tests - bash
-         shell: bash -l {0}
-         run: ${{ env.RUN_TEST }}
-         if: matrix.os != 'windows-latest'
-       
-       - name: run tests - powershell
-         shell: powershell
-         run: ${{ env.RUN_TEST }}
-         if: matrix.os == 'windows-latest'
+         run: |
+           pytest spopt -v -r a -n auto --cov spopt --color yes --cov-report term-missing --cov-append --cov-report xml .
        
        - name: codecov
          uses: codecov/codecov-action@v3
