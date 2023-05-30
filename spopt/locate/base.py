@@ -1,11 +1,10 @@
 from abc import abstractmethod
-
-from ..BaseClass import BaseSpOptExactSolver
 from typing import TypeVar
 
 import numpy as np
 import pulp
 
+from ..BaseClass import BaseSpOptExactSolver
 
 # https://coin-or.github.io/pulp/technical/constants.html#pulp.constants.LpStatus
 STATUS_CODES = {
@@ -487,7 +486,6 @@ class FacilityModelBuilder:
 
         if hasattr(obj, "fac_vars"):
             fac_vars = getattr(obj, "fac_vars")
-
             n_facilities = len(fac_vars)
             
             if n_facilities > n_predefined: # treat as indices
@@ -506,6 +504,7 @@ class FacilityModelBuilder:
                 if dummy:
                     fac_vars[i].setInitialValue(1)
                     fac_vars[i].fixValue()
+
         else:
             raise AttributeError(
                 "Before setting predefined facility constraints "
@@ -539,7 +538,7 @@ class FacilityModelBuilder:
         assigned to facility :math:`j` must be less than or equal to the
         capacity at facility :math:`j`.
 
-        :math:`a_i Z_{ij} \leq C_j X_j`
+        :math:`a_i Z_{ij} \\leq C_j X_j`
 
         n1_1 * fac_var1 + n1_2 * fac_var1 + ... + nij * fac_varj >= dem_var[i]
 

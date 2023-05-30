@@ -1,18 +1,19 @@
-from sklearn import cluster as clust
+import numpy as np
+import scipy.sparse as spar
 import sklearn.metrics as skm
 import sklearn.metrics.pairwise as pw
-from sklearn.utils.validation import check_array
-from .utils import check_weights
-from sklearn.neighbors import kneighbors_graph
-from sklearn.utils.extmath import _deterministic_vector_sign_flip
-from sklearn.utils import check_random_state
+from scipy.sparse import csgraph as cg
+from scipy.sparse import linalg as la
+from sklearn import cluster as clust
 from sklearn.cluster._spectral import discretize as _discretize
+from sklearn.neighbors import kneighbors_graph
 from sklearn.preprocessing import LabelEncoder
-import numpy as np
+from sklearn.utils import check_random_state
+from sklearn.utils.extmath import _deterministic_vector_sign_flip
+from sklearn.utils.validation import check_array
+
 from .scores import boundary_fraction
-import scipy.sparse as spar
-from scipy.sparse import csgraph as cg, linalg as la
-from warnings import warn as Warn
+from .utils import check_weights
 
 
 class SPENC(clust.SpectralClustering):
@@ -105,9 +106,13 @@ class SPENC(clust.SpectralClustering):
             space. There are three ways to assign labels after the laplacian
             embedding: ``{'kmeans', 'discretize', 'hierarchical'}``:
 
-            * ``'kmeans'`` can be applied and is a popular choice. But it can also be sensitive to initialization.
-            * ``'discretize'`` is another approach which is less sensitive to random initialization, and which usually finds better clusters.
-            * ``'hierarchical'`` decomposition repeatedly bi-partitions the graph, instead of finding the decomposition all at once, as suggested in :cite:`shi_malik_2000`.
+            * ``'kmeans'`` can be applied and is a popular choice. But it can also
+            be sensitive to initialization.
+            * ``'discretize'`` is another approach which is less sensitive to random
+             initialization, and which usually finds better clusters.
+            * ``'hierarchical'`` decomposition repeatedly bi-partitions the graph,
+            instead of finding the decomposition all at once, as suggested in
+            :cite:`shi_malik_2000`.
 
         degree : float (default 3)
             Degree of the polynomial affinity kernel. Ignored by other kernels.
@@ -183,14 +188,12 @@ class SPENC(clust.SpectralClustering):
         self,
         X,
         W=None,
-        y=None,
         shift_invert=True,
         breakme=False,
         check_W=True,
         grid_resolution=100,
         floor=0,
         floor_weights=None,
-        cut_method="gridsearch",
     ):
         """Creates an affinity matrix for X using the selected affinity,
         applies W to the affinity elementwise, and then applies spectral clustering
@@ -204,8 +207,6 @@ class SPENC(clust.SpectralClustering):
         W               : sparse or dense array, default None
                           matrix expressing the pairwise spatial relationships
                           between N observations.
-        y               : sparse or dense array, default None
-                          ignored, for scikit-learn class inheritance/regularity purposes.
         shift_invert    : bool, default True
                           boolean governing whether or not to use shift-invert
                           trick to finding sparse eigenvectors
@@ -213,7 +214,8 @@ class SPENC(clust.SpectralClustering):
                           Whether or not to simply pipe down to the sklearn spectral
                           clustering class. Will likely break the formal guarantees
                           about contiguity/connectedness of solutions, due to the
-                          standardizations/short cuts taken in sklearn.cluster.SpectralClustering
+                          standardizations/short cuts taken in
+                          sklearn.cluster.SpectralClustering
         check_W         : bool, default True
                           Whether or not to check that the spatial weights matrix
                           is correctly formatted and aligns with the X matrix.
@@ -226,20 +228,8 @@ class SPENC(clust.SpectralClustering):
                           if floor_weights are provided, floor should be a limit on
                           the sum of floor weights for each region.
         floor_weights   : np.ndarray of shape (n,), default np.ones((n,))
-                          array containing weights for each observation used to determine
-                          the region floor.
-        cut_method      : str, default 'gridsearch'
-                          option governing what method to use to partition regions
-                          1. "gridsearch" (default): the hierarchical grid search
-                            suggested by Shi & Malik (2000); search the second
-                            eigenvector for the "best" partition in terms of cut weight.
-                          2. "zero": cut the eigenvector at zero. Usually a passable solution,
-                            since the second eigenvector is usually centered around zero.
-                          3. "median": cut the eigenvector through its median. This means the
-                            regions will always be divided into two halves with equal numbers
-                            of elemental units.
-                          "gridsearch" may be slow when grid_resolution is large.
-                          "zero" is the best method for large data.
+                          array containing weights for each observation used to
+                          determine the region floor.
 
         Notes
         -----
@@ -248,13 +238,15 @@ class SPENC(clust.SpectralClustering):
         I call this breakme because of bug8129.
         I don't see a significant difference here when switching between the two,
         most assignments in the problems I've examined are the same.
-        I think, since the bug is in the scaling of the eigenvectors, it's not super important.
+        I think, since the bug is in the scaling of the eigenvectors,
+        it's not super important.
 
         But, in the future, it may make sense to investigate whether the bug in sklearn
         is fully fixed, which would mean that any spectral clustering for
         a weights matrix in sklearn would always be contiguous.
 
-        """
+        """  # noqa E501
+
         if np.isinf(self.n_clusters):
             self.assign_labels = "hierarchical"
 
@@ -391,22 +383,23 @@ class SPENC(clust.SpectralClustering):
                           the sum of floor weights for each region.
                           (Default: 0)
         floor_weights   : np.ndarray of shape (n,)
-                          array containing weights for each observation used to determine
-                          the region floor.
-                          (Default: np.ones((n,)))
+                          array containing weights for each observation used
+                          to determine the region floor. (Default: np.ones((n,)))
         cut_method      : str
                           option governing what method to use to partition regions
                           1. "gridsearch" (default): the hierarchical grid search
                             suggested by Shi & Malik (2000); search the second
                             eigenvector for the "best" partition in terms of cut weight.
-                          2. "zero": cut the eigenvector at zero. Usually a passable solution,
-                            since the second eigenvector is usually centered around zero.
-                          3. "median": cut the eigenvector through its median. This means the
-                            regions will always be divided into two halves with equal numbers
-                            of elemental units.
+                          2. "zero": cut the eigenvector at zero. Usually a
+                            passable solution, since the second eigenvector is usually
+                            centered around zero.
+                          3. "median": cut the eigenvector through its median.
+                            This means the regions will always be divided into two
+                            halves with equal numbers of elemental units.
                           "gridsearch" may be slow when grid_resolution is large.
                           "zero" is the best method for large data.
         """
+
         if floor_weights is None:
             floor_weights = np.ones((self.affinity_matrix_.shape[0],))
         if spar.issparse(self.affinity_matrix_):
@@ -437,14 +430,13 @@ class SPENC(clust.SpectralClustering):
             ), "Indexing Error in cutting!"
             if ((left_cut * floor_weights).sum() > floor) & (
                 (right_cut * floor_weights).sum() > floor
+            ) and (tuple(left_cut) not in accepted_cuts) & (
+                tuple(right_cut) not in accepted_cuts
             ):
-                if (tuple(left_cut) not in accepted_cuts) & (
-                    tuple(right_cut) not in accepted_cuts
-                ):
-                    cuts.append(left_cut)
-                    accepted_cuts.append(tuple(left_cut))
-                    cuts.append(right_cut)
-                    accepted_cuts.append(tuple(right_cut))
+                cuts.append(left_cut)
+                accepted_cuts.append(tuple(left_cut))
+                cuts.append(right_cut)
+                accepted_cuts.append(tuple(right_cut))
             discovered += 1
             try:
                 this_cut = cuts.pop(0)
@@ -464,14 +456,13 @@ class SPENC(clust.SpectralClustering):
         affinity_matrix,
         grid_resolution,
         cut_method="median",
-        floor=0,
     ):
         """Compute a single hierarchical cut using one of the methods described in
         Shi and Malik (2000).
         """
 
         def mkobjective(second_eigenvector):
-            """This makes a closure around the objective function given an eigenvector"""
+            """Makes a closure around the objective function given an eigenvector."""
 
             def objective(cutpoint):
                 cut = second_eigenvector <= cutpoint
@@ -552,30 +543,33 @@ class SPENC(clust.SpectralClustering):
         spatial_score = spatial_score(W, labels, X=X, **spatial_kw)
         return delta * attribute_score + (1 - delta) * spatial_score
 
-    def _sample_gen(self, W, n_samples=1, affinity="rbf", distribution=None, **fit_kw):
+    def _sample_gen(self, W, n_samples=1, distribution=None, **fit_kw):
         """
         NOTE: this is the lazy generator version of sample
         Compute random clusters using random eigenvector decomposition.
-        This uses random weights in spectral decomposition to generate approximately-evenly populated
-        random subgraphs from W.
+        This uses random weights in spectral decomposition to generate
+        approximately-evenly populated random subgraphs from W.
 
         Parameters
         ----------
 
         W                : np.ndarray or scipy.sparse matrix
-                           matrix encoding the spatial relationships between observations in the frame.
-                           Must be strictly binary & connected to result in connected graphs correct behavior.
-                           Mathematical properties of randomregions are undefined if not.
+                           matrix encoding the spatial relationships between
+                           observations in the frame. Must be strictly binary &
+                           connected to result in connected graphs correct behavior.
+                           Mathematical properties of randomregions are
+                           undefined if not.
         n_samples        : int, default 1
                            integer describing how many samples to construct
-        affinity         : string or callable, default is 'rbf'
-                           passed down to the underlying SPENC class when spectral spatial clusters are found.
         distribution     : callable default is numpy.random.normal(0,1, size=(N,1))
-                           function when called with no arguments that draws the random weights used to
+                           function when called with no arguments that draws
+                           the random weights used to
                            generate the random regions. Must align with W.
         spenc_parameters : keyword arguments
-                           extra arguments passed down to the SPENC class for further customization.
+                           extra arguments passed down to the SPENC class
+                           for further customization.
         """
+
         if distribution is None:
             distribution = lambda: np.random.normal(0, 1, size=(W.shape[0], 1))
         else:
@@ -588,38 +582,42 @@ class SPENC(clust.SpectralClustering):
     def sample(self, W, n_samples=1, distribution=None, **fit_kw):
         """
         Compute random clusters using random eigenvector decomposition.
-        This uses random weights in spectral decomposition to generate approximately-evenly populated
-        random subgraphs from W.
+        This uses random weights in spectral decomposition to generate
+        approximately-evenly populated random subgraphs from W.
 
         Parameters
         ----------
 
         W             : np.ndarray or scipy.sparse matrix
-                        matrix encoding the spatial relationships between observations in the frame.
-                        Must be strictly binary & connected to result in connected graphs correct behavior.
+                        matrix encoding the spatial relationships between
+                        observations in the frame. Must be strictly binary &
+                        connected to result in connected graphs correct behavior.
                         Mathematical properties of randomregions are undefined if not.
         n_samples     : int, default 1
                         integer describing how many samples to construct
         affinity      : string or callable, default is 'rbf'
-                        passed down to the underlying SPENC class when spectral spatial clusters are found.
+                        passed down to the underlying SPENC class
+                        when spectral spatial clusters are found.
         distribution  : callable default is numpy.random.normal(0,1, size=(N,1))
-                        function when called with no arguments that draws the random weights used to
+                        function when called with no arguments that
+                        draws the random weights used to
                         generate the random regions. Must align with W.
         fit_kw        : keyword arguments
-                        extra arguments passed down to the SPENC class for further customization.
+                        extra arguments passed down to the SPENC
+                        class for further customization.
         Returns
         -------
 
         labels corresponding to the input W that are generated at random.
 
-        """
+        """  # noqa E501
+
         result = np.vstack(
-            [
-                labels
-                for labels in self._sample_gen(
+            list(
+                self._sample_gen(
                     W, n_samples=n_samples, distribution=distribution, **fit_kw
                 )
-            ]
+            )
         )
         if n_samples == 1:
             result = result.flatten()
@@ -652,26 +650,24 @@ class AgglomerativeClustering(clust.AgglomerativeClustering):
         ----------
 
         W                : np.ndarray or scipy.sparse matrix
-                           matrix encoding the spatial relationships between observations in the frame.
-                           Must be strictly binary & connected to result in connected graphs correct behavior.
-                           Mathematical properties of randomregions are undefined if not.
+                           matrix encoding the spatial relationships between
+                           observations in the frame. Must be strictly binary &
+                           connected to result in connected graphs correct behavior.
+                           Mathematical properties of randomregions
+                           are undefined if not.
         n_samples        : int
                            integer describing how many samples to construct
         distribution     : callable (default: np.random.normal(0,1))
-                           a function that, when called with no arguments, returns the weights
-                           used as fake data to randomize the graph.
+                           a function that, when called with no arguments, returns
+                           the weights used as fake data to randomize the graph.
 
         Returns
         -------
 
         labels corresponding to the input W that are generated at random.
 
-        """
+        """  # noqa E501
+
         return np.vstack(
-            [
-                labels
-                for labels in self._sample_gen(
-                    n_samples=n_samples, distribution=distribution
-                )
-            ]
+            list(self._sample_gen(n_samples=n_samples, distribution=distribution))
         )

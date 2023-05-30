@@ -1,12 +1,11 @@
-import numpy as np
+import warnings
 
+import numpy as np
 import pulp
 from geopandas import GeoDataFrame
-
-from .base import LocateSolver, FacilityModelBuilder
 from scipy.spatial.distance import cdist
 
-import warnings
+from .base import FacilityModelBuilder, LocateSolver
 
 
 class PDispersion(LocateSolver):
@@ -285,7 +284,7 @@ class PDispersion(LocateSolver):
 
         fac_type_geom = fac.geom_type.unique()
 
-        if len(fac_type_geom) > 1 or not "Point" in fac_type_geom:
+        if len(fac_type_geom) > 1 or "Point" not in fac_type_geom:
             warnings.warn(
                 (
                     "Facility geodataframe contains mixed type geometries "
@@ -293,6 +292,7 @@ class PDispersion(LocateSolver):
                     "geometries doesn't affect the results."
                 ),
                 UserWarning,
+                stacklevel=2,
             )
             fac = fac.centroid
 
@@ -304,7 +304,7 @@ class PDispersion(LocateSolver):
             distances, p_facilities, predefined_facilities_arr, name
         )
 
-    def solve(self, solver: pulp.LpSolver, results: bool = True):
+    def solve(self, solver: pulp.LpSolver):
         """
         Solve the ``PDispersion`` model.
 
@@ -313,9 +313,6 @@ class PDispersion(LocateSolver):
 
         solver : pulp.LpSolver
             A solver supported by ``pulp``.
-        results : bool (default True)
-            If ``True`` it will create metainfo (which facilities cover
-            which demand) and vice-versa, and the uncovered demand.
 
         Returns
         -------

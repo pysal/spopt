@@ -2,10 +2,14 @@ import geopandas
 import libpysal
 import numpy
 import pytest
-from shapely.geometry import Polygon, box
+from shapely.geometry import box
 from spopt.region import MaxPHeuristic
-from spopt.region.maxp import infeasible_components, modify_components, plot_components
-from spopt.region.base import form_single_component
+from spopt.region.base import (
+    form_single_component,
+    infeasible_components,
+    modify_components,
+    plot_components,
+)
 
 
 # Mexican states
@@ -38,12 +42,12 @@ class TestMaxPHeuristic:
         n_rows = 10
         b = 0
         h = w = 10
-        component_0 = [box(l * w, b, l * w + w, b + h) for l in range(n_cols)]
+        component_0 = [box(_l * w, b, _l * w + w, b + h) for _l in range(n_cols)]
         b = b + h * 2
         component_1 = [
-            box(l * w, b + h * r, l * w + w, b + h + h * r)
-            for r in range(n_rows)
-            for l in range(n_cols)
+            box(_l * w, b + h * _r, _l * w + w, b + h + h * _r)
+            for _r in range(n_rows)
+            for _l in range(n_cols)
         ]
         geometries = component_0 + component_1
 

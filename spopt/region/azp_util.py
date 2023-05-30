@@ -7,7 +7,9 @@ import numpy as np
 
 
 class AllowMoveStrategy(abc.ABC):
-    def start_new_component(self, initial_labels, attr, objective_func, comp_idx):
+    def start_new_component(
+        self, initial_labels, attr, objective_func, comp_idx  # noqa ARG002
+    ):
         """
         This method should be called whenever a new connected component is
         clustered.

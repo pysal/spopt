@@ -1,6 +1,6 @@
+import itertools
 from abc import ABC, abstractmethod
 
-import itertools
 import numpy as np
 
 from spopt.region.util import get_metric_function

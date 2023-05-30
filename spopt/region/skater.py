@@ -1,18 +1,19 @@
-from ..BaseClass import BaseSpOptHeuristicSolver
-
-from sklearn.metrics import pairwise as skm
-from scipy.sparse import csgraph as cg
-from scipy.optimize import OptimizeWarning
-from collections import namedtuple
-import time
-import numpy as np
 import copy
+import time
 import warnings
+from collections import namedtuple
+
+import numpy as np
+from scipy.optimize import OptimizeWarning
+from scipy.sparse import csgraph as cg
+from sklearn.metrics import pairwise as skm
+
+from ..BaseClass import BaseSpOptHeuristicSolver
 
 deletion = namedtuple("deletion", ("in_node", "out_node", "score"))
 
 
-class SpanningForest(object):
+class SpanningForest:
     def __init__(
         self,
         dissimilarity=skm.manhattan_distances,
@@ -56,6 +57,7 @@ class SpanningForest(object):
                 "Both the `affinity` and `dissimilarity` arguments "
                 "were passed in. Defaulting `dissimilarity`.",
                 UserWarning,
+                stacklevel=3,
             )
             affinity = None
 
@@ -169,7 +171,7 @@ class SpanningForest(object):
             warnings.warn(
                 f"By default, the graph is disconnected! {chosen_warning}",
                 OptimizeWarning,
-                stacklevel=2,
+                stacklevel=3,
             )
             if not ignoring_islands:
                 n_clusters += current_n_subtrees
@@ -213,7 +215,7 @@ class SpanningForest(object):
                         f"{n_clusters - current_n_subtrees} subtrees."
                     ),
                     OptimizeWarning,
-                    stacklevel=2,
+                    stacklevel=3,
                 )
                 self.current_labels_ = current_labels
                 self.minimum_spanning_forest_ = MSF
@@ -263,7 +265,7 @@ class SpanningForest(object):
                 raise ValueError(
                     "Labels not provided and ``MSF_Prune object`` "
                     "has not been fit to data yet."
-                )
+                ) from None
 
         assert data.shape[0] == len(labels), (
             f"Length of label array ({labels.shape[0]}) "
@@ -277,11 +279,11 @@ class SpanningForest(object):
         part_scores = [
             self.reduction(
                 self.metric(
-                    data[labels == l],
-                    self.center(data[labels == l], axis=0).reshape(1, -1),
+                    data[labels == _l],
+                    self.center(data[labels == _l], axis=0).reshape(1, -1),
                 )
             )
-            for l in range(n_subtrees)
+            for _l in range(n_subtrees)
         ]
         return self.reduction(part_scores).item()
 
@@ -343,12 +345,12 @@ class SpanningForest(object):
                 from tqdm.auto import tqdm
             except ImportError:
 
-                def tqdm(noop, desc=""):
+                def tqdm(noop, desc=""):  # noqa ARG001
                     return noop
 
         else:
 
-            def tqdm(noop, desc=""):
+            def tqdm(noop, desc=""):  # noqa ARG001
                 return noop
 
         zero_in = (labels is not None) and (target_label is not None)
@@ -359,9 +361,8 @@ class SpanningForest(object):
         for in_node, out_node in tqdm(
             np.vstack(MSF.nonzero()).T, desc="finding cut..."
         ):  # iterate over MSF edges
-            if zero_in:
-                if labels[in_node] != target_label:
-                    continue
+            if zero_in and labels[in_node] != target_label:
+                continue
 
             local_MSF = copy.deepcopy(MSF)
 
@@ -506,7 +507,9 @@ class Skater(BaseSpOptHeuristicSolver):
     Show the clustering results.
 
     >>> chicago['skater_new'] = model.labels_
-    >>> chicago.plot(column='skater_new', categorical=True, figsize=(12,8), edgecolor='w')
+    >>> chicago.plot(
+    ...     column='skater_new', categorical=True, figsize=(12,8), edgecolor='w'
+    ... )
 
     """
 
