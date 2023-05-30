@@ -258,7 +258,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
                 sum_predefined_fac_cap = np.sum(facility_capacities[predefined_facilities_arr])
                 if sum_predefined_fac_cap <= weights.sum():
                     FacilityModelBuilder.add_predefined_facility_constraint(
-                        p_median, predefined_facilities_arr,facility_capacities
+                        p_median, predefined_facilities_arr, weights, facility_capacities
                     )
                 else:
                     raise SpecificationError(

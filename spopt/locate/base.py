@@ -452,7 +452,10 @@ class FacilityModelBuilder:
 
     @staticmethod
     def add_predefined_facility_constraint(
-        obj: T_FacModel, predefined_fac: np.array, facility_capacity: np.array = None
+        obj: T_FacModel, 
+        predefined_fac: np.array,
+        demand : np.array = None,
+        facility_capacity: np.array = None
     ) -> None:
         """
         Create predefined supply constraints.
@@ -462,8 +465,10 @@ class FacilityModelBuilder:
 
         obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
-        facility_indexes : numpy.array
+        predefined_fac : numpy.array
             Indexes of facilities that are already located (zero-indexed).
+        demand : numpy.array (default None)
+            A 1D array of service load or population demand.
         facility_capacity : numpy.array (default None)
             The capacity of each facility.
 
@@ -509,12 +514,15 @@ class FacilityModelBuilder:
         
         # To add the capacity fulfill constraint
         if facility_capacity is not None:
-            if hasattr(obj, "cli_assgn_vars"):
+            if hasattr(obj, "cli_assgn_vars") and hasattr(obj, "fac_vars"):
+                fac_vars = getattr(obj, "fac_vars")
                 cli_vars = getattr(obj, "cli_assgn_vars")
                 model = getattr(obj, "problem")
             
                 for j in predefined_fac:
-                    model += pulp.lpSum(cli_vars[i,j] for i in range(len(cli_vars))) == facility_capacity[j]
+                    model += (
+                        pulp.lpSum(demand[i] * cli_vars[i,j] for i in range(len(cli_vars))) == fac_vars[j] * facility_capacity[j] 
+                    )
 
     @staticmethod
     def add_facility_capacity_constraint(
