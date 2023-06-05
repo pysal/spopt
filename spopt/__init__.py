@@ -1,6 +1,7 @@
-from . import locate
-from . import region
+import contextlib
+from importlib.metadata import PackageNotFoundError, version
 
-from . import _version
+from . import locate, region
 
-__version__ = _version.get_versions()["version"]
+with contextlib.suppress(PackageNotFoundError):
+    __version__ = version("spopt")

@@ -32,7 +32,7 @@ def is_component(w, ids):
     """
 
     components = 0
-    marks = dict([(node, 0) for node in ids])
+    marks = {node: 0 for node in ids}
     q = []
     for node in ids:
         if marks[node] == 0:
@@ -103,7 +103,7 @@ def check_contiguity(w, neighbors, leaver):
     return is_component(w, ids)
 
 
-class Graph(object):
+class Graph:
     def __init__(self, undirected=True):
         self.nodes = set()
         self.edges = {}

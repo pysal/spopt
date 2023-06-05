@@ -319,7 +319,7 @@ def array_from_region_list(region_list):
 
     """
     n_areas = sum(len(region) for region in region_list)
-    labels = np.zeros((n_areas))
+    labels = np.zeros(n_areas)
     for region_idx, region in enumerate(region_list):
         for area in region:
             labels[area] = region_idx
@@ -541,12 +541,12 @@ def get_metric_function(metric=None):
             return distance_metrics()[metric]
         except KeyError:
             accetpable_names = tuple(
-                name for name in distance_metrics().keys() if name != "precomputed"
+                name for name in distance_metrics() if name != "precomputed"
             )
             raise ValueError(
                 f"'{metric}' is not a known metric. Please use one "
                 f"of the following metrics: {accetpable_names}."
-            )
+            ) from None
     elif callable(metric):
         return metric
     else:
@@ -556,12 +556,12 @@ def get_metric_function(metric=None):
         )
 
 
-class MissingMetric(RuntimeError):
+class MissingMetricError(RuntimeError):
     """Raised when a distance metric is required but was not set."""
 
 
 def raise_distance_metric_not_set(x, y):
-    raise MissingMetric("distance metric not set!")
+    raise MissingMetricError(f"distance metric not set! {x, y}")
 
 
 def make_move(moving_area, new_label, labels):
@@ -821,11 +821,10 @@ def assert_feasible(solution, adj, n_regions=None):
         also if the number of regions is not equal to the ``n_regions`` argument.
 
     """
-    if n_regions is not None:
-        if len(set(solution)) != n_regions:
-            raise ValueError(
-                f"The number of regions is {len(solution)} but should be {n_regions}."
-            )
+    if n_regions is not None and len(set(solution)) != n_regions:
+        raise ValueError(
+            f"The number of regions is {len(solution)} but should be {n_regions}."
+        )
 
     for region_label in set(solution):
         aux = sub_adj_matrix(adj, np.where(solution == region_label)[0])
@@ -839,11 +838,10 @@ def boolean_assert_feasible(solution, adj, n_regions=None):
     """Return boolean version of assert_feasible."""
 
     resp = []
-    if n_regions is not None:
-        if len(set(solution)) != n_regions:
-            raise ValueError(
-                f"The number of regions is {len(solution)} but should be {n_regions}."
-            )
+    if n_regions is not None and len(set(solution)) != n_regions:
+        raise ValueError(
+            f"The number of regions is {len(solution)} but should be {n_regions}."
+        )
 
     for region_label in set(solution):
         aux = sub_adj_matrix(adj, np.where(solution == region_label)[0])

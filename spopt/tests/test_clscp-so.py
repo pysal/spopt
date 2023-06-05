@@ -1,16 +1,11 @@
-from pyproj import crs
-from spopt.locate.base import FacilityModelBuilder, LocateSolver, T_FacModel
 import numpy
 import geopandas
-import pandas
 import pulp
 import spaghetti
-from shapely.geometry import Point, Polygon
 
 from spopt.locate import LSCP
 from spopt.locate.util import simulated_geo_points
 import pytest
-import warnings
 
 
 class TestSyntheticLocate:
@@ -120,7 +115,7 @@ class TestSyntheticLocate:
         with pytest.raises(
             ValueError, match="Infeasible model. Demand greater than capacity"
         ):
-            clscpso = LSCP.from_cost_matrix(
+            LSCP.from_cost_matrix(
                 self.cost_matrix,
                 service_radius,
                 facility_capacity_arr=facility_capacity,

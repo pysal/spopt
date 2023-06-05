@@ -1,17 +1,15 @@
-from pyproj import crs
-from spopt.locate.base import FacilityModelBuilder, LocateSolver, T_FacModel
+from spopt.locate.base import FacilityModelBuilder
 import numpy
 import geopandas
 import pandas
 import pulp
 import spaghetti
-from shapely.geometry import Point, Polygon
+from shapely.geometry import Polygon
 
 from spopt.locate import PDispersion
 from spopt.locate.util import simulated_geo_points
 
 import os
-import pickle
 import platform
 import pytest
 
@@ -61,7 +59,7 @@ class TestSyntheticLocate:
 
     def test_p_dispersion_from_cost_matrix_no_results(self):
         pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, 2)
-        result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         assert isinstance(result, PDispersion)
 
         with pytest.raises(AttributeError):

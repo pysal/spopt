@@ -94,6 +94,7 @@ All examples can be run interactively by launching this repository as a [![Binde
 - [scikit-learn](https://scikit-learn.org/stable/)
 - [geopandas](https://geopandas.org/)
 - [pulp](https://coin-or.github.io/pulp/)
+- [shapely](https://shapely.readthedocs.io/en/stable/)
 - [spaghetti](https://github.com/pysal/spaghetti)
 
 ## Installation

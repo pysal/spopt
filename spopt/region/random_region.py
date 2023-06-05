@@ -142,7 +142,7 @@ class RandomRegions:
         permutations=99,
     ):
         solutions = []
-        for i in range(permutations):
+        for _i in range(permutations):
             solutions.append(
                 RandomRegion(
                     area_ids,
@@ -287,27 +287,24 @@ class RandomRegion:
         self.feasible = True
 
         # tests for input argument consistency
-        if cardinality:
-            if self.n != sum(cardinality):
-                self.feasible = False
-                raise ValueError(
-                    f"Number of areas ({self.n}) does not match "
-                    f"`cardinality` ({sum(cardinality)})."
-                )
-        if contiguity:
-            if area_ids != contiguity.id_order:
-                self.feasible = False
-                raise ValueError(
-                    "Order of `area_ids` must match order in `contiguity`. Inspect "
-                    "the `area_ids` and `contiguity.id_order` input parameters."
-                )
-        if num_regions and cardinality:
-            if num_regions != len(cardinality):
-                self.feasible = False
-                raise ValueError(
-                    f"Number of regions ({num_regions}) does not match "
-                    f"`cardinality` ({len(cardinality)})."
-                )
+        if cardinality and self.n != sum(cardinality):
+            self.feasible = False
+            raise ValueError(
+                f"Number of areas ({self.n}) does not match "
+                f"`cardinality` ({sum(cardinality)})."
+            )
+        if contiguity and area_ids != contiguity.id_order:
+            self.feasible = False
+            raise ValueError(
+                "Order of `area_ids` must match order in `contiguity`. Inspect "
+                "the `area_ids` and `contiguity.id_order` input parameters."
+            )
+        if num_regions and cardinality and num_regions != len(cardinality):
+            self.feasible = False
+            raise ValueError(
+                f"Number of regions ({num_regions}) does not match "
+                f"`cardinality` ({len(cardinality)})."
+            )
 
         # dispatches the appropriate algorithm
         if num_regions and cardinality and contiguity:
@@ -357,7 +354,7 @@ class RandomRegion:
         return np.random.randint(2, self.n)
 
     def get_region_breaks(self, num_regions):
-        region_breaks = set([])
+        region_breaks = set()
         while len(region_breaks) < num_regions - 1:
             region_breaks.add(np.random.randint(1, self.n - 1))
         region_breaks = list(region_breaks)
@@ -383,7 +380,7 @@ class RandomRegion:
         region_breaks.pop()
         return region_breaks
 
-    def build_noncontig_regions(self, num_regions, region_breaks):
+    def build_noncontig_regions(self, num_regions, region_breaks):  # noqa ARG002
         start = 0
         for i in region_breaks:
             self.regions.append(self.ids[start:i])
@@ -411,7 +408,7 @@ class RandomRegion:
             )
         return region, candidates, potential
 
-    def grow_free(self, w, test_card, region, candidates, potential):
+    def grow_free(self, w, test_card, region, candidates, potential):  # noqa ARG002
         # increment potential areas after each new area is
         # added to the region (faster than the grow_compact)
         pot_index = np.random.randint(0, len(potential))
@@ -431,12 +428,9 @@ class RandomRegion:
     def build_contig_regions(
         self, num_regions, cardinality, w, maxiter, compact, max_swaps
     ):
-        if compact:
-            grow_region = self.grow_compact
-        else:
-            grow_region = self.grow_free
-        iter = 0
-        while iter < maxiter:
+        grow_region = self.grow_compact if compact else self.grow_free
+        _iter = 0
+        while _iter < maxiter:
             # regionalization setup
             regions = []
             size_pre = 0
@@ -530,9 +524,9 @@ class RandomRegion:
                 # regionalization failed
                 self.ids = list(np.random.permutation(self.ids))
                 regions = []
-                iter += 1
+                _iter += 1
             else:
                 # regionalization successful
                 self.feasible = True
-                iter = maxiter
+                _iter = maxiter
         self.regions = regions

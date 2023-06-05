@@ -83,7 +83,7 @@ class WardSpatial(BaseSpOptHeuristicSolver):
             n_clusters=self.n_clusters,
             connectivity=self.w.sparse,
             linkage="ward",
-            **self.clustering_kwds
+            **self.clustering_kwds,
         )
         model.fit(X)
         self.labels_ = model.labels_
