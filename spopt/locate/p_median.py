@@ -8,7 +8,7 @@ from .base import (
     LocateSolver,
     FacilityModelBuilder,
     MeanDistanceMixin,
-    SpecificationError
+    SpecificationError,
 )
 from scipy.spatial.distance import cdist
 
@@ -255,20 +255,27 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 
         if predefined_facilities_arr is not None:
             if fulfill_predefined_fac and facility_capacities is not None:
-                sum_predefined_fac_cap = np.sum(facility_capacities[predefined_facilities_arr])
+                sum_predefined_fac_cap = np.sum(
+                    facility_capacities[predefined_facilities_arr]
+                )
                 if sum_predefined_fac_cap <= weights.sum():
                     FacilityModelBuilder.add_predefined_facility_constraint(
-                        p_median, predefined_facilities_arr, weights, facility_capacities
+                        p_median,
+                        predefined_facilities_arr,
+                        weights,
+                        facility_capacities,
                     )
                 else:
                     raise SpecificationError(
                         "Problem is infeasible. The predefined facilities can't be fulfilled, "
                         f"because their capacity is larger than the total demand {weights.sum()}."
-                        )
+                    )
             elif fulfill_predefined_fac and facility_capacities is None:
-                raise SpecificationError(f"""
+                raise SpecificationError(
+                    f"""
                 Data on the capacity of the facility is missing, so the model cannot be calculated.. 
-                """)
+                """
+                )
             else:
                 FacilityModelBuilder.add_predefined_facility_constraint(
                     p_median, predefined_facilities_arr
@@ -276,20 +283,20 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 
         if facility_capacities is not None:
             sorted_capacities = np.sort(facility_capacities)
-            highest_possible_capacity = sorted_capacities[-p_facilities:].sum() 
-            if highest_possible_capacity < weights.sum(): 
+            highest_possible_capacity = sorted_capacities[-p_facilities:].sum()
+            if highest_possible_capacity < weights.sum():
                 raise SpecificationError(
                     "Problem is infeasible. The highest possible capacity "
                     f" {highest_possible_capacity}, coming from the {p_facilities} sites with"
                     f" the highest capacity, is smaller than the total demand {weights.sum()}."
-                    )
+                )
             FacilityModelBuilder.add_facility_capacity_constraint(
                 p_median,
                 weights,
                 facility_capacities,
                 range(len(weights)),
-                range(len(facility_capacities))
-                )
+                range(len(facility_capacities)),
+            )
         p_median.__add_obj(r_cli, r_fac)
 
         FacilityModelBuilder.add_facility_constraint(p_median, p_facilities)
@@ -337,7 +344,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
         facility_capacities_col: str (default None)
-            Column name representing the capacities of each facility. 
+            Column name representing the capacities of each facility.
         fulfill_predefined_fac : bool (default False)
             If the predefined facilities need to be fulfilled.
         distance_metric : str (default 'euclidean')
@@ -460,16 +467,13 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         distances = cdist(dem_data, fac_data, distance_metric)
 
         return cls.from_cost_matrix(
-            cost_matrix=distances, 
-            weights=service_load, 
-            p_facilities=p_facilities, 
-            predefined_facilities_arr = predefined_facilities_arr, 
-            facility_capcities = facility_capacities,
-            fulfill_predefined_fac = fulfill_predefined_fac,
-            name=("capacitated" + name 
-                  if facility_capacities is not None 
-                  else name
-                )
+            cost_matrix=distances,
+            weights=service_load,
+            p_facilities=p_facilities,
+            predefined_facilities_arr=predefined_facilities_arr,
+            facility_capcities=facility_capacities,
+            fulfill_predefined_fac=fulfill_predefined_fac,
+            name=("capacitated" + name if facility_capacities is not None else name),
         )
 
     def facility_client_array(self) -> None:
