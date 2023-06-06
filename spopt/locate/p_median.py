@@ -266,14 +266,14 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
                     )
                 else:
                     raise SpecificationError(
-                        "Problem is infeasible. The predefined facilities can't be fulfilled, "
-                        f"because their capacity is larger than the total demand {weights.sum()}."
+                        "Problem is infeasible. The predefined facilities can't be "
+                        "fulfilled, because their capacity is larger than the total "
+                        f"demand {weights.sum()}."
                     )
             elif fulfill_predefined_fac and facility_capacities is None:
                 raise SpecificationError(
-                    f"""
-                Data on the capacity of the facility is missing, so the model cannot be calculated.. 
-                """
+                    "Data on the capacity of the facility is missing, "
+                    "so the model cannot be calculated."
                 )
             else:
                 FacilityModelBuilder.add_predefined_facility_constraint(
@@ -286,8 +286,9 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             if highest_possible_capacity < weights.sum():
                 raise SpecificationError(
                     "Problem is infeasible. The highest possible capacity "
-                    f" {highest_possible_capacity}, coming from the {p_facilities} sites with"
-                    f" the highest capacity, is smaller than the total demand {weights.sum()}."
+                    f"{highest_possible_capacity}, coming from the {p_facilities} "
+                    "sites with the highest capacity, is smaller than "
+                    f"the total demand {weights.sum()}."
                 )
             FacilityModelBuilder.add_facility_capacity_constraint(
                 p_median,
@@ -470,7 +471,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             weights=service_load,
             p_facilities=p_facilities,
             predefined_facilities_arr=predefined_facilities_arr,
-            facility_capcities=facility_capacities,
+            facility_capacities=facility_capacities,
             fulfill_predefined_fac=fulfill_predefined_fac,
             name=("capacitated" + name if facility_capacities is not None else name),
         )
