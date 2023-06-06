@@ -10,8 +10,7 @@ from .base import (
     BaseOutputMixin,
     CoveragePercentageMixin,
     FacilityModelBuilder,
-    SpecificationError,
-    LocateSolver
+    LocateSolver,
 )
 
 
@@ -227,7 +226,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         lscp = LSCP(name, model)
 
         if demand_quantity_arr is not None and facility_capacity_arr is None:
-            raise SpecificationError(
+            raise ValueError(
                 "Demand quantities supplied with no facility capacities. "
                 "Model cannot satisfy clients with different "
                 "demands without facility capacities."
@@ -250,7 +249,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
             sum_demand = demand_quantity_arr.sum()
             sum_capacity = facility_capacity_arr.sum()
             if sum_demand > sum_capacity:
-                raise SpecificationError(
+                raise ValueError(
                     f"Infeasible model. Demand greater than capacity "
                     f"({sum_demand} > {sum_capacity})."
                 )
@@ -404,7 +403,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
             facility_capacity_arr = gdf_fac[facility_capacity_col].to_numpy()
 
         if demand_quantity_arr is not None and facility_capacity_arr is None:
-            raise SpecificationError(
+            raise ValueError(
                 "Demand quantities supplied with no facility capacities. "
                 "Model cannot satisfy clients with different "
                 "demands without facility capacities."
