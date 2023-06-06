@@ -481,9 +481,11 @@ class FacilityModelBuilder:
         """
         if predefined_fac.ndim == 2:
             n, k = predefined_fac.shape
-            assert (
-                k == 1
-            ), "predefined facilties array must only be of shape (n_supply, 1) or (n_supply,)"
+            if k != 1:
+                raise ValueError(
+                    "predefined facilties array must only be "
+                    "of shape (n_supply, 1) or (n_supply,)"
+                )
             predefined_fac = predefined_fac.squeeze()
 
         n_predefined = len(predefined_fac)
@@ -516,19 +518,20 @@ class FacilityModelBuilder:
             )
 
         # To add the capacity fulfill constraint
-        if facility_capacity is not None:
-            if hasattr(obj, "cli_assgn_vars") and hasattr(obj, "fac_vars"):
-                fac_vars = getattr(obj, "fac_vars")
-                cli_vars = getattr(obj, "cli_assgn_vars")
-                model = getattr(obj, "problem")
+        if (
+            (facility_capacity is not None)
+            and hasattr(obj, "cli_assgn_vars")
+            and hasattr(obj, "fac_vars")
+        ):
+            fac_vars = getattr(obj, "fac_vars")
+            cli_vars = getattr(obj, "cli_assgn_vars")
+            model = getattr(obj, "problem")
 
-                for j in predefined_fac:
-                    model += (
-                        pulp.lpSum(
-                            demand[i] * cli_vars[i, j] for i in range(len(cli_vars))
-                        )
-                        == fac_vars[j] * facility_capacity[j]
-                    )
+            for j in predefined_fac:
+                model += (
+                    pulp.lpSum(demand[i] * cli_vars[i, j] for i in range(len(cli_vars)))
+                    == fac_vars[j] * facility_capacity[j]
+                )
 
     @staticmethod
     def add_facility_capacity_constraint(
