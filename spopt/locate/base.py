@@ -467,7 +467,10 @@ class FacilityModelBuilder:
         obj : T_FacModel
             A bounded type of the ``LocateSolver`` class.
         predefined_fac : numpy.array
-            Indexes of facilities that are already located (zero-indexed).
+            A binary 1D array of service facilities that must appear in the
+            solution. For example, consider 3 facilites ``['A', 'B', 'C']``.
+            If facility ``'B'`` must be in the model solution, then the passed
+            in array should be ``[0, 1, 0]``.
         demand : numpy.array (default None)
             A 1D array of service load or population demand.
         facility_capacity : numpy.array (default None)

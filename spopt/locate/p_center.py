@@ -112,7 +112,10 @@ class PCenter(LocateSolver, BaseOutputMixin):
         p_facilities : int
             The number of facilities to be located.
         predefined_facilities_arr : numpy.array (default None)
-            Predefined facilities that must appear in the solution.
+            A binary 1D array of service facilities that must appear in the
+            solution. For example, consider 3 facilites ``['A', 'B', 'C']``.
+            If facility ``'B'`` must be in the model solution, then the passed
+            in array should be ``[0, 1, 0]``.
         name : str (default 'p-center')
             The problem name.
 
@@ -243,9 +246,12 @@ class PCenter(LocateSolver, BaseOutputMixin):
         facility_col : str
             Facility candidate sites geometry column name.
         p_facilities: int
-           The number of facilities to be located.
+            The number of facilities to be located.
         predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
+            This a binary assignment per facility. For example, consider 3 facilites
+            ``['A', 'B', 'C']``. If facility ``'B'`` must be in the model solution,
+            then the column should be ``[0, 1, 0]``.
         distance_metric : str (default 'euclidean')
             A metric used for the distance calculations supported by
             `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
