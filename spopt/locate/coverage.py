@@ -141,7 +141,10 @@ class LSCP(LocateSolver, BaseOutputMixin):
         service_radius : float
             Maximum acceptable service distance.
         predefined_facilities_arr : numpy.array (default None)
-            Predefined facilities that must appear in the solution.
+            A binary 1D array of service facilities that must appear in the
+            solution. For example, consider 3 facilites ``['A', 'B', 'C']``.
+            If facility ``'B'`` must be in the model solution, then the passed
+            in array should be ``[0, 1, 0]``.
         demand_quantity_arr : numpy.array (default None)
             Amount of demand at each client location.
         facility_capacity_arr : numpy.array (default None)
@@ -315,6 +318,9 @@ class LSCP(LocateSolver, BaseOutputMixin):
              Maximum acceptable service distance.
         predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
+            This a binary assignment per facility. For example, consider 3 facilites
+            ``['A', 'B', 'C']``. If facility ``'B'`` must be in the model solution,
+            then the column should be ``[0, 1, 0]``.
         demand_quantity_col : str
             Column name representing amount of demand at each client location.
         facility_capacity_arr : str
@@ -622,7 +628,10 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
         solver : pulp.LpSolver
             A solver supported by ``pulp``.
         predefined_facilities_arr : numpy.array (default None)
-            Predefined facilities that must appear in the solution.
+            A binary 1D array of service facilities that must appear in the
+            solution. For example, consider 3 facilites ``['A', 'B', 'C']``.
+            If facility ``'B'`` must be in the model solution, then the passed
+            in array should be ``[0, 1, 0]``.
         name : str (default 'LSCP-B')
             The problem name.
 
@@ -769,6 +778,9 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
             A solver supported by ``pulp``.
         predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
+            This a binary assignment per facility. For example, consider 3 facilites
+            ``['A', 'B', 'C']``. If facility ``'B'`` must be in the model solution,
+            then the column should be ``[0, 1, 0]``.
         distance_metric : str (default 'euclidean')
             A metric used for the distance calculations supported by
             `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
@@ -1055,7 +1067,10 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         p_facilities : int
             The number of facilities to be located.
         predefined_facilities_arr : numpy.array (default None)
-            Predefined facilities that must appear in the solution.
+            A binary 1D array of service facilities that must appear in the
+            solution. For example, consider 3 facilites ``['A', 'B', 'C']``.
+            If facility ``'B'`` must be in the model solution, then the passed
+            in array should be ``[0, 1, 0]``.
         name : str (default 'MCLP')
             The problem name.
 
@@ -1206,6 +1221,9 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
            The number of facilities to be located.
         predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
+            This a binary assignment per facility. For example, consider 3 facilites
+            ``['A', 'B', 'C']``. If facility ``'B'`` must be in the model solution,
+            then the column should be ``[0, 1, 0]``.
         distance_metric : str (default 'euclidean')
             A metric used for the distance calculations supported by
             `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
