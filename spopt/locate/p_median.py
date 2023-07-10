@@ -147,7 +147,10 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         p_facilities : int
             The number of facilities to be located.
         predefined_facilities_arr : numpy.array (default None)
-            Predefined facilities that must appear in the solution.
+            A binary 1D array of service facilities that must appear in the
+            solution. For example, consider 3 facilites ``['A', 'B', 'C']``.
+            If facility ``'B'`` must be in the model solution, then the passed
+            in array should be ``[0, 1, 0]``.
         facility_capacity : numpy.array (default None)
             The capacity of each facility.
         fulfill_predefined_fac : bool (default False)
@@ -340,9 +343,12 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         weights_cols : str
             The weight column name representing service load or demand.
         p_facilities: int
-           The number of facilities to be located.
+            The number of facilities to be located.
         predefined_facility_col : str (default None)
             Column name representing facilities are already defined.
+            This a binary assignment per facility. For example, consider 3 facilites
+            ``['A', 'B', 'C']``. If facility ``'B'`` must be in the model solution,
+            then the column should be ``[0, 1, 0]``.
         facility_capacities_col: str (default None)
             Column name representing the capacities of each facility.
         fulfill_predefined_fac : bool (default False)
