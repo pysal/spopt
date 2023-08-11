@@ -548,7 +548,6 @@ class KNearestPMedian(PMedian):
     Implement the P-Median Model with Near-Far Cost Allocation and solve it. 
     The model is adapted from :cite:`richard_2018`, can be formulated as:
 
-
     .. math::
 
        \begin{array}{lllll}
@@ -586,16 +585,8 @@ class KNearestPMedian(PMedian):
 
     name : str
         The problem name.
-    problem : pulp.LpProblem
-        A ``pulp`` instance of an optimization model that contains
-        constraints, variables, and an objective function.
-    aij : sparse cost matrix
-        A sparse cost matrix in the form of a 2D array between origins and destinations.
     ai_sum : Union[int, float]
         The sum of weights representing the service loads of the clients.
-    
-    Attributes
-    ----------
     clients : np.array
         An array of coordinates of clients.
     facilities : np.array
@@ -605,11 +596,27 @@ class KNearestPMedian(PMedian):
     p_facilities: int
         The number of facilities to be located.
     capacities : np.array or None
-        An array of facility capacities. None if capacity constraints are not considered.
+        An array of facility capacities. None if capacity constraints are
+        not considered.
     k_list : np.array
-        An array of k values representing the number of nearest facilities for each client.
+        An array of k values representing the number of nearest facilities
+        for each client.
     distance_metric : str
-        The distance metric used for computing distances between clients and facilities.
+        The distance metric used for computing distances between clients
+        and facilities.
+    
+    Attributes
+    ----------
+
+    sparse_matrix : Compressed Sparse Row matrix
+        A cost matrix in the form of a compressed sparse row matrix between
+        origins and destinations.
+    aij : Compressed Sparse Row matrix
+        A weighted cost matrix in the form of a compressed sparse row matrix
+        between origins and destinations.
+    problem : pulp.LpProblem
+        A ``pulp`` instance of an optimization model that contains constraints,
+        variables, and an objective function.
     fac2cli : numpy.array
         A 2D array storing facility to client relationships where each
         row represents a facility and contains an array of client indices
@@ -623,15 +630,25 @@ class KNearestPMedian(PMedian):
 
     def __init__(
         self,
-        name: str,
-        problem: pulp.LpProblem,
-        aij: np.array,
         weights_sum: Union[int, float],
+        clients: np.array,
+        facilities: np.array,
+        weights: np.array,
+        k_list: np.array,
+        p_facilities: int,
+        capacities: np.array = None,
+        distance_metric: str = "euclidean",
+        name="k-nearest p median",
     ):
-        self.name = name
-        self.problem = problem
-        self.aij = aij
         self.ai_sum = weights_sum
+        self.clients = clients
+        self.facilities = facilities
+        self.weights = weights
+        self.k_list = k_list
+        self.p_facilities = p_facilities
+        self.capacities = capacities
+        self.distance_metric = distance_metric
+        self.name = name
 
     def __add_obj(
         self, max_distance: np.array, range_clients: range, range_facility: range
@@ -639,21 +656,13 @@ class KNearestPMedian(PMedian):
         """
         Add the objective function to the model.
 
-        objective = pulp.lpSum(
-            pulp.lpSum(
-                decision.get((i, j), 0) * sparse_distance_matrix[i, j] for j in r_fac
-                )
-                + (decision_g[i] * (max_distance[i] + 1))
-                for i in r_cli
-                )
-
         Parameters
         ----------
 
         max_distance : np.array
-            An array of distances between each client and their kth nearest facility.
-            For example, if k = 2, this array will only store the distance between
-            each client and their 2nd nearest facility.
+            An array of distances between each client and their k nearest facility.
+            For example, when k = 2, this array will only store the distances between
+            each client and their nearest and second nearest facility.
         range_clients : range
             The range of demand points.
         range_facility : range
@@ -689,52 +698,28 @@ class KNearestPMedian(PMedian):
             "from_cost_matrix method is not supported in KNearestPMedian class."
         )
 
-    @classmethod
-    def _create_sparse_matrix(
-        cls, clients: np.array, facilities: np.array, k_list: np.array, metric: str
-    ):
+    def _create_sparse_matrix(self) -> None:
         """
         Create a sparse matrix representing the distance between clients
         and their k nearest facilities.
 
-        Parameters
-        ----------
-        clients : np.array
-            An array of coordinates representing the locations of clients.
-        facilities : np.array
-            An array of coordinates representing the locations of facilities.
-        k_list : np.array
-            An array of integers representing the number of nearest facilities
-            to consider for each client.
-        metric : str
-            The distance metric used for computing distances between clients
-            and facilities.
-
-        Returns
-        -------
-        sparse_matrix
-            A sparse matrix (csr_matrix) of distances between clients and
-            their k nearest facilities.
-
-        Raises
-        ------
-        ValueError
-            If any value in the k_list is greater than the total number of facilities.
-
-        Notes
-        -----
         This method uses a suitable tree data structure (built with the
-        `build_best_tree` function). To efficiently find the k nearest
+        `build_best_tree` function) to efficiently find the k nearest
         facilities for each client based on the specified distance metric.
         The resulting distances are stored in a sparse matrix format to
         conserve memory for large datasets.
+
+        Returns
+        -------
+
+        None
         """
 
-        row_shape = len(clients)
-        column_shape = len(facilities)
+        row_shape = len(self.clients)
+        column_shape = len(self.facilities)
 
         # check the k value with the total number of facilities
-        for k in k_list:
+        for k in self.k_list:
             if k > column_shape:
                 raise ValueError(
                     f"The value of k should be no more than the number of total"
@@ -747,11 +732,11 @@ class KNearestPMedian(PMedian):
         col_index = []
 
         # create the suitable Tree
-        tree = build_best_tree(facilities, metric)
+        tree = build_best_tree(self.facilities, self.distance_metric)
 
-        for i, k in enumerate(k_list):
+        for i, k in enumerate(self.k_list):
             # Query the Tree to find the k nearest facilities for each client
-            distances, k_nearest_facilities_indices = tree.query([clients[i]], k=k)
+            distances, k_nearest_facilities_indices = tree.query([self.clients[i]], k=k)
 
             # extract the contents of the inner array
             distances = distances[0].tolist()
@@ -761,136 +746,104 @@ class KNearestPMedian(PMedian):
             data.extend(distances)
             row_index.extend([i] * k)
             col_index.extend(k_nearest_facilities_indices)
+
         # Create the sparse matrix using csr_matrix
-        sparse_matrix = csr_matrix(
+        self.sparse_matrix = csr_matrix(
             (data, (row_index, col_index)), shape=(row_shape, column_shape)
         )
-        return sparse_matrix
 
-    def _create_k_list(self, k_list: np.array):
+    def _create_k_list(self) -> None:
         """
-        Increase the k value of clients with any g_i > 0 and create a new k list.
+        Increase the k value for clients with any g_i > 0 and create a new k list.
 
-        Parameters
-        ----------
-        k_list : np.array
-            An array of integers representing the original k values for each client.
+        This method is used to adjust the k values for clients based on their
+        placeholder variable g_i. For clients with g_i greater than 0, the
+        corresponding k value is increased by 1 in the new k list.
 
         Returns
         -------
-        new_k_list (np.array)
-            A new array of integers with increased k values for clients with g_i > 0.
 
-        Notes
-        -----
-        This method is used to adjust the k values for clients based on
-        their placeholder variable g_i. For clients with g_i greater than 0,
-        the corresponding k value is increased by 1 in the new k list.
+        None
         """
 
-        new_k_list = k_list.copy()
+        new_k_list = self.k_list.copy()
         placeholder_vars = getattr(self, "placeholder_vars")
         for i in range(len(placeholder_vars)):
             if placeholder_vars[i].value() > 0:
                 new_k_list[i] = new_k_list[i] + 1
-        return new_k_list
+        self.k_list = new_k_list
 
-    @classmethod
-    def _from_sparse_matrix(
-        cls,
-        sparse_distance_matrix: csr_matrix,
-        weights: np.array,
-        p_facilities: int,
-        facility_capacities: np.array = None,
-        name: str = "k-nearest-p-median",
-    ):
+    def _from_sparse_matrix(self) -> None:
         """
-        Create a ``KNearestPMedian`` object from the calculated sparse distance matrix.
-
-        Parameters
-        ----------
-        sparse_distance_matrix : csr_matrix
-            A sparse distance matrix in CSR format representing the distances
-            between clients and their k nearest facilities.
-        weights : np.array
-            An array of weights representing the service load for each client.
-        p_facilities: int
-           The number of facilities to be located.
-        facility_capacities : np.array, optional
-            An array of capacities for each facility (if applicable), by default None.
-        name : str, optional
-            The name of the problem, by default "k-nearest-p-median".
+        Create the k nearest p-median problem from the sparse distance matrix.
 
         Returns
         -------
-        k_nearest_p_median
-            An instance of the KNearestPMedian class.
+
+        None
         """
-        n_cli = sparse_distance_matrix.shape[0]
+        n_cli = self.sparse_matrix.shape[0]
         r_cli = range(n_cli)
-        r_fac = range(sparse_distance_matrix.shape[1])
+        r_fac = range(self.sparse_matrix.shape[1])
 
-        weights_sum = weights.sum()
-        weights = np.reshape(weights, (n_cli, 1))
-        aij = sparse_distance_matrix.multiply(weights).tocsr()
+        self.weights = np.reshape(self.weights, (n_cli, 1))
+        # create and store the weighted sparse matrix
+        self.aij = self.sparse_matrix.multiply(self.weights).tocsr()
 
-        # create the object
-        model = pulp.LpProblem(name, pulp.LpMinimize)
-        k_nearest_p_median = KNearestPMedian(name, model, aij, weights_sum)
+        # create the model/problem
+        self.problem = pulp.LpProblem(self.name, pulp.LpMinimize)
 
         # add all the 1)decision variable, 2)objective function, and 3)constraints
 
         # Facility integer decision variable
-        FacilityModelBuilder.add_facility_integer_variable(
-            k_nearest_p_median, r_fac, "y[{i}]"
-        )
-        fac_vars = getattr(k_nearest_p_median, "fac_vars")
-        # Placeholder decision variable
+        FacilityModelBuilder.add_facility_integer_variable(self, r_fac, "y[{i}]")
+        fac_vars = getattr(self, "fac_vars")
+
+        # Placeholder facility decision variable
         placeholder_vars = pulp.LpVariable.dicts(
             "g", (i for i in r_cli), 0, 1, pulp.LpBinary
         )
-        setattr(k_nearest_p_median, "placeholder_vars", placeholder_vars)
+        setattr(self, "placeholder_vars", placeholder_vars)
+
         # Client assignment integer decision variables
-        row_indices, col_indices, values = find(aij)
+        row_indices, col_indices, values = find(self.aij)
         cli_assgn_vars = pulp.LpVariable.dicts(
             "z", [(i, j) for i, j in zip(row_indices, col_indices)], 0, 1, pulp.LpBinary
         )
-        setattr(k_nearest_p_median, "cli_assgn_vars", cli_assgn_vars)
+        setattr(self, "cli_assgn_vars", cli_assgn_vars)
 
         # Add the objective function
-        max_distance = aij.max(axis=1).toarray().flatten()
-        k_nearest_p_median.__add_obj(max_distance, r_cli, r_fac)
+        max_distance = self.aij.max(axis=1).toarray().flatten()
+        self.__add_obj(max_distance, r_cli, r_fac)
 
         # Create the capacity constraints
-        if facility_capacities is not None:
-            sorted_capacities = np.sort(facility_capacities)
-            highest_possible_capacity = sorted_capacities[-p_facilities:].sum()
-            if highest_possible_capacity < weights_sum:
+        if self.capacities is not None:
+            sorted_capacities = np.sort(self.capacities)
+            highest_possible_capacity = sorted_capacities[-self.p_facilities :].sum()
+            if highest_possible_capacity < self.ai_sum:
                 raise SpecificationError(
                     "Problem is infeasible. The highest possible capacity "
-                    f"{highest_possible_capacity}, coming from the {p_facilities} "
+                    f"{highest_possible_capacity}, coming from the {self.p_facilities} "
                     "sites with the highest capacity, is smaller than "
-                    f"the total demand {weights_sum}."
+                    f"the total demand {self.ai_sum}."
                 )
             for j in col_indices:
-                model += (
+                self.problem += (
                     pulp.lpSum(
-                        weights[i] * cli_assgn_vars.get((i, j), 0) for i in r_cli
+                        self.weights[i] * cli_assgn_vars.get((i, j), 0) for i in r_cli
                     )
-                    <= fac_vars[j] * facility_capacities[j]
+                    <= fac_vars[j] * self.capacities[j]
                 )
 
         # Create assignment constraints.
         for i in r_cli:
-            model += (
+            self.problem += (
                 pulp.lpSum(cli_assgn_vars.get((i, j), 0) for j in set(col_indices))
                 + placeholder_vars[i]
                 == 1
             )
         # Create the facility constraint.
-        FacilityModelBuilder.add_facility_constraint(k_nearest_p_median, p_facilities)
-
-        return k_nearest_p_median
+        FacilityModelBuilder.add_facility_constraint(self, self.p_facilities)
 
     @classmethod
     def from_geodataframe(
@@ -907,7 +860,7 @@ class KNearestPMedian(PMedian):
         name: str = "k-nearest-p-median",
     ):
         """
-        Set class variables for KNearestPMedian using input data.
+        Create the object of KNearestPMedian class using input data.
 
         Parameters
         ----------
@@ -936,13 +889,8 @@ class KNearestPMedian(PMedian):
 
         Returns
         -------
-        KNearestPMedian
-            The KNearestPMedian class itself with new class variables.
 
-        Warnings
-        --------
-        - The GeoDataFrames must have a valid CRS to perform distance calculations
-        accurately. And the CRS of gdf_demand and gdf_fac must be the same one.
+        spopt.locate.p_median.KNearestPMedian
 
         Examples
         --------
@@ -969,7 +917,7 @@ class KNearestPMedian(PMedian):
         ...     k_list, gdf_demand, gdf_fac,'geometry','geometry',
         ...     demand_col='ID', facility_col='ID', weights_cols='demand',
         ...     2, facility_capacity_col='capacity')
-        >>> k_nearest_pmedian = k_nearest_pmedian.solve(pulp.PULP_CBC_CMD(msg=False)
+        >>> k_nearest_pmedian = k_nearest_pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
 
         Get the facility-client associations.
 
@@ -987,7 +935,7 @@ class KNearestPMedian(PMedian):
         0.809
 
         Get the k list for the last iteration.
-        >>> print(prob.k_list)
+        >>> print(k_nearest_pmedian.k_list)
         [2, 1]
 
         """
@@ -1011,20 +959,22 @@ class KNearestPMedian(PMedian):
 
         # demand and capacity
         service_load = gdf_demand[weights_cols].to_numpy()
+        weights_sum = service_load.sum()
         facility_capacities = None
         if facility_capacity_col is not None:
             facility_capacities = gdf_fac[facility_capacity_col].to_numpy()
 
-        cls.clients = dem_data
-        cls.facilities = fac_data
-        cls.weights = service_load
-        cls.capacities = facility_capacities
-        cls.k_list = k_list
-        cls.distance_metric = distance_metric
-        cls.p_facilities = p_facilities
-        cls.name = name
-
-        return cls
+        return KNearestPMedian(
+            weights_sum,
+            dem_data,
+            fac_data,
+            service_load,
+            k_list,
+            p_facilities,
+            facility_capacities,
+            distance_metric,
+            name,
+        )
 
     def facility_client_array(self) -> None:
         """
@@ -1054,11 +1004,10 @@ class KNearestPMedian(PMedian):
 
             self.fac2cli.append(array_cli)
 
-    @classmethod
-    def solve(cls, solver: pulp.LpSolver, results: bool = True):
+    def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
 
-        Solve the KNearestPMedian model.
+        Solve the k nearest p-median model.
 
         This method iteratively solves the KNearestPMedian model using a specified
         solver until no more clients need to be assigned to placeholder facilities.
@@ -1070,47 +1019,39 @@ class KNearestPMedian(PMedian):
         solver : pulp.LpSolver
             The solver to be used for solving the optimization model.
         results : bool (default True)
-            If ``True`` it will create metainfo (which facilities cover
-            which demand) and vice-versa, and the uncovered demand.
+            If ``True`` it will create metainfo (which facilities cover which
+            demand) and vice-versa, and the uncovered demand.
 
         Returns
         -------
-        KNearestPMedian
-            An instance of the KNearestPMedian class representing the solved model.
+
+        spopt.locate.p_median.KNearestPMedian
 
         """
 
-        # initialize sum_gi
+        # initialize the sum of the values of g_i
         sum_gi = 1
 
         # start the loop
         while sum_gi > 0:
-            sparse_distance_matrix = cls._create_sparse_matrix(
-                cls.clients, cls.facilities, cls.k_list, cls.distance_metric
-            )
-            k_nearest_p_median = cls._from_sparse_matrix(
-                sparse_distance_matrix,
-                weights=cls.weights,
-                p_facilities=cls.p_facilities,
-                facility_capacities=cls.capacities,
-                name=cls.name,
-            )
-            k_nearest_p_median.problem.solve(solver)
-            k_nearest_p_median.check_status()
+            self._create_sparse_matrix()
+            self._from_sparse_matrix()
+            self.problem.solve(solver)
+            self.check_status()
 
             # check the result
-            placeholder_vars = getattr(k_nearest_p_median, "placeholder_vars")
+            placeholder_vars = getattr(self, "placeholder_vars")
             sum_gi = sum(
                 placeholder_vars[i].value()
                 for i in range(len(placeholder_vars))
                 if placeholder_vars[i].value() > 0
             )
             if sum_gi > 0:
-                cls.k_list = k_nearest_p_median._create_k_list(cls.k_list)
+                self._create_k_list()
 
         if results:
-            k_nearest_p_median.facility_client_array()
-            k_nearest_p_median.client_facility_array()
-            k_nearest_p_median.get_mean_distance()
+            self.facility_client_array()
+            self.client_facility_array()
+            self.get_mean_distance()
 
-        return k_nearest_p_median
+        return self
