@@ -552,7 +552,7 @@ class KNearestPMedian(PMedian):
 
        \begin{array}{lllll}
        \displaystyle \textbf{Minimize}      & \displaystyle \sum_{i \in I}\sum_{k \in k_{i}}{a_i d_{ik} X_{ik}} + \sum_{i \in I}{g_i (d_{i{k_i}} + 1)}  &&                                          & (1)                                                                               \\
-       \displaystyle \textbf{Subject To}    & \\sum_{k \in k_{i}}{X_{ik} + g_i = 1}                                                                     && \forall i \in I                          & (2)                                                                               \\
+       \displaystyle \textbf{Subject To}    & \sum_{k \in k_{i}}{X_{ik} + g_i = 1}                                                                     && \forall i \in I                          & (2)                                                                               \\
                                             & \sum_{j \in J}{Y_j} = p                                                                                   &&                                          & (3)                                                                               \\
                                             & \sum_{i \in I}{a_i X_{ik}} \leq {Y_{k} c_{k}}                                                             &&  \forall k \in k_{i}                     & (4)                                                                               \\  
                                             & X_{ij} \leq Y_{j}                                                                                         && \forall i \in I \quad \forall j \in J    & (5)                                                                               \\
@@ -563,7 +563,7 @@ class KNearestPMedian(PMedian):
                                             && j                                                                                                        & =                                         & \textrm{index of potential facility sites in set } J                              \\
                                             && p                                                                                                        & =                                         & \textrm{the number of facilities to be sited}                                     \\
                                             && a_i                                                                                                      & =                                         & \textrm{service load or population demand at client location } i                  \\
-                                            && k_{i}                                                                                                    & =                                         & \textrm{the } k {nearest facilities of client location } i                        \\
+                                            && k_{i}                                                                                                    & =                                         & \textrm{the } k \textrm{nearest facilities of client location } i                 \\
                                             && c_{j}                                                                                                    & =                                         & \textrm{the capacity of facility} j                                               \\   
                                             && d_{ij}                                                                                                   & =                                         & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
                                             && X_{ij}                                                                                                   & =                                         & \begin{cases}
@@ -575,7 +575,7 @@ class KNearestPMedian(PMedian):
                                                                                                                                                                                                        0, \textrm{otherwise}                                                            \\
                                                                                                                                                                                                       \end{cases}                                                                       \\ 
                                             && g_i                                                                                                      & =                                         & \begin{cases}
-                                                                                                                                                                                                       1, \textrm{if the client } i {need to be served by non-k-nearest facilities}     \\
+                                                                                                                                                                                                       1, \textrm{if the client } i \textrm{ needs to be served by non-k-nearest facilities}     \\
                                                                                                                                                                                                        0, \textrm{otherwise}                                                            \\
                                                                                                                                                                                                       \end{cases}                                                                       \\
        \end{array}
@@ -752,9 +752,9 @@ class KNearestPMedian(PMedian):
             (data, (row_index, col_index)), shape=(row_shape, column_shape)
         )
 
-    def _create_k_list(self) -> None:
+    def _update_k_list(self) -> None:
         """
-        Increase the k value for clients with any g_i > 0 and create a new k list.
+        Increase the k value for clients with any g_i > 0 and update the k list.
 
         This method is used to adjust the k values for clients based on their
         placeholder variable g_i. For clients with g_i greater than 0, the
@@ -848,7 +848,6 @@ class KNearestPMedian(PMedian):
     @classmethod
     def from_geodataframe(
         cls,
-        k_list: np.array,
         gdf_demand: GeoDataFrame,
         gdf_fac: GeoDataFrame,
         demand_col: str,
@@ -856,6 +855,7 @@ class KNearestPMedian(PMedian):
         weights_cols: str,
         p_facilities: int,
         facility_capacity_col: str = None,
+        k_list: np.array = None,
         distance_metric: str = "euclidean",
         name: str = "k-nearest-p-median",
     ):
@@ -864,8 +864,6 @@ class KNearestPMedian(PMedian):
 
         Parameters
         ----------
-        k_list : np.array
-            An array of integers representing the list of k values for each client.
         gdf_demand : GeoDataFrame
             A GeoDataFrame containing demand points with their associated attributes.
         gdf_fac : GeoDataFrame
@@ -881,6 +879,10 @@ class KNearestPMedian(PMedian):
         facility_capacity_col : str, optional
             The column name in gdf_fac representing the capacity of each facility,
             by default None.
+        k_list : np.array, optional
+            An array of integers representing the list of k values for each client.
+            If not provided, a default value of 5 or the number of facilities,
+            whichever is smaller, will be used.
         distance_metric : str, optional
             The distance metric to be used in calculating distances between clients
             and facilities, by default "euclidean".
@@ -914,9 +916,8 @@ class KNearestPMedian(PMedian):
         Create and solve a ``KNearestPMedian`` instance from the geodataframe.
 
         >>> k_nearest_pmedian = KNearestPMedian.from_geodataframe(
-        ...     k_list, gdf_demand, gdf_fac,'geometry','geometry',
-        ...     demand_col='ID', facility_col='ID', weights_cols='demand',
-        ...     2, facility_capacity_col='capacity')
+        ...     gdf_demand, gdf_fac,'geometry','geometry', weights_cols='demand',
+        ...     2, facility_capacity_col='capacity', k_list = k_list)
         >>> k_nearest_pmedian = k_nearest_pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
 
         Get the facility-client associations.
@@ -956,6 +957,16 @@ class KNearestPMedian(PMedian):
         fac = gdf_fac[facility_col]
         dem_data = np.array([dem.x.to_numpy(), dem.y.to_numpy()]).T
         fac_data = np.array([fac.x.to_numpy(), fac.y.to_numpy()]).T
+
+        # check the values of k_list
+        if k_list is None:
+            k_list = np.full(len(dem_data), np.minimum(len(fac_data), 5))
+        else:
+            if not (k_list <= len(fac_data)).all():
+                raise ValueError(
+                    f"The value of k should be no more than the number of total"
+                    f"facilities ({len(fac_data)})."
+                )
 
         # demand and capacity
         service_load = gdf_demand[weights_cols].to_numpy()
@@ -1047,7 +1058,7 @@ class KNearestPMedian(PMedian):
                 if placeholder_vars[i].value() > 0
             )
             if sum_gi > 0:
-                self._create_k_list()
+                self._update_k_list()
 
         if results:
             self.facility_client_array()
