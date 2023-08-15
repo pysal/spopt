@@ -29,7 +29,6 @@ class TestKNearestPMedian:
         gdf_demand = geopandas.GeoDataFrame(demand_data, crs="EPSG:4326")
         gdf_fac = geopandas.GeoDataFrame(facility_data, crs="EPSG:4326")
         self.k_nearest_pmedian = KNearestPMedian.from_geodataframe(
-            k_list,
             gdf_demand,
             gdf_fac,
             "geometry",
@@ -37,6 +36,7 @@ class TestKNearestPMedian:
             "demand",
             p_facilities=2,
             facility_capacity_col="capacity",
+            k_list=k_list,
         )
 
     def test_knearest_p_median_from_geodataframe(self):
