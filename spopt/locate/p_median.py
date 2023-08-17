@@ -598,7 +598,7 @@ class KNearestPMedian(PMedian):
     capacities : np.array or None
         An array of facility capacities. None if capacity constraints are
         not considered.
-    k_list : np.array
+    k_array : np.array
         An array of k values representing the number of nearest facilities
         for each client.
     distance_metric : str
@@ -634,7 +634,7 @@ class KNearestPMedian(PMedian):
         clients: np.array,
         facilities: np.array,
         weights: np.array,
-        k_list: np.array,
+        k_array: np.array,
         p_facilities: int,
         capacities: np.array = None,
         distance_metric: str = "euclidean",
@@ -644,7 +644,7 @@ class KNearestPMedian(PMedian):
         self.clients = clients
         self.facilities = facilities
         self.weights = weights
-        self.k_list = k_list
+        self.k_array = k_array
         self.p_facilities = p_facilities
         self.capacities = capacities
         self.distance_metric = distance_metric
@@ -719,12 +719,11 @@ class KNearestPMedian(PMedian):
         column_shape = len(self.facilities)
 
         # check the k value with the total number of facilities
-        for k in self.k_list:
-            if k > column_shape:
-                raise ValueError(
-                    f"The value of k should be no more than the number of total"
-                    f"facilities ({column_shape})."
-                )
+        if not (self.k_array <= column_shape).all():
+            raise ValueError(
+                f"The value of k should be no more than the number of total"
+                f"facilities ({column_shape})."
+            )
 
         # Initialize empty lists to store the data for the sparse matrix
         data = []
@@ -734,7 +733,7 @@ class KNearestPMedian(PMedian):
         # create the suitable Tree
         tree = build_best_tree(self.facilities, self.distance_metric)
 
-        for i, k in enumerate(self.k_list):
+        for i, k in enumerate(self.k_array):
             # Query the Tree to find the k nearest facilities for each client
             distances, k_nearest_facilities_indices = tree.query([self.clients[i]], k=k)
 
@@ -752,13 +751,13 @@ class KNearestPMedian(PMedian):
             (data, (row_index, col_index)), shape=(row_shape, column_shape)
         )
 
-    def _update_k_list(self) -> None:
+    def _update_k_array(self) -> None:
         """
-        Increase the k value for clients with any g_i > 0 and update the k list.
+        Increase the k value for clients with any g_i > 0 and update the k array.
 
         This method is used to adjust the k values for clients based on their
         placeholder variable g_i. For clients with g_i greater than 0, the
-        corresponding k value is increased by 1 in the new k list.
+        corresponding k value is increased by 1 in the new k array.
 
         Returns
         -------
@@ -766,12 +765,12 @@ class KNearestPMedian(PMedian):
         None
         """
 
-        new_k_list = self.k_list.copy()
+        new_k_array = self.k_array.copy()
         placeholder_vars = getattr(self, "placeholder_vars")
         for i in range(len(placeholder_vars)):
             if placeholder_vars[i].value() > 0:
-                new_k_list[i] = new_k_list[i] + 1
-        self.k_list = new_k_list
+                new_k_array[i] = new_k_array[i] + 1
+        self.k_array = new_k_array
 
     def _from_sparse_matrix(self) -> None:
         """
@@ -855,7 +854,7 @@ class KNearestPMedian(PMedian):
         weights_cols: str,
         p_facilities: int,
         facility_capacity_col: str = None,
-        k_list: np.array = None,
+        k_array: np.array = None,
         distance_metric: str = "euclidean",
         name: str = "k-nearest-p-median",
     ):
@@ -879,8 +878,8 @@ class KNearestPMedian(PMedian):
         facility_capacity_col : str, optional
             The column name in gdf_fac representing the capacity of each facility,
             by default None.
-        k_list : np.array, optional
-            An array of integers representing the list of k values for each client.
+        k_array : np.array, optional
+            An array of integers representing the k values for each client.
             If not provided, a default value of 5 or the number of facilities,
             whichever is smaller, will be used.
         distance_metric : str, optional
@@ -901,7 +900,7 @@ class KNearestPMedian(PMedian):
 
         Create the input data and attributes.
 
-        >>> k_list = np.array([1, 1])
+        >>> k = np.array([1, 1])
         >>> demand_data = {
         ...    'ID': [1, 2],
         ...    'geometry': [Point(0.5, 1), Point(1.5, 1)],
@@ -917,7 +916,7 @@ class KNearestPMedian(PMedian):
 
         >>> k_nearest_pmedian = KNearestPMedian.from_geodataframe(
         ...     gdf_demand, gdf_fac,'geometry','geometry', weights_cols='demand',
-        ...     2, facility_capacity_col='capacity', k_list = k_list)
+        ...     2, facility_capacity_col='capacity', k_array = k)
         >>> k_nearest_pmedian = k_nearest_pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
 
         Get the facility-client associations.
@@ -935,8 +934,8 @@ class KNearestPMedian(PMedian):
         >>> round(k_nearest_pmedian.mean_dist, 3)
         0.809
 
-        Get the k list for the last iteration.
-        >>> print(k_nearest_pmedian.k_list)
+        Get the k values for the last iteration.
+        >>> print(k_nearest_pmedian.k_array)
         [2, 1]
 
         """
@@ -958,15 +957,16 @@ class KNearestPMedian(PMedian):
         dem_data = np.array([dem.x.to_numpy(), dem.y.to_numpy()]).T
         fac_data = np.array([fac.x.to_numpy(), fac.y.to_numpy()]).T
 
-        # check the values of k_list
-        if k_list is None:
-            k_list = np.full(len(dem_data), np.minimum(len(fac_data), 5))
-        else:
-            if not (k_list <= len(fac_data)).all():
-                raise ValueError(
-                    f"The value of k should be no more than the number of total"
-                    f"facilities ({len(fac_data)})."
-                )
+        # check the values of k_array
+        if k_array is None:
+            k_array = np.full(len(dem_data), np.minimum(len(fac_data), 5))
+        elif not isinstance(k_array, np.ndarray):
+            raise TypeError("k_array should be a numpy array.")
+        elif not (k_array <= len(fac_data)).all():
+            raise ValueError(
+                f"The value of k should be no more than the number of total "
+                f"facilities, which is {len(fac_data)}."
+            )
 
         # demand and capacity
         service_load = gdf_demand[weights_cols].to_numpy()
@@ -980,7 +980,7 @@ class KNearestPMedian(PMedian):
             dem_data,
             fac_data,
             service_load,
-            k_list,
+            k_array,
             p_facilities,
             facility_capacities,
             distance_metric,
@@ -1058,7 +1058,7 @@ class KNearestPMedian(PMedian):
                 if placeholder_vars[i].value() > 0
             )
             if sum_gi > 0:
-                self._update_k_list()
+                self._update_k_array()
 
         if results:
             self.facility_client_array()

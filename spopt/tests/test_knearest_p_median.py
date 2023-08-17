@@ -15,19 +15,19 @@ import warnings
 class TestKNearestPMedian:
     def setup_method(self) -> None:
         # Create the test data
-        k_list = numpy.array([1, 1])
-        demand_data = {
+        k = numpy.array([1, 1])
+        self.demand_data = {
             "ID": [1, 2],
             "geometry": [Point(0.5, 1), Point(1.5, 1)],
             "demand": [1, 1],
         }
-        facility_data = {
+        self.facility_data = {
             "ID": [101, 102, 103],
             "geometry": [Point(1, 1), Point(0, 2), Point(2, 0)],
             "capacity": [1, 1, 1],
         }
-        gdf_demand = geopandas.GeoDataFrame(demand_data, crs="EPSG:4326")
-        gdf_fac = geopandas.GeoDataFrame(facility_data, crs="EPSG:4326")
+        gdf_demand = geopandas.GeoDataFrame(self.demand_data, crs="EPSG:4326")
+        gdf_fac = geopandas.GeoDataFrame(self.facility_data, crs="EPSG:4326")
         self.k_nearest_pmedian = KNearestPMedian.from_geodataframe(
             gdf_demand,
             gdf_fac,
@@ -36,7 +36,7 @@ class TestKNearestPMedian:
             "demand",
             p_facilities=2,
             facility_capacity_col="capacity",
-            k_list=k_list,
+            k_array=k,
         )
 
     def test_knearest_p_median_from_geodataframe(self):
@@ -67,3 +67,55 @@ class TestKNearestPMedian:
         assert self.k_nearest_pmedian.fac2cli == fac2cli_known
         assert self.k_nearest_pmedian.cli2fac == cli2fac_known
         assert self.k_nearest_pmedian.mean_dist == mean_dist_known
+
+    def test_error_k_array_non_numpy_array(self):
+        gdf_demand = geopandas.GeoDataFrame(self.demand_data, crs="EPSG:4326")
+        gdf_fac = geopandas.GeoDataFrame(self.facility_data, crs="EPSG:4326")
+        k = [1, 1]
+        with pytest.raises(TypeError):
+            KNearestPMedian.from_geodataframe(
+                gdf_demand,
+                gdf_fac,
+                "geometry",
+                "geometry",
+                "demand",
+                p_facilities=2,
+                facility_capacity_col="capacity",
+                k_array=k,
+            )
+
+    def test_error_k_array_invalid_value(self):
+        gdf_demand = geopandas.GeoDataFrame(self.demand_data, crs="EPSG:4326")
+        gdf_fac = geopandas.GeoDataFrame(self.facility_data, crs="EPSG:4326")
+
+        k = numpy.array([1, 4])
+        with pytest.raises(ValueError):
+            KNearestPMedian.from_geodataframe(
+                gdf_demand,
+                gdf_fac,
+                "geometry",
+                "geometry",
+                "demand",
+                p_facilities=2,
+                facility_capacity_col="capacity",
+                k_array=k,
+            )
+
+    def test_error_geodataframe_crs_mismatch(self):
+        gdf_demand = geopandas.GeoDataFrame(self.demand_data, crs="EPSG:4326")
+        gdf_fac = geopandas.GeoDataFrame(
+            self.facility_data, crs="EPSG:3857"
+        )  # Different CRS
+
+        k = numpy.array([1, 1])
+        with pytest.raises(ValueError):
+            KNearestPMedian.from_geodataframe(
+                gdf_demand,
+                gdf_fac,
+                "geometry",
+                "geometry",
+                "demand",
+                p_facilities=2,
+                facility_capacity_col="capacity",
+                k_array=k,
+            )
