@@ -42,7 +42,7 @@ dependencies = [
     "shapely>=2",
     "spaghetti",
     "tqdm>=4.27.0",
-    "pointpats"
+    "pointpats>=2.3.0"
 ]
 
 
