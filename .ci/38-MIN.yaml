@@ -13,6 +13,7 @@ dependencies:
   - scipy=1.7
   - shapely=2.0
   - spaghetti
+  - pointpats
   # testing
   - codecov
   - coverage
