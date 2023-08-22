@@ -14,7 +14,7 @@ dependencies:
   - scipy
   - spaghetti
   - tqdm
-  - pointpats=2.3
+  - pointpats
   # testing
   - codecov
   - coverage
