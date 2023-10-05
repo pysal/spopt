@@ -552,9 +552,9 @@ class KNearestPMedian(PMedian):
 
        \begin{array}{lllll}
        \displaystyle \textbf{Minimize}      & \displaystyle \sum_{i \in I}\sum_{k \in k_{i}}{a_i d_{ik} X_{ik}} + \sum_{i \in I}{g_i (d_{i{k_i}} + 1)}  &&                                          & (1)                                                                               \\
-       \displaystyle \textbf{Subject To}    & \sum_{k \in k_{i}}{X_{ik} + g_i = 1}                                                                     && \forall i \in I                          & (2)                                                                               \\
+       \displaystyle \textbf{Subject To}    & \sum_{k \in k_{i}}{X_{ik} + g_i = 1}                                                                      && \forall i \in I                          & (2)                                                                               \\
                                             & \sum_{j \in J}{Y_j} = p                                                                                   &&                                          & (3)                                                                               \\
-                                            & \sum_{i \in I}{a_i X_{ik}} \leq {Y_{k} c_{k}}                                                             &&  \forall k \in k_{i}                     & (4)                                                                               \\  
+                                            & \sum_{i \in I}{a_i X_{ik}} \leq {Y_{k} c_{k}}                                                             && \forall k \in k_{i}                      & (4)                                                                               \\  
                                             & X_{ij} \leq Y_{j}                                                                                         && \forall i \in I \quad \forall j \in J    & (5)                                                                               \\
                                             & X_{ij} \in \{0, 1\}                                                                                       && \forall i \in I \quad \forall j \in J    & (6)                                                                               \\
                                             & Y_j \in \{0, 1\}                                                                                          && \forall j \in J                          & (7)                                                                               \\
@@ -807,7 +807,7 @@ class KNearestPMedian(PMedian):
         # Client assignment integer decision variables
         row_indices, col_indices, values = find(self.aij)
         cli_assgn_vars = pulp.LpVariable.dicts(
-            "z", [(i, j) for i, j in zip(row_indices, col_indices)], 0, 1, pulp.LpBinary
+            "z", list(zip(row_indices, col_indices, strict=True)), 0, 1, pulp.LpBinary
         )
         setattr(self, "cli_assgn_vars", cli_assgn_vars)
 
