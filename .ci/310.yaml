@@ -15,6 +15,7 @@ dependencies:
   - shapely
   - spaghetti
   - tqdm
+  - pointpats
   # testing
   - codecov
   - coverage

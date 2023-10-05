@@ -32,11 +32,12 @@ Exact solution approaches to facility location modeling problems.
 .. autosummary::
    :toctree: generated/
 
-    locate.coverage.LSCP
-    locate.coverage.LSCPB
-    locate.coverage.MCLP
-    locate.PCenter
+    locate.LSCP
+    locate.LSCPB
+    locate.MCLP
     locate.PMedian
+    locate.KNearestPMedian
+    locate.PCenter
     locate.PDispersion
 
 
