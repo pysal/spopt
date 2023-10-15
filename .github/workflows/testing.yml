@@ -9,6 +9,12 @@
      - '*'
    schedule:
      - cron: '59 23 * * *'
+   workflow_dispatch:
+    inputs:
+      version:
+        description: Manual CI Run
+        default: test
+        required: false
 
  jobs:
    tests:
@@ -19,16 +25,16 @@
        matrix:
          os: [ubuntu-latest]
          environment-file: [
-            .ci/38-MIN.yaml,
-            .ci/39.yaml,
-            .ci/310.yaml,
-            .ci/311.yaml,
-            .ci/311-DEV.yaml,
+            ci/38-MIN.yaml,
+            ci/39.yaml,
+            ci/310.yaml,
+            ci/311.yaml,
+            ci/311-DEV.yaml,
          ]
          include:
-           - environment-file: .ci/311.yaml
+           - environment-file: ci/311.yaml
              os: macos-latest
-           - environment-file: .ci/311.yaml
+           - environment-file: ci/311.yaml
              os: windows-latest
        fail-fast: false
 
@@ -38,7 +44,7 @@
 
      steps:
        - name: checkout repo
-         uses: actions/checkout@v3
+         uses: actions/checkout@v4
        
        - name: setup micromamba
          uses: mamba-org/setup-micromamba@v1
