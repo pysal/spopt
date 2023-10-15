@@ -806,8 +806,9 @@ class KNearestPMedian(PMedian):
 
         # Client assignment integer decision variables
         row_indices, col_indices, values = find(self.aij)
+
         cli_assgn_vars = pulp.LpVariable.dicts(
-            "z", list(zip(row_indices, col_indices, strict=True)), 0, 1, pulp.LpBinary
+            "z", list(zip(row_indices, col_indices)), 0, 1, pulp.LpBinary
         )
         setattr(self, "cli_assgn_vars", cli_assgn_vars)
 
