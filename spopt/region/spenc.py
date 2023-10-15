@@ -101,13 +101,9 @@ class Spenc(BaseSpOptHeuristicSolver):
             space. There are three ways to assign labels after the laplacian
             embedding: ``{'kmeans', 'discretize', 'hierarchical'}``:
 
-            * ``'kmeans'`` can be applied and is a popular choice. But it can also be
-            sensitive to initialization.
-            * ``'discretize'`` is another approach which is less sensitive to random
-            initialization, and which usually finds better clusters.
-            * ``'hierarchical'`` decomposition repeatedly bi-partitions the graph,
-            instead of finding the decomposition all at once, as suggested in
-            :cite:`shi_malik_2000`.
+            * ``'kmeans'`` can be applied and is a popular choice. But it can also be sensitive to initialization.
+            * ``'discretize'`` is another approach which is less sensitive to random initialization, and which usually finds better clusters.
+            * ``'hierarchical'`` decomposition repeatedly bi-partitions the graph, instead of finding the decomposition all at once, as suggested in :cite:`shi_malik_2000`.
 
         degree : float (default 3)
             Degree of the polynomial affinity kernel. Ignored by other kernels.
@@ -151,16 +147,11 @@ class Spenc(BaseSpOptHeuristicSolver):
         References
         ----------
 
-        - :cite:`shi_malik_2000` Normalized cuts and image segmentation, 2000
-          Jianbo Shi, Jitendra Malik – https://doi.org/10.1109/34.868688
+        * :cite:`shi_malik_2000` Normalized cuts and image segmentation, 2000 Jianbo Shi, Jitendra Malik – https://doi.org/10.1109/34.868688
+        * :cite:`von2007tutorial` A Tutorial on Spectral Clustering, 2007 Ulrike von Luxburg – https://doi.org/10.1007/s11222-007-9033-z
+        * :cite:`yu_shi_2003` Multiclass spectral clustering, 2003 Stella X. Yu, Jianbo Shi – https://doi.org/10.1109/ICCV.2003.1238361
 
-        - :cite:`von2007tutorial` A Tutorial on Spectral Clustering, 2007
-          Ulrike von Luxburg – https://doi.org/10.1007/s11222-007-9033-z
-
-        - :cite:`yu_shi_2003` Multiclass spectral clustering, 2003
-          Stella X. Yu, Jianbo Shi – https://doi.org/10.1109/ICCV.2003.1238361
-
-        """
+        """  # noqa E501
 
         self.gdf = gdf
         self.w = w
