@@ -9,6 +9,12 @@
      - '*'
    schedule:
      - cron: '59 23 * * *'
+   workflow_dispatch:
+    inputs:
+      version:
+        description: Manual CI Run
+        default: test
+        required: false
 
  jobs:
    tests:
@@ -38,7 +44,7 @@
 
      steps:
        - name: checkout repo
-         uses: actions/checkout@v3
+         uses: actions/checkout@v4
        
        - name: setup micromamba
          uses: mamba-org/setup-micromamba@v1

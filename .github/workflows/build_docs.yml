@@ -27,7 +27,7 @@
      
      steps:
        - name: checkout repo
-         uses: actions/checkout@v3
+         uses: actions/checkout@v4
        
        - name: setup micromamba
          uses: mamba-org/setup-micromamba@v1
@@ -36,8 +36,10 @@
            micromamba-version: 'latest'
        
        - name: install pulp via pip
-         shell: bash -l {0}
          run: pip install pulp
+
+       - name: install package
+         run: pip install .
        
        - name: make docs
          run: cd docs; make html
