@@ -18,8 +18,8 @@ class TestAZP:
 
         # labels for from_w:
         # n_clusters=3, basic AZP
-        self.basic_from_w_labels = [0, 0, 2, 0, 0, 2, 2, 1, 1, 2, 2, 1, 2, 1, 1, 2]
-        self.basic_from_w_labels += [1, 1, 1, 1, 1, 1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1]
+        self.basic_from_w_labels = [0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 2]
+        self.basic_from_w_labels += [1, 1, 1, 2, 1, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2]
 
         # labels for:
         # n_clusters=3, simulated annealing AZP variant
@@ -30,11 +30,25 @@ class TestAZP:
 
     def test_azp_basic_from_w(self):
         w = libpysal.weights.Queen.from_dataframe(self.mexico)
+
+        weights = {}
+        for k, v in w.neighbors.items():
+            arr = []
+            x = MEXICO.iloc[k].geometry.centroid
+            for n in v:
+                y = MEXICO.iloc[n].geometry.centroid
+                arr.append(x.distance(y))
+            weights[k] = arr
+        neighbors = w.neighbors
+        w = libpysal.weights.W(neighbors, weights)
+
         attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
         args = (self.mexico, w, attrs_name)
         kwargs = {"n_clusters": 3, "random_state": RANDOM_STATE}
         model = AZP(*args, **kwargs)
         model.solve()
+
+        # print(model.labels_)
 
         numpy.testing.assert_array_equal(model.labels_, self.basic_from_w_labels)
 

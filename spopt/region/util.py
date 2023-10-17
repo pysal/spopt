@@ -685,11 +685,8 @@ def generate_initial_sol(adj, n_regions):
         )
     n_regions_per_comp = distribute_regions_among_components(comp_labels, n_regions)
 
-    print("n_regions_per_comp", n_regions_per_comp)
     regions_built = 0
     for comp_label, n_regions_in_comp in n_regions_per_comp.items():
-        print("comp_label", comp_label)
-        print("n_regions_in_comp", n_regions_in_comp)
         region_labels = -np.ones(len(comp_labels), dtype=np.int32)
         in_comp = comp_labels == comp_label
         comp_adj = adj[in_comp]
@@ -699,7 +696,6 @@ def generate_initial_sol(adj, n_regions):
             + regions_built
         )
         regions_built += n_regions_in_comp
-        print("Regions in comp:", set(region_labels_comp))
         region_labels[in_comp] = region_labels_comp
         yield region_labels
 
@@ -747,7 +743,15 @@ def _randomly_divide_connected_graph(adj, n_regions):
             f"equal to the number of nodes which is {n_areas}."
         )
     mst = csg.minimum_spanning_tree(adj)
-    for _ in range(n_regions - 1):
+    mst_copy = mst.copy()
+    dok_matrix = mst_copy.todok()
+    nonzero_i, nonzero_j = dok_matrix.nonzero()
+    for i, j in zip(nonzero_i, nonzero_j):
+        dok_matrix[j, i] = dok_matrix[i, j]
+
+    mst = dok_matrix.tocsr()
+
+    for _ in range(n_regions-1):
         # try different links to cut and pick the one leading to the most
         # balanced solution
         best_link = None
@@ -758,6 +762,7 @@ def _randomly_divide_connected_graph(adj, n_regions):
             random_position = random.randrange(len(nonzero_i))
             i, j = nonzero_i[random_position], nonzero_j[random_position]
             mst_copy[i, j] = 0
+            mst_copy[j, i] = 0
             mst_copy.eliminate_zeros()
             labels = csg.connected_components(mst_copy, directed=False)[1]
             max_size = max(np.unique(labels, return_counts=True)[1])
@@ -765,6 +770,7 @@ def _randomly_divide_connected_graph(adj, n_regions):
                 best_link = (i, j)
                 max_region_size = max_size
         mst[best_link[0], best_link[1]] = 0
+        mst[best_link[1], best_link[0]] = 0
         mst.eliminate_zeros()
     return csg.connected_components(mst)[1]
 
