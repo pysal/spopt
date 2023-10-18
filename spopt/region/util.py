@@ -751,7 +751,7 @@ def _randomly_divide_connected_graph(adj, n_regions):
 
     mst = dok_matrix.tocsr()
 
-    for _ in range(n_regions-1):
+    for _ in range(n_regions - 1):
         # try different links to cut and pick the one leading to the most
         # balanced solution
         best_link = None
