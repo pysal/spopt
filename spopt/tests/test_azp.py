@@ -34,9 +34,9 @@ class TestAZP:
         weights = {}
         for k, v in w.neighbors.items():
             arr = []
-            x = MEXICO.iloc[k].geometry.centroid
+            x = self.mexico.iloc[k].geometry.centroid
             for n in v:
-                y = MEXICO.iloc[n].geometry.centroid
+                y = self.mexico.iloc[n].geometry.centroid
                 arr.append(x.distance(y))
             weights[k] = arr
         neighbors = w.neighbors
