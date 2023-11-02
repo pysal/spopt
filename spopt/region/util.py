@@ -743,13 +743,7 @@ def _randomly_divide_connected_graph(adj, n_regions):
             f"equal to the number of nodes which is {n_areas}."
         )
     mst = csg.minimum_spanning_tree(adj)
-    mst_copy = mst.copy()
-    dok_matrix = mst_copy.todok()
-    nonzero_i, nonzero_j = dok_matrix.nonzero()
-    for i, j in zip(nonzero_i, nonzero_j):
-        dok_matrix[j, i] = dok_matrix[i, j]
-
-    mst = dok_matrix.tocsr()
+    mst = (mst + mst.T) > 0
 
     for _ in range(n_regions - 1):
         # try different links to cut and pick the one leading to the most
