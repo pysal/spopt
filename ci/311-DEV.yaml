@@ -25,8 +25,9 @@ dependencies:
   - pip
   - pip:
     - pulp
+    - git+https://github.com/pysal/esda.git
     - git+https://github.com/geopandas/geopandas.git
-    - git+https://github.com/networkx/networkx.git
     - git+https://github.com/pysal/libpysal.git
     - git+https://github.com/pysal/mapclassify.git
+    - git+https://github.com/networkx/networkx.git
     - git+https://github.com/pysal/spaghetti.git
