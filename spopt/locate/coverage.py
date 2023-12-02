@@ -452,8 +452,8 @@ class LSCP(LocateSolver, BaseOutputMixin):
             distances,
             service_radius,
             predefined_facilities_arr,
-            facility_capacity_arr,
             demand_quantity_arr,
+            facility_capacity_arr,
             name,
         )
 
