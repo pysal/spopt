@@ -4,7 +4,7 @@ import numpy as np
 def boundary_fraction(W, labels):
     """"""
     boundary = 0
-    for row, own_label in zip(W, labels):
+    for row, own_label in zip(W, labels, strict=True):
         neighbor_labels = labels[row.nonzero()[-1]]
         boundary += (neighbor_labels != own_label).any().astype(int)
     return boundary / W.shape[0]

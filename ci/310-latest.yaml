@@ -2,16 +2,16 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.11
+  - python=3.10
   - geopandas
   - libpysal
   - mapclassify
-  - matplotlib
   - networkx
   - numpy
   - pandas
   - scikit-learn
   - scipy
+  - shapely
   - spaghetti
   - tqdm
   - pointpats
@@ -21,14 +21,7 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
-  # docs
-  - nbsphinx
-  - numpydoc
-  - sphinx
-  - sphinxcontrib-bibtex
-  - sphinx_bootstrap_theme
   # with pip
   - pip
   - pip:
     - pulp
-
