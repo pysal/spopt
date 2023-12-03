@@ -3,7 +3,9 @@ channels:
   - conda-forge
 dependencies:
   - python=3.12
+  - folium # for geopandas.explore()
   - geos # for shapely
+  - matplotlib # for geopandas.explore()
   - tqdm
   # testing
   - codecov

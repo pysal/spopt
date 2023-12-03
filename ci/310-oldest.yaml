@@ -7,11 +7,11 @@ dependencies:
   - libpysal=4.6
   - mapclassify=2.5
   - networkx=2.7
-  - numpy1.22
+  - numpy=1.22
   - pandas=1.4
   - scikit-learn=1.1
   - scipy=1.8
-  - shapely2.0.1
+  - shapely=2.0.1
   - spaghetti=1.6.4
   - tqdm=4.63
   - pointpats=2.3
