@@ -19,7 +19,7 @@
      strategy:
        matrix:
          os: ['ubuntu-latest']
-         environment-file: [ci/311.yaml]
+         environment-file: [ci/312-latest.yaml]
          experimental: [false]
      defaults:
        run:
@@ -28,6 +28,8 @@
      steps:
        - name: checkout repo
          uses: actions/checkout@v4
+         with:
+           fetch-depth: 0 # Fetch all history for all branches and tags.
        
        - name: setup micromamba
          uses: mamba-org/setup-micromamba@v1

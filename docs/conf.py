@@ -244,17 +244,18 @@ def setup(app):
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "esda": ("https://pysal.org/esda/", None),
     "geopandas": ("https://geopandas.org/en/latest/", None),
-    "giddy": ("https://giddy.readthedocs.io/en/latest/", None),
-    "hdbscan": ("https://hdbscan.readthedocs.io/en/latest/", None),
     "libpysal": ("https://pysal.org/libpysal/", None),
+    "mapclassify": ("https://pysal.org/mapclassify/", None),
+    "networkx": ("https://networkx.org/documentation/stable/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "pointpats": ("https://pysal.org/pointpats/", None),
     "pulp": ("https://coin-or.github.io/pulp/", None),
-    "python": ("https://docs.python.org/3.11/", None),
+    "python": ("https://docs.python.org/3.12/", None),
     "region": ("https://region.readthedocs.io/en/latest/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "shapely": ("https://shapely.readthedocs.io/en/stable/", None),
     "sklearn": ("https://scikit-learn.org/stable/", None),
 }
 

@@ -427,6 +427,7 @@ def form_single_component(gdf, w, linkage="single"):
                 zip(
                     gdf.iloc[wcl == lcl].geometry.centroid.x,
                     gdf.iloc[wcl == lcl].geometry.centroid.y,
+                    strict=True,
                 )
             )
         )
@@ -446,6 +447,7 @@ def form_single_component(gdf, w, linkage="single"):
                 zip(
                     gdf.iloc[wcl == cl].geometry.centroid.x,
                     gdf.iloc[wcl == cl].geometry.centroid.y,
+                    strict=True,
                 )
             )
             dd, jj = tree.query(query_pnts, k=1)
@@ -460,7 +462,7 @@ def form_single_component(gdf, w, linkage="single"):
                 i = clas[min_idx]
                 joins.append((i, j))
             else:
-                pairs = zip(clas, jj)
+                pairs = zip(clas, jj, strict=True)
                 joins.extend(list(pairs))
 
         neighbors = copy.deepcopy(w.neighbors)

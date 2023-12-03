@@ -283,7 +283,7 @@ def array_from_graph(graph, attr):
 
 
 def array_from_graph_or_dict(graph, attr):
-    if isinstance(attr, (str, collections.Iterable)):
+    if isinstance(attr, str | collections.Iterable):
         return array_from_graph(graph, attr)
     elif isinstance(attr, collections.Mapping):
         return array_from_dict_values(attr)
@@ -445,7 +445,7 @@ def dataframe_to_dict(df, cols):
     True
 
     """
-    return dict(zip(df.index, np.array(df[cols])))
+    return dict(zip(df.index, np.array(df[cols]), strict=True))
 
 
 def find_sublist_containing(el, lst, index=False):

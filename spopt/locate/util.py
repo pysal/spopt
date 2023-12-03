@@ -68,11 +68,11 @@ def simulated_geo_points(
             raise ValueError(msg)
 
     # create single areal entity and isolate bounding box
-    if isinstance(in_data, (geopandas.GeoDataFrame, geopandas.GeoSeries)):
+    if isinstance(in_data, geopandas.GeoDataFrame | geopandas.GeoSeries):
         geom = in_data.geometry.unary_union
         xmin, ymin, xmax, ymax = tuple(in_data.total_bounds)
         crs = in_data.crs
-    elif isinstance(in_data, (Polygon, MultiPolygon)):
+    elif isinstance(in_data, Polygon | MultiPolygon):
         geom = in_data
         xmin, ymin, xmax, ymax = in_data.bounds
         crs = None
