@@ -24,4 +24,4 @@ dependencies:
   # with pip
   - pip
   - pip:
-    - pulp=2.7
+    - pulp==2.7
