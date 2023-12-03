@@ -2,19 +2,9 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.11
-  - geopandas
-  - libpysal
-  - mapclassify
-  - matplotlib
-  - networkx
-  - numpy
-  - pandas
-  - scikit-learn
-  - scipy
-  - spaghetti
+  - python=3.12
+  - geos # for shapely
   - tqdm
-  - pointpats
   # testing
   - codecov
   - coverage
@@ -24,10 +14,19 @@ dependencies:
   # with pip
   - pip
   - pip:
+    # dev versions of packages
+    - --pre \
+      --index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple  \
+      --extra-index-url https://pypi.org/simple
+    - numpy
+    - pandas
     - pulp
-    - git+https://github.com/pysal/esda.git
+    - scikit-learn
+    - scipy
     - git+https://github.com/geopandas/geopandas.git
     - git+https://github.com/pysal/libpysal.git
     - git+https://github.com/pysal/mapclassify.git
     - git+https://github.com/networkx/networkx.git
+    - git+https://github.com/pysal/pointpats.git
+    - git+https://github.com/shapely/shapely.git
     - git+https://github.com/pysal/spaghetti.git

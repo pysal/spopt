@@ -2,11 +2,10 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.9
+  - python=3.10
   - geopandas
   - libpysal
   - mapclassify
-  - matplotlib
   - networkx
   - numpy
   - pandas
@@ -14,6 +13,7 @@ dependencies:
   - scipy
   - shapely
   - spaghetti
+  - tqdm
   - pointpats
   # testing
   - codecov

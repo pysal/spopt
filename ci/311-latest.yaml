@@ -6,7 +6,6 @@ dependencies:
   - geopandas
   - libpysal
   - mapclassify
-  - matplotlib
   - networkx
   - numpy
   - pandas
