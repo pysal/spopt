@@ -1,3 +1,5 @@
+# ruff: noqa: B009
+
 import warnings
 
 import numpy as np
@@ -70,7 +72,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
     aij : numpy.array
         A cost matrix in the form of a 2D array between origins and destinations.
 
-    """  # noqa
+    """  # noqa: E501
 
     def __init__(self, name: str, problem: pulp.LpProblem, aij: np.array):
         self.problem = problem
@@ -324,7 +326,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
         facility 3 serving 0 clients
         facility 4 serving 26 clients
 
-        """  # noqa
+        """  # noqa: E501
 
         predefined_facilities_arr = None
         if predefined_facility_col is not None:

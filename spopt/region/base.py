@@ -13,7 +13,7 @@ class RegionMixin:
 
     _solver_type = "regionalizer"
 
-    def solve_assign(self, X, adjacency):
+    def solve_assign(self, X, adjacency):  # noqa: N803
         """
         Parameters
         ----------
