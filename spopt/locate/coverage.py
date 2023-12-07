@@ -454,7 +454,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
             predefined_facilities_arr,
             demand_quantity_arr,
             facility_capacity_arr,
-            name,
+            name=("capacitated-" + name if facility_capacity_col is not None else name),
         )
 
     def facility_client_array(self) -> None:
