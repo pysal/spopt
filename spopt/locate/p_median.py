@@ -482,7 +482,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             predefined_facilities_arr=predefined_facilities_arr,
             facility_capacities=facility_capacities,
             fulfill_predefined_fac=fulfill_predefined_fac,
-            name=("capacitated" + name if facility_capacities is not None else name),
+            name=("capacitated-" + name if facility_capacities is not None else name),
         )
 
     def facility_client_array(self) -> None:
@@ -986,7 +986,7 @@ class KNearestPMedian(PMedian):
             p_facilities,
             facility_capacities,
             distance_metric,
-            name,
+            name=("capacitated-" + name if facility_capacities is not None else name),
         )
 
     def facility_client_array(self) -> None:
