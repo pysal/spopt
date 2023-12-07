@@ -98,7 +98,7 @@ def maxp(
     n, k = attr.shape
     arr = np.arange(n)
 
-    max_p, rl_list = construction_phase(
+    max_p, rl_list = _construction_phase(
         arr,
         attr,
         threshold_array,
@@ -124,7 +124,7 @@ def maxp(
         if verbose:
             print(irl)
         for _saiter in range(max_iterations_sa):
-            final_label, final_region_list, final_region_spatial_attr = perform_sa(
+            final_label, final_region_list, final_region_spatial_attr = _perform_sa(
                 label,
                 region_list,
                 region_spatial_attr,
@@ -136,7 +136,7 @@ def maxp(
                 tabu_length,
                 max_no_move,
             )
-            total_within_region_distance = calculate_within_region_distance(
+            total_within_region_distance = _calculate_within_region_distance(
                 final_region_list, distance_matrix
             )
             if verbose:
@@ -152,7 +152,7 @@ def maxp(
     return max_p, best_label
 
 
-def construction_phase(
+def _construction_phase(
     arr,
     attr,  # noqa: ARG001
     threshold_array,
@@ -226,7 +226,7 @@ def construction_phase(
                 labels[p] = -1
             else:
                 c += 1
-                labeled_id, spatial_attr_total = grow_cluster_for_poly(
+                labeled_id, spatial_attr_total = _grow_cluster_for_poly(
                     labels,
                     threshold_array,
                     p,
@@ -252,7 +252,7 @@ def construction_phase(
             continue
         else:
             max_p = num_regions
-            maxp_labels, maxp_region_list, maxp_region_spatial_attr = assign_enclave(
+            maxp_labels, maxp_region_list, maxp_region_spatial_attr = _assign_enclave(
                 enclave,
                 labels,
                 region_list,
@@ -276,7 +276,7 @@ def construction_phase(
     return real_values
 
 
-def grow_cluster_for_poly(
+def _grow_cluster_for_poly(
     labels, threshold_array, p, neighbor_polys, c, weight, spatial_thre
 ):
     """Grow one region until threshold constraint is satisfied.
@@ -338,7 +338,7 @@ def grow_cluster_for_poly(
     return cluster_info
 
 
-def assign_enclave(
+def _assign_enclave(
     enclave,
     labels,
     region_list,
@@ -422,7 +422,7 @@ def assign_enclave(
     return region_info
 
 
-def calculate_within_region_distance(region_list, distance_matrix):
+def _calculate_within_region_distance(region_list, distance_matrix):
     """Calculate total wthin-region distance/dissimilarity.
 
     Parameters
@@ -451,7 +451,7 @@ def calculate_within_region_distance(region_list, distance_matrix):
     return total_within_region_distance
 
 
-def pick_move_area(
+def _pick_move_area(
     labels,  # noqa: ARG001
     region_lists,
     region_spatial_attrs,
@@ -512,7 +512,7 @@ def pick_move_area(
     return potential_areas
 
 
-def check_move(
+def _check_move(
     poa,
     labels,
     region_lists,
@@ -577,7 +577,7 @@ def check_move(
     return move_info
 
 
-def perform_sa(
+def _perform_sa(
     init_labels,
     init_region_list,
     init_region_spatial_attr,
@@ -646,7 +646,7 @@ def perform_sa(
 
     while ni_move_ct <= max_no_move:
         if len(potential_areas) == 0:
-            potential_areas = pick_move_area(
+            potential_areas = _pick_move_area(
                 labels,
                 region_lists,
                 region_spatial_attrs,
@@ -659,7 +659,7 @@ def perform_sa(
         if len(potential_areas) == 0:
             break
         poa = potential_areas[np.random.randint(len(potential_areas))]
-        lost_distance, min_added_distance, potential_move = check_move(
+        lost_distance, min_added_distance, potential_move = _check_move(
             poa,
             labels,
             region_lists,
