@@ -751,8 +751,11 @@ class FacilityModelBuilder:
             fac_vars = getattr(obj, "fac_vars")
             model = getattr(obj, "problem")
 
+            from_dict = isinstance(cli_assgn_vars, dict)
             for i in range_client:
                 for j in range_facility:
+                    if from_dict and (i, j) not in cli_assgn_vars:
+                        continue
                     model += fac_vars[j] - cli_assgn_vars[i, j] >= 0
         else:
             raise AttributeError(

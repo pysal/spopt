@@ -594,14 +594,14 @@ class KNearestPMedian(PMedian):
         An array of coordinates of facilities.
     weights : np.array
         An array of weights representing the service loads of the clients.
+    k_array : np.array
+        An array of k values representing the number of nearest facilities
+        for each client.
     p_facilities: int
         The number of facilities to be located.
     capacities : np.array or None
         An array of facility capacities. None if capacity constraints are
         not considered.
-    k_array : np.array
-        An array of k values representing the number of nearest facilities
-        for each client.
     distance_metric : str
         The distance metric used for computing distances between clients
         and facilities.
@@ -631,7 +631,8 @@ class KNearestPMedian(PMedian):
 
     def __init__(
         self,
-        weights_sum: int | float,
+        name: str,
+        ai_sum: int | float,
         clients: np.array,
         facilities: np.array,
         weights: np.array,
@@ -639,9 +640,8 @@ class KNearestPMedian(PMedian):
         p_facilities: int,
         capacities: np.array = None,
         distance_metric: str = "euclidean",
-        name="k-nearest p median",
     ):
-        self.ai_sum = weights_sum
+        self.ai_sum = ai_sum
         self.clients = clients
         self.facilities = facilities
         self.weights = weights
@@ -846,8 +846,11 @@ class KNearestPMedian(PMedian):
                 + placeholder_vars[i]
                 == 1
             )
-        # Create the facility constraint.
+        # Create the facility constraint
         FacilityModelBuilder.add_facility_constraint(self, self.p_facilities)
+
+        # Create opening constraints
+        FacilityModelBuilder.add_opening_constraint(self, r_fac, r_cli)
 
     @classmethod
     def from_geodataframe(
@@ -981,6 +984,7 @@ class KNearestPMedian(PMedian):
             facility_capacities = gdf_fac[facility_capacity_col].to_numpy()
 
         return KNearestPMedian(
+            ("capacitated-" + name if facility_capacities is not None else name),
             weights_sum,
             dem_data,
             fac_data,
@@ -989,7 +993,6 @@ class KNearestPMedian(PMedian):
             p_facilities,
             facility_capacities,
             distance_metric,
-            name=("capacitated-" + name if facility_capacities is not None else name),
         )
 
     def facility_client_array(self) -> None:
