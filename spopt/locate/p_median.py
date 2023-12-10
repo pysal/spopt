@@ -546,7 +546,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 class KNearestPMedian(PMedian):
     r"""
     Implement the P-Median Model with Near-Far Cost Allocation and solve it. 
-    The model is adapted from :cite:`richard_2018`, can be formulated as:
+    The model is adapted from :cite:`richard_2018`, and can be formulated as:
 
     .. math::
 
@@ -695,7 +695,8 @@ class KNearestPMedian(PMedian):
         Warning: This method is not supported in the KNearestPMedian subclass.
         """
         raise NotImplementedError(
-            "from_cost_matrix method is not supported in KNearestPMedian class."
+            "The `from_cost_matrix()` method is not "
+            "supported in `KNearestPMedian` class."
         )
 
     def _create_sparse_matrix(self) -> None:
@@ -704,10 +705,10 @@ class KNearestPMedian(PMedian):
         and their k nearest facilities.
 
         This method uses a suitable tree data structure (built with the
-        `build_best_tree` function) to efficiently find the k nearest
-        facilities for each client based on the specified distance metric.
-        The resulting distances are stored in a sparse matrix format to
-        conserve memory for large datasets.
+        ``pointpats.geometry.build_best_tree()`` function) to efficiently
+        find the ``k`` nearest facilities for each client based on the
+        specified distance metric. The resulting distances are stored in a
+        sparse matrix format to conserve memory for large datasets.
 
         Returns
         -------
@@ -721,8 +722,8 @@ class KNearestPMedian(PMedian):
         # check the k value with the total number of facilities
         if not (self.k_array <= column_shape).all():
             raise ValueError(
-                f"The value of k should be no more than the number of total"
-                f"facilities ({column_shape})."
+                "The value of `k` should be no more than the number "
+                f"of total facilities: ({column_shape})."
             )
 
         # Initialize empty lists to store the data for the sparse matrix
@@ -753,11 +754,13 @@ class KNearestPMedian(PMedian):
 
     def _update_k_array(self) -> None:
         """
-        Increase the k value for clients with any g_i > 0 and update the k array.
+        Increase the ``k`` value for clients with any :math:`g_i > 0`
+        and update the ``k`` array.
 
-        This method is used to adjust the k values for clients based on their
-        placeholder variable g_i. For clients with g_i greater than 0, the
-        corresponding k value is increased by 1 in the new k array.
+        This method is used to adjust the ``k`` values for clients based on their
+        placeholder variable :math:`g_i`. For clients with :math:`g_i` greater
+        than ``0``, the corresponding ``k`` value is increased by ``1`` in the
+        new ``k`` array.
 
         Returns
         -------
@@ -823,9 +826,9 @@ class KNearestPMedian(PMedian):
             if highest_possible_capacity < self.ai_sum:
                 raise SpecificationError(
                     "Problem is infeasible. The highest possible capacity "
-                    f"{highest_possible_capacity}, coming from the {self.p_facilities} "
-                    "sites with the highest capacity, is smaller than "
-                    f"the total demand {self.ai_sum}."
+                    f"({highest_possible_capacity}), coming from the "
+                    f"{self.p_facilities} sites with the highest capacity, "
+                    f"is smaller than the total demand ({self.ai_sum})."
                 )
             for j in col_indices:
                 self.problem += (
@@ -943,9 +946,9 @@ class KNearestPMedian(PMedian):
 
         # check the crs of two geodataframes
         if gdf_demand.crs is None:
-            raise ValueError("GeoDataFrame gdf_demand does not have a valid CRS.")
+            raise ValueError("GeoDataFrame ``gdf_demand`` does not have a valid CRS.")
         if gdf_fac.crs is None:
-            raise ValueError("GeoDataFrame gdf_facility does not have a valid CRS.")
+            raise ValueError("GeoDataFrame ``gdf_fac`` does not have a valid CRS.")
         if gdf_demand.crs != gdf_fac.crs:
             raise ValueError(
                 "Geodataframes crs are different: "
@@ -962,11 +965,11 @@ class KNearestPMedian(PMedian):
         if k_array is None:
             k_array = np.full(len(dem_data), np.minimum(len(fac_data), 5))
         elif not isinstance(k_array, np.ndarray):
-            raise TypeError("k_array should be a numpy array.")
+            raise TypeError("`k_array` should be a numpy array.")
         elif not (k_array <= len(fac_data)).all():
             raise ValueError(
-                f"The value of k should be no more than the number of total "
-                f"facilities, which is {len(fac_data)}."
+                f"The value of `k` should be no more than the number "
+                f"of total facilities, which is {len(fac_data)}."
             )
 
         # demand and capacity
@@ -1019,12 +1022,12 @@ class KNearestPMedian(PMedian):
     def solve(self, solver: pulp.LpSolver, results: bool = True):
         """
 
-        Solve the k nearest p-median model.
+        Solve the k-nearest p-median model.
 
-        This method iteratively solves the KNearestPMedian model using a specified
+        This method iteratively solves the ``KNearestPMedian`` model using a specified
         solver until no more clients need to be assigned to placeholder facilities.
-        The k values for clients are increased dynamically based on the presence of
-        clients not assigned to k nearest facilities.
+        The ``k`` values for clients are increased dynamically based on the presence of
+        clients not assigned to ``k`` nearest facilities.
 
         Parameters
         ----------
@@ -1032,7 +1035,7 @@ class KNearestPMedian(PMedian):
             The solver to be used for solving the optimization model.
         results : bool (default True)
             If ``True`` it will create metainfo (which facilities cover which
-            demand) and vice-versa, and the uncovered demand.
+            demand) and vice versa, and the uncovered demand.
 
         Returns
         -------
