@@ -25,6 +25,7 @@ Tutorials
     notebooks/mclp_gis.ipynb
     notebooks/p-center.ipynb
     notebooks/p-median.ipynb
+    notebooks/p-median_variations.ipynb
     notebooks/p-dispersion.ipynb
     notebooks/facloc-real-world.ipynb
     notebooks/facloc-lscpb-real-world.ipynb
