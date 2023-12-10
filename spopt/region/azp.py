@@ -3,6 +3,8 @@ Openshaw, S. and Rao, L. (1995). Algorithms for reengineering 1991 census geogra
 Environment and Planning A, 27(3):425-446.
 """
 
+# ruff: noqa: B008, N806
+
 import abc
 import math
 import random
@@ -235,7 +237,7 @@ class AZPOrig:
             The objective function to use. Default is
             ``ObjectiveFunctionPairwise()``.
 
-        """  # noqa E501
+        """  # noqa: E501
 
         if attr.ndim == 1:
             attr = attr.reshape(adj.shape[0], -1)
@@ -301,7 +303,7 @@ class AZPOrig:
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """  # noqa E501
+        """  # noqa: E501
 
         adj = scipy_sparse_matrix_from_w(w)
         self.fit_from_scipy_sparse_matrix(
@@ -352,7 +354,7 @@ class AZPOrig:
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """  # noqa E501
+        """  # noqa: E501
 
         adj = nx.to_scipy_sparse_matrix(graph)
         attr = array_from_graph_or_dict(graph, attr)
@@ -403,7 +405,7 @@ class AZPOrig:
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """  # noqa E501
+        """  # noqa: E501
         w = w_from_gdf(gdf, contiguity)
         attr = array_from_df_col(gdf, attr)
         self.fit_from_w(
@@ -442,7 +444,7 @@ class AZPOrig:
             Refer to the corresponding argument in
             :meth:`fit_from_scipy_sparse_matrix`.
 
-        """  # noqa E501
+        """  # noqa: E501
         sorted_areas = sorted(neighbor_dict)
 
         adj = scipy_sparse_matrix_from_dict(neighbor_dict)
@@ -456,7 +458,7 @@ class AZPOrig:
             adj, attr_arr, n_regions, initial_labels, objective_func=objective_func
         )
 
-    def _azp_connected_component(self, adj, initial_clustering, attr):  # noqa ARG002
+    def _azp_connected_component(self, adj, initial_clustering, attr):  # noqa: ARG002
         """
         Implementation of the AZP algorithm for a spatially connected set of
         areas (i.e. for every area there is a path to every other area).
@@ -682,7 +684,7 @@ class AZPSimulatedAnnealing:
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """  # noqa E501
+        """  # noqa: E501
         w = w_from_gdf(gdf, contiguity)
         attr = array_from_df_col(gdf, attr)
         self.fit_from_w(
@@ -726,7 +728,7 @@ class AZPSimulatedAnnealing:
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """  # noqa E501
+        """  # noqa: E501
         sorted_areas = sorted(neighbor_dict)
         adj = scipy_sparse_matrix_from_dict(neighbor_dict)
         attr_arr = array_from_dict_values(attr, sorted_areas)
@@ -779,7 +781,7 @@ class AZPSimulatedAnnealing:
             ``AZP.fit_from_networkx``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """  # noqa E501
+        """  # noqa: E501
 
         adj = nx.to_scipy_sparse_matrix(graph)
         attr = array_from_graph_or_dict(graph, attr)
@@ -828,7 +830,7 @@ class AZPSimulatedAnnealing:
             Refer to the corresponding argument in
             ``AZP.fit_from_scipy_sparse_matrix``.
 
-        """  # noqa E501
+        """  # noqa: E501
         if not (0 < cooling_factor < 1):
             raise ValueError(
                 "The cooling_factor argument must be greater than 0 and less than 1"
@@ -914,7 +916,7 @@ class AZPSimulatedAnnealing:
             ``fit_from_scipy_sparse_matrix``.
             Default is ``ObjectiveFunctionPairwise()``.
 
-        """  # noqa E501
+        """  # noqa: E501
         adj = scipy_sparse_matrix_from_w(w)
         self.fit_from_scipy_sparse_matrix(
             adj,
