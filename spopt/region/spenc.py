@@ -1,3 +1,6 @@
+# ruff: noqa: C408, B006, N806
+
+
 from ..BaseClass import BaseSpOptHeuristicSolver
 from .spenclib import SPENC
 
@@ -151,7 +154,7 @@ class Spenc(BaseSpOptHeuristicSolver):
         * :cite:`von2007tutorial` A Tutorial on Spectral Clustering, 2007 Ulrike von Luxburg – https://doi.org/10.1007/s11222-007-9033-z
         * :cite:`yu_shi_2003` Multiclass spectral clustering, 2003 Stella X. Yu, Jianbo Shi – https://doi.org/10.1109/ICCV.2003.1238361
 
-        """  # noqa E501
+        """  # noqa: E501
 
         self.gdf = gdf
         self.w = w

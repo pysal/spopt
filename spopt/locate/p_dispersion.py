@@ -1,3 +1,5 @@
+# ruff: noqa: B009
+
 import warnings
 
 import numpy as np
@@ -51,7 +53,7 @@ class PDispersion(LocateSolver):
         A ``pulp`` instance of an optimization model that contains
         constraints, variables, and an objective function.
 
-    """  # noqa
+    """  # noqa: E501
 
     def __init__(self, name: str, problem: pulp.LpProblem, p_facilities: int):
         self.p_facilities = p_facilities
@@ -280,7 +282,7 @@ class PDispersion(LocateSolver):
         facility y_0_ is selected
         facility y_1_ is selected
 
-        """  # noqa
+        """  # noqa: E501
 
         predefined_facilities_arr = None
         if predefined_facility_col is not None:

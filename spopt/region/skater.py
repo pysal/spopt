@@ -1,3 +1,5 @@
+# ruff: noqa: C408, B006, E731, N803, N806
+
 import copy
 import time
 import warnings
@@ -345,12 +347,12 @@ class SpanningForest:
                 from tqdm.auto import tqdm
             except ImportError:
 
-                def tqdm(noop, desc=""):  # noqa ARG001
+                def tqdm(noop, desc=""):  # noqa: ARG001
                     return noop
 
         else:
 
-            def tqdm(noop, desc=""):  # noqa ARG001
+            def tqdm(noop, desc=""):  # noqa: ARG001
                 return noop
 
         zero_in = (labels is not None) and (target_label is not None)
