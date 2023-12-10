@@ -547,7 +547,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 class KNearestPMedian(PMedian):
     r"""
     Implement the P-Median Model with Near-Far Cost Allocation and solve it.
-    The model is adapted from :cite:`richard_2018`, and can be formulated as:
+    The model is adapted from :cite:`church_2018`, and can be formulated as:
 
     .. math::
 
