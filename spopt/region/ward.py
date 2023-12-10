@@ -1,3 +1,5 @@
+# ruff: noqa: B006, C408
+
 from sklearn.cluster import AgglomerativeClustering
 
 from ..BaseClass import BaseSpOptHeuristicSolver
@@ -78,12 +80,12 @@ class WardSpatial(BaseSpOptHeuristicSolver):
     def solve(self):
         """Solve the Ward"""
         data = self.gdf
-        X = data[self.attrs_name].values
+        x = data[self.attrs_name].values
         model = AgglomerativeClustering(
             n_clusters=self.n_clusters,
             connectivity=self.w.sparse,
             linkage="ward",
             **self.clustering_kwds,
         )
-        model.fit(X)
+        model.fit(x)
         self.labels_ = model.labels_

@@ -1,3 +1,5 @@
+# ruff: noqa: C408, B006, E731, N803, N806
+
 import numpy as np
 import scipy.sparse as spar
 import sklearn.metrics as skm
@@ -245,7 +247,7 @@ class SPENC(clust.SpectralClustering):
         is fully fixed, which would mean that any spectral clustering for
         a weights matrix in sklearn would always be contiguous.
 
-        """  # noqa E501
+        """  # noqa: E501
 
         if np.isinf(self.n_clusters):
             self.assign_labels = "hierarchical"
@@ -610,7 +612,7 @@ class SPENC(clust.SpectralClustering):
 
         labels corresponding to the input W that are generated at random.
 
-        """  # noqa E501
+        """
 
         result = np.vstack(
             list(
@@ -666,7 +668,7 @@ class AgglomerativeClustering(clust.AgglomerativeClustering):
 
         labels corresponding to the input W that are generated at random.
 
-        """  # noqa E501
+        """
 
         return np.vstack(
             list(self._sample_gen(n_samples=n_samples, distribution=distribution))

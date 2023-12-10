@@ -1,3 +1,5 @@
+# ruff: noqa: N803
+
 from warnings import warn
 
 import numpy as np
