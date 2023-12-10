@@ -640,7 +640,6 @@ class KNearestPMedian(PMedian):
         p_facilities: int,
         capacities: np.array = None,
         distance_metric: str = "euclidean",
-        name="k-nearest-p-median",
     ):
         self.ai_sum = ai_sum
         self.clients = clients
