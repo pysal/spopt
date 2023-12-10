@@ -127,7 +127,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         predefined_facilities_arr: np.array = None,
         demand_quantity_arr: np.array = None,
         facility_capacity_arr: np.array = None,
-        name: str = "LSCP",
+        name: str = "lscp",
     ):
         """
         Create an ``LSCP`` object based on a cost matrix. A capacitated
@@ -151,7 +151,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
             Amount of demand at each client location.
         facility_capacity_arr : numpy.array (default None)
             Capacity for service at each facility location.
-        name : str, (default 'LSCP')
+        name : str, (default 'lscp')
             The name of the problem.
 
         Returns
@@ -295,7 +295,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         demand_quantity_col: str = None,
         facility_capacity_col: str = None,
         distance_metric: str = "euclidean",
-        name: str = "LSCP",
+        name: str = "lscp",
     ):
         """
         Create an ``LSCP`` object from ``geopandas.GeoDataFrame`` objects.
@@ -330,7 +330,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         distance_metric : str (default 'euclidean')
             A metric used for the distance calculations supported by
             `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
-        name : str (default 'LSCP')
+        name : str (default 'lscp')
             The name of the problem.
 
         Returns
@@ -615,7 +615,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
         service_radius: float,
         solver: pulp.LpSolver,
         predefined_facilities_arr: np.array = None,
-        name: str = "LSCP-B",
+        name: str = "lscp-b",
     ):
         """
         Create an ``LSCPB`` object based on a cost matrix.
@@ -634,7 +634,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
             solution. For example, consider 3 facilites ``['A', 'B', 'C']``.
             If facility ``'B'`` must be in the model solution, then the passed
             in array should be ``[0, 1, 0]``.
-        name : str (default 'LSCP-B')
+        name : str (default 'lscp-b')
             The problem name.
 
         Returns
@@ -755,7 +755,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
         solver: pulp.LpSolver,
         predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
-        name: str = "LSCP-B",
+        name: str = "lscp-b",
     ):
         """
 
@@ -786,7 +786,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
         distance_metric : str (default 'euclidean')
             A metric used for the distance calculations supported by
             `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
-        name : str (default 'LSCP')
+        name : str (default 'lscp-b')
             The name of the problem.
 
         Returns
@@ -1052,7 +1052,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         service_radius: float,
         p_facilities: int,
         predefined_facilities_arr: np.array = None,
-        name: str = "MCLP",
+        name: str = "mclp",
     ):
         """
         Create a ``MCLP`` object based on cost matrix.
@@ -1073,7 +1073,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
             solution. For example, consider 3 facilites ``['A', 'B', 'C']``.
             If facility ``'B'`` must be in the model solution, then the passed
             in array should be ``[0, 1, 0]``.
-        name : str (default 'MCLP')
+        name : str (default 'mclp')
             The problem name.
 
         Returns
@@ -1196,7 +1196,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         p_facilities: int,
         predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
-        name: str = "MCLP",
+        name: str = "mclp",
     ):
         """
 
@@ -1229,7 +1229,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
         distance_metric : str (default 'euclidean')
             A metric used for the distance calculations supported by
             `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
-        name : str (default 'MCLP')
+        name : str (default 'mclp')
             The name of the problem.
 
         Returns
