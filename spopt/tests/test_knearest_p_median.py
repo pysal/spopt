@@ -69,7 +69,7 @@ class TestKNearestPMedian:
 
     def test_error_overflow_k(self):
         k = numpy.array([10, 10])
-        with pytest.raises(ValueError, match="The value of k should be"):
+        with pytest.raises(ValueError, match="The value of `k` should be"):
             KNearestPMedian.from_geodataframe(
                 self.gdf_demand,
                 self.gdf_fac,
@@ -83,7 +83,7 @@ class TestKNearestPMedian:
 
     def test_error_k_array_non_numpy_array(self):
         k = [1, 1]
-        with pytest.raises(TypeError, match="k_array should be a numpy array."):
+        with pytest.raises(TypeError, match="`k_array` should be a numpy array."):
             KNearestPMedian.from_geodataframe(
                 self.gdf_demand,
                 self.gdf_fac,
@@ -97,7 +97,7 @@ class TestKNearestPMedian:
 
     def test_error_k_array_invalid_value(self):
         k = numpy.array([1, 4])
-        with pytest.raises(ValueError, match="The value of k should be no more"):
+        with pytest.raises(ValueError, match="The value of `k` should be no more "):
             KNearestPMedian.from_geodataframe(
                 self.gdf_demand,
                 self.gdf_fac,
@@ -112,7 +112,7 @@ class TestKNearestPMedian:
     def test_error_no_crs_demand(self):
         _gdf_demand = geopandas.GeoDataFrame(self.demand_data)
         k = numpy.array([1, 1])
-        with pytest.raises(ValueError, match="GeoDataFrame gdf_demand "):
+        with pytest.raises(ValueError, match="GeoDataFrame ``gdf_demand`` "):
             KNearestPMedian.from_geodataframe(
                 _gdf_demand,
                 self.gdf_fac,
@@ -127,7 +127,7 @@ class TestKNearestPMedian:
     def test_error_no_crs_facility(self):
         _gdf_fac = geopandas.GeoDataFrame(self.facility_data)
         k = numpy.array([1, 1])
-        with pytest.raises(ValueError, match="GeoDataFrame gdf_facility "):
+        with pytest.raises(ValueError, match="GeoDataFrame ``gdf_fac`` "):
             KNearestPMedian.from_geodataframe(
                 self.gdf_demand,
                 _gdf_fac,
