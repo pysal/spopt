@@ -1,3 +1,5 @@
+# ruff: noqa: B009, B010
+
 from abc import abstractmethod
 from typing import TypeVar
 
@@ -325,8 +327,8 @@ class FacilityModelBuilder:
         None
 
         """
-        D = pulp.LpVariable("D", lowBound=0, cat=pulp.LpContinuous)
-        setattr(obj, "disperse_var", D)
+        big_d = pulp.LpVariable("D", lowBound=0, cat=pulp.LpContinuous)
+        setattr(obj, "disperse_var", big_d)
 
     @staticmethod
     def add_set_covering_constraint(
@@ -846,7 +848,7 @@ class FacilityModelBuilder:
 
         """
         if hasattr(obj, "disperse_var") and hasattr(obj, "fac_vars"):
-            M = cost_matrix.max()
+            big_m = cost_matrix.max()
             model = getattr(obj, "problem")
 
             for i in range_facility:
@@ -857,7 +859,13 @@ class FacilityModelBuilder:
                         dij = cost_matrix[i, j]
                         model += (
                             pulp.lpSum(
-                                [(dij + M * (2 - obj.fac_vars[i] - obj.fac_vars[j]))]
+                                [
+                                    (
+                                        dij
+                                        + big_m
+                                        * (2 - obj.fac_vars[i] - obj.fac_vars[j])
+                                    )
+                                ]
                             )
                             >= obj.disperse_var
                         )

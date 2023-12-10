@@ -86,21 +86,13 @@ line-length = 88
 line-length = 88
 select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
 target-version = "py310"
-ignore = [
-    "B006",
-    "B008",
-    "B009",
-    "B010",
-    "C408",
-    "E731",
-    "F401",
-    "F403",
-    "N803",
-    "N806",
-    "N999",
-    "UP007"
-]
 exclude = ["spopt/tests/*", "docs/*"]
+
+[tool.ruff.per-file-ignores]
+ "*__init__.py" = [
+     "F401",  # imported but unused
+     "F403",  # star import; unable to detect undefined names
+ ]
 
 [tool.coverage.run]
 source = ["./spopt"]

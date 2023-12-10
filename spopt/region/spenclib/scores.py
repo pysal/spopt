@@ -1,3 +1,5 @@
+# ruff: noqa: N803
+
 import numpy as np
 
 
