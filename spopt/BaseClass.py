@@ -1,3 +1,5 @@
+# ruff: noqa: N999
+
 from abc import ABC, abstractmethod
 
 

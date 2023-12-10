@@ -380,7 +380,7 @@ class RandomRegion:
         region_breaks.pop()
         return region_breaks
 
-    def build_noncontig_regions(self, num_regions, region_breaks):  # noqa ARG002
+    def build_noncontig_regions(self, num_regions, region_breaks):  # noqa: ARG002
         start = 0
         for i in region_breaks:
             self.regions.append(self.ids[start:i])
@@ -408,7 +408,7 @@ class RandomRegion:
             )
         return region, candidates, potential
 
-    def grow_free(self, w, test_card, region, candidates, potential):  # noqa ARG002
+    def grow_free(self, w, test_card, region, candidates, potential):  # noqa: ARG002
         # increment potential areas after each new area is
         # added to the region (faster than the grow_compact)
         pot_index = np.random.randint(0, len(potential))

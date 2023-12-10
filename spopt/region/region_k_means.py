@@ -25,7 +25,7 @@ from .base import (
 )
 
 
-def region_k_means(X, n_clusters, w, drop_islands=True, seed=0):
+def region_k_means(X, n_clusters, w, drop_islands=True, seed=0):  # noqa: N803
     """Solve the region-K-means problem with the constraint
     that each cluster forms a spatially connected component.
 

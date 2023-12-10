@@ -98,7 +98,7 @@ def maxp(
     n, k = attr.shape
     arr = np.arange(n)
 
-    max_p, rl_list = construction_phase(
+    max_p, rl_list = _construction_phase(
         arr,
         attr,
         threshold_array,
@@ -114,37 +114,37 @@ def maxp(
         print("number of good partitions:", len(rl_list))
 
     alpha = 0.998
-    tabuLength = 10
+    tabu_length = 10
     max_no_move = n
     best_obj_value = np.inf
     best_label = None
 
     for irl, rl in enumerate(rl_list):
-        label, regionList, regionSpatialAttr = rl
+        label, region_list, region_spatial_attr = rl
         if verbose:
             print(irl)
         for _saiter in range(max_iterations_sa):
-            finalLabel, finalRegionList, finalRegionSpatialAttr = perform_sa(
+            final_label, final_region_list, final_region_spatial_attr = _perform_sa(
                 label,
-                regionList,
-                regionSpatialAttr,
+                region_list,
+                region_spatial_attr,
                 threshold_array,
                 w,
                 distance_matrix,
                 threshold,
                 alpha,
-                tabuLength,
+                tabu_length,
                 max_no_move,
             )
-            totalWithinRegionDistance = calculate_within_region_distance(
-                finalRegionList, distance_matrix
+            total_within_region_distance = _calculate_within_region_distance(
+                final_region_list, distance_matrix
             )
             if verbose:
-                print("totalWithinRegionDistance after SA: ")
-                print(totalWithinRegionDistance)
-            if totalWithinRegionDistance < best_obj_value:
-                best_obj_value = totalWithinRegionDistance
-                best_label = finalLabel
+                print("total_within_region_distance after SA: ")
+                print(total_within_region_distance)
+            if total_within_region_distance < best_obj_value:
+                best_obj_value = total_within_region_distance
+                best_label = final_label
     if verbose:
         print("best objective value:")
         print(best_obj_value)
@@ -152,13 +152,13 @@ def maxp(
     return max_p, best_label
 
 
-def construction_phase(
+def _construction_phase(
     arr,
-    attr,  # noqa ARG001
+    attr,  # noqa: ARG001
     threshold_array,
     distance_matrix,
     weight,
-    spatialThre,
+    spatial_thre,
     random_assign_choice,
     max_it=999,
 ):
@@ -182,7 +182,7 @@ def construction_phase(
     weight : libpysal.weights.W, required
         Weights object created from given data.
 
-    spatialThre : {int, float}, required
+    spatial_thre : {int, float}, required
         The threshold value.
 
     random_assign_choice : int, required
@@ -202,41 +202,47 @@ def construction_phase(
     pv_list = []
     max_p = 0
     maxp_labels = None
-    maxp_regionList = None
-    maxp_regionSpatialAttr = None
+    maxp_region_list = None
+    maxp_region_spatial_attr = None
 
     for _ in range(max_it):
         labels = [0] * len(threshold_array)
-        C = 0
-        regionSpatialAttr = {}
+        c = 0
+        region_spatial_attr = {}
         enclave = []
-        regionList = {}
+        region_list = {}
         np.random.shuffle(arr)
 
-        labeledID = []
+        labeled_id = []
 
         for arr_index in range(0, len(threshold_array)):
-            P = arr[arr_index]
-            if labels[P] != 0:
+            p = arr[arr_index]
+            if labels[p] != 0:
                 continue
 
-            NeighborPolys = deepcopy(weight.neighbors[P])
+            neighbor_polys = deepcopy(weight.neighbors[p])
 
-            if len(NeighborPolys) == 0:
-                labels[P] = -1
+            if len(neighbor_polys) == 0:
+                labels[p] = -1
             else:
-                C += 1
-                labeledID, spatialAttrTotal = grow_cluster_for_poly(
-                    labels, threshold_array, P, NeighborPolys, C, weight, spatialThre
+                c += 1
+                labeled_id, spatial_attr_total = _grow_cluster_for_poly(
+                    labels,
+                    threshold_array,
+                    p,
+                    neighbor_polys,
+                    c,
+                    weight,
+                    spatial_thre,
                 )
 
-                if spatialAttrTotal < spatialThre:
-                    C -= 1
-                    enclave.extend(labeledID)
+                if spatial_attr_total < spatial_thre:
+                    c -= 1
+                    enclave.extend(labeled_id)
                 else:
-                    regionList[C] = labeledID
-                    regionSpatialAttr[C] = spatialAttrTotal
-        num_regions = len(regionList)
+                    region_list[c] = labeled_id
+                    region_spatial_attr[c] = spatial_attr_total
+        num_regions = len(region_list)
 
         for i, _l in enumerate(labels):
             if _l == -1:
@@ -246,30 +252,32 @@ def construction_phase(
             continue
         else:
             max_p = num_regions
-            maxp_labels, maxp_regionList, maxp_regionSpatialAttr = assign_enclave(
+            maxp_labels, maxp_region_list, maxp_region_spatial_attr = _assign_enclave(
                 enclave,
                 labels,
-                regionList,
-                regionSpatialAttr,
+                region_list,
+                region_spatial_attr,
                 threshold_array,
                 weight,
                 distance_matrix,
                 random_assign=random_assign_choice,
             )
             pv_list.append(max_p)
-            labels_list.append([maxp_labels, maxp_regionList, maxp_regionSpatialAttr])
-    realLabelsList = []
+            labels_list.append(
+                [maxp_labels, maxp_region_list, maxp_region_spatial_attr]
+            )
+    real_labels_list = []
     realmaxpv = max(pv_list)
     for ipv, pv in enumerate(pv_list):
         if pv == realmaxpv:
-            realLabelsList.append(labels_list[ipv])
+            real_labels_list.append(labels_list[ipv])
 
-    real_values = [realmaxpv, realLabelsList]
+    real_values = [realmaxpv, real_labels_list]
     return real_values
 
 
-def grow_cluster_for_poly(
-    labels, threshold_array, P, NeighborPolys, C, weight, spatialThre
+def _grow_cluster_for_poly(
+    labels, threshold_array, p, neighbor_polys, c, weight, spatial_thre
 ):
     """Grow one region until threshold constraint is satisfied.
 
@@ -282,59 +290,59 @@ def grow_cluster_for_poly(
     threshold_array : array, required
         An array of the values of the spatial extensive attribute.
 
-    P : int, required
+    p : int, required
         The index of current area unit
 
-    NeighborPolys : list, required
+    neighbor_polys : list, required
         The neighbors of current area unit
 
-    C : int, required
+    c : int, required
         The index of current region
 
     weight : libpysal.weights.W, required
         Weights object created from given data
 
-    spatialThre : {int, float}, required
+    spatial_thre : {int, float}, required
         The threshold value.
 
     Returns
     -------
 
     cluster_info : tuple
-        ``labeledID``, ``spatialAttrTotal``
+        ``labeled_id``, ``spatial_attr_total``
 
     """
-    labels[P] = C
-    labeledID = [P]
-    spatialAttrTotal = threshold_array[P]
+    labels[p] = c
+    labeled_id = [p]
+    spatial_attr_total = threshold_array[p]
 
     i = 0
 
-    while i < len(NeighborPolys):
-        if spatialAttrTotal >= spatialThre:
+    while i < len(neighbor_polys):
+        if spatial_attr_total >= spatial_thre:
             break
-        Pn = NeighborPolys[i]
+        p_n = neighbor_polys[i]
 
-        if labels[Pn] == 0:
-            labels[Pn] = C
-            labeledID.append(Pn)
-            spatialAttrTotal += threshold_array[Pn]
-            if spatialAttrTotal < spatialThre:
-                PnNeighborPolys = weight.neighbors[Pn]
-                for pnn in PnNeighborPolys:
-                    if pnn not in NeighborPolys:
-                        NeighborPolys.append(pnn)
+        if labels[p_n] == 0:
+            labels[p_n] = c
+            labeled_id.append(p_n)
+            spatial_attr_total += threshold_array[p_n]
+            if spatial_attr_total < spatial_thre:
+                p_n_neighbor_polys = weight.neighbors[p_n]
+                for pnn in p_n_neighbor_polys:
+                    if pnn not in neighbor_polys:
+                        neighbor_polys.append(pnn)
         i += 1
 
-    cluster_info = labeledID, spatialAttrTotal
+    cluster_info = labeled_id, spatial_attr_total
     return cluster_info
 
 
-def assign_enclave(
+def _assign_enclave(
     enclave,
     labels,
-    regionList,
-    regionSpatialAttr,
+    region_list,
+    region_spatial_attr,
     threshold_array,
     weight,
     distance_matrix,
@@ -351,11 +359,11 @@ def assign_enclave(
     labels : list, required
         A list of region labels for area units.
 
-    regionList : dict, required
+    region_list : dict, required
         A dictionary with key as region ID and value as a list of area
         units assigned to the region.
 
-    regionSpatialAttr : dict, required
+    region_spatial_attr : dict, required
         A dictionary with key as region ID and value as the total
         spatial extensive attribute of the region.
 
@@ -375,48 +383,52 @@ def assign_enclave(
     -------
 
     region_info : list
-        Deep copies of ``labels``, ``regionList``, and ``regionSpatialAttr``
+        Deep copies of ``labels``, ``region_list``, and ``region_spatial_attr``
 
     """
     enclave_index = 0
     while len(enclave) > 0:
         ec = enclave[enclave_index]
-        ecNeighbors = weight.neighbors[ec]
-        assignedRegion = 0
-        ecNeighborsList = []
+        ec_neighbors = weight.neighbors[ec]
+        assigned_region = 0
+        ec_neighbors_list = []
 
-        for ecn in ecNeighbors:
+        for ecn in ec_neighbors:
             if ecn in enclave:
                 continue
-            rm = np.array(regionList[labels[ecn]])
-            totalDistance = distance_matrix[ec, rm].sum()
-            ecNeighborsList.append((ecn, totalDistance))
-        ecNeighborsList = sorted(ecNeighborsList, key=lambda tup: tup[1])
-        top_num = min([len(ecNeighborsList), random_assign])
+            rm = np.array(region_list[labels[ecn]])
+            total_distance = distance_matrix[ec, rm].sum()
+            ec_neighbors_list.append((ecn, total_distance))
+        ec_neighbors_list = sorted(ec_neighbors_list, key=lambda tup: tup[1])
+        top_num = min([len(ec_neighbors_list), random_assign])
         if top_num > 0:
             ecn_index = np.random.randint(top_num)
-            assignedRegion = labels[ecNeighborsList[ecn_index][0]]
+            assigned_region = labels[ec_neighbors_list[ecn_index][0]]
 
-        if assignedRegion == 0:
+        if assigned_region == 0:
             enclave_index += 1
         else:
-            labels[ec] = assignedRegion
-            regionList[assignedRegion].append(ec)
-            regionSpatialAttr[assignedRegion] += threshold_array[ec]
+            labels[ec] = assigned_region
+            region_list[assigned_region].append(ec)
+            region_spatial_attr[assigned_region] += threshold_array[ec]
             del enclave[enclave_index]
             enclave_index = 0
 
-    region_info = [deepcopy(labels), deepcopy(regionList), deepcopy(regionSpatialAttr)]
+    region_info = [
+        deepcopy(labels),
+        deepcopy(region_list),
+        deepcopy(region_spatial_attr),
+    ]
     return region_info
 
 
-def calculate_within_region_distance(regionList, distance_matrix):
+def _calculate_within_region_distance(region_list, distance_matrix):
     """Calculate total wthin-region distance/dissimilarity.
 
     Parameters
     ----------
 
-    regionList : dict, required
+    region_list : dict, required
         A dictionary with key as region ID and value as a list of area
         units assigned to the region.
 
@@ -426,26 +438,26 @@ def calculate_within_region_distance(regionList, distance_matrix):
     Returns
     -------
 
-    totalWithinRegionDistance : {int, float}
+    total_within_region_distance : {int, float}
         the total within-region distance
 
     """
-    totalWithinRegionDistance = 0
-    for _k, v in regionList.items():
+    total_within_region_distance = 0
+    for _k, v in region_list.items():
         nv = np.array(v)
-        regionDistance = distance_matrix[nv, :][:, nv].sum() / 2
-        totalWithinRegionDistance += regionDistance
+        region_distance = distance_matrix[nv, :][:, nv].sum() / 2
+        total_within_region_distance += region_distance
 
-    return totalWithinRegionDistance
+    return total_within_region_distance
 
 
-def pick_move_area(
-    labels,  # noqa ARG001
-    regionLists,
-    regionSpatialAttrs,
+def _pick_move_area(
+    labels,  # noqa: ARG001
+    region_lists,
+    region_spatial_attrs,
     threshold_array,
     weight,
-    distance_matrix,  # noqa ARG001
+    distance_matrix,  # noqa: ARG001
     threshold,
 ):
     """Pick a spatial unit that can move from one region to another.
@@ -456,11 +468,11 @@ def pick_move_area(
     labels : list, required
         A list of current region labels
 
-    regionLists : dict, required
+    region_lists : dict, required
         A dictionary with key as region ID and value as a list of area
         units assigned to the region.
 
-    regionSpatialAttrs : dict, required
+    region_spatial_attrs : dict, required
         A dictionary with key as region ID and value as the total
         spatial extensive attribute of the region.
 
@@ -476,38 +488,38 @@ def pick_move_area(
     Returns
     -------
 
-    potentialAreas : list
+    potential_areas : list
         a list of area units that can move without violating
         contiguity and threshold constraints
 
     """
-    potentialAreas = []
-    for k, v in regionSpatialAttrs.items():
-        rla = np.array(regionLists[k])
+    potential_areas = []
+    for k, v in region_spatial_attrs.items():
+        rla = np.array(region_lists[k])
         rasa = threshold_array[rla]
-        lostSA = v - rasa
-        pas_indices = np.where(lostSA > threshold)[0]
+        lost_sa = v - rasa
+        pas_indices = np.where(lost_sa > threshold)[0]
         if pas_indices.size > 0:
             for pasi in pas_indices:
-                leftAreas = np.delete(rla, pasi)
+                left_areas = np.delete(rla, pasi)
                 ws = weight.sparse
-                cc = connected_components(ws[leftAreas, :][:, leftAreas])
+                cc = connected_components(ws[left_areas, :][:, left_areas])
                 if cc[0] == 1:
-                    potentialAreas.append(rla[pasi])
+                    potential_areas.append(rla[pasi])
         else:
             continue
 
-    return potentialAreas
+    return potential_areas
 
 
-def check_move(
+def _check_move(
     poa,
     labels,
-    regionLists,
-    threshold_array,  # noqa ARG001
+    region_lists,
+    threshold_array,  # noqa: ARG001
     weight,
     distance_matrix,
-    threshold,  # noqa ARG001
+    threshold,  # noqa: ARG001
 ):
     """Calculate the dissimilarity increase/decrease from one potential move.
 
@@ -520,7 +532,7 @@ def check_move(
     labels : list, required
         A list of current region labels
 
-    regionLists : dict, required
+    region_lists : dict, required
         A dictionary with key as region ID and value as a list of area
         units assigned to the region.
 
@@ -540,41 +552,41 @@ def check_move(
     -------
 
     move_info : list
-        ``lostDistance``, ``minAddedDistance``, and ``potentialMove``.
+        ``lost_distance``, ``min_added_distance``, and ``potential_move``.
 
     """
-    poaNeighbor = weight.neighbors[poa]
-    donorRegion = labels[poa]
+    poa_neighbor = weight.neighbors[poa]
+    donor_region = labels[poa]
 
-    rm = np.array(regionLists[donorRegion])
-    lostDistance = distance_matrix[poa, rm].sum()
-    potentialMove = None
+    rm = np.array(region_lists[donor_region])
+    lost_distance = distance_matrix[poa, rm].sum()
+    potential_move = None
 
-    minAddedDistance = np.Inf
-    for poan in poaNeighbor:
-        recipientRegion = labels[poan]
-        if donorRegion != recipientRegion:
-            rm = np.array(regionLists[recipientRegion])
-            addedDistance = distance_matrix[poa, rm].sum()
+    min_added_distance = np.Inf
+    for poan in poa_neighbor:
+        recipient_region = labels[poan]
+        if donor_region != recipient_region:
+            rm = np.array(region_lists[recipient_region])
+            added_distance = distance_matrix[poa, rm].sum()
 
-            if addedDistance < minAddedDistance:
-                minAddedDistance = addedDistance
-                potentialMove = (poa, donorRegion, recipientRegion)
+            if added_distance < min_added_distance:
+                min_added_distance = added_distance
+                potential_move = (poa, donor_region, recipient_region)
 
-    move_info = [lostDistance, minAddedDistance, potentialMove]
+    move_info = [lost_distance, min_added_distance, potential_move]
     return move_info
 
 
-def perform_sa(
-    initLabels,
-    initRegionList,
-    initRegionSpatialAttr,
+def _perform_sa(
+    init_labels,
+    init_region_list,
+    init_region_spatial_attr,
     threshold_array,
     weight,
     distance_matrix,
     threshold,
     alpha,
-    tabuLength,
+    tabu_length,
     max_no_move,
 ):
     """Perform the tabu list integrated simulated annealing algorithm.
@@ -582,7 +594,7 @@ def perform_sa(
     Parameters
     ----------
 
-    initLabels : list, required
+    init_labels : list, required
         A list of initial region labels before SA
 
     initRegionList : dict, required
@@ -608,7 +620,7 @@ def perform_sa(
     alpha : float between 0 and 1, required
         Temperature cooling rate
 
-    tabuLength : int, required
+    tabu_length : int, required
         Max length of a tabuList
 
     max_no_move : int, required
@@ -619,85 +631,85 @@ def perform_sa(
 
     sa_res : list
         The results from simulated annealing including ``labels``,
-        ``regionLists``, and ``regionSpatialAttrs``.
+        ``region_lists``, and ``region_spatial_attrs``.
 
     """
     t = 1
     ni_move_ct = 0
     make_move_flag = False
-    tabuList = []
-    potentialAreas = []
+    tabu_list = []
+    potential_areas = []
 
-    labels = deepcopy(initLabels)
-    regionLists = deepcopy(initRegionList)
-    regionSpatialAttrs = deepcopy(initRegionSpatialAttr)
+    labels = deepcopy(init_labels)
+    region_lists = deepcopy(init_region_list)
+    region_spatial_attrs = deepcopy(init_region_spatial_attr)
 
     while ni_move_ct <= max_no_move:
-        if len(potentialAreas) == 0:
-            potentialAreas = pick_move_area(
+        if len(potential_areas) == 0:
+            potential_areas = _pick_move_area(
                 labels,
-                regionLists,
-                regionSpatialAttrs,
+                region_lists,
+                region_spatial_attrs,
                 threshold_array,
                 weight,
                 distance_matrix,
                 threshold,
             )
 
-        if len(potentialAreas) == 0:
+        if len(potential_areas) == 0:
             break
-        poa = potentialAreas[np.random.randint(len(potentialAreas))]
-        lostDistance, minAddedDistance, potentialMove = check_move(
+        poa = potential_areas[np.random.randint(len(potential_areas))]
+        lost_distance, min_added_distance, potential_move = _check_move(
             poa,
             labels,
-            regionLists,
+            region_lists,
             threshold_array,
             weight,
             distance_matrix,
             threshold,
         )
 
-        if potentialMove is None:
-            potentialAreas.remove(poa)
+        if potential_move is None:
+            potential_areas.remove(poa)
             continue
 
-        diff = lostDistance - minAddedDistance
-        donorRegion = potentialMove[1]
-        recipientRegion = potentialMove[2]
+        diff = lost_distance - min_added_distance
+        donor_region = potential_move[1]
+        recipient_region = potential_move[2]
 
         if diff > 0:
             make_move_flag = True
-            if (poa, recipientRegion, donorRegion) not in tabuList:
-                if len(tabuList) == tabuLength:
-                    tabuList.pop(0)
-                tabuList.append((poa, recipientRegion, donorRegion))
+            if (poa, recipient_region, donor_region) not in tabu_list:
+                if len(tabu_list) == tabu_length:
+                    tabu_list.pop(0)
+                tabu_list.append((poa, recipient_region, donor_region))
 
             ni_move_ct = 0
         else:
             ni_move_ct += 1
             prob = np.exp(diff / t)
-            if prob > np.random.random() and potentialMove not in tabuList:
+            if prob > np.random.random() and potential_move not in tabu_list:
                 make_move_flag = True
             else:
                 make_move_flag = False
 
-        potentialAreas.remove(poa)
+        potential_areas.remove(poa)
         if make_move_flag:
-            labels[poa] = recipientRegion
-            regionLists[donorRegion].remove(poa)
-            regionLists[recipientRegion].append(poa)
-            regionSpatialAttrs[donorRegion] -= threshold_array[poa]
-            regionSpatialAttrs[recipientRegion] += threshold_array[poa]
+            labels[poa] = recipient_region
+            region_lists[donor_region].remove(poa)
+            region_lists[recipient_region].append(poa)
+            region_spatial_attrs[donor_region] -= threshold_array[poa]
+            region_spatial_attrs[recipient_region] += threshold_array[poa]
 
-            impactedAreas = []
-            for pa in potentialAreas:
-                if labels[pa] == recipientRegion or labels[pa] == donorRegion:
-                    impactedAreas.append(pa)
-            for pa in impactedAreas:
-                potentialAreas.remove(pa)
+            impacted_areas = []
+            for pa in potential_areas:
+                if labels[pa] == recipient_region or labels[pa] == donor_region:
+                    impacted_areas.append(pa)
+            for pa in impacted_areas:
+                potential_areas.remove(pa)
 
         t = t * alpha
-    return [labels, regionLists, regionSpatialAttrs]
+    return [labels, region_lists, region_spatial_attrs]
 
 
 class MaxPHeuristic(BaseSpOptHeuristicSolver):

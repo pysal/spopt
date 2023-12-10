@@ -1,5 +1,6 @@
+# ruff: noqa: B009, B010
+
 import warnings
-from typing import Union
 
 import numpy as np
 import pulp
@@ -78,14 +79,14 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
     aij : numpy.array
         A cost matrix in the form of a 2D array between origins and destinations.
 
-    """  # noqa
+    """  # noqa: E501
 
     def __init__(
         self,
         name: str,
         problem: pulp.LpProblem,
         aij: np.array,
-        weights_sum: Union[int, float],
+        weights_sum: int | float,
     ):
         self.aij = aij
         self.ai_sum = weights_sum
@@ -434,7 +435,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
         facility 3 serving 0 clients
         facility 4 serving 27 clients
 
-        """  # noqa
+        """  # noqa: E501
 
         predefined_facilities_arr = None
         if predefined_facility_col is not None:
@@ -547,14 +548,14 @@ class KNearestPMedian(PMedian):
     r"""
     Implement the P-Median Model with Near-Far Cost Allocation and solve it. 
     The model is adapted from :cite:`richard_2018`, and can be formulated as:
-
+    
     .. math::
 
        \begin{array}{lllll}
        \displaystyle \textbf{Minimize}      & \displaystyle \sum_{i \in I}\sum_{k \in k_{i}}{a_i d_{ik} X_{ik}} + \sum_{i \in I}{g_i (d_{i{k_i}} + 1)}  &&                                          & (1)                                                                               \\
        \displaystyle \textbf{Subject To}    & \sum_{k \in k_{i}}{X_{ik} + g_i = 1}                                                                      && \forall i \in I                          & (2)                                                                               \\
                                             & \sum_{j \in J}{Y_j} = p                                                                                   &&                                          & (3)                                                                               \\
-                                            & \sum_{i \in I}{a_i X_{ik}} \leq {Y_{k} c_{k}}                                                             && \forall k \in k_{i}                      & (4)                                                                               \\  
+                                            & \sum_{i \in I}{a_i X_{ik}} \leq {Y_{k} c_{k}}                                                             && \forall k \in k_{i}                      & (4)                                                                               \\
                                             & X_{ij} \leq Y_{j}                                                                                         && \forall i \in I \quad \forall j \in J    & (5)                                                                               \\
                                             & X_{ij} \in \{0, 1\}                                                                                       && \forall i \in I \quad \forall j \in J    & (6)                                                                               \\
                                             & Y_j \in \{0, 1\}                                                                                          && \forall j \in J                          & (7)                                                                               \\
@@ -564,7 +565,7 @@ class KNearestPMedian(PMedian):
                                             && p                                                                                                        & =                                         & \textrm{the number of facilities to be sited}                                     \\
                                             && a_i                                                                                                      & =                                         & \textrm{service load or population demand at client location } i                  \\
                                             && k_{i}                                                                                                    & =                                         & \textrm{the } k \textrm{nearest facilities of client location } i                 \\
-                                            && c_{j}                                                                                                    & =                                         & \textrm{the capacity of facility} j                                               \\   
+                                            && c_{j}                                                                                                    & =                                         & \textrm{the capacity of facility} j                                               \\
                                             && d_{ij}                                                                                                   & =                                         & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
                                             && X_{ij}                                                                                                   & =                                         & \begin{cases}
                                                                                                                                                                                                        1, \textrm{if client location } i \textrm{ is served by facility } j             \\
@@ -573,7 +574,7 @@ class KNearestPMedian(PMedian):
                                             && Y_j                                                                                                      & =                                         & \begin{cases}
                                                                                                                                                                                                        1, \textrm{if a facility is sited at location } j                                \\
                                                                                                                                                                                                        0, \textrm{otherwise}                                                            \\
-                                                                                                                                                                                                      \end{cases}                                                                       \\ 
+                                                                                                                                                                                                      \end{cases}                                                                       \\
                                             && g_i                                                                                                      & =                                         & \begin{cases}
                                                                                                                                                                                                        1, \textrm{if the client } i \textrm{ needs to be served by non-k-nearest facilities}     \\
                                                                                                                                                                                                        0, \textrm{otherwise}                                                            \\
@@ -604,7 +605,7 @@ class KNearestPMedian(PMedian):
     distance_metric : str
         The distance metric used for computing distances between clients
         and facilities.
-    
+
     Attributes
     ----------
 
@@ -626,11 +627,11 @@ class KNearestPMedian(PMedian):
         The inverse of ``fac2cli`` where client to facility relationships
         are shown.
 
-    """  # noqa
+    """  # noqa: E501
 
     def __init__(
         self,
-        weights_sum: Union[int, float],
+        weights_sum: int | float,
         clients: np.array,
         facilities: np.array,
         weights: np.array,

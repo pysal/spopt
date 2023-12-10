@@ -1,3 +1,5 @@
+# ruff: noqa: B009
+
 import warnings
 
 import numpy as np
@@ -97,7 +99,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
     aij : numpy.array
         A cost matrix in the form of a 2D array between origins and destinations.
 
-    """  # noqa
+    """  # noqa: E501
 
     def __init__(self, name: str, problem: pulp.LpProblem):
         super().__init__(name, problem)
@@ -398,7 +400,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
         facility 3 serving 0 clients
         facility 4 serving 0 clients
 
-        """  # noqa
+        """  # noqa: E501
 
         demand_quantity_arr = None
         if demand_quantity_col is not None:
@@ -580,7 +582,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
     aij : numpy.array
         A cost matrix in the form of a 2D array between origins and destinations.
 
-    """  # noqa
+    """  # noqa: E501
 
     def __init__(
         self,
@@ -861,7 +863,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
         All clients are covered by 1 facility because only one facility
         is needed to solve the LSCP.
 
-        """  # noqa
+        """  # noqa: E501
 
         predefined_facilities_arr = None
         if predefined_facility_col is not None:
@@ -1018,7 +1020,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
     n_cli_uncov : int
         The number of uncovered client locations.
 
-    """  # noqa
+    """  # noqa: E501
 
     def __init__(self, name: str, problem: pulp.LpProblem):
         super().__init__(name, problem)
