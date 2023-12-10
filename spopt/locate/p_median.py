@@ -943,6 +943,7 @@ class KNearestPMedian(PMedian):
         0.809
 
         Get the k values for the last iteration.
+
         >>> print(k_nearest_pmedian.k_array)
         [2, 1]
 
