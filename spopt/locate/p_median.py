@@ -843,8 +843,11 @@ class KNearestPMedian(PMedian):
                 + placeholder_vars[i]
                 == 1
             )
-        # Create the facility constraint.
+        # Create the facility constraint
         FacilityModelBuilder.add_facility_constraint(self, self.p_facilities)
+
+        # Create opening constraints
+        FacilityModelBuilder.add_opening_constraint(self, r_fac, r_cli)
 
     @classmethod
     def from_geodataframe(
