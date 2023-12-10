@@ -79,7 +79,7 @@ class PDispersion(LocateSolver):
         cost_matrix: np.array,
         p_facilities: int,
         predefined_facilities_arr: np.array = None,
-        name: str = "P-Dispersion",
+        name: str = "p-dispersion",
     ):
         """
         Create a ``PDispersion`` object based on a cost matrix.
@@ -96,7 +96,7 @@ class PDispersion(LocateSolver):
             solution. For example, consider 3 facilites ``['A', 'B', 'C']``.
             If facility ``'B'`` must be in the model solution, then the passed
             in array should be ``[0, 1, 0]``.
-        name : str (default 'P-Dispersion')
+        name : str (default 'p-dispersion')
             The name of the problem.
 
         Returns
@@ -197,7 +197,7 @@ class PDispersion(LocateSolver):
         p_facilities: int,
         predefined_facility_col: str = None,
         distance_metric: str = "euclidean",
-        name: str = "P-Dispersion",
+        name: str = "p-dispersion",
     ):
         """
         Create a ``PDispersion`` object based on a geodataframe. Calculate the
@@ -220,7 +220,7 @@ class PDispersion(LocateSolver):
         distance_metric : str (default 'euclidean')
             A metric used for the distance calculations supported by
             `scipy.spatial.distance.cdist <https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html>`_.
-        name : str (default 'P-Dispersion')
+        name : str (default 'p-dispersion')
             The name of the problem.
 
         Returns
