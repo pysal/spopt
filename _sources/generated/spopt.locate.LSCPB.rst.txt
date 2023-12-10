@@ -1,0 +1,29 @@
+﻿spopt.locate.LSCPB
+==================
+
+.. currentmodule:: spopt.locate
+
+.. autoclass:: LSCPB
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~LSCPB.__init__
+      ~LSCPB.check_status
+      ~LSCPB.client_facility_array
+      ~LSCPB.facility_client_array
+      ~LSCPB.from_cost_matrix
+      ~LSCPB.from_geodataframe
+      ~LSCPB.get_percentage
+      ~LSCPB.solve
+   
+   
+
+   
+   
+   

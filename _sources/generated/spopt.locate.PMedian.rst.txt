@@ -1,0 +1,29 @@
+﻿spopt.locate.PMedian
+====================
+
+.. currentmodule:: spopt.locate
+
+.. autoclass:: PMedian
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PMedian.__init__
+      ~PMedian.check_status
+      ~PMedian.client_facility_array
+      ~PMedian.facility_client_array
+      ~PMedian.from_cost_matrix
+      ~PMedian.from_geodataframe
+      ~PMedian.get_mean_distance
+      ~PMedian.solve
+   
+   
+
+   
+   
+   
