@@ -5,7 +5,5 @@ Thank you for your interest in contributing! We work primarily on Github. Please
 
 ## Style and format
 
-This project utilizes:
-* [`black`](https://black.readthedocs.io/en/stable/) for formatting;
-* [`ruff`](https://docs.astral.sh/ruff/) for linting; and
-* [`pre-commit`](https://pre-commit.com) to check format and lint on commits prior to pull requests being made. 
+1. At the time of this writing, Python 3.10, 3.11, and 3.12 are the officially supported versions.
+2. This project implements the linting and formatting conventions of [`ruff`](https://docs.astral.sh/ruff/) on all incoming Pull Requests. To ensure a PR is properly linted and formatted prior to creating a Pull Request, [install `pre-commit`](https://pre-commit.com/#installation) in your development environment and then [set up the configuration of pre-commit hooks](https://pre-commit.com/#3-install-the-git-hook-scripts). 
