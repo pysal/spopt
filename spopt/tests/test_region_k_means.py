@@ -28,7 +28,7 @@ class TestRegionKMeansHeuristic:
         gdf["data_values_1"] = numpy.random.random(n_polys)
         gdf["data_values_2"] = numpy.random.random(n_polys)
         gdf = pandas.concat([gdf[:200], gdf[220:]])
-        self.w_large = libpysal.weights.Rook.from_dataframe(gdf)
+        self.w_large = libpysal.weights.Rook.from_dataframe(gdf, use_index=False)
         self.data_large = gdf[["data_values_1", "data_values_2"]].values
         self.reg_large = 3
         self.limit_index = 30

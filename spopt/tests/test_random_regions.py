@@ -24,7 +24,7 @@ class TestRandomRegionEmpirical:
         self.mexico = MEXICO.copy()
         self.cards = self.mexico.groupby(by="HANSON03").count().NAME.values.tolist()
         self.ids = self.mexico.index.values.tolist()
-        self.w = libpysal.weights.Queen.from_dataframe(self.mexico)
+        self.w = libpysal.weights.Queen.from_dataframe(self.mexico, use_index=True)
 
     def test_random_region_6_card(self):
         known_regions = [

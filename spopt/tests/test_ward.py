@@ -16,7 +16,7 @@ class TestWard:
         self.mexico = MEXICO.copy()
         self.mexico["count"] = 1
         self.attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
-        self.w = libpysal.weights.Queen.from_dataframe(self.mexico)
+        self.w = libpysal.weights.Queen.from_dataframe(self.mexico, use_index=True)
         self.known_labels = [2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 4, 0]
         self.known_labels += [1, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2, 2, 0]
 

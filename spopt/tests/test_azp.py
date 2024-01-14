@@ -29,7 +29,7 @@ class TestAZP:
         # self.simann_from_w_labels += [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2]
 
     def test_azp_basic_from_w(self):
-        w = libpysal.weights.Queen.from_dataframe(self.mexico)
+        w = libpysal.weights.Queen.from_dataframe(self.mexico, use_index=True)
 
         weights = {}
         for k, v in w.neighbors.items():

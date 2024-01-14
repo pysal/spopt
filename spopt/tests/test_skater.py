@@ -22,7 +22,9 @@ class TestSkater:
     def setup_method(self):
         # Mexico
         self.mexico = MEXICO.copy()
-        self.w_mexico = libpysal.weights.Queen.from_dataframe(self.mexico)
+        self.w_mexico = libpysal.weights.Queen.from_dataframe(
+            self.mexico, use_index=True
+        )
         self.default_attrs_mexico = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
         self.default_mexico = [0, 0, 1, 2, 2, 1, 1, 1, 1, 1, 3, 2, 1, 1, 1, 1]
         self.default_mexico += [4, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1]
@@ -33,7 +35,9 @@ class TestSkater:
         self.columbus = COLUMBUS.copy()
         remove = [13, 14, 17, 18, 20, 23, 24, 29]
         self.columbus = self.columbus[~self.columbus.index.isin(remove)]
-        self.w_columbus = libpysal.weights.Queen.from_dataframe(self.columbus)
+        self.w_columbus = libpysal.weights.Queen.from_dataframe(
+            self.columbus, use_index=True
+        )
         self.attrs_columbus = ["HOVAL", "INC", "CRIME", "OPEN", "PLUMB", "DISCBD"]
         # used in `test_skater_island_pass`
         self.columbus_labels_1 = [0, 0, 0, 0, 1, 1, 0, 0, 2, 3, 1, 1, 0, 1, 3]
