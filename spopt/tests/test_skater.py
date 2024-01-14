@@ -5,7 +5,13 @@ import pytest
 from scipy.optimize import OptimizeWarning
 from sklearn.metrics import pairwise as skm
 
+from packaging.version import Version
+
 from spopt.region import Skater
+
+
+LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")
+w_kwargs = {"use_index": True} if LIBPYSAL_GE_48 else {}
 
 
 # Empirical tests
@@ -23,7 +29,7 @@ class TestSkater:
         # Mexico
         self.mexico = MEXICO.copy()
         self.w_mexico = libpysal.weights.Queen.from_dataframe(
-            self.mexico, use_index=True
+            self.mexico, **w_kwargs
         )
         self.default_attrs_mexico = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
         self.default_mexico = [0, 0, 1, 2, 2, 1, 1, 1, 1, 1, 3, 2, 1, 1, 1, 1]
@@ -36,7 +42,7 @@ class TestSkater:
         remove = [13, 14, 17, 18, 20, 23, 24, 29]
         self.columbus = self.columbus[~self.columbus.index.isin(remove)]
         self.w_columbus = libpysal.weights.Queen.from_dataframe(
-            self.columbus, use_index=True
+            self.columbus, **w_kwargs
         )
         self.attrs_columbus = ["HOVAL", "INC", "CRIME", "OPEN", "PLUMB", "DISCBD"]
         # used in `test_skater_island_pass`

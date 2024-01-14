@@ -3,7 +3,13 @@ import libpysal
 import numpy
 import pytest
 
+from packaging.version import Version
+
 from spopt.region import RandomRegion, RandomRegions
+
+
+LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")
+w_kwargs = {"use_index": True} if LIBPYSAL_GE_48 else {}
 
 
 # Empirical tests -- Mexican states
@@ -24,7 +30,7 @@ class TestRandomRegionEmpirical:
         self.mexico = MEXICO.copy()
         self.cards = self.mexico.groupby(by="HANSON03").count().NAME.values.tolist()
         self.ids = self.mexico.index.values.tolist()
-        self.w = libpysal.weights.Queen.from_dataframe(self.mexico, use_index=True)
+        self.w = libpysal.weights.Queen.from_dataframe(self.mexico, **w_kwargs)
 
     def test_random_region_6_card(self):
         known_regions = [

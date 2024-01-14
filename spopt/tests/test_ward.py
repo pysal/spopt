@@ -2,7 +2,13 @@ import geopandas
 import libpysal
 import numpy
 
+from packaging.version import Version
+
 from spopt.region import WardSpatial
+
+
+LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")
+w_kwargs = {"use_index": True} if LIBPYSAL_GE_48 else {}
 
 
 # Empirical tests -- Mexican states
@@ -16,7 +22,7 @@ class TestWard:
         self.mexico = MEXICO.copy()
         self.mexico["count"] = 1
         self.attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
-        self.w = libpysal.weights.Queen.from_dataframe(self.mexico, use_index=True)
+        self.w = libpysal.weights.Queen.from_dataframe(self.mexico, **w_kwargs)
         self.known_labels = [2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 4, 0]
         self.known_labels += [1, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2, 2, 0]
 
