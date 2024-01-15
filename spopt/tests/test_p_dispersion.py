@@ -23,7 +23,7 @@ else:
 
 
 # see gh:spopt#437
-GPD_GE_100 = Version(geopandas.__version__) > Version("1.0.0")
+GPD_GE_100 = Version(geopandas.__version__) >= Version("1.0.0")
 
 
 class TestSyntheticLocate:
