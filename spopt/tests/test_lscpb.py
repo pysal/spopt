@@ -17,7 +17,7 @@ import pytest
 from packaging.version import Version
 
 # see gh:spopt#437
-GPD_GT_0142 = Version(geopandas.__version__) > Version("0.14.2")
+GPD_GE_100 = Version(geopandas.__version__) > Version("1.0.0")
 
 
 class TestSyntheticLocate:
@@ -28,7 +28,7 @@ class TestSyntheticLocate:
         ntw = spaghetti.Network(in_data=lattice)
         gdf = spaghetti.element_as_gdf(ntw, arcs=True)
         net_buffer = gdf["geometry"].buffer(0.2)
-        net_space = net_buffer.union_all() if GPD_GT_0142 else net_buffer.unary_union
+        net_space = net_buffer.union_all() if GPD_GE_100 else net_buffer.unary_union
         street = geopandas.GeoDataFrame(
             geopandas.GeoSeries(net_space),
             crs=gdf.crs,
