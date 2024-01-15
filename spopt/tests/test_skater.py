@@ -10,6 +10,7 @@ from packaging.version import Version
 from spopt.region import Skater
 
 
+# see gh:spopt#437
 LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")
 w_kwargs = {"use_index": True} if LIBPYSAL_GE_48 else {}
 
