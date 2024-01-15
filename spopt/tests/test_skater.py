@@ -28,9 +28,7 @@ class TestSkater:
     def setup_method(self):
         # Mexico
         self.mexico = MEXICO.copy()
-        self.w_mexico = libpysal.weights.Queen.from_dataframe(
-            self.mexico, **w_kwargs
-        )
+        self.w_mexico = libpysal.weights.Queen.from_dataframe(self.mexico, **w_kwargs)
         self.default_attrs_mexico = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
         self.default_mexico = [0, 0, 1, 2, 2, 1, 1, 1, 1, 1, 3, 2, 1, 1, 1, 1]
         self.default_mexico += [4, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1]
