@@ -9,48 +9,16 @@ import pytest
 
 from packaging.version import Version
 
-# see gh:spopt#437
-GPD_GE_10 = Version(geopandas.__version__) >= Version("1.0")
-
 
 class TestSyntheticLocate:
-    def setup_method(self) -> None:
-        lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
-        ntw = spaghetti.Network(in_data=lattice)
-        gdf = spaghetti.element_as_gdf(ntw, arcs=True)
-        net_buffer = gdf["geometry"].buffer(0.2)
-        net_space = net_buffer.union_all() if GPD_GE_10 else net_buffer.unary_union
-        street = geopandas.GeoDataFrame(
-            geopandas.GeoSeries(net_space),
-            crs=gdf.crs,
-            columns=["geometry"],
-        )
-
-        client_count = 5
-        facility_count = 2
-
-        self.client_points = simulated_geo_points(street, needed=client_count, seed=5)
-        self.facility_points = simulated_geo_points(
-            street, needed=facility_count, seed=6
-        )
-
-        ntw = spaghetti.Network(in_data=lattice)
-
-        ntw.snapobservations(self.client_points, "clients", attribute=True)
-        ntw.snapobservations(self.facility_points, "facilities", attribute=True)
-
-        self.clients_snapped = spaghetti.element_as_gdf(
-            ntw, pp_name="clients", snapped=True
-        )
-
-        self.facilities_snapped = spaghetti.element_as_gdf(
-            ntw, pp_name="facilities", snapped=True
-        )
-
-        self.cost_matrix = ntw.allneighbordistances(
-            sourcepattern=ntw.pointpatterns["clients"],
-            destpattern=ntw.pointpatterns["facilities"],
-        )
+    @pytest.fixture(autouse=True)
+    def setup_method(self, network_instance) -> None:
+        client_count, facility_count = 5, 2
+        (
+            self.clients_snapped,
+            self.facilities_snapped,
+            self.cost_matrix,
+        ) = network_instance(client_count, facility_count)
 
     def test_clscpso_y1_lt_y2(self):
         service_radius = 8
