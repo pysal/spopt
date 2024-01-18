@@ -7,8 +7,6 @@ from spopt.locate import LSCP
 from spopt.locate.util import simulated_geo_points
 import pytest
 
-from packaging.version import Version
-
 
 class TestSyntheticLocate:
     @pytest.fixture(autouse=True)

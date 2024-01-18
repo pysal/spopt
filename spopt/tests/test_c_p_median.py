@@ -15,8 +15,6 @@ from spopt.locate.util import simulated_geo_points
 import pytest
 import os
 
-from packaging.version import Version
-
 
 class TestSyntheticLocate:
     @pytest.fixture(autouse=True)

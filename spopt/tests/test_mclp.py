@@ -21,9 +21,6 @@ else:
     WINDOWS = False
 
 
-from packaging.version import Version
-
-
 class TestSyntheticLocate:
     @pytest.fixture(autouse=True)
     def setup_method(self, network_instance) -> None:

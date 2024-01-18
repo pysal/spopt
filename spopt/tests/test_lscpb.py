@@ -14,8 +14,6 @@ import pickle
 import warnings
 import pytest
 
-from packaging.version import Version
-
 
 class TestSyntheticLocate:
     @pytest.fixture(autouse=True)
