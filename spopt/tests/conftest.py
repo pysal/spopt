@@ -2,6 +2,8 @@ import pytest
 import warnings
 
 import geopandas
+import numpy
+import shapely
 
 from spopt.locate.util import simulated_geo_points
 
@@ -19,9 +21,30 @@ GPD_GE_10 = Version(geopandas.__version__) >= Version("1.0")
 
 @pytest.fixture
 def network_instance():
-    """Return network cost matrix + snapped clients and facilities."""
+    """Return:
 
-    def _network_instance(client_count, facility_count):
+    * If client_count & facility_count are both integers:
+        snapped clients, snapped facilities, network cost matrix
+
+    * If client_count is None:
+        None, snapped facilities, network cost matrix
+
+    * If client_count & facility_count are both None & loc_slice is None:
+        buffered polygons of the network and unioned polygon
+
+    * If client_count & facility_count are both None & loc_slice is list:
+        buffered polygons of the network and unioned polygon or multipolygon
+
+    """
+
+    def _network_instance(
+        client_count: None | int,
+        facility_count: None | int,
+        loc_slice: None | list = None,
+    ) -> (
+        tuple[geopandas.GeoSeries, shapely.Polygon | shapely.MultiPolygon]
+        | tuple[None | geopandas.GeoDataFrame, geopandas.GeoDataFrame, numpy.ndarray]
+    ):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             # ignore deprecation warning - GH pysal/libpysal#468
@@ -30,8 +53,15 @@ def network_instance():
         ntw = spaghetti.Network(in_data=lattice)
         gdf = spaghetti.element_as_gdf(ntw, arcs=True)
 
-        net_buffer = gdf["geometry"].buffer(0.2)
+        if loc_slice:
+            net_buffer = gdf.loc[loc_slice, "geometry"].buffer(0.2)
+        else:
+            net_buffer = gdf["geometry"].buffer(0.2)
         net_space = net_buffer.union_all() if GPD_GE_10 else net_buffer.unary_union
+
+        if not client_count and not facility_count:
+            return net_buffer, net_space
+
         street = geopandas.GeoDataFrame(
             geopandas.GeoSeries(net_space), crs=gdf.crs, columns=["geometry"]
         )

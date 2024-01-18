@@ -4,16 +4,19 @@ from spopt.locate.util import simulated_geo_points
 
 
 class TestSimulatedGeoPoints:
-    def setup_method(self) -> None:
-        lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
-        ntw = spaghetti.Network(in_data=lattice)
-        gdf = spaghetti.element_as_gdf(ntw, arcs=True)
+    @pytest.fixture(autouse=True)
+    def setup_method(self, network_instance) -> None:
+        # case 1 - single polygon
+        client_count, facility_count = None, None
+        self.indata_polygons_geoseries, self.indata_polygon = network_instance(
+            client_count, facility_count
+        )
 
-        self.indata_polygons_geoseries = gdf["geometry"].buffer(0.2)
-        self.indata_polygon = self.indata_polygons_geoseries.unary_union
-
-        self.indata_multipolygon_geoseries = gdf.loc[[0, 10], "geometry"].buffer(0.2)
-        self.indata_multipolygon = self.indata_multipolygon_geoseries.unary_union
+        # case 2 - multipolygon
+        subslice = [0, 10]
+        self.indata_multipolygon_geoseries, self.indata_multipolygon = network_instance(
+            client_count, facility_count, loc_slice=subslice
+        )
 
     def test_from_polygon(self):
         needed = 5
