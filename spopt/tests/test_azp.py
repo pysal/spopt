@@ -2,7 +2,13 @@ import libpysal
 import geopandas
 import numpy
 
+from packaging.version import Version
+
 from spopt.region import AZP
+
+# see gh:spopt#437
+LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")
+w_kwargs = {"use_index": True} if LIBPYSAL_GE_48 else {}
 
 
 RANDOM_STATE = 123456
@@ -29,7 +35,7 @@ class TestAZP:
         # self.simann_from_w_labels += [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2]
 
     def test_azp_basic_from_w(self):
-        w = libpysal.weights.Queen.from_dataframe(self.mexico)
+        w = libpysal.weights.Queen.from_dataframe(self.mexico, **w_kwargs)
 
         weights = {}
         for k, v in w.neighbors.items():
@@ -53,7 +59,7 @@ class TestAZP:
         numpy.testing.assert_array_equal(model.labels_, self.basic_from_w_labels)
 
     # def test_azp_sim_anneal_from_w(self):
-    #    w = libpysal.weights.Queen.from_dataframe(self.mexico)
+    #    w = libpysal.weights.Queen.from_dataframe(self.mexico, **w_kwargs)
     #    attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
     #    sim_ann = spopt.region.azp_util.AllowMoveAZPSimulatedAnnealing(
     #        10, sa_moves_term=10

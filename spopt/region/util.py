@@ -963,7 +963,11 @@ def count(arr, el):
     unique, counts = np.unique(arr, return_counts=True)
     idx = np.where(unique == el)[0]
     if len(idx) > 0:
-        return int(counts[idx])
+        return (
+            int(counts[idx].item())
+            if isinstance(counts[idx], np.ndarray)
+            else int(counts[idx])
+        )
     return 0
 
 

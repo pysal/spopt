@@ -11,6 +11,13 @@ from spopt.region.base import (
     plot_components,
 )
 
+from packaging.version import Version
+
+
+# see gh:spopt#437
+LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")
+w_kwargs = {"use_index": True} if LIBPYSAL_GE_48 else {}
+
 
 # Mexican states
 pth = libpysal.examples.get_path("mexicojoin.shp")
@@ -21,7 +28,7 @@ class TestMaxPHeuristic:
     def setup_method(self):
         self.mexico = MEXICO.copy()
         self.mexico["count"] = 1
-        self.w = libpysal.weights.Queen.from_dataframe(self.mexico)
+        self.w = libpysal.weights.Queen.from_dataframe(self.mexico, **w_kwargs)
         # labels for non-verbose and verbose:
         # count=1, threshold=4, top_n=2
         self.basic_labels = [5, 5, 3, 6, 6, 6, 1, 1, 1, 1, 8, 6, 8, 2, 2, 8]
@@ -115,7 +122,7 @@ class TestMaxPHeuristic:
 
     @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
     def test_modify_components(self):
-        w = libpysal.weights.Queen.from_dataframe(self.gdf)
+        w = libpysal.weights.Queen.from_dataframe(self.gdf, **w_kwargs)
         gdf1, w1 = modify_components(self.gdf, w, "var", 6, policy="drop")
         assert gdf1.shape[0] == 50
 
@@ -135,7 +142,7 @@ class TestMaxPHeuristic:
         with pytest.raises(ValueError, match=f"Unknown `policy`: '{policy}'"):
             modify_components(
                 self.gdf,
-                libpysal.weights.Queen.from_dataframe(self.gdf),
+                libpysal.weights.Queen.from_dataframe(self.gdf, **w_kwargs),
                 "var",
                 6,
                 policy=policy,
@@ -146,7 +153,7 @@ class TestMaxPHeuristic:
         with pytest.raises(ValueError, match="No feasible components found in input."):
             modify_components(
                 self.gdf,
-                libpysal.weights.Queen.from_dataframe(self.gdf),
+                libpysal.weights.Queen.from_dataframe(self.gdf, **w_kwargs),
                 "var",
                 100,
             )
@@ -154,7 +161,7 @@ class TestMaxPHeuristic:
     @pytest.mark.filterwarnings("ignore:The weights matrix is not fully")
     def test_form_single_component_already_single(self):
         _gdf = self.gdf[10:20].copy()
-        w = libpysal.weights.Queen.from_dataframe(_gdf)
+        w = libpysal.weights.Queen.from_dataframe(_gdf, **w_kwargs)
         single_component = form_single_component(_gdf, w)
 
         numpy.testing.assert_array_equal(
@@ -167,6 +174,6 @@ class TestMaxPHeuristic:
         with pytest.raises(ValueError, match=f"Unknown `linkage`: '{linkage}'"):
             form_single_component(
                 self.gdf,
-                libpysal.weights.Queen.from_dataframe(self.gdf),
+                libpysal.weights.Queen.from_dataframe(self.gdf, **w_kwargs),
                 linkage=linkage,
             )

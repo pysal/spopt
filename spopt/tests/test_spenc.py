@@ -2,8 +2,14 @@ import geopandas
 import libpysal
 import numpy
 
+from packaging.version import Version
+
 from spopt.region import Spenc
 
+
+# see gh:spopt#437
+LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")
+w_kwargs = {"use_index": True} if LIBPYSAL_GE_48 else {}
 
 # Empirical tests
 RANDOM_STATE = 123456
@@ -16,7 +22,7 @@ class TestSpenc:
     def setup_method(self):
         # Mexico
         self.mexico = MEXICO.copy()
-        self.w_mexico = libpysal.weights.Queen.from_dataframe(self.mexico)
+        self.w_mexico = libpysal.weights.Queen.from_dataframe(self.mexico, **w_kwargs)
         self.default_attrs_mexico = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
         self.non_default_mexico = [0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2]
         self.non_default_mexico += [1, 2, 2, 2, 1, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2]

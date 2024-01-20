@@ -510,7 +510,11 @@ class AZPOrig:
 
         # step 7: Repeat until no further improving moves are made
         while obj_val_end < obj_val_start:  # improvement
-            obj_val_start = float(obj_val_end)
+            obj_val_start = (
+                float(obj_val_end.item())
+                if isinstance(obj_val_end, np.ndarray)
+                else float(obj_val_end)
+            )
             distinct_regions = distinct_regions_copy.copy()
             # step 6: when the list for region K is exhausted return to step 3
             # and select another region and repeat steps 4-6
@@ -574,7 +578,11 @@ class AZPOrig:
                     else:
                         break
 
-            obj_val_end = float(self.allow_move_strategy.objective_val)
+            obj_val_end = (
+                float(self.allow_move_strategy.objective_val.item())
+                if isinstance(self.allow_move_strategy.objective_val, np.ndarray)
+                else float(self.allow_move_strategy.objective_val)
+            )
         return labels
 
 

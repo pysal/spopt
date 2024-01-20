@@ -3,8 +3,15 @@ import numpy
 import pandas
 import pytest
 
+from packaging.version import Version
+
 from spopt.region import RegionKMeansHeuristic
 from spopt.region.spenclib.utils import lattice
+
+
+# see gh:spopt#437
+LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")
+w_kwargs = {"use_index": False} if LIBPYSAL_GE_48 else {}
 
 
 RANDOM_STATE = 12345
@@ -28,7 +35,7 @@ class TestRegionKMeansHeuristic:
         gdf["data_values_1"] = numpy.random.random(n_polys)
         gdf["data_values_2"] = numpy.random.random(n_polys)
         gdf = pandas.concat([gdf[:200], gdf[220:]])
-        self.w_large = libpysal.weights.Rook.from_dataframe(gdf)
+        self.w_large = libpysal.weights.Rook.from_dataframe(gdf, **w_kwargs)
         self.data_large = gdf[["data_values_1", "data_values_2"]].values
         self.reg_large = 3
         self.limit_index = 30

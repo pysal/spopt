@@ -21,35 +21,13 @@ else:
 
 
 class TestSyntheticLocate:
-    def setup_method(self) -> None:
+    @pytest.fixture(autouse=True)
+    def setup_method(self, network_instance) -> None:
         self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
 
-        lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
-        ntw = spaghetti.Network(in_data=lattice)
-        gdf = spaghetti.element_as_gdf(ntw, arcs=True)
-        street = geopandas.GeoDataFrame(
-            geopandas.GeoSeries(gdf["geometry"].buffer(0.2).unary_union),
-            crs=gdf.crs,
-            columns=["geometry"],
-        )
-
-        facility_count = 5
-
-        self.facility_points = simulated_geo_points(
-            street, needed=facility_count, seed=6
-        )
-
-        ntw = spaghetti.Network(in_data=lattice)
-
-        ntw.snapobservations(self.facility_points, "facilities", attribute=True)
-
-        self.facilities_snapped = spaghetti.element_as_gdf(
-            ntw, pp_name="facilities", snapped=True
-        )
-
-        self.cost_matrix = ntw.allneighbordistances(
-            sourcepattern=ntw.pointpatterns["facilities"],
-            destpattern=ntw.pointpatterns["facilities"],
+        client_count, facility_count = None, 5
+        _, self.facilities_snapped, self.cost_matrix = network_instance(
+            client_count, facility_count
         )
 
     def test_p_dispersion_from_cost_matrix(self):
