@@ -3,13 +3,10 @@
 spopt: Spatial Optimization
 ===========================
 
-
-
 Regionalization, facility location, and transportation-oriented modeling
 ------------------------------------------------------------------------
 
 **spopt** is an open-source Python library for solving optimization problems with spatial data. Originating from the **region** module in `PySAL (Python Spatial Analysis Library) <http://pysal.org>`_, it is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions.
-
 
 .. raw:: html
 
@@ -78,16 +75,16 @@ Regionalization, facility location, and transportation-oriented modeling
         </div>
       </div>
     </div>
-    
-
-
 
 Development
 -----------
 
 **spopt** development is hosted on github_.
 
+Get in touch
+------------
 
+If you have a question regarding **spopt**, feel free to open an `issue`_, a new `discussion`_ on GitHub, or join a chat on PySAL's `Discord`_ channel.
 
 Citing **spopt**
 ----------------
@@ -123,12 +120,10 @@ If you use **PySAL-spopt** in a scientific publication, we would appreciate cita
     doi       = {10.21105/joss.03330},
   }
 
-
 Funding
 -------
 
 This project is/was partially funded through:
-
 
 .. figure:: _static/images/nsf_logo.png
     :target: https://www.nsf.gov/index.jsp
@@ -136,7 +131,6 @@ This project is/was partially funded through:
     :align: left
 
     National Science Foundation Award #1831615: `RIDIR: Scalable Geospatial Analytics for Social Science Research <https://www.nsf.gov/awardsearch/showAward?AWD_ID=1831615>`_
-
 
 .. raw:: html
 
@@ -148,8 +142,6 @@ This project is/was partially funded through:
         height="200"
     >
 
-
-
 .. toctree::
    :hidden:
    :maxdepth: 3
@@ -160,7 +152,8 @@ This project is/was partially funded through:
    API <api>
    References <references>
 
-
-
 .. _PySAL: https://github.com/pysal/pysal
 .. _github : https://github.com/pysal/spopt
+.. _issue: https://github.com/pysal/spopt/issues/new/choose
+.. _discussion: https://github.com/pysal/spopt/discussions
+.. _Discord: https://discord.gg/BxFTEPFFZn

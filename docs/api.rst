@@ -11,7 +11,6 @@ Region Methods
 --------------
 Model based approaches for aggregating a large set of geographic units (with small footprints) into a smaller number of regions (with large footprints).
 
-
 .. autosummary::
    :toctree: generated/
 
@@ -39,5 +38,3 @@ Exact solution approaches to facility location modeling problems.
     locate.KNearestPMedian
     locate.PCenter
     locate.PDispersion
-
-
