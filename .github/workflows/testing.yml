@@ -35,6 +35,8 @@
            - environment-file: ci/312-latest.yaml
              os: macos-latest
            - environment-file: ci/312-latest.yaml
+             os: macos-14 # Apple Silicon
+           - environment-file: ci/312-latest.yaml
              os: windows-latest
        fail-fast: false
 
