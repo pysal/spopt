@@ -1,24 +1,19 @@
-from spopt.locate.base import FacilityModelBuilder
-import numpy
-import geopandas
-import pandas
-import pulp
-import spaghetti
-from shapely.geometry import Point, Polygon
-
-from spopt.locate import MCLP
-from spopt.locate.util import simulated_geo_points
 import os
 import pickle
 import platform
-import pytest
 import warnings
 
-operating_system = platform.platform()[:7].lower()
-if operating_system == "windows":
-    WINDOWS = True
-else:
-    WINDOWS = False
+import geopandas
+import numpy
+import pandas
+import pulp
+import pytest
+from shapely.geometry import Point, Polygon
+
+from spopt.locate import MCLP
+from spopt.locate.base import FacilityModelBuilder
+
+WINDOWS = platform.platform()[:7].lower() == "windows"
 
 
 class TestSyntheticLocate:
@@ -56,13 +51,13 @@ class TestSyntheticLocate:
         assert isinstance(result, MCLP)
 
         with pytest.raises(AttributeError):
-            result.cli2fac
+            result.cli2fac  # noqa: B018
         with pytest.raises(AttributeError):
-            result.fac2cli
+            result.fac2cli  # noqa: B018
         with pytest.raises(AttributeError):
-            result.n_cli_uncov
+            result.n_cli_uncov  # noqa: B018
         with pytest.raises(AttributeError):
-            result.perc_cov
+            result.perc_cov  # noqa: B018
 
     def test_mclp_facility_client_array_from_cost_matrix(self):
         with open(self.dirpath + "mclp_fac2cli.pkl", "rb") as f:
@@ -294,7 +289,7 @@ class TestRealWorldLocate:
         with pytest.raises(RuntimeError, match="Model is not solved: Infeasible."):
             mclp.solve(pulp.PULP_CBC_CMD(msg=False))
 
-    def test_attribute_error_fac2cli_MCLP_facility_client_array(self):
+    def test_attribute_error_fac2cli_mclp_facility_client_array(self):
         mclp = MCLP.from_geodataframe(
             self.demand_points_gdf,
             self.facility_points_gdf,
@@ -309,9 +304,9 @@ class TestRealWorldLocate:
         with pytest.raises(
             AttributeError, match="'MCLP' object has no attribute 'fac2cli'"
         ):
-            mclp.fac2cli
+            mclp.fac2cli  # noqa: B018
 
-    def test_attribute_error_cli2fac_MCLP_facility_client_array(self):
+    def test_attribute_error_cli2fac_mclp_facility_client_array(self):
         mclp = MCLP.from_geodataframe(
             self.demand_points_gdf,
             self.facility_points_gdf,
@@ -326,9 +321,9 @@ class TestRealWorldLocate:
         with pytest.raises(
             AttributeError, match="'MCLP' object has no attribute 'cli2fac'"
         ):
-            mclp.cli2fac
+            mclp.cli2fac  # noqa: B018
 
-    def test_attribute_error_ncliuncov_MCLP_facility_client_array(self):
+    def test_attribute_error_ncliuncov_mclp_facility_client_array(self):
         mclp = MCLP.from_geodataframe(
             self.demand_points_gdf,
             self.facility_points_gdf,
@@ -343,9 +338,9 @@ class TestRealWorldLocate:
         with pytest.raises(
             AttributeError, match="'MCLP' object has no attribute 'n_cli_uncov'"
         ):
-            mclp.n_cli_uncov
+            mclp.n_cli_uncov  # noqa: B018
 
-    def test_attribute_error_percentage_MCLP_facility_client_array(self):
+    def test_attribute_error_percentage_mclp_facility_client_array(self):
         mclp = MCLP.from_geodataframe(
             self.demand_points_gdf,
             self.facility_points_gdf,
@@ -405,19 +400,21 @@ class TestErrorsWarnings:
             )
 
     def test_error_mclp_different_crs(self):
-        with pytest.warns(
-            UserWarning, match="Facility geodataframe contains mixed type"
+        with (
+            pytest.warns(
+                UserWarning, match="Facility geodataframe contains mixed type"
+            ),
+            pytest.raises(ValueError, match="Geodataframes crs are different: "),
         ):
-            with pytest.raises(ValueError, match="Geodataframes crs are different: "):
-                MCLP.from_geodataframe(
-                    self.gdf_dem_crs,
-                    self.gdf_fac,
-                    "geometry",
-                    "geometry",
-                    "weight",
-                    10,
-                    2,
-                )
+            MCLP.from_geodataframe(
+                self.gdf_dem_crs,
+                self.gdf_fac,
+                "geometry",
+                "geometry",
+                "weight",
+                10,
+                2,
+            )
 
     def test_warning_mclp_demand_geodataframe(self):
         with pytest.warns(UserWarning, match="Demand geodataframe contains mixed type"):

@@ -2,7 +2,9 @@ import geopandas
 import libpysal
 import numpy
 import pytest
+from packaging.version import Version
 from shapely.geometry import box
+
 from spopt.region import MaxPHeuristic
 from spopt.region.base import (
     form_single_component,
@@ -10,9 +12,6 @@ from spopt.region.base import (
     modify_components,
     plot_components,
 )
-
-from packaging.version import Version
-
 
 # see gh:spopt#437
 LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")

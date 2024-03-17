@@ -1,19 +1,14 @@
-from spopt.locate.base import (
-    FacilityModelBuilder,
-    LocateSolver,
-    T_FacModel,
-    SpecificationError,
-)
+import os
+
 import numpy
 import pandas
-import geopandas
 import pulp
-import spaghetti
+import pytest
 
 from spopt.locate import PMedian
-from spopt.locate.util import simulated_geo_points
-import pytest
-import os
+from spopt.locate.base import (
+    SpecificationError,
+)
 
 
 class TestSyntheticLocate:
@@ -160,9 +155,12 @@ class TestRealWorldLocate:
         schools_priority_3_arr = numpy.array(schools_priority_3)
         with pytest.raises(
             SpecificationError,
-            match="Problem is infeasible. The predefined facilities can't be fulfilled, ",
+            match=(
+                "Problem is infeasible. "
+                "The predefined facilities can't be fulfilled, "
+            ),
         ):
-            pmedian = PMedian.from_cost_matrix(
+            PMedian.from_cost_matrix(
                 self.cost_matrix,
                 self.demand,
                 self.p_facility,
@@ -174,9 +172,12 @@ class TestRealWorldLocate:
     def test_no_capacity_data_predefined_facilities_error(self):
         with pytest.raises(
             SpecificationError,
-            match="Data on the capacity of the facility is missing, so the model cannot be calculated.",
+            match=(
+                "Data on the capacity of the facility is missing, "
+                "so the model cannot be calculated."
+            ),
         ):
-            pmedian = PMedian.from_cost_matrix(
+            PMedian.from_cost_matrix(
                 self.cost_matrix,
                 self.demand,
                 self.p_facility,
@@ -190,7 +191,7 @@ class TestRealWorldLocate:
             SpecificationError,
             match="Problem is infeasible. The highest possible capacity",
         ):
-            pmedian = PMedian.from_cost_matrix(
+            PMedian.from_cost_matrix(
                 self.cost_matrix,
                 demand_test,
                 self.p_facility,

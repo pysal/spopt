@@ -1,5 +1,5 @@
 import pytest
-import spaghetti
+
 from spopt.locate.util import simulated_geo_points
 
 

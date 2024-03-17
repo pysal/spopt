@@ -4,6 +4,7 @@ Utility functions for graph-related operations with sparse adjacency matrices
 [compressed sparse graph routines](
 https://docs.scipy.org/doc/scipy/reference/sparse.csgraph.html).
 """
+
 import numpy as np
 from scipy.sparse import csgraph as csg
 from scipy.sparse import csr_matrix

@@ -1,8 +1,8 @@
-import pytest
 import warnings
 
 import geopandas
 import numpy
+import pytest
 import shapely
 
 from spopt.locate.util import simulated_geo_points

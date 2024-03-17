@@ -2,12 +2,10 @@ import libpysal
 import numpy
 import pandas
 import pytest
-
 from packaging.version import Version
 
 from spopt.region import RegionKMeansHeuristic
 from spopt.region.spenclib.utils import lattice
-
 
 # see gh:spopt#437
 LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")

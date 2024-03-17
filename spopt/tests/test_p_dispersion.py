@@ -1,23 +1,17 @@
-from spopt.locate.base import FacilityModelBuilder
-import numpy
+import os
+import platform
+
 import geopandas
+import numpy
 import pandas
 import pulp
-import spaghetti
+import pytest
 from shapely.geometry import Polygon
 
 from spopt.locate import PDispersion
-from spopt.locate.util import simulated_geo_points
+from spopt.locate.base import FacilityModelBuilder
 
-import os
-import platform
-import pytest
-
-operating_system = platform.platform()[:7].lower()
-if operating_system == "windows":
-    WINDOWS = True
-else:
-    WINDOWS = False
+WINDOWS = platform.platform()[:7].lower() == "windows"
 
 
 class TestSyntheticLocate:
@@ -41,9 +35,9 @@ class TestSyntheticLocate:
         assert isinstance(result, PDispersion)
 
         with pytest.raises(AttributeError):
-            result.cli2fac
+            result.cli2fac  # noqa: B018
         with pytest.raises(AttributeError):
-            result.fac2clif
+            result.fac2clif  # noqa: B018
 
     def test_p_dispersion_from_geodataframe(self):
         pdispersion = PDispersion.from_geodataframe(

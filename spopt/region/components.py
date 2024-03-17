@@ -1,6 +1,7 @@
 """
 Checking for connected components in a graph.
 """
+
 __author__ = "Sergio J. Rey <srey@asu.edu>"
 
 

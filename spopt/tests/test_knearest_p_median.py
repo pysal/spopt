@@ -1,16 +1,11 @@
-import numpy
 import geopandas
-import pandas
+import numpy
 import pulp
+import pytest
 from shapely.geometry import Point
 
-from spopt.locate.p_median import KNearestPMedian
 from spopt.locate.base import SpecificationError
-import os
-import pickle
-import platform
-import pytest
-import warnings
+from spopt.locate.p_median import KNearestPMedian
 
 
 class TestKNearestPMedian:
@@ -50,11 +45,11 @@ class TestKNearestPMedian:
         assert isinstance(result, KNearestPMedian)
 
         with pytest.raises(AttributeError):
-            result.cli2fac
+            result.cli2fac  # noqa: B018
         with pytest.raises(AttributeError):
-            result.fac2cli
+            result.fac2cli  # noqa: B018
         with pytest.raises(AttributeError):
-            result.mean_dist
+            result.mean_dist  # noqa: B018
 
     def test_solve(self):
         self.k_nearest_pmedian.solve(self.solver)
