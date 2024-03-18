@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -8,7 +7,6 @@ import sphinx_bootstrap_theme
 
 # import your package to obtain the version info to display on the docs website
 import spopt
-
 
 # -- General configuration ------------------------------------------------
 
@@ -46,7 +44,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "spopt"
-copyright = "2020-, pysal developers"
+copyright = "2020-, pysal developers"  # noqa: A001
 author = "pysal developers"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -85,7 +83,8 @@ html_theme = "bootstrap"
 html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 html_title = f"{project} v{version} Manual"
 
-# (Optional) Logo of your package. Should be small enough to fit the navbar (ideally 24x24).
+# (Optional) Logo of your package.
+# Should be small enough to fit the navbar (ideally 24x24).
 # Path should be relative to the ``_static`` files directory.
 # html_logo = "_static/images/package_logo.jpg"
 
@@ -299,7 +298,7 @@ nbsphinx_prolog = r"""
     \nbsphinxstartnotebook{\scriptsize\noindent\strut
     \textcolor{gray}{The following section was generated from
     \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
-"""
+"""  # noqa: E501
 
 # This is processed by Jinja2 and inserted after each notebook
 nbsphinx_epilog = r"""

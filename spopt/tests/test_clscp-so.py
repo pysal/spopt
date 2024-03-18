@@ -1,11 +1,10 @@
+# ruff: noqa: N999
+
 import numpy
-import geopandas
 import pulp
-import spaghetti
+import pytest
 
 from spopt.locate import LSCP
-from spopt.locate.util import simulated_geo_points
-import pytest
 
 
 class TestSyntheticLocate:

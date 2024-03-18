@@ -1,11 +1,10 @@
-import libpysal
 import geopandas
+import libpysal
 import networkx
 import numpy
 import pytest
 
 import spopt.region.util as util
-
 
 RANDOM_STATE = 123456
 
@@ -81,7 +80,7 @@ class TestRegionUtil:
         observed = util.dict_from_graph_attr(graph, "test_data")
         assert observed == desired
 
-        desired_array = dict()
+        desired_array = {}
         for node in data_dict:
             desired_array[node] = numpy.array(data_dict[node])
         observed = util.dict_from_graph_attr(graph, "test_data", array_values=True)

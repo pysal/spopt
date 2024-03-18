@@ -2,11 +2,9 @@ import geopandas
 import libpysal
 import numpy
 import pytest
-
 from packaging.version import Version
 
 from spopt.region import RandomRegion, RandomRegions
-
 
 # see gh:spopt#437
 LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")
@@ -174,7 +172,7 @@ class TestRandomRegionSynthetic:
     def test_random_regions_error_contig(self):
         with pytest.raises(ValueError, match="Order of `area_ids`"):
 
-            class _shell_w_:
+            class _shell_w_:  # noqa: N801
                 def __init__(self):
                     self.id_order = [1, 0]
 

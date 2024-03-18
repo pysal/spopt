@@ -1,18 +1,16 @@
-import numpy
+import os
+import pickle
+import warnings
+
 import geopandas
+import numpy
 import pandas
 import pulp
-import spaghetti
+import pytest
 from shapely.geometry import Point, Polygon
 
 from spopt.locate import LSCPB
 from spopt.locate.base import FacilityModelBuilder
-from spopt.locate.util import simulated_geo_points
-
-import os
-import pickle
-import warnings
-import pytest
 
 
 class TestSyntheticLocate:
@@ -47,11 +45,11 @@ class TestSyntheticLocate:
         assert isinstance(result, LSCPB)
 
         with pytest.raises(AttributeError):
-            result.cli2fac
+            result.cli2fac  # noqa: B018
         with pytest.raises(AttributeError):
-            result.fac2cli
+            result.fac2cli  # noqa: B018
         with pytest.raises(AttributeError):
-            result.backup_perc
+            result.backup_perc  # noqa: B018
 
     def test_lscpb_facility_client_array_from_cost_matrix(self):
         with open(self.dirpath + "lscpb_fac2cli.pkl", "rb") as f:
@@ -278,18 +276,20 @@ class TestErrorsWarnings:
             self.gdf_dem_buffered["geometry"] = self.gdf_dem.buffer(2)
 
     def test_error_lscpb_different_crs(self):
-        with pytest.warns(
-            UserWarning, match="Facility geodataframe contains mixed type"
+        with (
+            pytest.warns(
+                UserWarning, match="Facility geodataframe contains mixed type"
+            ),
+            pytest.raises(ValueError, match="Geodataframes crs are different: "),
         ):
-            with pytest.raises(ValueError, match="Geodataframes crs are different: "):
-                LSCPB.from_geodataframe(
-                    self.gdf_dem_crs,
-                    self.gdf_fac,
-                    "geometry",
-                    "geometry",
-                    10,
-                    pulp.PULP_CBC_CMD(msg=False),
-                )
+            LSCPB.from_geodataframe(
+                self.gdf_dem_crs,
+                self.gdf_fac,
+                "geometry",
+                "geometry",
+                10,
+                pulp.PULP_CBC_CMD(msg=False),
+            )
 
     def test_warning_lscpb_demand_geodataframe(self):
         with pytest.warns(UserWarning, match="Demand geodataframe contains mixed type"):

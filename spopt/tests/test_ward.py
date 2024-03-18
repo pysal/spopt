@@ -1,11 +1,9 @@
 import geopandas
 import libpysal
 import numpy
-
 from packaging.version import Version
 
 from spopt.region import WardSpatial
-
 
 # see gh:spopt#437
 LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")

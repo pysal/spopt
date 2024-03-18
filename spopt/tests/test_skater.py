@@ -2,13 +2,11 @@ import geopandas
 import libpysal
 import numpy
 import pytest
+from packaging.version import Version
 from scipy.optimize import OptimizeWarning
 from sklearn.metrics import pairwise as skm
 
-from packaging.version import Version
-
 from spopt.region import Skater
-
 
 # see gh:spopt#437
 LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")
@@ -98,15 +96,20 @@ class TestSkater:
         self.mexico["count"] = 1
         args = self.mexico, self.w_mexico, self.default_attrs_mexico
         n_clusters, floor, trace, islands = 10, 3, True, "ignore"
-        kws = dict(n_clusters=n_clusters, floor=floor, trace=trace, islands=islands)
-        sfkws = dict(
-            dissimilarity=skm.manhattan_distances,
-            affinity=None,
-            reduction=numpy.sum,
-            center=numpy.mean,
-            verbose=2,
-        )
-        kws.update(dict(spanning_forest_kwds=sfkws))
+        kws = {
+            "n_clusters": n_clusters,
+            "floor": floor,
+            "trace": trace,
+            "islands": islands,
+        }
+        sfkws = {
+            "dissimilarity": skm.manhattan_distances,
+            "affinity": None,
+            "reduction": numpy.sum,
+            "center": numpy.mean,
+            "verbose": 2,
+        }
+        kws.update({"spanning_forest_kwds": sfkws})
         numpy.random.seed(RANDOM_STATE)
         model = Skater(*args, **kws)
         model.solve()
@@ -119,9 +122,14 @@ class TestSkater:
         self.columbus["count"] = 1
         args = self.columbus, self.w_columbus, self.attrs_columbus
         n_clusters, floor, trace, islands = 10, 5, True, "increase"
-        kws = dict(n_clusters=n_clusters, floor=floor, trace=trace, islands=islands)
-        sfkws = dict(dissimilarity=skm.euclidean_distances)
-        kws.update(dict(spanning_forest_kwds=sfkws))
+        kws = {
+            "n_clusters": n_clusters,
+            "floor": floor,
+            "trace": trace,
+            "islands": islands,
+        }
+        sfkws = {"dissimilarity": skm.euclidean_distances}
+        kws.update({"spanning_forest_kwds": sfkws})
         numpy.random.seed(RANDOM_STATE)
         model = Skater(*args, **kws)
         with pytest.warns(OptimizeWarning, match="MSF contains no valid moves after"):
@@ -136,9 +144,14 @@ class TestSkater:
             self.columbus["count"] = 1
             args = self.columbus, self.w_columbus, self.attrs_columbus
             n_clusters, floor, trace, islands = 10, 10, True, "increase"
-            kws = dict(n_clusters=n_clusters, floor=floor, trace=trace, islands=islands)
-            sfkws = dict(dissimilarity=skm.euclidean_distances)
-            kws.update(dict(spanning_forest_kwds=sfkws))
+            kws = {
+                "n_clusters": n_clusters,
+                "floor": floor,
+                "trace": trace,
+                "islands": islands,
+            }
+            sfkws = {"dissimilarity": skm.euclidean_distances}
+            kws.update({"spanning_forest_kwds": sfkws})
             numpy.random.seed(RANDOM_STATE)
             model = Skater(*args, **kws)
             with pytest.warns(
@@ -152,14 +165,19 @@ class TestSkater:
         self.columbus["count"] = 1
         args = self.columbus, self.w_columbus, self.attrs_columbus
         n_clusters, floor, trace, islands = 4, 2, False, "ignore"
-        kws = dict(n_clusters=n_clusters, floor=floor, trace=trace, islands=islands)
-        sfkws = dict(
-            dissimilarity=None,
-            affinity=skm.cosine_distances,
-            reduction=numpy.sum,
-            center=numpy.std,
-        )
-        kws.update(dict(spanning_forest_kwds=sfkws))
+        kws = {
+            "n_clusters": n_clusters,
+            "floor": floor,
+            "trace": trace,
+            "islands": islands,
+        }
+        sfkws = {
+            "dissimilarity": None,
+            "affinity": skm.cosine_distances,
+            "reduction": numpy.sum,
+            "center": numpy.std,
+        }
+        kws.update({"spanning_forest_kwds": sfkws})
         numpy.random.seed(RANDOM_STATE)
         model = Skater(*args, **kws)
         with pytest.warns(RuntimeWarning, match="divide by zero encountered in log"):

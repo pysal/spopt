@@ -1,7 +1,6 @@
-import libpysal
 import geopandas
+import libpysal
 import numpy
-
 from packaging.version import Version
 
 from spopt.region import AZP

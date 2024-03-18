@@ -1,24 +1,19 @@
-from spopt.locate.base import FacilityModelBuilder
-import numpy
-import geopandas
-import pandas
-import pulp
-import spaghetti
-from shapely.geometry import Point, Polygon
-
-from spopt.locate import PCenter
-from spopt.locate.util import simulated_geo_points
 import os
 import pickle
 import platform
-import pytest
 import warnings
 
-operating_system = platform.platform()[:7].lower()
-if operating_system == "windows":
-    WINDOWS = True
-else:
-    WINDOWS = False
+import geopandas
+import numpy
+import pandas
+import pulp
+import pytest
+from shapely.geometry import Point, Polygon
+
+from spopt.locate import PCenter
+from spopt.locate.base import FacilityModelBuilder
+
+WINDOWS = platform.platform()[:7].lower() == "windows"
 
 
 class TestSyntheticLocate:
@@ -44,9 +39,9 @@ class TestSyntheticLocate:
         assert isinstance(result, PCenter)
 
         with pytest.raises(AttributeError):
-            result.cli2fac
+            result.cli2fac  # noqa: B018
         with pytest.raises(AttributeError):
-            result.fac2cli
+            result.fac2cli  # noqa: B018
 
     def test_pcenter_facility_client_array_from_cost_matrix(self):
         with open(self.dirpath + "pcenter_fac2cli.pkl", "rb") as f:
@@ -260,13 +255,15 @@ class TestErrorsWarnings:
             )
 
     def test_error_pcenter_different_crs(self):
-        with pytest.warns(
-            UserWarning, match="Facility geodataframe contains mixed type"
+        with (
+            pytest.warns(
+                UserWarning, match="Facility geodataframe contains mixed type"
+            ),
+            pytest.raises(ValueError, match="Geodataframes crs are different: "),
         ):
-            with pytest.raises(ValueError, match="Geodataframes crs are different: "):
-                PCenter.from_geodataframe(
-                    self.gdf_dem_crs, self.gdf_fac, "geometry", "geometry", 2
-                )
+            PCenter.from_geodataframe(
+                self.gdf_dem_crs, self.gdf_fac, "geometry", "geometry", 2
+            )
 
     def test_warning_pcenter_demand_geodataframe(self):
         with pytest.warns(UserWarning, match="Demand geodataframe contains mixed type"):

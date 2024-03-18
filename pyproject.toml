@@ -81,10 +81,9 @@ include = ["spopt", "spopt.*"]
 
 [tool.ruff]
 line-length = 88
-select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
-exclude = ["spopt/tests/*", "docs/*"]
+lint.select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
  "*__init__.py" = [
      "F401",  # imported but unused
      "F403",  # star import; unable to detect undefined names
