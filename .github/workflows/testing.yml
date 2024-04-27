@@ -76,7 +76,7 @@
            pytest spopt \
            -v \
            -r a \
-           -n auto \
+           -n logical \
            --color yes \
            --cov spopt \
            --cov-append \
