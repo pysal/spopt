@@ -1,19 +1,15 @@
 import os
 import pickle
-import platform
-import warnings
 
 import geopandas
 import numpy
 import pandas
 import pulp
 import pytest
-from shapely.geometry import Point, Polygon
+from shapely import Point, Polygon
 
 from spopt.locate import PMedian
 from spopt.locate.base import FacilityModelBuilder
-
-WINDOWS = platform.platform()[:7].lower() == "windows"
 
 
 class TestSyntheticLocate:
@@ -205,9 +201,9 @@ class TestRealWorldLocate:
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         assert pmedian.problem.status == pulp.LpStatusOptimal
 
-    def test_infeasibility_pmedian_from_cost_matrix(self):
+    def test_infeasibility_pmedian_from_cost_matrix(self, loc_raises_infeasible):
         pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, 0)
-        with pytest.raises(RuntimeError, match="Model is not solved: Infeasible."):
+        with loc_raises_infeasible:
             pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
 
     def test_mixin_mean_distance(self):
@@ -229,7 +225,7 @@ class TestRealWorldLocate:
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         assert pmedian.problem.status == pulp.LpStatusOptimal
 
-    def test_infeasibility_pmedian_from_geodataframe(self):
+    def test_infeasibility_pmedian_from_geodataframe(self, loc_raises_infeasible):
         pmedian = PMedian.from_geodataframe(
             self.demand_points_gdf,
             self.facility_points_gdf,
@@ -238,12 +234,13 @@ class TestRealWorldLocate:
             "POP2000",
             0,
         )
-        with pytest.raises(RuntimeError, match="Model is not solved: Infeasible."):
+        with loc_raises_infeasible:
             pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
 
 
 class TestErrorsWarnings:
-    def setup_method(self) -> None:
+    @pytest.fixture(autouse=True)
+    def setup_method(self, loc_warns_geo_crs) -> None:
         pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
         pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
         pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])
@@ -258,12 +255,7 @@ class TestErrorsWarnings:
         self.gdf_dem_crs = self.gdf_dem.to_crs("EPSG:3857")
 
         self.gdf_dem_buffered = self.gdf_dem.copy()
-        with warnings.catch_warnings():
-            warnings.filterwarnings(
-                "ignore",
-                category=UserWarning,
-                message="Geometry is in a geographic CRS",
-            )
+        with loc_warns_geo_crs:
             self.gdf_dem_buffered["geometry"] = self.gdf_dem.buffer(2)
 
     def test_attribute_error_add_assignment_constraint(self):
@@ -284,19 +276,18 @@ class TestErrorsWarnings:
                 dummy_class, dummy_range, dummy_range
             )
 
-    def test_error_pmedian_different_crs(self):
-        with (
-            pytest.warns(
-                UserWarning, match="Facility geodataframe contains mixed type"
-            ),
-            pytest.raises(ValueError, match="Geodataframes crs are different: "),
-        ):
+    def test_error_pmedian_different_crs(
+        self, loc_warns_mixed_type_fac, loc_warns_geo_crs, loc_raises_diff_crs
+    ):
+        with loc_warns_mixed_type_fac, loc_warns_geo_crs, loc_raises_diff_crs:
             PMedian.from_geodataframe(
                 self.gdf_dem_crs, self.gdf_fac, "geometry", "geometry", "weight", 2
             )
 
-    def test_warning_pmedian_demand_geodataframe(self):
-        with pytest.warns(UserWarning, match="Demand geodataframe contains mixed type"):
+    def test_warning_pmedian_demand_geodataframe(
+        self, loc_warns_mixed_type_dem, loc_warns_mixed_type_fac, loc_warns_geo_crs
+    ):
+        with loc_warns_mixed_type_dem, loc_warns_mixed_type_fac, loc_warns_geo_crs:
             PMedian.from_geodataframe(
                 self.gdf_dem_buffered, self.gdf_fac, "geometry", "geometry", "weight", 2
             )

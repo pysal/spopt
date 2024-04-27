@@ -132,7 +132,12 @@ class TestSkater:
         kws.update({"spanning_forest_kwds": sfkws})
         numpy.random.seed(RANDOM_STATE)
         model = Skater(*args, **kws)
-        with pytest.warns(OptimizeWarning, match="MSF contains no valid moves after"):
+        with (
+            pytest.warns(OptimizeWarning, match="MSF contains no valid moves after"),
+            pytest.warns(
+                OptimizeWarning, match="By default, the graph is disconnected!"
+            ),
+        ):
             model.solve()
 
         numpy.testing.assert_equal(model.labels_, self.columbus_labels_1)

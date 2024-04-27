@@ -101,3 +101,28 @@ def network_instance():
         return clients_snapped, facilities_snapped, cost_matrix
 
     return _network_instance
+
+
+@pytest.fixture
+def loc_warns_geo_crs():
+    return pytest.warns(UserWarning, match="Geometry is in a geographic CRS")
+
+
+@pytest.fixture
+def loc_warns_mixed_type_dem():
+    return pytest.warns(UserWarning, match="Demand geodataframe contains mixed type")
+
+
+@pytest.fixture
+def loc_warns_mixed_type_fac():
+    return pytest.warns(UserWarning, match="Facility geodataframe contains mixed type")
+
+
+@pytest.fixture
+def loc_raises_diff_crs():
+    return pytest.raises(ValueError, match="Geodataframes crs are different: ")
+
+
+@pytest.fixture
+def loc_raises_infeasible():
+    return pytest.raises(RuntimeError, match="Model is not solved: Infeasible.")

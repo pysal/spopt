@@ -1,6 +1,6 @@
 import geopandas
 import numpy
-from shapely.geometry import MultiPolygon, Point, Polygon
+from shapely import MultiPolygon, Point, Polygon
 
 
 def simulated_geo_points(
@@ -17,7 +17,7 @@ def simulated_geo_points(
     Parameters
     ----------
 
-    in_data : geopandas.GeoDataFrame, shapely.geometry.{Polygon, MultiPolygon}
+    in_data : geopandas.GeoDataFrame, shapely.{Polygon, MultiPolygon}
         The areal unit in which to generate points.
     needed : int (default 1)
         The number of points to generate.

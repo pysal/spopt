@@ -94,7 +94,7 @@ class TestSyntheticLocate:
                 demand_quantity_arr=demand_quantity,
             )
 
-    def test_clscpso_infease_error(self):
+    def test_clscpso_infease_error(self, loc_raises_infeasible):
         service_radius = 1
         facility_capacity = numpy.array([5, 15])
         demand_quantity = numpy.arange(1, 6)
@@ -104,5 +104,5 @@ class TestSyntheticLocate:
             facility_capacity_arr=facility_capacity,
             demand_quantity_arr=demand_quantity,
         )
-        with pytest.raises(RuntimeError, match="Model is not solved:"):
+        with loc_raises_infeasible:
             clscpso.solve(pulp.PULP_CBC_CMD(msg=False))

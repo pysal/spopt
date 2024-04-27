@@ -1,17 +1,14 @@
 import os
-import platform
 
 import geopandas
 import numpy
 import pandas
 import pulp
 import pytest
-from shapely.geometry import Polygon
+from shapely import Polygon
 
 from spopt.locate import PDispersion
 from spopt.locate.base import FacilityModelBuilder
-
-WINDOWS = platform.platform()[:7].lower() == "windows"
 
 
 class TestSyntheticLocate:
@@ -117,9 +114,9 @@ class TestRealWorldLocate:
         ]
         assert known_solution_set == observed_solution_set
 
-    def test_infeasibility_p_dispersion_from_cost_matrix(self):
+    def test_infeasibility_p_dispersion_from_cost_matrix(self, loc_raises_infeasible):
         pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, 17)
-        with pytest.raises(RuntimeError, match="Model is not solved:"):
+        with loc_raises_infeasible:
             pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
 
     def test_optimality_p_dispersion_from_geodataframe(self):
@@ -137,13 +134,13 @@ class TestRealWorldLocate:
         ]
         assert known_solution_set == observed_solution_set
 
-    def test_infeasibility_p_dispersion_from_geodataframe(self):
+    def test_infeasibility_p_dispersion_from_geodataframe(self, loc_raises_infeasible):
         pdispersion = PDispersion.from_geodataframe(
             self.facility_points_gdf,
             "geometry",
             17,
         )
-        with pytest.raises(RuntimeError, match="Model is not solved:"):
+        with loc_raises_infeasible:
             pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
 
 
@@ -183,8 +180,8 @@ class TestErrorsWarnings:
             dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
             FacilityModelBuilder.add_facility_constraint(dummy_class, dummy_matrix)
 
-    def test_warning_facility_geodataframe(self):
-        with pytest.warns(
-            UserWarning, match="Facility geodataframe contains mixed type"
-        ):
+    def test_warning_facility_geodataframe(
+        self, loc_warns_mixed_type_fac, loc_warns_geo_crs
+    ):
+        with loc_warns_mixed_type_fac, loc_warns_geo_crs:
             PDispersion.from_geodataframe(self.gdf_fac, "geometry", 1)
