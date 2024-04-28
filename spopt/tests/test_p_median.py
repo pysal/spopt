@@ -1,9 +1,5 @@
-import os
-import pickle
-
 import geopandas
 import numpy
-import pandas
 import pulp
 import pytest
 from shapely import Point, Polygon
@@ -15,8 +11,6 @@ from spopt.locate.base import FacilityModelBuilder
 class TestSyntheticLocate:
     @pytest.fixture(autouse=True)
     def setup_method(self, network_instance) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
-
         client_count, facility_count = 100, 5
         (
             self.clients_snapped,
@@ -45,9 +39,8 @@ class TestSyntheticLocate:
         with pytest.raises(AttributeError):
             result.mean_dist  # noqa: B018
 
-    def test_pmedian_facility_client_array_from_cost_matrix(self):
-        with open(self.dirpath + "pmedian_fac2cli.pkl", "rb") as f:
-            pmedian_objective = pickle.load(f)
+    def test_pmedian_facility_client_array_from_cost_matrix(self, load_test_data):
+        pmedian_objective = load_test_data("pmedian_fac2cli.pkl")
 
         pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -57,9 +50,8 @@ class TestSyntheticLocate:
             numpy.array(pmedian_objective, dtype=object),
         )
 
-    def test_pmedian_client_facility_array_from_cost_matrix(self):
-        with open(self.dirpath + "pmedian_cli2fac.pkl", "rb") as f:
-            pmedian_objective = pickle.load(f)
+    def test_pmedian_client_facility_array_from_cost_matrix(self, load_test_data):
+        pmedian_objective = load_test_data("pmedian_cli2fac.pkl")
 
         pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -81,9 +73,8 @@ class TestSyntheticLocate:
         result = p_median.solve(pulp.PULP_CBC_CMD(msg=False))
         assert isinstance(result, PMedian)
 
-    def test_pmedian_facility_client_array_from_geodataframe(self):
-        with open(self.dirpath + "pmedian_geodataframe_fac2cli.pkl", "rb") as f:
-            pmedian_objective = pickle.load(f)
+    def test_pmedian_facility_client_array_from_geodataframe(self, load_test_data):
+        pmedian_objective = load_test_data("pmedian_geodataframe_fac2cli.pkl")
 
         pmedian = PMedian.from_geodataframe(
             self.clients_snapped,
@@ -100,9 +91,8 @@ class TestSyntheticLocate:
             numpy.array(pmedian_objective, dtype=object),
         )
 
-    def test_pmedian_client_facility_array_from_geodataframe(self):
-        with open(self.dirpath + "pmedian_geodataframe_cli2fac.pkl", "rb") as f:
-            pmedian_objective = pickle.load(f)
+    def test_pmedian_client_facility_array_from_geodataframe(self, load_test_data):
+        pmedian_objective = load_test_data("pmedian_geodataframe_cli2fac.pkl")
 
         pmedian = PMedian.from_geodataframe(
             self.clients_snapped,
@@ -152,11 +142,10 @@ class TestSyntheticLocate:
 
 
 class TestRealWorldLocate:
-    def setup_method(self) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
-        network_distance = pandas.read_csv(
-            self.dirpath
-            + "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
+    @pytest.fixture(autouse=True)
+    def setup_method(self, load_test_data) -> None:
+        network_distance = load_test_data(
+            "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
         )
 
         ntw_dist_piv = network_distance.pivot_table(
@@ -165,10 +154,8 @@ class TestRealWorldLocate:
 
         self.cost_matrix = ntw_dist_piv.to_numpy()
 
-        demand_points = pandas.read_csv(
-            self.dirpath + "SF_demand_205_centroid_uniform_weight.csv"
-        )
-        facility_points = pandas.read_csv(self.dirpath + "SF_store_site_16_longlat.csv")
+        demand_points = load_test_data("SF_demand_205_centroid_uniform_weight.csv")
+        facility_points = load_test_data("SF_store_site_16_longlat.csv")
 
         self.facility_points_gdf = (
             geopandas.GeoDataFrame(

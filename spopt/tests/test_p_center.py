@@ -1,9 +1,5 @@
-import os
-import pickle
-
 import geopandas
 import numpy
-import pandas
 import pulp
 import pytest
 from shapely import Point, Polygon
@@ -15,8 +11,6 @@ from spopt.locate.base import FacilityModelBuilder
 class TestSyntheticLocate:
     @pytest.fixture(autouse=True)
     def setup_method(self, network_instance) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
-
         client_count, facility_count = 100, 5
         (
             self.clients_snapped,
@@ -39,27 +33,14 @@ class TestSyntheticLocate:
         with pytest.raises(AttributeError):
             result.fac2cli  # noqa: B018
 
-    def test_pcenter_facility_client_array_from_cost_matrix(self):
-        with open(self.dirpath + "pcenter_fac2cli.pkl", "rb") as f:
-            pcenter_objective = pickle.load(f)
+    def test_pcenter_facility_client_array_from_cost_matrix(self, load_test_data):
+        pcenter_objective = load_test_data("pcenter_fac2cli.pkl")
 
         pcenter = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(pcenter.fac2cli, dtype=object),
-            numpy.array(pcenter_objective, dtype=object),
-        )
-
-    def test_pcenter_client_facility_array_from_cost_matrix(self):
-        with open(self.dirpath + "pcenter_cli2fac.pkl", "rb") as f:
-            pcenter_objective = pickle.load(f)
-
-        pcenter = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
-
-        numpy.testing.assert_array_equal(
-            numpy.array(pcenter.cli2fac, dtype=object),
             numpy.array(pcenter_objective, dtype=object),
         )
 
@@ -74,9 +55,8 @@ class TestSyntheticLocate:
         result = p_center.solve(pulp.PULP_CBC_CMD(msg=False))
         assert isinstance(result, PCenter)
 
-    def test_pcenter_facility_client_array_from_geodataframe(self):
-        with open(self.dirpath + "pcenter_geodataframe_fac2cli.pkl", "rb") as f:
-            pcenter_objective = pickle.load(f)
+    def test_pcenter_facility_client_array_from_geodataframe(self, load_test_data):
+        pcenter_objective = load_test_data("pcenter_geodataframe_fac2cli.pkl")
 
         pcenter = PCenter.from_geodataframe(
             self.clients_snapped,
@@ -92,9 +72,8 @@ class TestSyntheticLocate:
             numpy.array(pcenter_objective, dtype=object),
         )
 
-    def test_pcenter_client_facility_array_from_geodataframe(self):
-        with open(self.dirpath + "pcenter_geodataframe_cli2fac.pkl", "rb") as f:
-            pcenter_objective = pickle.load(f)
+    def test_pcenter_client_facility_array_from_geodataframe(self, load_test_data):
+        pcenter_objective = load_test_data("pcenter_geodataframe_cli2fac.pkl")
 
         pcenter = PCenter.from_geodataframe(
             self.clients_snapped,
@@ -138,11 +117,10 @@ class TestSyntheticLocate:
 
 
 class TestRealWorldLocate:
-    def setup_method(self) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
-        network_distance = pandas.read_csv(
-            self.dirpath
-            + "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
+    @pytest.fixture(autouse=True)
+    def setup_method(self, load_test_data) -> None:
+        network_distance = load_test_data(
+            "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
         )
 
         ntw_dist_piv = network_distance.pivot_table(
@@ -151,10 +129,8 @@ class TestRealWorldLocate:
 
         self.cost_matrix = ntw_dist_piv.to_numpy()
 
-        demand_points = pandas.read_csv(
-            self.dirpath + "SF_demand_205_centroid_uniform_weight.csv"
-        )
-        facility_points = pandas.read_csv(self.dirpath + "SF_store_site_16_longlat.csv")
+        demand_points = load_test_data("SF_demand_205_centroid_uniform_weight.csv")
+        facility_points = load_test_data("SF_store_site_16_longlat.csv")
 
         self.facility_points_gdf = (
             geopandas.GeoDataFrame(

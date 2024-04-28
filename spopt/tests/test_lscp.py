@@ -1,9 +1,5 @@
-import os
-import pickle
-
 import geopandas
 import numpy
-import pandas
 import pulp
 import pytest
 from shapely import Point, Polygon
@@ -15,8 +11,6 @@ from spopt.locate.base import FacilityModelBuilder
 class TestSyntheticLocate:
     @pytest.fixture(autouse=True)
     def setup_method(self, network_instance) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
-
         client_count, facility_count = 100, 5
         (
             self.clients_snapped,
@@ -39,9 +33,8 @@ class TestSyntheticLocate:
         with pytest.raises(AttributeError):
             result.fac2cli  # noqa: B018
 
-    def test_lscp_facility_client_array_from_cost_matrix(self):
-        with open(self.dirpath + "lscp_fac2cli.pkl", "rb") as f:
-            lscp_objective = pickle.load(f)
+    def test_lscp_facility_client_array_from_cost_matrix(self, load_test_data):
+        lscp_objective = load_test_data("lscp_fac2cli.pkl")
 
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 8)
         lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -51,9 +44,8 @@ class TestSyntheticLocate:
             numpy.array(lscp_objective, dtype=object),
         )
 
-    def test_lscp_client_facility_array_from_cost_matrix(self):
-        with open(self.dirpath + "lscp_cli2fac.pkl", "rb") as f:
-            lscp_objective = pickle.load(f)
+    def test_lscp_client_facility_array_from_cost_matrix(self, load_test_data):
+        lscp_objective = load_test_data("lscp_cli2fac.pkl")
 
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 8)
         lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -70,9 +62,8 @@ class TestSyntheticLocate:
         result = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
         assert isinstance(result, LSCP)
 
-    def test_lscp_facility_client_array_from_geodataframe(self):
-        with open(self.dirpath + "lscp_geodataframe_fac2cli.pkl", "rb") as f:
-            lscp_objective = pickle.load(f)
+    def test_lscp_facility_client_array_from_geodataframe(self, load_test_data):
+        lscp_objective = load_test_data("lscp_geodataframe_fac2cli.pkl")
 
         lscp = LSCP.from_geodataframe(
             self.clients_snapped,
@@ -88,9 +79,8 @@ class TestSyntheticLocate:
             numpy.array(lscp_objective, dtype=object),
         )
 
-    def test_lscp_client_facility_array_from_geodataframe(self):
-        with open(self.dirpath + "lscp_geodataframe_cli2fac.pkl", "rb") as f:
-            lscp_objective = pickle.load(f)
+    def test_lscp_client_facility_array_from_geodataframe(self, load_test_data):
+        lscp_objective = load_test_data("lscp_geodataframe_cli2fac.pkl")
 
         lscp = LSCP.from_geodataframe(
             self.clients_snapped,
@@ -106,11 +96,10 @@ class TestSyntheticLocate:
             numpy.array(lscp_objective, dtype=object),
         )
 
-    def test_lscp_preselected_facility_client_array_from_geodataframe(self):
-        with open(
-            self.dirpath + "lscp_preselected_loc_geodataframe_fac2cli.pkl", "rb"
-        ) as f:
-            lscp_objective = pickle.load(f)
+    def test_lscp_preselected_facility_client_array_from_geodataframe(
+        self, load_test_data
+    ):
+        lscp_objective = load_test_data("lscp_preselected_loc_geodataframe_fac2cli.pkl")
 
         fac_snapped = self.facilities_snapped.copy()
 
@@ -133,11 +122,10 @@ class TestSyntheticLocate:
 
 
 class TestRealWorldLSCP:
-    def setup_method(self) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
-        network_distance = pandas.read_csv(
-            self.dirpath
-            + "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
+    @pytest.fixture(autouse=True)
+    def setup_method(self, load_test_data) -> None:
+        network_distance = load_test_data(
+            "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
         )
 
         ntw_dist_piv = network_distance.pivot_table(
@@ -146,10 +134,8 @@ class TestRealWorldLSCP:
 
         self.cost_matrix = ntw_dist_piv.to_numpy()
 
-        demand_points = pandas.read_csv(
-            self.dirpath + "SF_demand_205_centroid_uniform_weight.csv"
-        )
-        facility_points = pandas.read_csv(self.dirpath + "SF_store_site_16_longlat.csv")
+        demand_points = load_test_data("SF_demand_205_centroid_uniform_weight.csv")
+        facility_points = load_test_data("SF_store_site_16_longlat.csv")
 
         self.facility_points_gdf = (
             geopandas.GeoDataFrame(

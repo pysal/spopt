@@ -1,5 +1,4 @@
 # ruff: noqa: N999
-
 import numpy
 import pulp
 import pytest

@@ -1,8 +1,5 @@
-import os
-
 import geopandas
 import numpy
-import pandas
 import pulp
 import pytest
 from shapely import Polygon
@@ -14,8 +11,6 @@ from spopt.locate.base import FacilityModelBuilder
 class TestSyntheticLocate:
     @pytest.fixture(autouse=True)
     def setup_method(self, network_instance) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
-
         client_count, facility_count = None, 5
         _, self.facilities_snapped, self.cost_matrix = network_instance(
             client_count, facility_count
@@ -74,11 +69,10 @@ class TestSyntheticLocate:
 
 
 class TestRealWorldLocate:
-    def setup_method(self) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
-        network_distance = pandas.read_csv(
-            self.dirpath
-            + "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
+    @pytest.fixture(autouse=True)
+    def setup_method(self, load_test_data) -> None:
+        network_distance = load_test_data(
+            "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
         )
 
         ntw_dist_piv = network_distance.pivot_table(
@@ -87,7 +81,7 @@ class TestRealWorldLocate:
 
         self.cost_matrix = ntw_dist_piv.to_numpy()
 
-        facility_points = pandas.read_csv(self.dirpath + "SF_store_site_16_longlat.csv")
+        facility_points = load_test_data("SF_store_site_16_longlat.csv")
 
         self.facility_points_gdf = (
             geopandas.GeoDataFrame(
