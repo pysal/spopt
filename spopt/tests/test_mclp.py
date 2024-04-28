@@ -361,8 +361,8 @@ class TestErrorsWarnings:
         with loc_warns_geo_crs:
             self.gdf_dem_buffered["geometry"] = self.gdf_dem.buffer(2)
 
-    def test_attribute_error_add_facility_constraint(self):
-        with pytest.raises(AttributeError, match="Before setting facility constraint"):
+    def test_attribute_error_add_facility_constraint(self, loc_raises_fac_constr):
+        with loc_raises_fac_constr:
             dummy_class = MCLP("dummy", pulp.LpProblem("name"))
             dummy_p_facility = 1
             FacilityModelBuilder.add_facility_constraint(dummy_class, dummy_p_facility)

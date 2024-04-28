@@ -158,3 +158,9 @@ def loc_raises_diff_crs() -> _pytest.python_api.RaisesContext:
 def loc_raises_infeasible() -> _pytest.python_api.RaisesContext:
     """`locate` error"""
     return pytest.raises(RuntimeError, match="Model is not solved: Infeasible.")
+
+
+@pytest.fixture
+def loc_raises_fac_constr() -> _pytest.python_api.RaisesContext:
+    """`locate` error"""
+    return pytest.raises(AttributeError, match="Before setting facility constraint")

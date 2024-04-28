@@ -147,8 +147,8 @@ class TestErrorsWarnings:
 
         self.gdf_fac = geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
 
-    def test_attribute_error_add_facility_constraint(self):
-        with pytest.raises(AttributeError, match="Before setting facility constraint"):
+    def test_attribute_error_add_facility_constraint(self, loc_raises_fac_constr):
+        with loc_raises_fac_constr:
             dummy_p_facility = 1
             dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
             FacilityModelBuilder.add_facility_constraint(dummy_class, dummy_p_facility)
@@ -167,8 +167,10 @@ class TestErrorsWarnings:
                 dummy_range,
             )
 
-    def test_attribute_error_add_predefined_facility_constraint(self):
-        with pytest.raises(AttributeError, match="Before setting facility constraint"):
+    def test_attribute_error_add_predefined_facility_constraint(
+        self, loc_raises_fac_constr
+    ):
+        with loc_raises_fac_constr:
             dummy_p_facility = 1
             dummy_matrix = numpy.array([])
             dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
