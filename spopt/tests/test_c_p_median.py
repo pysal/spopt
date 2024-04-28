@@ -3,9 +3,7 @@ import pulp
 import pytest
 
 from spopt.locate import PMedian
-from spopt.locate.base import (
-    SpecificationError,
-)
+from spopt.locate.base import SpecificationError
 
 
 class TestSyntheticLocate:

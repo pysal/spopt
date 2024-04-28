@@ -130,10 +130,13 @@ def network_instance():
     return _network_instance
 
 
+_warns_geo_crs = pytest.warns(UserWarning, match="Geometry is in a geographic CRS")
+
+
 @pytest.fixture
 def loc_warns_geo_crs() -> _pytest.recwarn.WarningsChecker:
     """`locate` warning"""
-    return pytest.warns(UserWarning, match="Geometry is in a geographic CRS")
+    return _warns_geo_crs
 
 
 @pytest.fixture
@@ -164,3 +167,38 @@ def loc_raises_infeasible() -> _pytest.python_api.RaisesContext:
 def loc_raises_fac_constr() -> _pytest.python_api.RaisesContext:
     """`locate` error"""
     return pytest.raises(AttributeError, match="Before setting facility constraint")
+
+
+@pytest.fixture
+def toy_fac_data() -> geopandas.GeoDataFrame:
+    """Toy facility data used in ``locate`` error & warning tests."""
+    pol1 = shapely.Polygon([(0, 0), (1, 0), (1, 1)])
+    pol2 = shapely.Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
+    pol3 = shapely.Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])
+    polygon_dict = {"geometry": [pol1, pol2, pol3]}
+
+    return geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
+
+
+@pytest.fixture
+def toy_dem_data() -> (
+    tuple[geopandas.GeoDataFrame, geopandas.GeoDataFrame, geopandas.GeoDataFrame]
+):
+    """Toy demand data used in ``locate`` error & warning tests."""
+
+    point = shapely.Point(10, 10)
+    point_dict = {"weight": 4, "geometry": [point]}
+
+    gdf_dem = geopandas.GeoDataFrame(point_dict, crs="EPSG:4326")
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", message="Conversion of an array with ndim > 0"
+        )
+        gdf_dem_crs = gdf_dem.to_crs("EPSG:3857")
+
+    gdf_dem_buffered = gdf_dem.copy()
+    with _warns_geo_crs:
+        gdf_dem_buffered["geometry"] = gdf_dem.buffer(2)
+
+    return gdf_dem, gdf_dem_crs, gdf_dem_buffered

@@ -2,7 +2,6 @@ import geopandas
 import numpy
 import pulp
 import pytest
-from shapely import Polygon
 
 from spopt.locate import PDispersion
 from spopt.locate.base import FacilityModelBuilder
@@ -139,13 +138,9 @@ class TestRealWorldLocate:
 
 
 class TestErrorsWarnings:
-    def setup_method(self) -> None:
-        pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
-        pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
-        pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])
-        polygon_dict = {"geometry": [pol1, pol2, pol3]}
-
-        self.gdf_fac = geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
+    @pytest.fixture(autouse=True)
+    def setup_method(self, toy_fac_data) -> None:
+        self.gdf_fac = toy_fac_data
 
     def test_attribute_error_add_facility_constraint(self, loc_raises_fac_constr):
         with loc_raises_fac_constr:

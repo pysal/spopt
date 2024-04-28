@@ -2,7 +2,6 @@ import geopandas
 import numpy
 import pulp
 import pytest
-from shapely import Point, Polygon
 
 from spopt.locate import LSCPB
 from spopt.locate.base import FacilityModelBuilder
@@ -240,23 +239,13 @@ class TestRealWorldLocate:
 
 class TestErrorsWarnings:
     @pytest.fixture(autouse=True)
-    def setup_method(self, loc_warns_geo_crs) -> None:
-        pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
-        pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
-        pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])
-        polygon_dict = {"geometry": [pol1, pol2, pol3]}
+    def setup_method(self, toy_fac_data, toy_dem_data) -> None:
+        self.gdf_fac = toy_fac_data
 
-        point = Point(10, 10)
-        point_dict = {"weight": 4, "geometry": [point]}
-
-        self.gdf_fac = geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
-        self.gdf_dem = geopandas.GeoDataFrame(point_dict, crs="EPSG:4326")
-
-        self.gdf_dem_crs = self.gdf_dem.to_crs("EPSG:3857")
-
-        self.gdf_dem_buffered = self.gdf_dem.copy()
-        with loc_warns_geo_crs:
-            self.gdf_dem_buffered["geometry"] = self.gdf_dem.buffer(2)
+        gdf_dem, gdf_dem_crs, gdf_dem_buffered = toy_dem_data
+        self.gdf_dem = gdf_dem
+        self.gdf_dem_crs = gdf_dem_crs
+        self.gdf_dem_buffered = gdf_dem_buffered
 
     def test_error_lscpb_different_crs(
         self, loc_warns_mixed_type_fac, loc_raises_diff_crs, loc_warns_geo_crs
