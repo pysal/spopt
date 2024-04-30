@@ -119,6 +119,7 @@ $ conda install --channel conda-forge spopt
 * Locate
   * [`allagash`](https://github.com/apulverizer/allagash)
   * [`maximum-coverage-location`](https://github.com/cyang-kth/maximum-coverage-location)
+  * [`OR_classic_problem`](https://github.com/khamechian1987/OR_classic_problem)
   * [`p-center`](https://github.com/antoniomedrano/p-center)
   * [`pyspatialopt`](https://github.com/apulverizer/pyspatialopt)
 
