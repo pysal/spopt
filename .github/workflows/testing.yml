@@ -76,26 +76,12 @@
            pytest spopt \
            -v \
            -r a \
-           -n auto \
+           -n logical \
            --color yes \
            --cov spopt \
            --cov-append \
            --cov-report term-missing \
-           --cov-report xml
+           --cov-report xml .
        
        - name: codecov
-         uses: codecov/codecov-action@v3
-         with:
-           token: ${{ secrets.CODECOV_TOKEN }}
-           file: ./coverage.xml
-           name: spopt-codecov
-
-       - name: Generate and publish the report
-         if: |
-           failure()
-           && steps.status.outcome == 'failure'
-           && github.event_name == 'schedule'
-           && github.repository_owner == 'pysal'
-         uses: xarray-contrib/issue-from-pytest-log@v1
-         with:
-           log-path: pytest-log.jsonl
+         uses: codecov/codecov-action@v4

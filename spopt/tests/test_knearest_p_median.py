@@ -2,10 +2,12 @@ import geopandas
 import numpy
 import pulp
 import pytest
-from shapely.geometry import Point
+from shapely import Point
 
 from spopt.locate.base import SpecificationError
 from spopt.locate.p_median import KNearestPMedian
+
+loc_raises_val_k = pytest.raises(ValueError, match="The value of `k` should be")
 
 
 class TestKNearestPMedian:
@@ -64,7 +66,7 @@ class TestKNearestPMedian:
 
     def test_error_overflow_k(self):
         k = numpy.array([10, 10])
-        with pytest.raises(ValueError, match="The value of `k` should be"):
+        with loc_raises_val_k:
             KNearestPMedian.from_geodataframe(
                 self.gdf_demand,
                 self.gdf_fac,
@@ -92,7 +94,7 @@ class TestKNearestPMedian:
 
     def test_error_k_array_invalid_value(self):
         k = numpy.array([1, 4])
-        with pytest.raises(ValueError, match="The value of `k` should be no more "):
+        with loc_raises_val_k:
             KNearestPMedian.from_geodataframe(
                 self.gdf_demand,
                 self.gdf_fac,
@@ -134,10 +136,10 @@ class TestKNearestPMedian:
                 k_array=k,
             )
 
-    def test_error_geodataframe_crs_mismatch(self):
+    def test_error_geodataframe_crs_mismatch(self, loc_raises_diff_crs):
         _gdf_fac = self.gdf_fac.copy().to_crs("EPSG:3857")
         k = numpy.array([1, 1])
-        with pytest.raises(ValueError, match="Geodataframes crs are different"):
+        with loc_raises_diff_crs:
             KNearestPMedian.from_geodataframe(
                 self.gdf_demand,
                 _gdf_fac,

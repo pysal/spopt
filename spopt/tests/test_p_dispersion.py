@@ -1,24 +1,15 @@
-import os
-import platform
-
 import geopandas
 import numpy
-import pandas
 import pulp
 import pytest
-from shapely.geometry import Polygon
 
 from spopt.locate import PDispersion
 from spopt.locate.base import FacilityModelBuilder
-
-WINDOWS = platform.platform()[:7].lower() == "windows"
 
 
 class TestSyntheticLocate:
     @pytest.fixture(autouse=True)
     def setup_method(self, network_instance) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
-
         client_count, facility_count = None, 5
         _, self.facilities_snapped, self.cost_matrix = network_instance(
             client_count, facility_count
@@ -77,11 +68,10 @@ class TestSyntheticLocate:
 
 
 class TestRealWorldLocate:
-    def setup_method(self) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
-        network_distance = pandas.read_csv(
-            self.dirpath
-            + "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
+    @pytest.fixture(autouse=True)
+    def setup_method(self, load_test_data) -> None:
+        network_distance = load_test_data(
+            "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
         )
 
         ntw_dist_piv = network_distance.pivot_table(
@@ -90,7 +80,7 @@ class TestRealWorldLocate:
 
         self.cost_matrix = ntw_dist_piv.to_numpy()
 
-        facility_points = pandas.read_csv(self.dirpath + "SF_store_site_16_longlat.csv")
+        facility_points = load_test_data("SF_store_site_16_longlat.csv")
 
         self.facility_points_gdf = (
             geopandas.GeoDataFrame(
@@ -117,9 +107,9 @@ class TestRealWorldLocate:
         ]
         assert known_solution_set == observed_solution_set
 
-    def test_infeasibility_p_dispersion_from_cost_matrix(self):
+    def test_infeasibility_p_dispersion_from_cost_matrix(self, loc_raises_infeasible):
         pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, 17)
-        with pytest.raises(RuntimeError, match="Model is not solved:"):
+        with loc_raises_infeasible:
             pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
 
     def test_optimality_p_dispersion_from_geodataframe(self):
@@ -137,27 +127,23 @@ class TestRealWorldLocate:
         ]
         assert known_solution_set == observed_solution_set
 
-    def test_infeasibility_p_dispersion_from_geodataframe(self):
+    def test_infeasibility_p_dispersion_from_geodataframe(self, loc_raises_infeasible):
         pdispersion = PDispersion.from_geodataframe(
             self.facility_points_gdf,
             "geometry",
             17,
         )
-        with pytest.raises(RuntimeError, match="Model is not solved:"):
+        with loc_raises_infeasible:
             pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
 
 
 class TestErrorsWarnings:
-    def setup_method(self) -> None:
-        pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
-        pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
-        pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])
-        polygon_dict = {"geometry": [pol1, pol2, pol3]}
+    @pytest.fixture(autouse=True)
+    def setup_method(self, toy_fac_data) -> None:
+        self.gdf_fac = toy_fac_data
 
-        self.gdf_fac = geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
-
-    def test_attribute_error_add_facility_constraint(self):
-        with pytest.raises(AttributeError, match="Before setting facility constraint"):
+    def test_attribute_error_add_facility_constraint(self, loc_raises_fac_constr):
+        with loc_raises_fac_constr:
             dummy_p_facility = 1
             dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
             FacilityModelBuilder.add_facility_constraint(dummy_class, dummy_p_facility)
@@ -176,15 +162,17 @@ class TestErrorsWarnings:
                 dummy_range,
             )
 
-    def test_attribute_error_add_predefined_facility_constraint(self):
-        with pytest.raises(AttributeError, match="Before setting facility constraint"):
+    def test_attribute_error_add_predefined_facility_constraint(
+        self, loc_raises_fac_constr
+    ):
+        with loc_raises_fac_constr:
             dummy_p_facility = 1
             dummy_matrix = numpy.array([])
             dummy_class = PDispersion("dummy", pulp.LpProblem("name"), dummy_p_facility)
             FacilityModelBuilder.add_facility_constraint(dummy_class, dummy_matrix)
 
-    def test_warning_facility_geodataframe(self):
-        with pytest.warns(
-            UserWarning, match="Facility geodataframe contains mixed type"
-        ):
+    def test_warning_facility_geodataframe(
+        self, loc_warns_mixed_type_fac, loc_warns_geo_crs
+    ):
+        with loc_warns_mixed_type_fac, loc_warns_geo_crs:
             PDispersion.from_geodataframe(self.gdf_fac, "geometry", 1)

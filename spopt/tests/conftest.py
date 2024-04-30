@@ -1,7 +1,11 @@
+import pathlib
+import pickle
 import warnings
 
+import _pytest
 import geopandas
 import numpy
+import pandas
 import pytest
 import shapely
 
@@ -17,6 +21,29 @@ from packaging.version import Version
 
 # see gh:spopt#437
 GPD_GE_10 = Version(geopandas.__version__) >= Version("1.0")
+
+
+def dirpath() -> pathlib.Path:
+    """Path to test data directory"""
+    return pathlib.Path(__file__).absolute().parent / "data"
+
+
+@pytest.fixture
+def load_test_data():
+    """Load test data for the ``locate`` module."""
+
+    def _load_test_data(_file: str) -> dict | pandas.DataFrame:
+        if _file.endswith(".pkl"):
+            with open(dirpath() / _file, "rb") as f:
+                test_data = pickle.load(f)
+        elif _file.endswith(".csv"):
+            test_data = pandas.read_csv(dirpath() / _file)
+        else:
+            raise FileNotFoundError(f"`{_file}` does not exist.")
+
+        return test_data
+
+    return _load_test_data
 
 
 @pytest.fixture
@@ -101,3 +128,77 @@ def network_instance():
         return clients_snapped, facilities_snapped, cost_matrix
 
     return _network_instance
+
+
+_warns_geo_crs = pytest.warns(UserWarning, match="Geometry is in a geographic CRS")
+
+
+@pytest.fixture
+def loc_warns_geo_crs() -> _pytest.recwarn.WarningsChecker:
+    """`locate` warning"""
+    return _warns_geo_crs
+
+
+@pytest.fixture
+def loc_warns_mixed_type_dem() -> _pytest.recwarn.WarningsChecker:
+    """`locate` warning"""
+    return pytest.warns(UserWarning, match="Demand geodataframe contains mixed type")
+
+
+@pytest.fixture
+def loc_warns_mixed_type_fac() -> _pytest.recwarn.WarningsChecker:
+    """`locate` warning"""
+    return pytest.warns(UserWarning, match="Facility geodataframe contains mixed type")
+
+
+@pytest.fixture
+def loc_raises_diff_crs() -> _pytest.python_api.RaisesContext:
+    """`locate` error"""
+    return pytest.raises(ValueError, match="Geodataframes crs are different: ")
+
+
+@pytest.fixture
+def loc_raises_infeasible() -> _pytest.python_api.RaisesContext:
+    """`locate` error"""
+    return pytest.raises(RuntimeError, match="Model is not solved: Infeasible.")
+
+
+@pytest.fixture
+def loc_raises_fac_constr() -> _pytest.python_api.RaisesContext:
+    """`locate` error"""
+    return pytest.raises(AttributeError, match="Before setting facility constraint")
+
+
+@pytest.fixture
+def toy_fac_data() -> geopandas.GeoDataFrame:
+    """Toy facility data used in ``locate`` error & warning tests."""
+    pol1 = shapely.Polygon([(0, 0), (1, 0), (1, 1)])
+    pol2 = shapely.Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
+    pol3 = shapely.Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])
+    polygon_dict = {"geometry": [pol1, pol2, pol3]}
+
+    return geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
+
+
+@pytest.fixture
+def toy_dem_data() -> (
+    tuple[geopandas.GeoDataFrame, geopandas.GeoDataFrame, geopandas.GeoDataFrame]
+):
+    """Toy demand data used in ``locate`` error & warning tests."""
+
+    point = shapely.Point(10, 10)
+    point_dict = {"weight": 4, "geometry": [point]}
+
+    gdf_dem = geopandas.GeoDataFrame(point_dict, crs="EPSG:4326")
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", message="Conversion of an array with ndim > 0"
+        )
+        gdf_dem_crs = gdf_dem.to_crs("EPSG:3857")
+
+    gdf_dem_buffered = gdf_dem.copy()
+    with _warns_geo_crs:
+        gdf_dem_buffered["geometry"] = gdf_dem.buffer(2)
+
+    return gdf_dem, gdf_dem_crs, gdf_dem_buffered

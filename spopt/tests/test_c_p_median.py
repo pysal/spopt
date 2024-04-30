@@ -1,21 +1,14 @@
-import os
-
 import numpy
-import pandas
 import pulp
 import pytest
 
 from spopt.locate import PMedian
-from spopt.locate.base import (
-    SpecificationError,
-)
+from spopt.locate.base import SpecificationError
 
 
 class TestSyntheticLocate:
     @pytest.fixture(autouse=True)
     def setup_method(self, network_instance) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
-
         client_count, facility_count = 2, 3
         (
             self.clients_snapped,
@@ -66,7 +59,9 @@ class TestSyntheticLocate:
         observed = result.fac2cli
         assert known == observed
 
-    def test_c_p_median_with_predefined_facilities_infeasible(self):
+    def test_c_p_median_with_predefined_facilities_infeasible(
+        self, loc_raises_infeasible
+    ):
         facility_capacity = numpy.array([5, 7, 10])
         demand_quantity = numpy.array([4, 10])
         predefine = numpy.array([0])
@@ -78,17 +73,15 @@ class TestSyntheticLocate:
             predefined_facilities_arr=predefine,
             fulfill_predefined_fac=True,
         )
-        with pytest.raises(RuntimeError, match="Model is not solved: Infeasible."):
+        with loc_raises_infeasible:
             p_median.solve(pulp.PULP_CBC_CMD(msg=False))
 
 
 class TestRealWorldLocate:
-    def setup_method(self) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
+    @pytest.fixture(autouse=True)
+    def setup_method(self, load_test_data) -> None:
+        time_table = load_test_data("example_subject_student_school_journeys.csv")
 
-        time_table = pandas.read_csv(
-            self.dirpath + "example_subject_student_school_journeys.csv"
-        )
         self.cost_matrix = (
             time_table.pivot_table(
                 columns="school",
@@ -101,12 +94,8 @@ class TestRealWorldLocate:
             .values
         )
 
-        self.demand_points = pandas.read_csv(
-            self.dirpath + "example_subject_students.csv"
-        )
-        self.facility_points = pandas.read_csv(
-            self.dirpath + "example_subject_schools.csv"
-        )
+        self.demand_points = load_test_data("example_subject_students.csv")
+        self.facility_points = load_test_data("example_subject_schools.csv")
 
         self.p_facility = 10
         self.demand = numpy.ones(len(self.demand_points))
@@ -128,11 +117,11 @@ class TestRealWorldLocate:
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
         assert pmedian.problem.status == pulp.LpStatusOptimal
 
-    def test_infeasibility_capacitated_pmedian(self):
+    def test_infeasibility_capacitated_pmedian(self, loc_raises_infeasible):
         pmedian = PMedian.from_cost_matrix(
             self.cost_matrix, self.demand, 0, facility_capacities=self.capacities_arr
         )
-        with pytest.raises(RuntimeError, match="Model is not solved: Infeasible."):
+        with loc_raises_infeasible:
             pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
 
     def test_mixin_mean_time(self):

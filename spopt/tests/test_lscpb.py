@@ -1,13 +1,7 @@
-import os
-import pickle
-import warnings
-
 import geopandas
 import numpy
-import pandas
 import pulp
 import pytest
-from shapely.geometry import Point, Polygon
 
 from spopt.locate import LSCPB
 from spopt.locate.base import FacilityModelBuilder
@@ -16,8 +10,6 @@ from spopt.locate.base import FacilityModelBuilder
 class TestSyntheticLocate:
     @pytest.fixture(autouse=True)
     def setup_method(self, network_instance) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
-
         client_count, facility_count = 100, 5
         (
             self.clients_snapped,
@@ -51,9 +43,8 @@ class TestSyntheticLocate:
         with pytest.raises(AttributeError):
             result.backup_perc  # noqa: B018
 
-    def test_lscpb_facility_client_array_from_cost_matrix(self):
-        with open(self.dirpath + "lscpb_fac2cli.pkl", "rb") as f:
-            lscpb_objective = pickle.load(f)
+    def test_lscpb_facility_client_array_from_cost_matrix(self, load_test_data):
+        lscpb_objective = load_test_data("lscpb_fac2cli.pkl")
 
         lscpb = LSCPB.from_cost_matrix(
             self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False)
@@ -65,9 +56,8 @@ class TestSyntheticLocate:
             numpy.array(lscpb_objective, dtype=object),
         )
 
-    def test_lscpb_client_facility_array_from_cost_matrix(self):
-        with open(self.dirpath + "lscpb_cli2fac.pkl", "rb") as f:
-            lscpb_objective = pickle.load(f)
+    def test_lscpb_client_facility_array_from_cost_matrix(self, load_test_data):
+        lscpb_objective = load_test_data("lscpb_cli2fac.pkl")
 
         lscpb = LSCPB.from_cost_matrix(
             self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False)
@@ -92,9 +82,8 @@ class TestSyntheticLocate:
 
         assert isinstance(result, LSCPB)
 
-    def test_lscpb_facility_client_array_from_geodataframe(self):
-        with open(self.dirpath + "lscpb_geodataframe_fac2cli.pkl", "rb") as f:
-            lscpb_objective = pickle.load(f)
+    def test_lscpb_facility_client_array_from_geodataframe(self, load_test_data):
+        lscpb_objective = load_test_data("lscpb_geodataframe_fac2cli.pkl")
 
         lscpb = LSCPB.from_geodataframe(
             self.clients_snapped,
@@ -111,9 +100,8 @@ class TestSyntheticLocate:
             numpy.array(lscpb_objective, dtype=object),
         )
 
-    def test_lscpb_client_facility_array_from_geodataframe(self):
-        with open(self.dirpath + "lscpb_geodataframe_cli2fac.pkl", "rb") as f:
-            lscpb_objective = pickle.load(f)
+    def test_lscpb_client_facility_array_from_geodataframe(self, load_test_data):
+        lscpb_objective = load_test_data("lscpb_geodataframe_cli2fac.pkl")
 
         lscpb = LSCPB.from_geodataframe(
             self.clients_snapped,
@@ -130,11 +118,12 @@ class TestSyntheticLocate:
             numpy.array(lscpb_objective, dtype=object),
         )
 
-    def test_lscpb_preselected_facility_client_array_from_geodataframe(self):
-        with open(
-            self.dirpath + "lscpb_preselected_loc_geodataframe_fac2cli.pkl", "rb"
-        ) as f:
-            lscpb_objective = pickle.load(f)
+    def test_lscpb_preselected_facility_client_array_from_geodataframe(
+        self, load_test_data
+    ):
+        lscpb_objective = load_test_data(
+            "lscpb_preselected_loc_geodataframe_fac2cli.pkl"
+        )
 
         fac_snapped = self.facilities_snapped.copy()
         fac_snapped["predefined_loc"] = numpy.array([0, 0, 0, 0, 1])
@@ -157,11 +146,10 @@ class TestSyntheticLocate:
 
 
 class TestRealWorldLocate:
-    def setup_method(self) -> None:
-        self.dirpath = os.path.join(os.path.dirname(__file__), "./data/")
-        network_distance = pandas.read_csv(
-            self.dirpath
-            + "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
+    @pytest.fixture(autouse=True)
+    def setup_method(self, load_test_data) -> None:
+        network_distance = load_test_data(
+            "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
         )
 
         ntw_dist_piv = network_distance.pivot_table(
@@ -170,10 +158,8 @@ class TestRealWorldLocate:
 
         self.cost_matrix = ntw_dist_piv.to_numpy()
 
-        demand_points = pandas.read_csv(
-            self.dirpath + "SF_demand_205_centroid_uniform_weight.csv"
-        )
-        facility_points = pandas.read_csv(self.dirpath + "SF_store_site_16_longlat.csv")
+        demand_points = load_test_data("SF_demand_205_centroid_uniform_weight.csv")
+        facility_points = load_test_data("SF_store_site_16_longlat.csv")
 
         self.facility_points_gdf = (
             geopandas.GeoDataFrame(
@@ -209,8 +195,8 @@ class TestRealWorldLocate:
 
         assert lscpb.problem.status == pulp.LpStatusOptimal
 
-    def test_infeasibility_lscpb_from_cost_matrix(self):
-        with pytest.raises(RuntimeError, match="Model is not solved"):
+    def test_infeasibility_lscpb_from_cost_matrix(self, loc_raises_infeasible):
+        with loc_raises_infeasible:
             lscpb = LSCPB.from_cost_matrix(
                 self.cost_matrix, 20, pulp.PULP_CBC_CMD(msg=False)
             )
@@ -238,8 +224,8 @@ class TestRealWorldLocate:
 
         assert lscpb.problem.status == pulp.LpStatusOptimal
 
-    def test_infeasibility_lscpb_from_geodataframe(self):
-        with pytest.raises(RuntimeError, match="Model is not solved"):
+    def test_infeasibility_lscpb_from_geodataframe(self, loc_raises_infeasible):
+        with loc_raises_infeasible:
             lscpb = LSCPB.from_geodataframe(
                 self.demand_points_gdf,
                 self.facility_points_gdf,
@@ -252,36 +238,19 @@ class TestRealWorldLocate:
 
 
 class TestErrorsWarnings:
-    def setup_method(self) -> None:
-        pol1 = Polygon([(0, 0), (1, 0), (1, 1)])
-        pol2 = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
-        pol3 = Polygon([(2, 0), (3, 0), (3, 1), (2, 1)])
-        polygon_dict = {"geometry": [pol1, pol2, pol3]}
+    @pytest.fixture(autouse=True)
+    def setup_method(self, toy_fac_data, toy_dem_data) -> None:
+        self.gdf_fac = toy_fac_data
 
-        point = Point(10, 10)
-        point_dict = {"weight": 4, "geometry": [point]}
+        gdf_dem, gdf_dem_crs, gdf_dem_buffered = toy_dem_data
+        self.gdf_dem = gdf_dem
+        self.gdf_dem_crs = gdf_dem_crs
+        self.gdf_dem_buffered = gdf_dem_buffered
 
-        self.gdf_fac = geopandas.GeoDataFrame(polygon_dict, crs="EPSG:4326")
-        self.gdf_dem = geopandas.GeoDataFrame(point_dict, crs="EPSG:4326")
-
-        self.gdf_dem_crs = self.gdf_dem.to_crs("EPSG:3857")
-
-        self.gdf_dem_buffered = self.gdf_dem.copy()
-        with warnings.catch_warnings():
-            warnings.filterwarnings(
-                "ignore",
-                category=UserWarning,
-                message="Geometry is in a geographic CRS",
-            )
-            self.gdf_dem_buffered["geometry"] = self.gdf_dem.buffer(2)
-
-    def test_error_lscpb_different_crs(self):
-        with (
-            pytest.warns(
-                UserWarning, match="Facility geodataframe contains mixed type"
-            ),
-            pytest.raises(ValueError, match="Geodataframes crs are different: "),
-        ):
+    def test_error_lscpb_different_crs(
+        self, loc_warns_mixed_type_fac, loc_raises_diff_crs, loc_warns_geo_crs
+    ):
+        with loc_warns_mixed_type_fac, loc_raises_diff_crs, loc_warns_geo_crs:
             LSCPB.from_geodataframe(
                 self.gdf_dem_crs,
                 self.gdf_fac,
@@ -291,8 +260,10 @@ class TestErrorsWarnings:
                 pulp.PULP_CBC_CMD(msg=False),
             )
 
-    def test_warning_lscpb_demand_geodataframe(self):
-        with pytest.warns(UserWarning, match="Demand geodataframe contains mixed type"):
+    def test_warning_lscpb_demand_geodataframe(
+        self, loc_warns_mixed_type_dem, loc_warns_mixed_type_fac, loc_warns_geo_crs
+    ):
+        with loc_warns_mixed_type_dem, loc_warns_mixed_type_fac, loc_warns_geo_crs:
             LSCPB.from_geodataframe(
                 self.gdf_dem_buffered,
                 self.gdf_fac,
