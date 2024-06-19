@@ -562,7 +562,7 @@ def _check_move(
     lost_distance = distance_matrix[poa, rm].sum()
     potential_move = None
 
-    min_added_distance = np.Inf
+    min_added_distance = np.inf
     for poan in poa_neighbor:
         recipient_region = labels[poan]
         if donor_region != recipient_region:
