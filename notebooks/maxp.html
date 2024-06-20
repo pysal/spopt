@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Max-P Regionalization &#8212; spopt v0.6.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Automatic Zoning Procedure (AZP) algorithm" href="azp.html" />
+    <link rel="prev" title="Tutorials" href="../tutorials.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Max-P Regionalization</a><ul>
+<li><a class="reference internal" href="#Mexican-State-Regional-Income-Clustering">Mexican State Regional Income Clustering</a><ul>
+<li><a class="reference internal" href="#Regional-incomes-for-Mexican-states-over-the-period-1940-2000">Regional incomes for Mexican states over the period 1940-2000</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Pooled-Regionalization">Pooled Regionalization</a></li>
+<li><a class="reference internal" href="#Change-threshold-to-a-minimum-of-3-states-per-region">Change threshold to a minimum of 3 states per region</a></li>
+<li><a class="reference internal" href="#Year-by-Year-Regionalization-while-Varying-Parameters">Year-by-Year Regionalization while Varying Parameters</a><ul>
+<li><a class="reference internal" href="#Vary-minimum-in-region-threshold-(5,-10,-15);-hold-enclave-assignment-constant-(2)">Vary minimum in-region threshold (5, 10, 15); hold enclave assignment constant (2)</a></li>
+<li><a class="reference internal" href="#Vary-state-enclave-assignments-(1,-3,-5);-hold-minimum-in-region-threshold-constant-(5)">Vary state enclave assignments (1, 3, 5); hold minimum in-region threshold constant (5)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/spopt/blob/main/notebooks/maxp.ipynb">notebooks/maxp.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/spopt/main?filepath=notebooks/maxp.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Max-P-Regionalization">
+<h1>Max-P Regionalization<a class="headerlink" href="#Max-P-Regionalization" title="Link to this heading">¶</a></h1>
+<p>Authors: <a class="reference external" href="https://github.com/sjsrey">Sergio Rey</a>, <a class="reference external" href="https://github.com/xf37">Xin Feng</a>, <a class="reference external" href="https://github.com/jGaboardi">James Gaboardi</a></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">max-p</span></code> problem involves the clustering of a set of geographic areas into the maximum number of homogeneous regions such that the value of a spatially extensive regional attribute is above a predefined threshold value. The spatially extensive attribute can be specified to ensure that each region contains sufficient population size, or a minimum number of enumeration units. The number of regions <span class="math notranslate nohighlight">\(p\)</span> is endogenous to the problem and is useful for regionalization problems where the
+analyst does not require a fixed number of regions a-priori.</p>
+<p>Originally formulated as a mixed-integer problem in <a class="reference external" href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1467-9787.2011.00743.x">Duque, Anselin, Rey (2012)</a>, <code class="docutils literal notranslate"><span class="pre">max-p</span></code> is an <a class="reference external" href="https://en.wikipedia.org/wiki/NP-hardness">NP-hard problem</a> and exact solutions are only feasible for small problem sizes. As such, a number of heuristic solution approaches have been suggested. PySAL implements the heuristic approach described in <a class="reference external" href="https://www.tandfonline.com/doi/full/10.1080/13658816.2020.1759806">Wei, Rey, and Knaap
+(2020)</a>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+%load_ext watermark
+%watermark
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Last updated: 2023-12-10T13:56:28.684909-05:00
+
+Python implementation: CPython
+Python version       : 3.12.0
+IPython version      : 8.18.0
+
+Compiler    : Clang 15.0.7
+OS          : Darwin
+Release     : 23.1.0
+Machine     : x86_64
+Processor   : i386
+CPU cores   : 8
+Architecture: 64bit
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import warnings
+
+import geopandas
+import libpysal
+import matplotlib.pyplot as plt
+import numpy
+import spopt
+from spopt.region import MaxPHeuristic as MaxP
+
+RANDOM_SEED = 123456
+
+%watermark -w
+%watermark -iv
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Watermark: 2.4.3
+
+matplotlib: 3.8.2
+spopt     : 0.5.1.dev53+g5cadae7
+libpysal  : 4.9.2
+numpy     : 1.26.2
+geopandas : 0.14.1
+
+</pre></div></div>
+</div>
+<section id="Mexican-State-Regional-Income-Clustering">
+<h2>Mexican State Regional Income Clustering<a class="headerlink" href="#Mexican-State-Regional-Income-Clustering" title="Link to this heading">¶</a></h2>
+<p>To illustrate <code class="docutils literal notranslate"><span class="pre">maxp</span></code> we utilize data on regional incomes for Mexican states over the period 1940-2000, originally used in <a class="reference external" href="https://www.tandfonline.com/doi/full/10.1080/17421772.2010.493955?casa_token=r6iIZaEKaywAAAAA%3ARxjQkEOcxQ5gffa1EGyd2rByA6w0uVxg5cU3v4VaSmx2u89Nr3oSe2f_n63CV20Ysrjs07U47m98">Rey and Sastré-Gutiérrez (2010)</a>.</p>
+<p>We can first explore the data by plotting the per capital gross regional domestic product (in constant USD 2000 dollars) for each year in the sample, using a quintile classification. Here we will define a function for creating subplots useful in visual comparisons, which also can solve Max-P instances and will be used again later).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def subplotter(gdf, incrs, W, threshold=5, top_n=2, seed=RANDOM_SEED):
+    &quot;&quot;&quot;Helper plotting function, also solves MaxP instances if desired.&quot;&quot;&quot;
+    rows, cols = incrs.shape
+    f, axs = plt.subplots(rows, cols, figsize=(9, 14))
+    for i in range(rows):
+        for j in range(cols):
+            year, _ax = incrs[i, j], axs[i, j]
+            if not year:
+                # plot country geographies
+                _attr = &quot;Mexico&quot;
+                gdf.plot(ax=_ax, ec=&quot;grey&quot;, fc=&quot;white&quot;)
+            else:
+                _attr = &quot;PCGDP%s&quot; % year
+                if not W:
+                    # plot country geographies by attributes
+                    plt_kws = dict(scheme=&quot;Quantiles&quot;, cmap=&quot;GnBu&quot;, ec=&quot;grey&quot;)
+                    plt_kws.update(dict(legend_kwds={&quot;fmt&quot;: &quot;{:.0f}&quot;}))
+                    gdf.plot(column=_attr, ax=_ax, legend=True, **plt_kws)
+                else:
+                    # solve a MaxP instance and plot regions
+                    numpy.random.seed(seed)
+                    maxp_args = gdf, W, _attr, &quot;count&quot;, threshold
+                    model = MaxP(*maxp_args, top_n=top_n)
+                    model.solve()
+                    label = year + &quot;labels_&quot;
+                    gdf[label] = model.labels_
+                    gdf.plot(column=label, ax=_ax, cmap=&quot;tab20&quot;)
+            _ax.set_title(_attr)
+            _ax.set_axis_off()
+            _ax.set_aspect(&quot;equal&quot;)
+    f.subplots_adjust(wspace=-0.7, hspace=-0.65)
+    f.tight_layout()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pth = libpysal.examples.get_path(&quot;mexicojoin.shp&quot;)
+mexico = geopandas.read_file(pth)
+mexico.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>POLY_ID</th>
+      <th>AREA</th>
+      <th>CODE</th>
+      <th>NAME</th>
+      <th>PERIMETER</th>
+      <th>ACRES</th>
+      <th>HECTARES</th>
+      <th>PCGDP1940</th>
+      <th>PCGDP1950</th>
+      <th>PCGDP1960</th>
+      <th>...</th>
+      <th>GR9000</th>
+      <th>LPCGDP40</th>
+      <th>LPCGDP50</th>
+      <th>LPCGDP60</th>
+      <th>LPCGDP70</th>
+      <th>LPCGDP80</th>
+      <th>LPCGDP90</th>
+      <th>LPCGDP00</th>
+      <th>TEST</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>7.252751e+10</td>
+      <td>MX02</td>
+      <td>Baja California Norte</td>
+      <td>2040312.385</td>
+      <td>1.792187e+07</td>
+      <td>7252751.376</td>
+      <td>22361.0</td>
+      <td>20977.0</td>
+      <td>17865.0</td>
+      <td>...</td>
+      <td>0.05</td>
+      <td>4.35</td>
+      <td>4.32</td>
+      <td>4.25</td>
+      <td>4.40</td>
+      <td>4.47</td>
+      <td>4.43</td>
+      <td>4.48</td>
+      <td>1.0</td>
+      <td>MULTIPOLYGON (((-113.13972 29.01778, -113.2405...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>7.225988e+10</td>
+      <td>MX03</td>
+      <td>Baja California Sur</td>
+      <td>2912880.772</td>
+      <td>1.785573e+07</td>
+      <td>7225987.769</td>
+      <td>9573.0</td>
+      <td>16013.0</td>
+      <td>16707.0</td>
+      <td>...</td>
+      <td>0.00</td>
+      <td>3.98</td>
+      <td>4.20</td>
+      <td>4.22</td>
+      <td>4.39</td>
+      <td>4.46</td>
+      <td>4.41</td>
+      <td>4.42</td>
+      <td>2.0</td>
+      <td>MULTIPOLYGON (((-111.20612 25.80278, -111.2302...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>2.731957e+10</td>
+      <td>MX18</td>
+      <td>Nayarit</td>
+      <td>1034770.341</td>
+      <td>6.750785e+06</td>
+      <td>2731956.859</td>
+      <td>4836.0</td>
+      <td>7515.0</td>
+      <td>7621.0</td>
+      <td>...</td>
+      <td>-0.05</td>
+      <td>3.68</td>
+      <td>3.88</td>
+      <td>3.88</td>
+      <td>4.04</td>
+      <td>4.13</td>
+      <td>4.11</td>
+      <td>4.06</td>
+      <td>3.0</td>
+      <td>MULTIPOLYGON (((-106.62108 21.56531, -106.6475...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>7.961008e+10</td>
+      <td>MX14</td>
+      <td>Jalisco</td>
+      <td>2324727.436</td>
+      <td>1.967200e+07</td>
+      <td>7961008.285</td>
+      <td>5309.0</td>
+      <td>8232.0</td>
+      <td>9953.0</td>
+      <td>...</td>
+      <td>0.03</td>
+      <td>3.73</td>
+      <td>3.92</td>
+      <td>4.00</td>
+      <td>4.21</td>
+      <td>4.32</td>
+      <td>4.30</td>
+      <td>4.33</td>
+      <td>4.0</td>
+      <td>POLYGON ((-101.52490 21.85664, -101.58830 21.7...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>5.467030e+09</td>
+      <td>MX01</td>
+      <td>Aguascalientes</td>
+      <td>313895.530</td>
+      <td>1.350927e+06</td>
+      <td>546702.985</td>
+      <td>10384.0</td>
+      <td>6234.0</td>
+      <td>8714.0</td>
+      <td>...</td>
+      <td>0.13</td>
+      <td>4.02</td>
+      <td>3.79</td>
+      <td>3.94</td>
+      <td>4.21</td>
+      <td>4.32</td>
+      <td>4.32</td>
+      <td>4.44</td>
+      <td>5.0</td>
+      <td>POLYGON ((-101.84620 22.01176, -101.96530 21.8...</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 35 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mxgdp_years = [str(x) for x in range(1940, 2010, 10)]
+mxgdp_years = numpy.array([None] + mxgdp_years)
+mxgdp_years_grid = mxgdp_years.reshape(4, 2)
+mxgdp_years_grid
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[None, &#39;1940&#39;],
+       [&#39;1950&#39;, &#39;1960&#39;],
+       [&#39;1970&#39;, &#39;1980&#39;],
+       [&#39;1990&#39;, &#39;2000&#39;]], dtype=object)
+</pre></div></div>
+</div>
+<section id="Regional-incomes-for-Mexican-states-over-the-period-1940-2000">
+<h3>Regional incomes for Mexican states over the period 1940-2000<a class="headerlink" href="#Regional-incomes-for-Mexican-states-over-the-period-1940-2000" title="Link to this heading">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>subplotter(mexico, mxgdp_years_grid, None)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_maxp_8_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_8_0.png" style="width: 889px; height: 1197px;" />
+</div>
+</div>
+<p>In general terms, the north-south divide in incomes is present in each of the 7 decades. There is some variation in states moving across quintiles however, and this is true at both the bottom and top of the state income distribution.</p>
+<p>To develop a holistic view of the Mexican space economy over this timespan, we can try to form a set of spatially connected regions that maximizes the internal socieconomic levels of the states belonging to each region.</p>
+</section>
+</section>
+<section id="Pooled-Regionalization">
+<h2>Pooled Regionalization<a class="headerlink" href="#Pooled-Regionalization" title="Link to this heading">¶</a></h2>
+<p>To develop our holistic view, we can treat the six cross-sections as a multidimensional array and seek to cluster 32 Mexican states into the maximum number of regions such that each region as at least 6 = 32 // 5 states and homogeneity in per capita gross regional product over 1940-2000 is maximized.</p>
+<p>We first define the variables in the dataframe that will be used to measure regional homogeneity:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = [f&quot;PCGDP{year}&quot; for year in mxgdp_years[1:]]
+attrs_name
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;PCGDP1940&#39;,
+ &#39;PCGDP1950&#39;,
+ &#39;PCGDP1960&#39;,
+ &#39;PCGDP1970&#39;,
+ &#39;PCGDP1980&#39;,
+ &#39;PCGDP1990&#39;,
+ &#39;PCGDP2000&#39;]
+</pre></div></div>
+</div>
+<p>Next, we specify a number of parameters that will serve as input to the <code class="docutils literal notranslate"><span class="pre">max-p</span></code> model.</p>
+<p>A <a class="reference external" href="https://pysal.org/libpysal/tutorial.html">spatial weights object</a> expresses the spatial connectivity of the states:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with warnings.catch_warnings(record=True):
+    w = libpysal.weights.Queen.from_dataframe(mexico)
+</pre></div>
+</div>
+</div>
+<p>The remaining arguments are the minimum number of states each region must have (<code class="docutils literal notranslate"><span class="pre">threshold</span></code>):</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>threshold = 6
+</pre></div>
+</div>
+</div>
+<p>and the number of the top candidate regions to consider when assigning enclaves (<code class="docutils literal notranslate"><span class="pre">top_n</span></code>):</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>top_n = 2
+</pre></div>
+</div>
+</div>
+<p>We create the attribute <code class="docutils literal notranslate"><span class="pre">count</span></code> which will serve as the threshold attribute which we add to the dataframe:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico[&quot;count&quot;] = 1
+threshold_name = &quot;count&quot;
+</pre></div>
+</div>
+</div>
+<p>The model can then be instantiated and solved:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>numpy.random.seed(RANDOM_SEED)
+model = MaxP(mexico, w, attrs_name, threshold_name, threshold, top_n)
+model.solve()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico[&quot;maxp_new&quot;] = model.labels_
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico[[&quot;maxp_new&quot;, &quot;AREA&quot;]].groupby(by=&quot;maxp_new&quot;).count()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>AREA</th>
+    </tr>
+    <tr>
+      <th>maxp_new</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>6</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.p
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+5
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico.plot(figsize=(8, 5), column=&quot;maxp_new&quot;, cmap=&quot;tab20&quot;, edgecolor=&quot;w&quot;).axis(&quot;off&quot;);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_maxp_24_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_24_0.png" style="width: 640px; height: 390px;" />
+</div>
+</div>
+<p>The model solution results in five regions, three of which have six states, and two with seven states each. Each region is a <a class="reference external" href="https://en.wikipedia.org/wiki/Connected_space">spatially connected component</a>, as required by the <code class="docutils literal notranslate"><span class="pre">max-p</span></code> problem.</p>
+</section>
+<section id="Change-threshold-to-a-minimum-of-3-states-per-region">
+<h2>Change threshold to a minimum of 3 states per region<a class="headerlink" href="#Change-threshold-to-a-minimum-of-3-states-per-region" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>numpy.random.seed(RANDOM_SEED)
+threshold = 3
+model = MaxP(mexico, w, attrs_name, threshold_name, threshold, top_n)
+model.solve()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico[&quot;maxp_3&quot;] = model.labels_
+mexico[[&quot;maxp_3&quot;, &quot;AREA&quot;]].groupby(by=&quot;maxp_3&quot;).count()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>AREA</th>
+    </tr>
+    <tr>
+      <th>maxp_3</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model.p
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+10
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico.plot(figsize=(8, 5), column=&quot;maxp_3&quot;, cmap=&quot;tab20&quot;, edgecolor=&quot;w&quot;).axis(&quot;off&quot;);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_maxp_29_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_29_0.png" style="width: 640px; height: 390px;" />
+</div>
+</div>
+</section>
+<section id="Year-by-Year-Regionalization-while-Varying-Parameters">
+<h2>Year-by-Year Regionalization while Varying Parameters<a class="headerlink" href="#Year-by-Year-Regionalization-while-Varying-Parameters" title="Link to this heading">¶</a></h2>
+<section id="Vary-minimum-in-region-threshold-(5,-10,-15);-hold-enclave-assignment-constant-(2)">
+<h3>Vary minimum in-region threshold (5, 10, 15); hold enclave assignment constant (2)<a class="headerlink" href="#Vary-minimum-in-region-threshold-(5,-10,-15);-hold-enclave-assignment-constant-(2)" title="Link to this heading">¶</a></h3>
+<p><strong>5 states</strong></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>region_args = mexico, mxgdp_years_grid, w
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>subplotter(*region_args, threshold=5, top_n=2)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_maxp_32_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_32_0.png" style="width: 889px; height: 1197px;" />
+</div>
+</div>
+<p><strong>10 states</strong></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>subplotter(*region_args, threshold=10, top_n=2)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_maxp_34_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_34_0.png" style="width: 889px; height: 1197px;" />
+</div>
+</div>
+<p><strong>15 states</strong></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>subplotter(*region_args, threshold=15, top_n=2)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_maxp_36_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_36_0.png" style="width: 889px; height: 1197px;" />
+</div>
+</div>
+</section>
+<section id="Vary-state-enclave-assignments-(1,-3,-5);-hold-minimum-in-region-threshold-constant-(5)">
+<h3>Vary state enclave assignments (1, 3, 5); hold minimum in-region threshold constant (5)<a class="headerlink" href="#Vary-state-enclave-assignments-(1,-3,-5);-hold-minimum-in-region-threshold-constant-(5)" title="Link to this heading">¶</a></h3>
+<p><strong>1 state</strong></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>subplotter(*region_args, threshold=5, top_n=1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_maxp_38_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_38_0.png" style="width: 889px; height: 1197px;" />
+</div>
+</div>
+<p><strong>3 states</strong></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>subplotter(*region_args, threshold=5, top_n=3)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_maxp_40_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_40_0.png" style="width: 889px; height: 1197px;" />
+</div>
+</div>
+<p><strong>5 states</strong></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>subplotter(*region_args, threshold=5, top_n=5)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_maxp_42_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_42_0.png" style="width: 889px; height: 1197px;" />
+</div>
+</div>
+<p>As shown here, varying the <code class="docutils literal notranslate"><span class="pre">threshold</span></code> and <code class="docutils literal notranslate"><span class="pre">top_n</span></code> parameters both have a demonstrable effect regionalization outcomes.</p>
+<hr class="docutils" />
+</section>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/maxp.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

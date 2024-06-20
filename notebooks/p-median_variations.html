@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Comparing P-Median Variations &#8212; spopt v0.6.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The P-Dispersion (max-min-min) Problem" href="p-dispersion.html" />
+    <link rel="prev" title="The P-Median Problem" href="p-median.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Comparing P-Median Variations</a><ul>
+<li><a class="reference internal" href="#1.-Model-data-set-up-&amp;-inputs">1. Model data set up &amp; inputs</a><ul>
+<li><a class="reference internal" href="#Constants">Constants</a></li>
+<li><a class="reference internal" href="#Simulate-client-and-candidate-facility-locations">Simulate client and candidate facility locations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#2.-The-classic-p-median-problem">2. The classic <span class="math notranslate nohighlight">\(p\)</span>-median problem</a></li>
+<li><a class="reference internal" href="#3.-The-capacited-p-median-problem">3. The capacited <span class="math notranslate nohighlight">\(p\)</span>-median problem</a></li>
+<li><a class="reference internal" href="#4.-The-k-nearest-p-median-problem">4. The <span class="math notranslate nohighlight">\(k\)</span>-nearest <span class="math notranslate nohighlight">\(p\)</span>-median problem</a></li>
+<li><a class="reference internal" href="#5.-The-capacited-k-nearest-p-median-problem">5. The capacited <span class="math notranslate nohighlight">\(k\)</span>-nearest <span class="math notranslate nohighlight">\(p\)</span>-median problem</a></li>
+<li><a class="reference internal" href="#6.-Comparing-variant-results">6. Comparing variant results</a><ul>
+<li><a class="reference internal" href="#Solution-diagnostics-&amp;-optimal-facility-selection">Solution diagnostics &amp; optimal facility selection</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#7.-References">7. References</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/spopt/blob/main/notebooks/p-median_variations.ipynb">notebooks/p-median_variations.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/spopt/main?filepath=notebooks/p-median_variations.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Comparing-P-Median-Variations">
+<h1>Comparing P-Median Variations<a class="headerlink" href="#Comparing-P-Median-Variations" title="Link to this heading">¶</a></h1>
+<p>This tutorial compares 4 versions of the <span class="math notranslate nohighlight">\(p\)</span>-median problem.</p>
+<p><strong>Authors</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/rongboxu">Rongbo Xu</a></p></li>
+<li><p><a class="reference external" href="https://github.com/gegen07">Germano Barcelos</a></p></li>
+<li><p><a class="reference external" href="https://github.com/jGaboardi">James Gaboardi</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ljwolf">Levi J. Wolf</a></p></li>
+<li><p><a class="reference external" href="https://github.com/qszhao">Qunshan Zhao</a></p></li>
+</ul>
+<p><strong>Contents</strong></p>
+<ol class="arabic simple">
+<li><p>Model data set up &amp; inputs</p></li>
+<li><p>The classic <span class="math notranslate nohighlight">\(p\)</span>-median problem</p></li>
+<li><p>The capacited <span class="math notranslate nohighlight">\(p\)</span>-median problem</p></li>
+<li><p>The <span class="math notranslate nohighlight">\(k\)</span>-nearest <span class="math notranslate nohighlight">\(p\)</span>-median problem</p></li>
+<li><p>The capacited <span class="math notranslate nohighlight">\(k\)</span>-nearest <span class="math notranslate nohighlight">\(p\)</span>-median problem</p></li>
+<li><p>Comparing variant results</p></li>
+<li><p>References</p></li>
+</ol>
+<p><strong>Notes</strong></p>
+<ul class="simple">
+<li><p>All models are solved with euclidean distance as impedence</p></li>
+<li><p>Detailed explanations of the classic <span class="math notranslate nohighlight">\(p\)</span>-median problem and the capacited variant can be found in <a class="reference internal" href="p-median.html"><span class="doc">the p-median tutorial</span></a>. These models were included in <code class="docutils literal notranslate"><span class="pre">spopt</span></code> with <a class="reference external" href="https://summerofcode.withgoogle.com/archive/2021/projects/5746198429827072">GSoC 2021</a> by <a class="reference external" href="https://github.com/gegen07">Germano Barcelos</a> and <a class="reference external" href="https://agile-giss.copernicus.org/articles/4/20/2023/">AGILE 2023</a> by <a class="reference external" href="https://github.com/rongboxu">Rongbo Xu</a>, respectively.</p></li>
+<li><p>The <span class="math notranslate nohighlight">\(k\)</span>-nearest <span class="math notranslate nohighlight">\(p\)</span>-median problem implementations were part of <a class="reference external" href="https://summerofcode.withgoogle.com/programs/2023/projects/05jDO3IG">GSoC 2023</a> and contributed by <a class="reference external" href="https://github.com/rongboxu">Rongbo Xu</a>. The complete, detailed write-up can be found <a class="reference external" href="https://github.com/rongboxu/P-Median-Model-with-Near-Far-Cost-Allocation/blob/main/notebooks/k_nearest_p_median_model.ipynb">here</a>.</p></li>
+</ul>
+<hr class="docutils" />
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+%load_ext watermark
+%watermark
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Last updated: 2023-12-10T13:16:52.881916-05:00
+
+Python implementation: CPython
+Python version       : 3.12.0
+IPython version      : 8.18.0
+
+Compiler    : Clang 15.0.7
+OS          : Darwin
+Release     : 23.1.0
+Machine     : x86_64
+Processor   : i386
+CPU cores   : 8
+Architecture: 64bit
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas
+import matplotlib.colors as mcolors
+import matplotlib.lines as mlines
+import matplotlib.pyplot as plt
+import numpy
+import pandas
+import pulp
+import shapely
+import spopt
+from matplotlib.patches import Patch
+from spopt.locate import KNearestPMedian, PMedian, simulated_geo_points
+
+%watermark -w
+%watermark -iv
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Watermark: 2.4.3
+
+geopandas : 0.14.1
+pandas    : 2.1.3
+shapely   : 2.0.2
+matplotlib: 3.8.2
+spopt     : 0.5.1.dev53+g5cadae7
+numpy     : 1.26.2
+pulp      : 2.7.0
+
+</pre></div></div>
+</div>
+<hr class="docutils" />
+<section id="1.-Model-data-set-up-&amp;-inputs">
+<h2>1. Model data set up &amp; inputs<a class="headerlink" href="#1.-Model-data-set-up-&-inputs" title="Link to this heading">¶</a></h2>
+<section id="Constants">
+<h3>Constants<a class="headerlink" href="#Constants" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">N_CLI</span></code>: The quantity of client locations to simulate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">N_FAC</span></code>: The quantity of facility locations to simulate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">P_FAC</span></code>: Candidate facilities in an optimal solution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SEED_CLI</span></code>/<code class="docutils literal notranslate"><span class="pre">SEED_FAC</span></code>: Random state seeds for reproducibility</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">solver</span></code>: The solver engine to utilize for optimization</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>N_CLI = 100
+N_FAC = 100
+P_FAC = 5
+SEED_CLI = 7
+SEED_FAC = 5
+solver = pulp.COIN_CMD(msg=False, warmStart=True)
+</pre></div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="Simulate-client-and-candidate-facility-locations">
+<h3>Simulate client and candidate facility locations<a class="headerlink" href="#Simulate-client-and-candidate-facility-locations" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">simulated_geo_points</span></code> utility function available in <code class="docutils literal notranslate"><span class="pre">spopt</span></code> simulates points in a study area.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>study_area = shapely.Polygon(((0,0), (10, 0), (10,10), (0, 10)))
+clients = simulated_geo_points(study_area, needed=N_CLI, seed=SEED_CLI)
+facilities = simulated_geo_points(study_area, needed=N_FAC, seed=SEED_FAC)
+for df in [clients, facilities]:
+    df.set_crs(&quot;EPSG:4326&quot;, inplace=True)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(4, 4))
+_label = f&quot;client sites ($n$={N_CLI})&quot;
+clients.plot(ax=ax, label=_label, alpha=.3)
+_label = f&quot;facility candidate sites ($n$={N_FAC})&quot;
+facilities.plot(ax=ax, zorder=2, label=_label, alpha=.3)
+plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_p-median_variations_7_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_7_0.png" style="width: 645px; height: 351px;" />
+</div>
+</div>
+<p>For each client location all <span class="math notranslate nohighlight">\(p\)</span>-median model varinates suppose there is a weight. Here we assign random integer values using <code class="docutils literal notranslate"><span class="pre">numpy</span></code> to simulate these weights ranging from a minimum of 1 and a maximum of 12.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>numpy.random.seed(0)
+ai = numpy.random.randint(1, 12, N_CLI)
+clients[&quot;weights&quot;] = ai
+sum_clients = clients[&quot;weights&quot;].sum()
+print(f&quot;The total of client weights: {sum_clients}&quot;)
+clients
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The total of client weights: 579
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>weights</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POINT (0.76308 7.79919)</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POINT (4.38409 7.23465)</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POINT (9.77990 5.38496)</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POINT (5.01120 0.72051)</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POINT (2.68439 4.99883)</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>95</th>
+      <td>POINT (1.06877 3.69486)</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>96</th>
+      <td>POINT (2.32671 4.51079)</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>97</th>
+      <td>POINT (2.76317 5.01807)</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>98</th>
+      <td>POINT (9.22603 3.82511)</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>99</th>
+      <td>POINT (6.50128 5.95621)</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>100 rows × 2 columns</p>
+</div></div>
+</div>
+<p>For each service facility the <strong>:math:`p`-median capacitated variants</strong> suppose there is a service level available at each site (the capacity). Again, we assign random integer values using <code class="docutils literal notranslate"><span class="pre">numpy</span></code> to simulate these capacities ranging from a minimum of 25 and a maximum of 200.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>min_cap = 25
+max_cap = 200
+numpy.random.seed(1)
+cj = numpy.random.randint(min_cap, max_cap, N_FAC)
+facilities[&quot;capacity&quot;] = cj
+sum_capacity = facilities[&quot;capacity&quot;].sum()
+print(f&quot;The total of service capacity: {sum_capacity}&quot;)
+facilities
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The total of service capacity: 10654
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>capacity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POINT (2.21993 8.70732)</td>
+      <td>62</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POINT (2.06719 9.18611)</td>
+      <td>165</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POINT (4.88411 6.11744)</td>
+      <td>97</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POINT (7.65908 5.18418)</td>
+      <td>162</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POINT (2.96801 1.87721)</td>
+      <td>158</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>95</th>
+      <td>POINT (7.26789 6.15814)</td>
+      <td>102</td>
+    </tr>
+    <tr>
+      <th>96</th>
+      <td>POINT (5.88500 6.05004)</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <th>97</th>
+      <td>POINT (3.54785 7.77382)</td>
+      <td>101</td>
+    </tr>
+    <tr>
+      <th>98</th>
+      <td>POINT (6.04603 3.09231)</td>
+      <td>68</td>
+    </tr>
+    <tr>
+      <th>99</th>
+      <td>POINT (2.45631 0.71266)</td>
+      <td>45</td>
+    </tr>
+  </tbody>
+</table>
+<p>100 rows × 2 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(4, 4))
+_label = f&quot;size-weighted clients\n\t$\\sum$={sum_clients}&quot;
+clients.plot(ax=ax, label=_label, alpha=.3, markersize=ai*4)
+_label = f&quot;capacity-weighted facilities\n\t$\\sum$={sum_capacity}&quot;
+facilities.plot(ax=ax, label=_label, alpha=.3, markersize=cj)
+plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_p-median_variations_12_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_12_0.png" style="width: 617px; height: 351px;" />
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="2.-The-classic-p-median-problem">
+<h2>2. The classic <span class="math notranslate nohighlight">\(p\)</span>-median problem<a class="headerlink" href="#2.-The-classic-p-median-problem" title="Link to this heading">¶</a></h2>
+<p>The <span class="math notranslate nohighlight">\(p\)</span>-median problem is a classic, introduced in <a class="reference external" href="https://doi:10.1287/opre.13.3.462">Hakimi (1965)</a>, seeks to minimize the maximum weights for siting <span class="math notranslate nohighlight">\(p\)</span> facilities. As an integer linear program (<span class="math notranslate nohighlight">\(ILP\)</span>), the <span class="math notranslate nohighlight">\(p\)</span>-median problem is formulated as:</p>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(\begin{array} \displaystyle \textbf{Minimize} &amp; \displaystyle \sum_{i \in I}\sum_{j \in J}{a_i d_{ij} X_{ij}} &amp;&amp;&amp; (1) \\
+\displaystyle \textbf{Subject to:} &amp; \displaystyle \sum_{j \in J}{X_{ij} = 1} &amp; \forall i \in I &amp;&amp; (2) \\
+&amp; \displaystyle \sum_{j \in J}{Y_{j} = p} &amp;&amp;&amp; (3) \\
+&amp; X_{ij} \leq Y_{j} &amp; \forall i \in I &amp; \forall j \in J &amp; (4) \\
+&amp; X_{ij} \in \{0,1\} &amp; \forall i \in I &amp; \forall j \in J &amp; (5) \\
+&amp; Y_{j} \in \{0,1\} &amp; \forall j \in J &amp;&amp; (6) \\ \end{array}\)</span></p>
+</div></blockquote>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(\begin{array} \displaystyle \textbf{Where:}\\ &amp; &amp; \displaystyle i &amp; \small = &amp; \textrm{index referencing client/demand locations} \\
+&amp; &amp; j &amp; \small = &amp; \textrm{index referencing potential facility sites} \\
+&amp; &amp; d_{ij} &amp; \small = &amp; \textrm{shortest distance between } i \textrm{ and } j \\
+&amp; &amp; p &amp; \small = &amp; \textrm{number of facilities to be located} \\
+&amp; &amp; a_i &amp; \small = &amp; \textrm{service load or population demand at } i \\
+&amp; &amp; X_{ij} &amp; \small = &amp; \begin{cases}
+1, \textrm{if demand } i \textrm{ is assigned to facility } j \\
+0, \textrm{otherwise}
+\end{cases} \\
+&amp; &amp; Y_{j} &amp; \small = &amp; \begin{cases}
+1, \textrm{if node } j \textrm{ has been selected for a facility} \\
+0, \textrm{otherwise} \\
+\end{cases} \\
+\end{array}\)</span></p>
+<p><em>The formulation above is adapted from Church and Murray (2018)</em></p>
+</div></blockquote>
+<p>First, we declare model positional and keyword arguments, which will be used in all <span class="math notranslate nohighlight">\(p\)</span>-median problem variants.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model_args = clients, facilities, &quot;geometry&quot;, &quot;geometry&quot;, &quot;weights&quot;, P_FAC
+</pre></div>
+</div>
+</div>
+<p>Instantiate and solve the classic <span class="math notranslate nohighlight">\(p\)</span>-median problem.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pmedian_classic = PMedian.from_geodataframe(*model_args, name=&quot;classic-p-median&quot;)
+pmedian_classic = pmedian_classic.solve(solver)
+</pre></div>
+</div>
+</div>
+<p>Record decision variable names used for mapping later.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def fac_vars(pmp):
+    return [f.name.replace(&quot;_&quot;, &quot;&quot;) for f in pmp.fac_vars]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities[&quot;dv&quot;] = fac_vars(pmedian_classic)
+facilities = facilities[[&quot;geometry&quot;, &quot;dv&quot;, &quot;capacity&quot;]].copy()
+facilities
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>dv</th>
+      <th>capacity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POINT (2.21993 8.70732)</td>
+      <td>y0</td>
+      <td>62</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POINT (2.06719 9.18611)</td>
+      <td>y1</td>
+      <td>165</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POINT (4.88411 6.11744)</td>
+      <td>y2</td>
+      <td>97</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POINT (7.65908 5.18418)</td>
+      <td>y3</td>
+      <td>162</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POINT (2.96801 1.87721)</td>
+      <td>y4</td>
+      <td>158</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>95</th>
+      <td>POINT (7.26789 6.15814)</td>
+      <td>y95</td>
+      <td>102</td>
+    </tr>
+    <tr>
+      <th>96</th>
+      <td>POINT (5.88500 6.05004)</td>
+      <td>y96</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <th>97</th>
+      <td>POINT (3.54785 7.77382)</td>
+      <td>y97</td>
+      <td>101</td>
+    </tr>
+    <tr>
+      <th>98</th>
+      <td>POINT (6.04603 3.09231)</td>
+      <td>y98</td>
+      <td>68</td>
+    </tr>
+    <tr>
+      <th>99</th>
+      <td>POINT (2.45631 0.71266)</td>
+      <td>y99</td>
+      <td>45</td>
+    </tr>
+  </tbody>
+</table>
+<p>100 rows × 3 columns</p>
+</div></div>
+</div>
+<p>Record solution diagnostics for model comparison.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def pmp_diagnostic(pmp, add_to=None):
+    &quot;&quot;&quot;Helper for displaying model diagnostics.&quot;&quot;&quot;
+    _diags = {
+        &quot;model&quot;: pmp.name,
+        &quot;variables&quot;: len(pmp.problem.variables()),
+        &quot;constraints&quot;: len(pmp.problem.constraints),
+        &quot;obj_val&quot;: round(pmp.problem.objective.value(), 3),
+        &quot;selected&quot;: [f.name.replace(&quot;_&quot;, &quot;&quot;) for f in pmp.fac_vars if f.varValue],
+        &quot;cpu_time&quot;: pmp.problem.solutionCpuTime,
+        &quot;wall_time&quot;: pmp.problem.solutionTime,
+    }
+    _diags = pandas.DataFrame([_diags.values()], columns=_diags.keys())
+    if isinstance(add_to, pandas.DataFrame):
+        _diags = pandas.concat([add_to, _diags], ignore_index=True)
+    return _diags
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>diagnostic = pmp_diagnostic(pmedian_classic)
+diagnostic
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>model</th>
+      <th>variables</th>
+      <th>constraints</th>
+      <th>obj_val</th>
+      <th>selected</th>
+      <th>cpu_time</th>
+      <th>wall_time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>classic-p-median</td>
+      <td>10100</td>
+      <td>10101</td>
+      <td>906.299</td>
+      <td>[y25, y32, y34, y68, y86]</td>
+      <td>0.510654</td>
+      <td>0.921897</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>The classic <span class="math notranslate nohighlight">\(p\)</span>-median problem does not take facility capacity into account, so we can (naively) assume that 100% of the capacity at each selected candidate facility is being utilized.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def cli_sum(f2c):
+    return clients.loc[f2c, &quot;weights&quot;].sum()
+
+def fac_cap(fdv):
+    return facilities.loc[(facilities[&quot;dv&quot;]==fdv), &quot;capacity&quot;].squeeze()
+
+def serv_perc_cap(f2c, fdv):
+    return round(cli_sum(f2c) / fac_cap(fdv), 2) * 100.0
+
+def service_level(pmp):
+    if pmp.name.startswith(&quot;capacitated&quot;):
+        zipped_vars = zip(pmp.fac2cli, facilities[&quot;dv&quot;], strict=True)
+        serv_lev = [serv_perc_cap(f2c, fdv) for f2c, fdv in zipped_vars]
+    else:
+        serv_lev = [100.0 if bool(dv.varValue) else 0. for dv in pmp.fac_vars]
+    return serv_lev
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities[&quot;pmp_classic&quot;] = service_level(pmedian_classic)
+perc_cols = [c for c in facilities.columns if c.startswith(&quot;pmp&quot;)]
+facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>dv</th>
+      <th>capacity</th>
+      <th>pmp_classic</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>25</th>
+      <td>POINT (7.70854 4.84931)</td>
+      <td>y25</td>
+      <td>88</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>POINT (8.24811 0.94203)</td>
+      <td>y32</td>
+      <td>33</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>POINT (5.46358 7.96143)</td>
+      <td>y34</td>
+      <td>140</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>68</th>
+      <td>POINT (0.85070 8.07777)</td>
+      <td>y68</td>
+      <td>82</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>86</th>
+      <td>POINT (2.18498 4.25637)</td>
+      <td>y86</td>
+      <td>102</td>
+      <td>100.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Plotting the results</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dv_colors_arr = list(mcolors.CSS4_COLORS.keys())
+dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_arr))}
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def plot_results(model, p, facs, clis=None):
+    &quot;&quot;&quot;Visualize optimal solution sets and context.&quot;&quot;&quot;
+    fig, ax = plt.subplots(figsize=(6, 6))
+    markersize, markersize_factor = 4, 4
+    ax.set_title(model.name, fontsize=15)
+
+    # extract facility-client relationships for plotting
+    cli_points = {}
+    fac_sites = {}
+    for i, dv in enumerate(model.fac_vars):
+        if dv.varValue:
+            dv = facs.loc[i, &quot;dv&quot;]
+            fac_sites[dv] = i
+            geom = clis.iloc[model.fac2cli[i]][&quot;geometry&quot;]
+            cli_points[dv] = geom
+
+    # study area and legend entries initialization
+    legend_elements = []
+
+    # all candidate facilities
+    facs.plot(ax=ax, fc=&quot;brown&quot;, marker=&quot;*&quot;, markersize=80, zorder=8)
+    _label = f&quot;Facility sites ($n$={len(model.fac_vars)})&quot;
+    _mkws = dict(marker=&quot;*&quot;, markerfacecolor=&quot;brown&quot;, markeredgecolor=&quot;brown&quot;)
+    legend_elements.append(mlines.Line2D([], [], ms=7, lw=0, label=_label, **_mkws))
+
+    # facility-(client) symbology and legend entries
+    zorder = 4
+    for fname, fac in fac_sites.items():
+        cset = dv_colors[fname]
+        # clients
+        geoms = cli_points[fname]
+        gdf = geopandas.GeoDataFrame(geoms)
+        gdf.plot(ax=ax, zorder=zorder, ec=&quot;k&quot;, fc=cset, markersize=100 * markersize)
+        _label = f&quot;Demand sites covered by {fname}&quot;
+        _mkws = dict(markerfacecolor=cset, markeredgecolor=&quot;k&quot;, ms=markersize + 7)
+        legend_elements.append(
+            mlines.Line2D([], [], marker=&quot;o&quot;, lw=0, label=_label, **_mkws)
+        )
+        # facilities
+        ec = &quot;k&quot;
+        lw = 2
+        facs.iloc[[fac]].plot(
+            ax=ax, marker=&quot;*&quot;, markersize=1000, zorder=9, fc=cset, ec=ec, lw=lw
+        )
+        _mkws = dict(markerfacecolor=cset, markeredgecolor=ec, markeredgewidth=lw)
+        legend_elements.append(
+            mlines.Line2D([], [], marker=&quot;*&quot;, ms=20, lw=0, label=fname, **_mkws)
+        )
+        # increment zorder up and markersize down for stacked client symbology
+        zorder += 1
+        markersize -= markersize_factor / p
+
+    # legend
+    kws = dict(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 0.7))
+    plt.legend(handles=legend_elements, **kws)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_results(pmedian_classic, P_FAC, facilities, clis=clients)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_p-median_variations_29_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_29_0.png" style="width: 797px; height: 529px;" />
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="3.-The-capacited-p-median-problem">
+<h2>3. The capacited <span class="math notranslate nohighlight">\(p\)</span>-median problem<a class="headerlink" href="#3.-The-capacited-p-median-problem" title="Link to this heading">¶</a></h2>
+<p>The capacitated variant of the <span class="math notranslate nohighlight">\(p\)</span>-median problem is formulated identically to the classic <span class="math notranslate nohighlight">\(p\)</span>-median problem with the addition of contraint <span class="math notranslate nohighlight">\((4)\)</span> below. Here constraint <span class="math notranslate nohighlight">\((4)\)</span> stipulates that for a facility to be considered for selection it must have the avaialable capacity to support demand from allocated client locations. The capacitated <span class="math notranslate nohighlight">\(p\)</span>-median variant can be formulated as:</p>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(\begin{array} \displaystyle \textbf{Minimize} &amp; \displaystyle \sum_{i \in I}\sum_{j \in J}{a_i d_{ij} X_{ij}} &amp;&amp;&amp; (1) \\
+\displaystyle \textbf{Subject to:} &amp; \displaystyle \sum_{j \in J}{X_{ij} = 1} &amp; \forall i \in I &amp;&amp; (2) \\
+&amp; \displaystyle \sum_{j \in J}{Y_{j} = p} &amp;&amp;&amp; (3) \\
+&amp; \displaystyle \sum_{i \in I}{a_i X_{ij} \leq {c_j Y_{j}}}&amp; \forall j \in J &amp;&amp; (4) \\
+&amp; X_{ij} \leq Y_{j} &amp; \forall i \in I &amp; \forall j \in J &amp; (5) \\
+&amp; X_{ij} \in \{0,1\} &amp; \forall i \in I &amp; \forall j \in J &amp; (6) \\
+&amp; Y_{j} \in \{0,1\} &amp; \forall j \in J &amp;&amp; (7) \\ \end{array}\)</span></p>
+</div></blockquote>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(\begin{array} \displaystyle \textbf{Where:}\\ &amp; &amp; \displaystyle i &amp; \small = &amp; \textrm{index referencing client/demand locations} \\
+&amp; &amp; j &amp; \small = &amp; \textrm{index referencing potential facility sites} \\
+&amp; &amp; d_{ij} &amp; \small = &amp; \textrm{shortest distance between } i \textrm{ and } j \\
+&amp; &amp; p &amp; \small = &amp; \textrm{number of facilities to be located} \\
+&amp; &amp; a_i &amp; \small = &amp; \textrm{service load or population demand at } i \\
+&amp; &amp; c_j &amp; \small = &amp; \textrm{capacity of facility } j \\
+&amp; &amp; X_{ij} &amp; \small = &amp; \begin{cases}
+1, \textrm{if demand } i \textrm{ is assigned to facility } j \\
+0, \textrm{otherwise}
+\end{cases} \\
+&amp; &amp; Y_{j} &amp; \small = &amp; \begin{cases}
+1, \textrm{if node } j \textrm{ has been selected for a facility} \\
+0, \textrm{otherwise} \\
+\end{cases} \\
+\end{array}\)</span></p>
+<p><em>The formulation above is adapted from Church and Murray (2009)</em></p>
+</div></blockquote>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pmedian_capacity = PMedian.from_geodataframe(
+    *model_args, name=&quot;p-median&quot;, facility_capacity_col=&quot;capacity&quot;
+)
+pmedian_capacity = pmedian_capacity.solve(solver)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>diagnostic = pmp_diagnostic(pmedian_capacity, add_to=diagnostic)
+diagnostic
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>model</th>
+      <th>variables</th>
+      <th>constraints</th>
+      <th>obj_val</th>
+      <th>selected</th>
+      <th>cpu_time</th>
+      <th>wall_time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>classic-p-median</td>
+      <td>10100</td>
+      <td>10101</td>
+      <td>906.299</td>
+      <td>[y25, y32, y34, y68, y86]</td>
+      <td>0.510654</td>
+      <td>0.921897</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>capacitated-p-median</td>
+      <td>10100</td>
+      <td>10201</td>
+      <td>962.151</td>
+      <td>[y20, y30, y45, y73, y86]</td>
+      <td>11.699106</td>
+      <td>12.895250</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities[&quot;pmp_capacitated&quot;] = service_level(pmedian_capacity)
+perc_cols = [c for c in facilities.columns if c.startswith(&quot;pmp&quot;)]
+facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>dv</th>
+      <th>capacity</th>
+      <th>pmp_classic</th>
+      <th>pmp_capacitated</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>20</th>
+      <td>POINT (2.59098 8.02497)</td>
+      <td>y20</td>
+      <td>121</td>
+      <td>0.0</td>
+      <td>83.0</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>POINT (7.70854 4.84931)</td>
+      <td>y25</td>
+      <td>88</td>
+      <td>100.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>POINT (6.35356 8.11902)</td>
+      <td>y30</td>
+      <td>153</td>
+      <td>0.0</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>POINT (8.24811 0.94203)</td>
+      <td>y32</td>
+      <td>33</td>
+      <td>100.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>POINT (5.46358 7.96143)</td>
+      <td>y34</td>
+      <td>140</td>
+      <td>100.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>POINT (8.59707 1.11111)</td>
+      <td>y45</td>
+      <td>101</td>
+      <td>0.0</td>
+      <td>95.0</td>
+    </tr>
+    <tr>
+      <th>68</th>
+      <td>POINT (0.85070 8.07777)</td>
+      <td>y68</td>
+      <td>82</td>
+      <td>100.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>73</th>
+      <td>POINT (5.70975 3.02518)</td>
+      <td>y73</td>
+      <td>187</td>
+      <td>0.0</td>
+      <td>68.0</td>
+    </tr>
+    <tr>
+      <th>86</th>
+      <td>POINT (2.18498 4.25637)</td>
+      <td>y86</td>
+      <td>102</td>
+      <td>100.0</td>
+      <td>100.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_results(pmedian_capacity, P_FAC, facilities, clis=clients)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_p-median_variations_34_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_34_0.png" style="width: 797px; height: 529px;" />
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="4.-The-k-nearest-p-median-problem">
+<h2>4. The <span class="math notranslate nohighlight">\(k\)</span>-nearest <span class="math notranslate nohighlight">\(p\)</span>-median problem<a class="headerlink" href="#4.-The-k-nearest-p-median-problem" title="Link to this heading">¶</a></h2>
+<p>The <span class="math notranslate nohighlight">\(k\)</span>-nearest <span class="math notranslate nohighlight">\(p\)</span>-median problem, also referred to as the <span class="math notranslate nohighlight">\(p\)</span>-median model with near-far cost allocation, implements a variant of the classic <span class="math notranslate nohighlight">\(p\)</span>-median problem that only considers a limited selection of the nearest facilites, and was introduced in <a class="reference external" href="https://doi.org/10.1177/0160017616650612">Church (2018)</a>. The focus here is the isolation a computationally efficient program for solving a <span class="math notranslate nohighlight">\(p\)</span>-median problem by dramatically reducing the number of variables and
+contraints in the mathematical formulation. As stated in the introduction above, a more detailed explanation of this model and its implementation can be found <a class="reference external" href="https://github.com/rongboxu/P-Median-Model-with-Near-Far-Cost-Allocation/blob/main/notebooks/k_nearest_p_median_model.ipynb">here</a>. The <span class="math notranslate nohighlight">\(k\)</span>-nearest <span class="math notranslate nohighlight">\(p\)</span>-median variant can be formulated as:</p>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(\begin{array} \displaystyle \textbf{Minimize} &amp; \displaystyle \sum_{i \in I}\sum_{k \in k_{i}}{a_i d_{ik} X_{ik}} + \sum_{i \in I}{g_i (d_{i{k_i}} + 1)} &amp;&amp;&amp; (1) \\
+\displaystyle \textbf{Subject to:} &amp; \displaystyle \sum_{k \in k_{i}}{X_{ik} + g_i = 1} &amp; \forall i \in I &amp;&amp; (2) \\
+&amp; \displaystyle \sum_{j \in J}{Y_{j} = p} &amp;&amp;&amp; (3) \\
+&amp; X_{ij} \leq Y_{j} &amp; \forall i \in I &amp; \forall j \in J &amp; (4) \\
+&amp; X_{ij} \in \{0,1\} &amp; \forall i \in I &amp; \forall j \in J &amp; (5) \\
+&amp; Y_{j} \in \{0,1\} &amp; \forall j \in J &amp;&amp; (6) \\ \end{array}\)</span></p>
+</div></blockquote>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(\begin{array} \displaystyle \textbf{Where:}\\ &amp; &amp; \displaystyle i &amp; \small = &amp; \textrm{index referencing client/demand locations} \\
+&amp; &amp; j &amp; \small = &amp; \textrm{index referencing potential facility sites} \\
+&amp; &amp; p &amp; \small = &amp; \textrm{number of facilities to be located} \\
+&amp; &amp; a_i &amp; \small = &amp; \textrm{service load or population demand at } i \\
+&amp; &amp; k_i &amp; \small = &amp; \textrm{the } k \textrm{ nearest facilities of client location } i \\
+&amp; &amp; c_j &amp; \small = &amp; \textrm{capacity of facility } j \\
+&amp; &amp; d_{ij} &amp; \small = &amp; \textrm{shortest distance between } i \textrm{ and } j \\
+&amp; &amp; X_{ij} &amp; \small = &amp; \begin{cases}
+1, \textrm{if demand } i \textrm{ is assigned to facility } j \\
+0, \textrm{otherwise}
+\end{cases} \\
+&amp; &amp; Y_{j} &amp; \small = &amp; \begin{cases}
+1, \textrm{if node } j \textrm{ has been selected for a facility} \\
+0, \textrm{otherwise} \\
+\end{cases} \\
+&amp; &amp; g_{i} &amp; \small = &amp; \begin{cases}
+1, \textrm{if the client } i \textrm{ needs to be served by non-}k\textrm{-nearest facilities} \\
+0, \textrm{otherwise} \\
+\end{cases} \\ \end{array}\)</span></p>
+<p><em>The formulation above is adapted from Church (2018)</em></p>
+</div></blockquote>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pmedian_k_nearest = KNearestPMedian.from_geodataframe(
+    *model_args, name=&quot;k-nearest-p-median&quot;,
+)
+pmedian_k_nearest = pmedian_k_nearest.solve(solver)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>diagnostic = pmp_diagnostic(pmedian_k_nearest, add_to=diagnostic)
+diagnostic
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>model</th>
+      <th>variables</th>
+      <th>constraints</th>
+      <th>obj_val</th>
+      <th>selected</th>
+      <th>cpu_time</th>
+      <th>wall_time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>classic-p-median</td>
+      <td>10100</td>
+      <td>10101</td>
+      <td>906.299</td>
+      <td>[y25, y32, y34, y68, y86]</td>
+      <td>0.510654</td>
+      <td>0.921897</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>capacitated-p-median</td>
+      <td>10100</td>
+      <td>10201</td>
+      <td>962.151</td>
+      <td>[y20, y30, y45, y73, y86]</td>
+      <td>11.699106</td>
+      <td>12.895250</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>k-nearest-p-median</td>
+      <td>1598</td>
+      <td>1499</td>
+      <td>906.299</td>
+      <td>[y25, y32, y34, y68, y86]</td>
+      <td>0.064253</td>
+      <td>0.113859</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities[&quot;pmp_k-nearest&quot;] = service_level(pmedian_k_nearest)
+perc_cols = [c for c in facilities.columns if c.startswith(&quot;pmp&quot;)]
+facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>dv</th>
+      <th>capacity</th>
+      <th>pmp_classic</th>
+      <th>pmp_capacitated</th>
+      <th>pmp_k-nearest</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>20</th>
+      <td>POINT (2.59098 8.02497)</td>
+      <td>y20</td>
+      <td>121</td>
+      <td>0.0</td>
+      <td>83.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>POINT (7.70854 4.84931)</td>
+      <td>y25</td>
+      <td>88</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>POINT (6.35356 8.11902)</td>
+      <td>y30</td>
+      <td>153</td>
+      <td>0.0</td>
+      <td>100.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>POINT (8.24811 0.94203)</td>
+      <td>y32</td>
+      <td>33</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>POINT (5.46358 7.96143)</td>
+      <td>y34</td>
+      <td>140</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>POINT (8.59707 1.11111)</td>
+      <td>y45</td>
+      <td>101</td>
+      <td>0.0</td>
+      <td>95.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>68</th>
+      <td>POINT (0.85070 8.07777)</td>
+      <td>y68</td>
+      <td>82</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>73</th>
+      <td>POINT (5.70975 3.02518)</td>
+      <td>y73</td>
+      <td>187</td>
+      <td>0.0</td>
+      <td>68.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>86</th>
+      <td>POINT (2.18498 4.25637)</td>
+      <td>y86</td>
+      <td>102</td>
+      <td>100.0</td>
+      <td>100.0</td>
+      <td>100.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_results(pmedian_k_nearest, P_FAC, facilities, clis=clients)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_p-median_variations_39_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_39_0.png" style="width: 797px; height: 529px;" />
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="5.-The-capacited-k-nearest-p-median-problem">
+<h2>5. The capacited <span class="math notranslate nohighlight">\(k\)</span>-nearest <span class="math notranslate nohighlight">\(p\)</span>-median problem<a class="headerlink" href="#5.-The-capacited-k-nearest-p-median-problem" title="Link to this heading">¶</a></h2>
+<p>With the addition of equation <span class="math notranslate nohighlight">\((4)\)</span> below, we can also introduce facility capacity as a constraint.</p>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(\begin{array} \displaystyle \textbf{Minimize} &amp; \displaystyle \sum_{i \in I} \displaystyle \sum_{k \in k_{i}}{a_i d_{ik} X_{ik}} + \sum_{i \in I}{g_i (d_{i{k_i}} + 1)} &amp;&amp;&amp; (1) \\
+\displaystyle \textbf{Subject to:} &amp; \displaystyle \sum_{k \in k_{i}}{X_{ik} + g_i = 1} &amp; \forall i \in I &amp;&amp; (2) \\
+&amp; \displaystyle \sum_{j \in J}{Y_{j} = p} &amp;&amp;&amp; (3) \\
+&amp; \displaystyle \sum_{i \in I}{a_i X_{ij} \leq {c_j Y_{j}}}&amp; \forall j \in J &amp;&amp; (4) \\
+&amp; X_{ij} \leq Y_{j} &amp; \forall i \in I &amp; \forall j \in J &amp; (5) \\
+&amp; X_{ij} \in \{0,1\} &amp; \forall i \in I &amp; \forall j \in J &amp; (6) \\
+&amp; Y_{j} \in \{0,1\} &amp; \forall j \in J &amp;&amp; (7) \\ \end{array}\)</span></p>
+</div></blockquote>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(\begin{array} \displaystyle \textbf{Where:}\\ &amp; &amp; \displaystyle i &amp; \small = &amp; \textrm{index referencing client/demand locations} \\
+&amp; &amp; j &amp; \small = &amp; \textrm{index referencing potential facility sites} \\
+&amp; &amp; p &amp; \small = &amp; \textrm{number of facilities to be located} \\
+&amp; &amp; a_i &amp; \small = &amp; \textrm{service load or population demand at } i \\
+&amp; &amp; k_i &amp; \small = &amp; \textrm{the } k^{th} \textrm{nearest facilities of client location } i \\
+&amp; &amp; c_j &amp; \small = &amp; \textrm{capacity of facility } j \\
+&amp; &amp; d_{ij} &amp; \small = &amp; \textrm{shortest distance between } i \textrm{ and } j \\
+&amp; &amp; X_{ij} &amp; \small = &amp; \begin{cases}
+1, \textrm{if demand } i \textrm{ is assigned to facility } j \\
+0, \textrm{otherwise}
+\end{cases} \\
+&amp; &amp; Y_{j} &amp; \small = &amp; \begin{cases}
+1, \textrm{if node } j \textrm{ has been selected for a facility} \\
+0, \textrm{otherwise} \\
+\end{cases} \\
+&amp; &amp; g_{i} &amp; \small = &amp; \begin{cases}
+1, \textrm{if the client } i \textrm{ needs to be served by non-k-nearest facilities} \\
+0, \textrm{otherwise} \\
+\end{cases} \\ \end{array}\)</span></p>
+<p><em>The formulation above is adapted from Church and Murray (2018)</em></p>
+</div></blockquote>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pmedian_k_nearest_capacity = KNearestPMedian.from_geodataframe(
+    *model_args,
+    name=&quot;k-nearest-p-median&quot;,
+    facility_capacity_col=&quot;capacity&quot;,
+)
+pmedian_k_nearest_capacity = pmedian_k_nearest_capacity.solve(solver)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>diagnostic = pmp_diagnostic(pmedian_k_nearest_capacity, add_to=diagnostic)
+diagnostic
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>model</th>
+      <th>variables</th>
+      <th>constraints</th>
+      <th>obj_val</th>
+      <th>selected</th>
+      <th>cpu_time</th>
+      <th>wall_time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>classic-p-median</td>
+      <td>10100</td>
+      <td>10101</td>
+      <td>906.299</td>
+      <td>[y25, y32, y34, y68, y86]</td>
+      <td>0.510654</td>
+      <td>0.921897</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>capacitated-p-median</td>
+      <td>10100</td>
+      <td>10201</td>
+      <td>962.151</td>
+      <td>[y20, y30, y45, y73, y86]</td>
+      <td>11.699106</td>
+      <td>12.895250</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>k-nearest-p-median</td>
+      <td>1598</td>
+      <td>1499</td>
+      <td>906.299</td>
+      <td>[y25, y32, y34, y68, y86]</td>
+      <td>0.064253</td>
+      <td>0.113859</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>capacitated-k-nearest-p-median</td>
+      <td>2045</td>
+      <td>3791</td>
+      <td>962.151</td>
+      <td>[y20, y30, y45, y73, y86]</td>
+      <td>2.610536</td>
+      <td>2.998628</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities[&quot;pmp_k-nearest_capacitated&quot;] = service_level(pmedian_k_nearest_capacity)
+perc_cols = [c for c in facilities.columns if c.startswith(&quot;pmp&quot;)]
+facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>dv</th>
+      <th>capacity</th>
+      <th>pmp_classic</th>
+      <th>pmp_capacitated</th>
+      <th>pmp_k-nearest</th>
+      <th>pmp_k-nearest_capacitated</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>20</th>
+      <td>POINT (2.59098 8.02497)</td>
+      <td>y20</td>
+      <td>121</td>
+      <td>0.0</td>
+      <td>83.0</td>
+      <td>0.0</td>
+      <td>83.0</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>POINT (7.70854 4.84931)</td>
+      <td>y25</td>
+      <td>88</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>POINT (6.35356 8.11902)</td>
+      <td>y30</td>
+      <td>153</td>
+      <td>0.0</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>POINT (8.24811 0.94203)</td>
+      <td>y32</td>
+      <td>33</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>POINT (5.46358 7.96143)</td>
+      <td>y34</td>
+      <td>140</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>POINT (8.59707 1.11111)</td>
+      <td>y45</td>
+      <td>101</td>
+      <td>0.0</td>
+      <td>95.0</td>
+      <td>0.0</td>
+      <td>95.0</td>
+    </tr>
+    <tr>
+      <th>68</th>
+      <td>POINT (0.85070 8.07777)</td>
+      <td>y68</td>
+      <td>82</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>73</th>
+      <td>POINT (5.70975 3.02518)</td>
+      <td>y73</td>
+      <td>187</td>
+      <td>0.0</td>
+      <td>68.0</td>
+      <td>0.0</td>
+      <td>68.0</td>
+    </tr>
+    <tr>
+      <th>86</th>
+      <td>POINT (2.18498 4.25637)</td>
+      <td>y86</td>
+      <td>102</td>
+      <td>100.0</td>
+      <td>100.0</td>
+      <td>100.0</td>
+      <td>100.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_results(pmedian_k_nearest_capacity, P_FAC, facilities, clis=clients)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_p-median_variations_44_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_44_0.png" style="width: 797px; height: 529px;" />
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="6.-Comparing-variant-results">
+<h2>6. Comparing variant results<a class="headerlink" href="#6.-Comparing-variant-results" title="Link to this heading">¶</a></h2>
+<section id="Solution-diagnostics-&amp;-optimal-facility-selection">
+<h3>Solution diagnostics &amp; optimal facility selection<a class="headerlink" href="#Solution-diagnostics-&-optimal-facility-selection" title="Link to this heading">¶</a></h3>
+<p>Below we can see that:</p>
+<ul class="simple">
+<li><p>The classic <span class="math notranslate nohighlight">\(p\)</span>-median and <span class="math notranslate nohighlight">\(k\)</span>-nearest variant result in equivalent objective values and facility selections. However, the <span class="math notranslate nohighlight">\(k\)</span>-nearest variant achieves optimality from a formulation with approximately 15% the number of variables and constraints of the classic formulation, resulting in a dramatically reduced solution time.</p></li>
+<li><p>Similar results are observed with the capacitated variants: equivalent objective values and facility selections, plus solve times approximately 20% faster.</p></li>
+<li><p><strong>Caveat</strong>: The solve times for the <span class="math notranslate nohighlight">\(k\)</span>-nearest variants do not include preparation of the minimal formulation, <em>only actual solve time</em> reported via <code class="docutils literal notranslate"><span class="pre">pulp</span></code>.</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>diagnostic
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>model</th>
+      <th>variables</th>
+      <th>constraints</th>
+      <th>obj_val</th>
+      <th>selected</th>
+      <th>cpu_time</th>
+      <th>wall_time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>classic-p-median</td>
+      <td>10100</td>
+      <td>10101</td>
+      <td>906.299</td>
+      <td>[y25, y32, y34, y68, y86]</td>
+      <td>0.510654</td>
+      <td>0.921897</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>capacitated-p-median</td>
+      <td>10100</td>
+      <td>10201</td>
+      <td>962.151</td>
+      <td>[y20, y30, y45, y73, y86]</td>
+      <td>11.699106</td>
+      <td>12.895250</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>k-nearest-p-median</td>
+      <td>1598</td>
+      <td>1499</td>
+      <td>906.299</td>
+      <td>[y25, y32, y34, y68, y86]</td>
+      <td>0.064253</td>
+      <td>0.113859</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>capacitated-k-nearest-p-median</td>
+      <td>2045</td>
+      <td>3791</td>
+      <td>962.151</td>
+      <td>[y20, y30, y45, y73, y86]</td>
+      <td>2.610536</td>
+      <td>2.998628</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>dv</th>
+      <th>capacity</th>
+      <th>pmp_classic</th>
+      <th>pmp_capacitated</th>
+      <th>pmp_k-nearest</th>
+      <th>pmp_k-nearest_capacitated</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>20</th>
+      <td>POINT (2.59098 8.02497)</td>
+      <td>y20</td>
+      <td>121</td>
+      <td>0.0</td>
+      <td>83.0</td>
+      <td>0.0</td>
+      <td>83.0</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>POINT (7.70854 4.84931)</td>
+      <td>y25</td>
+      <td>88</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>POINT (6.35356 8.11902)</td>
+      <td>y30</td>
+      <td>153</td>
+      <td>0.0</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>POINT (8.24811 0.94203)</td>
+      <td>y32</td>
+      <td>33</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>POINT (5.46358 7.96143)</td>
+      <td>y34</td>
+      <td>140</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>POINT (8.59707 1.11111)</td>
+      <td>y45</td>
+      <td>101</td>
+      <td>0.0</td>
+      <td>95.0</td>
+      <td>0.0</td>
+      <td>95.0</td>
+    </tr>
+    <tr>
+      <th>68</th>
+      <td>POINT (0.85070 8.07777)</td>
+      <td>y68</td>
+      <td>82</td>
+      <td>100.0</td>
+      <td>0.0</td>
+      <td>100.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>73</th>
+      <td>POINT (5.70975 3.02518)</td>
+      <td>y73</td>
+      <td>187</td>
+      <td>0.0</td>
+      <td>68.0</td>
+      <td>0.0</td>
+      <td>68.0</td>
+    </tr>
+    <tr>
+      <th>86</th>
+      <td>POINT (2.18498 4.25637)</td>
+      <td>y86</td>
+      <td>102</td>
+      <td>100.0</td>
+      <td>100.0</td>
+      <td>100.0</td>
+      <td>100.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="7.-References">
+<h2>7. References<a class="headerlink" href="#7.-References" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://doi:10.1287/opre.13.3.462">Hakimi, S. L. (1965). Optimum Distribution of Switching Centers in a Communication Network and Some Related Graph Theoretic Problems. Operations Research, 13(3), 462–475.</a></p></li>
+<li><p><a class="reference external" href="http://ndl.ethernet.edu.et/bitstream/123456789/22145/1/45.pdf">Church, R. L., &amp; Murray, A. T. (2009). Business site selection, location analysis, and GIS (pp. 209-233). Hoboken, NJ: John Wiley &amp; Sons.</a></p></li>
+<li><p><a class="reference external" href="https://doi.org/10.1177/0160017616650612">Church, R. L. (2018). Tobler’s Law and Spatial Optimization: Why Bakersfield? International Regional Science Review, 41(3), 287–310.</a></p></li>
+<li><p><a class="reference external" href="https://www.springer.com/gb/book/9783319998459">Church, R. L., &amp; Murray, A. T. (2018). Location covering models: History, applications and advancements (1st edition 2018). Springer</a></p></li>
+</ul>
+<hr class="docutils" />
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/p-median_variations.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

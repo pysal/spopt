@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>spopt.region.RandomRegions &#8212; spopt v0.6.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
+    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="spopt.region.RegionKMeansHeuristic" href="spopt.region.RegionKMeansHeuristic.html" />
+    <link rel="prev" title="spopt.region.RandomRegion" href="spopt.region.RandomRegion.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">spopt.region.RandomRegions</a><ul>
+<li><a class="reference internal" href="#spopt.region.RandomRegions"><code class="docutils literal notranslate"><span class="pre">RandomRegions</span></code></a><ul>
+<li><a class="reference internal" href="#spopt.region.RandomRegions.__init__"><code class="docutils literal notranslate"><span class="pre">RandomRegions.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="spopt-region-randomregions">
+<h1>spopt.region.RandomRegions<a class="headerlink" href="#spopt-region-randomregions" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="spopt.region.RandomRegions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spopt.region.</span></span><span class="sig-name descname"><span class="pre">RandomRegions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">area_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_regions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cardinality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contiguity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compact</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_swaps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">99</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/random_region.html#RandomRegions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.region.RandomRegions" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a list of RandomRegion instances.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>area_ids</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>The IDs indexing the areas to be grouped into regions (must be in
+the same order as spatial weights matrix if this is provided).</p>
+</dd>
+<dt><strong>num_regions</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>The number of regions to generate (if <code class="docutils literal notranslate"><span class="pre">None</span></code> then this is chosen
+randomly from 2 to <span class="math notranslate nohighlight">\(n\)</span> where <span class="math notranslate nohighlight">\(n\)</span> is the number of areas).</p>
+</dd>
+<dt><strong>cardinality</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>A list containing the number of areas to assign to regions
+(if <code class="docutils literal notranslate"><span class="pre">num_regions</span></code> is also provided then <code class="docutils literal notranslate"><span class="pre">len(cardinality)</span></code>
+must equal <code class="docutils literal notranslate"><span class="pre">num_regions</span></code>; if <code class="docutils literal notranslate"><span class="pre">None</span></code> then a list of length
+<code class="docutils literal notranslate"><span class="pre">num_regions</span></code> will be generated randomly).</p>
+</dd>
+<dt><strong>contiguity</strong><span class="classifier"><a class="reference external" href="https://pysal.org/libpysal/generated/libpysal.weights.W.html#libpysal.weights.W" title="(in libpysal v4.11.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>A spatial weights object (if <code class="docutils literal notranslate"><span class="pre">None</span></code> then contiguity will be ignored).</p>
+</dd>
+<dt><strong>maxiter</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 100)</span></dt><dd><p>The maximum number attempts (for each permutation) at finding
+a feasible solution (only affects contiguity constrained regions).</p>
+</dd>
+<dt><strong>compact</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.12)"><span class="xref std std-ref">bool</span></a> (default <a class="reference external" href="https://docs.python.org/3.12/library/constants.html#False" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">False</span></code></a>)</span></dt><dd><p>Attempt to build compact regions (only affects contiguity constrained regions).</p>
+</dd>
+<dt><strong>max_swaps</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 1000000)</span></dt><dd><p>The maximum number of swaps to find a feasible solution
+(only affects contiguity constrained regions).</p>
+</dd>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 99)</span></dt><dd><p>The number of <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instances to generate.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Setup the data.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">libpysal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spopt.region</span> <span class="kn">import</span> <span class="n">RandomRegions</span><span class="p">,</span> <span class="n">RandomRegion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nregs</span> <span class="o">=</span> <span class="mi">13</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cards</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">14</span><span class="p">))</span> <span class="o">+</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">lat2W</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">rook</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">id_order</span>
+</pre></div>
+</div>
+<p>Unconstrained:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t0</span> <span class="o">=</span> <span class="n">RandomRegions</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t0</span><span class="o">.</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">[19, 14, 43, 37, 66, 3, 79, 41, 38, 68, 2, 1, 60]</span>
+</pre></div>
+</div>
+<p>Cardinality and contiguity constrained (<code class="docutils literal notranslate"><span class="pre">num_regions</span></code> implied):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t1</span> <span class="o">=</span> <span class="n">RandomRegions</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">ids</span><span class="p">,</span> <span class="n">num_regions</span><span class="o">=</span><span class="n">nregs</span><span class="p">,</span> <span class="n">cardinality</span><span class="o">=</span><span class="n">cards</span><span class="p">,</span> <span class="n">contiguity</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t1</span><span class="o">.</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">[62, 61, 81, 71, 64, 90, 72, 51, 80, 63, 50, 73, 52]</span>
+</pre></div>
+</div>
+<p>Cardinality constrained (<code class="docutils literal notranslate"><span class="pre">num_regions</span></code> implied):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t2</span> <span class="o">=</span> <span class="n">RandomRegions</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">ids</span><span class="p">,</span> <span class="n">num_regions</span><span class="o">=</span><span class="n">nregs</span><span class="p">,</span> <span class="n">cardinality</span><span class="o">=</span><span class="n">cards</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t2</span><span class="o">.</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">[37, 62]</span>
+</pre></div>
+</div>
+<p>Number of regions and contiguity constrained:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t3</span> <span class="o">=</span> <span class="n">RandomRegions</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">num_regions</span><span class="o">=</span><span class="n">nregs</span><span class="p">,</span> <span class="n">contiguity</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t3</span><span class="o">.</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">[62, 52, 51, 63, 61, 73, 41, 53, 60, 83, 42, 31, 32]</span>
+</pre></div>
+</div>
+<p>Cardinality and contiguity constrained:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t4</span> <span class="o">=</span> <span class="n">RandomRegions</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">cardinality</span><span class="o">=</span><span class="n">cards</span><span class="p">,</span> <span class="n">contiguity</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t4</span><span class="o">.</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">[62, 61, 81, 71, 64, 90, 72, 51, 80, 63, 50, 73, 52]</span>
+</pre></div>
+</div>
+<p>Number of regions constrained:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t5</span> <span class="o">=</span> <span class="n">RandomRegions</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">num_regions</span><span class="o">=</span><span class="n">nregs</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t5</span><span class="o">.</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">[37, 62, 26, 41, 35, 25, 36]</span>
+</pre></div>
+</div>
+<p>Cardinality constrained:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t6</span> <span class="o">=</span> <span class="n">RandomRegions</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">cardinality</span><span class="o">=</span><span class="n">cards</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t6</span><span class="o">.</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">[37, 62]</span>
+</pre></div>
+</div>
+<p>Contiguity constrained:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t7</span> <span class="o">=</span> <span class="n">RandomRegions</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">contiguity</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t7</span><span class="o">.</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">[62, 61, 71, 63]</span>
+</pre></div>
+</div>
+<dl class="field-list">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>solutions</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>A list of length <code class="docutils literal notranslate"><span class="pre">permutations</span></code> containing all
+<code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instances generated.</p>
+</dd>
+<dt><strong>solutions_feas</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>A list of the <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instances that resulted in feasible solutions.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.region.RandomRegions.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">area_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_regions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cardinality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contiguity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compact</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_swaps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">99</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/random_region.html#RandomRegions.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.region.RandomRegions.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.region.RandomRegions.__init__" title="spopt.region.RandomRegions.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(area_ids[, num_regions, ...])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/spopt.region.RandomRegions.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

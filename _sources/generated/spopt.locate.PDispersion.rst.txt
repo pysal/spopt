@@ -1,0 +1,26 @@
+﻿spopt.locate.PDispersion
+========================
+
+.. currentmodule:: spopt.locate
+
+.. autoclass:: PDispersion
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PDispersion.__init__
+      ~PDispersion.check_status
+      ~PDispersion.from_cost_matrix
+      ~PDispersion.from_geodataframe
+      ~PDispersion.solve
+   
+   
+
+   
+   
+   

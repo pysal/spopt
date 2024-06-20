@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spopt.locate.p_median &#8212; spopt v0.6.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=e5dd7357" />
+    <script src="../../../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../installation.html">Installation</a></li>
+                <li><a href="../../../tutorials.html">Tutorials</a></li>
+                <li><a href="../../../api.html">API</a></li>
+                <li><a href="../../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for spopt.locate.p_median</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ruff: noqa: B009, B010</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pulp</span>
+<span class="kn">from</span> <span class="nn">geopandas</span> <span class="kn">import</span> <span class="n">GeoDataFrame</span>
+<span class="kn">from</span> <span class="nn">pointpats.geometry</span> <span class="kn">import</span> <span class="n">build_best_tree</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span><span class="p">,</span> <span class="n">find</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">cdist</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BaseOutputMixin</span><span class="p">,</span>
+    <span class="n">FacilityModelBuilder</span><span class="p">,</span>
+    <span class="n">LocateSolver</span><span class="p">,</span>
+    <span class="n">MeanDistanceMixin</span><span class="p">,</span>
+    <span class="n">SpecificationError</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="PMedian">
+<a class="viewcode-back" href="../../../generated/spopt.locate.PMedian.html#spopt.locate.PMedian">[docs]</a>
+<span class="k">class</span> <span class="nc">PMedian</span><span class="p">(</span><span class="n">LocateSolver</span><span class="p">,</span> <span class="n">BaseOutputMixin</span><span class="p">,</span> <span class="n">MeanDistanceMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implement the :math:`p`-median optimization model and solve it. The</span>
+<span class="sd">    :math:`p`-median problem, as adapted from :cite:`daskin_2013`,</span>
+<span class="sd">    can be formulated as:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \begin{array}{lllll}</span>
+<span class="sd">       \displaystyle \textbf{Minimize}      &amp; \displaystyle \sum_{i \in I}\sum_{j \in J}{a_i d_{ij} X_{ij}} &amp;&amp;                                          &amp; (1)                                                                               \\</span>
+<span class="sd">       \displaystyle \textbf{Subject To}    &amp; \displaystyle \sum_{j \in J}{X_{ij} = 1}                      &amp;&amp; \forall i \in I                          &amp; (2)                                                                               \\</span>
+<span class="sd">                                            &amp; \displaystyle \sum_{j \in J}{Y_j} = p                         &amp;&amp;                                          &amp; (3)                                                                               \\</span>
+<span class="sd">                                            &amp; X_{ij} \leq Y_{j}                                             &amp;&amp; \forall i \in I \quad \forall j \in J    &amp; (4)                                                                               \\</span>
+<span class="sd">                                            &amp; X_{ij} \in \{0, 1\}                                           &amp;&amp; \forall i \in I \quad \forall j \in J    &amp; (5)                                                                               \\</span>
+<span class="sd">                                            &amp; Y_j \in \{0, 1\}                                              &amp;&amp; \forall j \in J                          &amp; (6)                                                                               \\</span>
+<span class="sd">                                            &amp;                                                               &amp;&amp;                                          &amp;                                                                                   \\</span>
+<span class="sd">       \displaystyle \textbf{Where}         &amp;&amp; i                                                            &amp; =                                         &amp; \textrm{index of demand points/areas/objects in set } I                           \\</span>
+<span class="sd">                                            &amp;&amp; j                                                            &amp; =                                         &amp; \textrm{index of potential facility sites in set } J                              \\</span>
+<span class="sd">                                            &amp;&amp; p                                                            &amp; =                                         &amp; \textrm{the number of facilities to be sited}                                     \\</span>
+<span class="sd">                                            &amp;&amp; a_i                                                          &amp; =                                         &amp; \textrm{service load or population demand at client location } i \\</span>
+<span class="sd">                                            &amp;&amp; d_{ij}                                                       &amp; =                                         &amp; \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\</span>
+<span class="sd">                                            &amp;&amp; X_{ij}                                                       &amp; =                                         &amp; \begin{cases}</span>
+<span class="sd">                                                                                                                                                           1, \textrm{if client location } i \textrm{ is served by facility } j             \\</span>
+<span class="sd">                                                                                                                                                           0, \textrm{otherwise}                                                            \\</span>
+<span class="sd">                                                                                                                                                          \end{cases}                                                                       \\</span>
+<span class="sd">                                            &amp;&amp; Y_j                                                          &amp; =                                         &amp; \begin{cases}</span>
+<span class="sd">                                                                                                                                                           1, \textrm{if a facility is sited at location } j                                \\</span>
+<span class="sd">                                                                                                                                                           0, \textrm{otherwise}                                                            \\</span>
+<span class="sd">                                                                                                                                                          \end{cases}                                                                       \\</span>
+<span class="sd">       \end{array}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    name : str</span>
+<span class="sd">        The problem name.</span>
+<span class="sd">    problem : pulp.LpProblem</span>
+<span class="sd">        A ``pulp`` instance of an optimization model that contains</span>
+<span class="sd">        constraints, variables, and an objective function.</span>
+<span class="sd">    aij : numpy.array</span>
+<span class="sd">        A cost matrix in the form of a 2D array between origins and destinations.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    name : str</span>
+<span class="sd">        The problem name.</span>
+<span class="sd">    problem : pulp.LpProblem</span>
+<span class="sd">        A ``pulp`` instance of an optimization model that contains</span>
+<span class="sd">        constraints, variables, and an objective function.</span>
+<span class="sd">    fac2cli : numpy.array</span>
+<span class="sd">        A 2D array storing facility to client relationships where each</span>
+<span class="sd">        row represents a facility and contains an array of client indices</span>
+<span class="sd">        with which it is associated. An empty client array indicates</span>
+<span class="sd">        the facility is associated with no clients.</span>
+<span class="sd">    cli2fac : numpy.array</span>
+<span class="sd">        The inverse of ``fac2cli`` where client to facility relationships</span>
+<span class="sd">        are shown.</span>
+<span class="sd">    aij : numpy.array</span>
+<span class="sd">        A cost matrix in the form of a 2D array between origins and destinations.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+<div class="viewcode-block" id="PMedian.__init__">
+<a class="viewcode-back" href="../../../generated/spopt.locate.PMedian.html#spopt.locate.PMedian.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">problem</span><span class="p">:</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpProblem</span><span class="p">,</span>
+        <span class="n">aij</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">weights_sum</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aij</span> <span class="o">=</span> <span class="n">aij</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ai_sum</span> <span class="o">=</span> <span class="n">weights_sum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">=</span> <span class="n">problem</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__add_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">range_clients</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">range_facility</span><span class="p">:</span> <span class="nb">range</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add the objective function to the model.</span>
+
+<span class="sd">        Minimize s0_0 * z0_0 + s0_1 * z0_1 + ... + si_j * zi_j</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        range_clients : range</span>
+<span class="sd">            The range of demand points.</span>
+<span class="sd">        range_facility : range</span>
+<span class="sd">            The range of facility point.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cli_assgn_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;cli_assgn_vars&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="n">pulp</span><span class="o">.</span><span class="n">lpSum</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">aij</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">cli_assgn_vars</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">range_clients</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">range_facility</span>
+                <span class="p">]</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;objective function&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="PMedian.from_cost_matrix">
+<a class="viewcode-back" href="../../../generated/spopt.locate.PMedian.html#spopt.locate.PMedian.from_cost_matrix">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_cost_matrix</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">cost_matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">p_facilities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">predefined_facilities_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">facility_capacities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fulfill_predefined_fac</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;p-median&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a ``PMedian`` object based on a cost matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        cost_matrix : numpy.array</span>
+<span class="sd">            A cost matrix in the form of a 2D array between origins and destinations.</span>
+<span class="sd">        weights : numpy.array</span>
+<span class="sd">            A 1D array of service load or population demand.</span>
+<span class="sd">        p_facilities : int</span>
+<span class="sd">            The number of facilities to be located.</span>
+<span class="sd">        predefined_facilities_arr : numpy.array (default None)</span>
+<span class="sd">            A binary 1D array of service facilities that must appear in the</span>
+<span class="sd">            solution. For example, consider 3 facilites ``[&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]``.</span>
+<span class="sd">            If facility ``&#39;B&#39;`` must be in the model solution, then the passed</span>
+<span class="sd">            in array should be ``[0, 1, 0]``.</span>
+<span class="sd">        facility_capacity : numpy.array (default None)</span>
+<span class="sd">            The capacity of each facility.</span>
+<span class="sd">        fulfill_predefined_fac : bool (default False)</span>
+<span class="sd">            If the predefined facilities need to be fulfilled.</span>
+<span class="sd">        name : str (default &#39;p-median&#39;)</span>
+<span class="sd">            The problem name.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.p_median.PMedian</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &gt;&gt;&gt; from spopt.locate import PMedian</span>
+<span class="sd">        &gt;&gt;&gt; from spopt.locate.util import simulated_geo_points</span>
+<span class="sd">        &gt;&gt;&gt; import geopandas</span>
+<span class="sd">        &gt;&gt;&gt; import numpy</span>
+<span class="sd">        &gt;&gt;&gt; import pulp</span>
+<span class="sd">        &gt;&gt;&gt; import spaghetti</span>
+
+<span class="sd">        Create a regular lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)</span>
+<span class="sd">        &gt;&gt;&gt; ntw = spaghetti.Network(in_data=lattice)</span>
+<span class="sd">        &gt;&gt;&gt; streets = spaghetti.element_as_gdf(ntw, arcs=True)</span>
+<span class="sd">        &gt;&gt;&gt; streets_buffered = geopandas.GeoDataFrame(</span>
+<span class="sd">        ...     geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.2).unary_union),</span>
+<span class="sd">        ...     crs=streets.crs,</span>
+<span class="sd">        ...     columns=[&quot;geometry&quot;]</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Simulate points about the lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)</span>
+<span class="sd">        &gt;&gt;&gt; facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)</span>
+
+<span class="sd">        Snap the points to the network of lattice edges.</span>
+
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(demand_points, &quot;clients&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; clients_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;clients&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(facility_points, &quot;facilities&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; facilities_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;facilities&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Calculate the cost matrix from origins to destinations.</span>
+
+<span class="sd">        &gt;&gt;&gt; cost_matrix = ntw.allneighbordistances(</span>
+<span class="sd">        ...    sourcepattern=ntw.pointpatterns[&quot;clients&quot;],</span>
+<span class="sd">        ...    destpattern=ntw.pointpatterns[&quot;facilities&quot;]</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Simulate demand weights from ``1`` to ``12``.</span>
+
+<span class="sd">        &gt;&gt;&gt; ai = numpy.random.randint(1, 12, 100)</span>
+
+<span class="sd">        Create and solve a ``PMedian`` instance from the cost matrix.</span>
+
+<span class="sd">        &gt;&gt;&gt; pmedian_from_cost_matrix = PMedian.from_cost_matrix(</span>
+<span class="sd">        ...     cost_matrix, ai, p_facilities=4</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; pmedian_from_cost_matrix = pmedian_from_cost_matrix.solve(</span>
+<span class="sd">        ...     pulp.PULP_CBC_CMD(msg=False)</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Get the facility-client associations.</span>
+
+<span class="sd">        &gt;&gt;&gt; for fac, cli in enumerate(pmedian_from_cost_matrix.fac2cli):</span>
+<span class="sd">        ...     print(f&quot;facility {fac} serving {len(cli)} clients&quot;)</span>
+<span class="sd">        facility 0 serving 14 clients</span>
+<span class="sd">        facility 1 serving 29 clients</span>
+<span class="sd">        facility 2 serving 31 clients</span>
+<span class="sd">        facility 3 serving 0 clients</span>
+<span class="sd">        facility 4 serving 26 clients</span>
+
+<span class="sd">        Get the total and average weighted travel cost.</span>
+
+<span class="sd">        &gt;&gt;&gt; round(pmedian_from_cost_matrix.problem.objective.value(), 3)</span>
+<span class="sd">        1870.747</span>
+<span class="sd">        &gt;&gt;&gt; round(pmedian_from_cost_matrix.mean_dist, 3)</span>
+<span class="sd">        3.027</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_cli</span> <span class="o">=</span> <span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">r_cli</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_cli</span><span class="p">)</span>
+        <span class="n">r_fac</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpProblem</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpMinimize</span><span class="p">)</span>
+
+        <span class="n">weights_sum</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="p">(</span><span class="n">n_cli</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">aij</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">*</span> <span class="n">cost_matrix</span>
+
+        <span class="n">p_median</span> <span class="o">=</span> <span class="n">PMedian</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">aij</span><span class="p">,</span> <span class="n">weights_sum</span><span class="p">)</span>
+
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_facility_integer_variable</span><span class="p">(</span><span class="n">p_median</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">,</span> <span class="s2">&quot;y[</span><span class="si">{i}</span><span class="s2">]&quot;</span><span class="p">)</span>
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_client_assign_variable</span><span class="p">(</span>
+            <span class="n">p_median</span><span class="p">,</span> <span class="n">r_cli</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">,</span> <span class="s2">&quot;z[</span><span class="si">{i}</span><span class="s2">_</span><span class="si">{j}</span><span class="s2">]&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">predefined_facilities_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fulfill_predefined_fac</span> <span class="ow">and</span> <span class="n">facility_capacities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sum_predefined_fac_cap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                    <span class="n">facility_capacities</span><span class="p">[</span><span class="n">predefined_facilities_arr</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">sum_predefined_fac_cap</span> <span class="o">&lt;=</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">():</span>
+                    <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_predefined_facility_constraint</span><span class="p">(</span>
+                        <span class="n">p_median</span><span class="p">,</span>
+                        <span class="n">predefined_facilities_arr</span><span class="p">,</span>
+                        <span class="n">weights</span><span class="p">,</span>
+                        <span class="n">facility_capacities</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">SpecificationError</span><span class="p">(</span>
+                        <span class="s2">&quot;Problem is infeasible. The predefined facilities can&#39;t be &quot;</span>
+                        <span class="s2">&quot;fulfilled, because their capacity is larger than the total &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;demand </span><span class="si">{</span><span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">fulfill_predefined_fac</span> <span class="ow">and</span> <span class="n">facility_capacities</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SpecificationError</span><span class="p">(</span>
+                    <span class="s2">&quot;Data on the capacity of the facility is missing, &quot;</span>
+                    <span class="s2">&quot;so the model cannot be calculated.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_predefined_facility_constraint</span><span class="p">(</span>
+                    <span class="n">p_median</span><span class="p">,</span> <span class="n">predefined_facilities_arr</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">facility_capacities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sorted_capacities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">facility_capacities</span><span class="p">)</span>
+            <span class="n">highest_possible_capacity</span> <span class="o">=</span> <span class="n">sorted_capacities</span><span class="p">[</span><span class="o">-</span><span class="n">p_facilities</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">highest_possible_capacity</span> <span class="o">&lt;</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="n">SpecificationError</span><span class="p">(</span>
+                    <span class="s2">&quot;Problem is infeasible. The highest possible capacity &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">highest_possible_capacity</span><span class="si">}</span><span class="s2">, coming from the </span><span class="si">{</span><span class="n">p_facilities</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="s2">&quot;sites with the highest capacity, is smaller than &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;the total demand </span><span class="si">{</span><span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_facility_capacity_constraint</span><span class="p">(</span>
+                <span class="n">p_median</span><span class="p">,</span>
+                <span class="n">weights</span><span class="p">,</span>
+                <span class="n">facility_capacities</span><span class="p">,</span>
+                <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)),</span>
+                <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">facility_capacities</span><span class="p">)),</span>
+            <span class="p">)</span>
+        <span class="n">p_median</span><span class="o">.</span><span class="n">__add_obj</span><span class="p">(</span><span class="n">r_cli</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">)</span>
+
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_facility_constraint</span><span class="p">(</span><span class="n">p_median</span><span class="p">,</span> <span class="n">p_facilities</span><span class="p">)</span>
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_assignment_constraint</span><span class="p">(</span><span class="n">p_median</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">,</span> <span class="n">r_cli</span><span class="p">)</span>
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_opening_constraint</span><span class="p">(</span><span class="n">p_median</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">,</span> <span class="n">r_cli</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">p_median</span></div>
+
+
+<div class="viewcode-block" id="PMedian.from_geodataframe">
+<a class="viewcode-back" href="../../../generated/spopt.locate.PMedian.html#spopt.locate.PMedian.from_geodataframe">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_geodataframe</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">gdf_demand</span><span class="p">:</span> <span class="n">GeoDataFrame</span><span class="p">,</span>
+        <span class="n">gdf_fac</span><span class="p">:</span> <span class="n">GeoDataFrame</span><span class="p">,</span>
+        <span class="n">demand_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">facility_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">weights_cols</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">p_facilities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">facility_capacity_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">predefined_facility_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fulfill_predefined_fac</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">distance_metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;euclidean&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;p-median&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Create an ``PMedian`` object from ``geopandas.GeoDataFrame`` objects.</span>
+<span class="sd">        Calculate the cost matrix between demand and facility locations</span>
+<span class="sd">        before building the problem within the ``from_cost_matrix()`` method.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        gdf_demand : geopandas.GeoDataFrame</span>
+<span class="sd">            Demand locations.</span>
+<span class="sd">        gdf_fac : geopandas.GeoDataFrame</span>
+<span class="sd">            Facility locations.</span>
+<span class="sd">        demand_col : str</span>
+<span class="sd">            Demand sites geometry column name.</span>
+<span class="sd">        facility_col : str</span>
+<span class="sd">            Facility candidate sites geometry column name.</span>
+<span class="sd">        weights_cols : str</span>
+<span class="sd">            The weight column name representing service load or demand.</span>
+<span class="sd">        p_facilities: int</span>
+<span class="sd">            The number of facilities to be located.</span>
+<span class="sd">        predefined_facility_col : str (default None)</span>
+<span class="sd">            Column name representing facilities are already defined.</span>
+<span class="sd">            This a binary assignment per facility. For example, consider 3 facilites</span>
+<span class="sd">            ``[&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]``. If facility ``&#39;B&#39;`` must be in the model solution,</span>
+<span class="sd">            then the column should be ``[0, 1, 0]``.</span>
+<span class="sd">        facility_capacities_col: str (default None)</span>
+<span class="sd">            Column name representing the capacities of each facility.</span>
+<span class="sd">        fulfill_predefined_fac : bool (default False)</span>
+<span class="sd">            If the predefined facilities need to be fulfilled.</span>
+<span class="sd">        distance_metric : str (default &#39;euclidean&#39;)</span>
+<span class="sd">            A metric used for the distance calculations supported by</span>
+<span class="sd">            `scipy.spatial.distance.cdist &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html&gt;`_.</span>
+<span class="sd">        name : str (default &#39;p-median&#39;)</span>
+<span class="sd">            The name of the problem.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.p_median.PMedian</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &gt;&gt;&gt; from spopt.locate import PMedian</span>
+<span class="sd">        &gt;&gt;&gt; from spopt.locate.util import simulated_geo_points</span>
+<span class="sd">        &gt;&gt;&gt; import geopandas</span>
+<span class="sd">        &gt;&gt;&gt; import numpy</span>
+<span class="sd">        &gt;&gt;&gt; import pulp</span>
+<span class="sd">        &gt;&gt;&gt; import spaghetti</span>
+
+<span class="sd">        Create a regular lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)</span>
+<span class="sd">        &gt;&gt;&gt; ntw = spaghetti.Network(in_data=lattice)</span>
+<span class="sd">        &gt;&gt;&gt; streets = spaghetti.element_as_gdf(ntw, arcs=True)</span>
+<span class="sd">        &gt;&gt;&gt; streets_buffered = geopandas.GeoDataFrame(</span>
+<span class="sd">        ...     geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.2).unary_union),</span>
+<span class="sd">        ...     crs=streets.crs,</span>
+<span class="sd">        ...     columns=[&quot;geometry&quot;]</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Simulate points about the lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)</span>
+<span class="sd">        &gt;&gt;&gt; facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)</span>
+
+<span class="sd">        Snap the points to the network of lattice edges</span>
+<span class="sd">        and extract as ``GeoDataFrame`` objects.</span>
+
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(demand_points, &quot;clients&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; clients_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;clients&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(facility_points, &quot;facilities&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; facilities_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;facilities&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Simulate demand weights from ``1`` to ``12``.</span>
+
+<span class="sd">        &gt;&gt;&gt; ai = numpy.random.randint(1, 12, 100)</span>
+<span class="sd">        &gt;&gt;&gt; clients_snapped[&#39;weights&#39;] = ai</span>
+
+<span class="sd">        Create and solve a ``PMedian`` instance from the ``GeoDataFrame`` object.</span>
+
+<span class="sd">        &gt;&gt;&gt; pmedian_from_geodataframe = PMedian.from_geodataframe(</span>
+<span class="sd">        ...    clients_snapped,</span>
+<span class="sd">        ...    facilities_snapped,</span>
+<span class="sd">        ...    &quot;geometry&quot;,</span>
+<span class="sd">        ...    &quot;geometry&quot;,</span>
+<span class="sd">        ...    &quot;weights&quot;,</span>
+<span class="sd">        ...    p_facilities=4,</span>
+<span class="sd">        ...    distance_metric=&quot;euclidean&quot;</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; pmedian_from_geodataframe = pmedian_from_geodataframe.solve(</span>
+<span class="sd">        ...     pulp.PULP_CBC_CMD(msg=False)</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Get the facility-client associations.</span>
+
+<span class="sd">        &gt;&gt;&gt; for fac, cli in enumerate(pmedian_from_geodataframe.fac2cli):</span>
+<span class="sd">        ...     print(f&quot;facility {fac} serving {len(cli)} clients&quot;)</span>
+<span class="sd">        facility 0 serving 13 clients</span>
+<span class="sd">        facility 1 serving 29 clients</span>
+<span class="sd">        facility 2 serving 31 clients</span>
+<span class="sd">        facility 3 serving 0 clients</span>
+<span class="sd">        facility 4 serving 27 clients</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+        <span class="n">predefined_facilities_arr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">predefined_facility_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">predefined_facilities_arr</span> <span class="o">=</span> <span class="n">gdf_fac</span><span class="p">[</span><span class="n">predefined_facility_col</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+        <span class="n">facility_capacities</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">facility_capacity_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">facility_capacities</span> <span class="o">=</span> <span class="n">gdf_fac</span><span class="p">[</span><span class="n">facility_capacity_col</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+        <span class="n">service_load</span> <span class="o">=</span> <span class="n">gdf_demand</span><span class="p">[</span><span class="n">weights_cols</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+        <span class="n">dem</span> <span class="o">=</span> <span class="n">gdf_demand</span><span class="p">[</span><span class="n">demand_col</span><span class="p">]</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">gdf_fac</span><span class="p">[</span><span class="n">facility_col</span><span class="p">]</span>
+
+        <span class="n">dem_type_geom</span> <span class="o">=</span> <span class="n">dem</span><span class="o">.</span><span class="n">geom_type</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="n">fac_type_geom</span> <span class="o">=</span> <span class="n">fac</span><span class="o">.</span><span class="n">geom_type</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+        <span class="n">_msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot; geodataframe contains mixed type geometries or is not a point. Be &quot;</span>
+            <span class="s2">&quot;sure deriving centroid from geometries doesn&#39;t affect the results.&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dem_type_geom</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="s2">&quot;Point&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dem_type_geom</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Demand</span><span class="si">{</span><span class="n">_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">dem</span> <span class="o">=</span> <span class="n">dem</span><span class="o">.</span><span class="n">centroid</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fac_type_geom</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="s2">&quot;Point&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fac_type_geom</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Facility</span><span class="si">{</span><span class="n">_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">fac</span> <span class="o">=</span> <span class="n">fac</span><span class="o">.</span><span class="n">centroid</span>
+
+        <span class="n">dem_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dem</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">dem</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()])</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">fac_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fac</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">fac</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()])</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">if</span> <span class="n">gdf_demand</span><span class="o">.</span><span class="n">crs</span> <span class="o">!=</span> <span class="n">gdf_fac</span><span class="o">.</span><span class="n">crs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Geodataframes crs are different: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;gdf_demand-</span><span class="si">{</span><span class="n">gdf_demand</span><span class="o">.</span><span class="n">crs</span><span class="si">}</span><span class="s2">, gdf_fac-</span><span class="si">{</span><span class="n">gdf_fac</span><span class="o">.</span><span class="n">crs</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">cdist</span><span class="p">(</span><span class="n">dem_data</span><span class="p">,</span> <span class="n">fac_data</span><span class="p">,</span> <span class="n">distance_metric</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+            <span class="n">cost_matrix</span><span class="o">=</span><span class="n">distances</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">service_load</span><span class="p">,</span>
+            <span class="n">p_facilities</span><span class="o">=</span><span class="n">p_facilities</span><span class="p">,</span>
+            <span class="n">predefined_facilities_arr</span><span class="o">=</span><span class="n">predefined_facilities_arr</span><span class="p">,</span>
+            <span class="n">facility_capacities</span><span class="o">=</span><span class="n">facility_capacities</span><span class="p">,</span>
+            <span class="n">fulfill_predefined_fac</span><span class="o">=</span><span class="n">fulfill_predefined_fac</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;capacitated-&quot;</span> <span class="o">+</span> <span class="n">name</span> <span class="k">if</span> <span class="n">facility_capacities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PMedian.facility_client_array">
+<a class="viewcode-back" href="../../../generated/spopt.locate.PMedian.html#spopt.locate.PMedian.facility_client_array">[docs]</a>
+    <span class="k">def</span> <span class="nf">facility_client_array</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Create a 2D array storing **facility to client relationships** where each</span>
+<span class="sd">        row represents a facility and contains an array of client indices</span>
+<span class="sd">        with which it is associated. An empty client array indicates</span>
+<span class="sd">        the facility is associated with no clients.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fac_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fac_vars&quot;</span><span class="p">)</span>
+        <span class="n">cli_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;cli_assgn_vars&quot;</span><span class="p">)</span>
+        <span class="n">len_fac_vars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fac_vars</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fac2cli</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_fac_vars</span><span class="p">):</span>
+            <span class="n">array_cli</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">fac_vars</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cli_vars</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">cli_vars</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">array_cli</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">fac2cli</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array_cli</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PMedian.solve">
+<a class="viewcode-back" href="../../../generated/spopt.locate.PMedian.html#spopt.locate.PMedian.solve">[docs]</a>
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solver</span><span class="p">:</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpSolver</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solve the ``PMedian`` model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        solver : pulp.LpSolver</span>
+<span class="sd">            A solver supported by ``pulp``.</span>
+<span class="sd">        results : bool (default True)</span>
+<span class="sd">            If ``True`` it will create metainfo (which facilities cover</span>
+<span class="sd">            which demand) and vice-versa, and the uncovered demand.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.p_median.PMedian</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">facility_client_array</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_facility_array</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_mean_distance</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="KNearestPMedian">
+<a class="viewcode-back" href="../../../generated/spopt.locate.KNearestPMedian.html#spopt.locate.KNearestPMedian">[docs]</a>
+<span class="k">class</span> <span class="nc">KNearestPMedian</span><span class="p">(</span><span class="n">PMedian</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implement the P-Median Model with Near-Far Cost Allocation and solve it.</span>
+<span class="sd">    The model is adapted from :cite:`church_2018`, and can be formulated as:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \begin{array}{lllll}</span>
+<span class="sd">       \displaystyle \textbf{Minimize}      &amp; \displaystyle \sum_{i \in I}\sum_{k \in k_{i}}{a_i d_{ik} X_{ik}} + \sum_{i \in I}{g_i (d_{i{k_i}} + 1)}  &amp;&amp;                                          &amp; (1)                                                                               \\</span>
+<span class="sd">       \displaystyle \textbf{Subject To}    &amp; \sum_{k \in k_{i}}{X_{ik} + g_i = 1}                                                                      &amp;&amp; \forall i \in I                          &amp; (2)                                                                               \\</span>
+<span class="sd">                                            &amp; \sum_{j \in J}{Y_j} = p                                                                                   &amp;&amp;                                          &amp; (3)                                                                               \\</span>
+<span class="sd">                                            &amp; \sum_{i \in I}{a_i X_{ik}} \leq {Y_{k} c_{k}}                                                             &amp;&amp; \forall k \in k_{i}                      &amp; (4)                                                                               \\</span>
+<span class="sd">                                            &amp; X_{ij} \leq Y_{j}                                                                                         &amp;&amp; \forall i \in I \quad \forall j \in J    &amp; (5)                                                                               \\</span>
+<span class="sd">                                            &amp; X_{ij} \in \{0, 1\}                                                                                       &amp;&amp; \forall i \in I \quad \forall j \in J    &amp; (6)                                                                               \\</span>
+<span class="sd">                                            &amp; Y_j \in \{0, 1\}                                                                                          &amp;&amp; \forall j \in J                          &amp; (7)                                                                               \\</span>
+<span class="sd">                                            &amp;                                                                                                           &amp;&amp;                                          &amp;                                                                                   \\</span>
+<span class="sd">       \displaystyle \textbf{Where}         &amp;&amp; i                                                                                                        &amp; =                                         &amp; \textrm{index of demand points/areas/objects in set } I                           \\</span>
+<span class="sd">                                            &amp;&amp; j                                                                                                        &amp; =                                         &amp; \textrm{index of potential facility sites in set } J                              \\</span>
+<span class="sd">                                            &amp;&amp; p                                                                                                        &amp; =                                         &amp; \textrm{the number of facilities to be sited}                                     \\</span>
+<span class="sd">                                            &amp;&amp; a_i                                                                                                      &amp; =                                         &amp; \textrm{service load or population demand at client location } i                  \\</span>
+<span class="sd">                                            &amp;&amp; k_{i}                                                                                                    &amp; =                                         &amp; \textrm{the } k \textrm{nearest facilities of client location } i                 \\</span>
+<span class="sd">                                            &amp;&amp; c_{j}                                                                                                    &amp; =                                         &amp; \textrm{the capacity of facility} j                                               \\</span>
+<span class="sd">                                            &amp;&amp; d_{ij}                                                                                                   &amp; =                                         &amp; \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\</span>
+<span class="sd">                                            &amp;&amp; X_{ij}                                                                                                   &amp; =                                         &amp; \begin{cases}</span>
+<span class="sd">                                                                                                                                                                                                       1, \textrm{if client location } i \textrm{ is served by facility } j             \\</span>
+<span class="sd">                                                                                                                                                                                                       0, \textrm{otherwise}                                                            \\</span>
+<span class="sd">                                                                                                                                                                                                      \end{cases}                                                                       \\</span>
+<span class="sd">                                            &amp;&amp; Y_j                                                                                                      &amp; =                                         &amp; \begin{cases}</span>
+<span class="sd">                                                                                                                                                                                                       1, \textrm{if a facility is sited at location } j                                \\</span>
+<span class="sd">                                                                                                                                                                                                       0, \textrm{otherwise}                                                            \\</span>
+<span class="sd">                                                                                                                                                                                                      \end{cases}                                                                       \\</span>
+<span class="sd">                                            &amp;&amp; g_i                                                                                                      &amp; =                                         &amp; \begin{cases}</span>
+<span class="sd">                                                                                                                                                                                                       1, \textrm{if the client } i \textrm{ needs to be served by non-k-nearest facilities}     \\</span>
+<span class="sd">                                                                                                                                                                                                       0, \textrm{otherwise}                                                            \\</span>
+<span class="sd">                                                                                                                                                                                                      \end{cases}                                                                       \\</span>
+<span class="sd">       \end{array}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    name : str</span>
+<span class="sd">        The problem name.</span>
+<span class="sd">    ai_sum : Union[int, float]</span>
+<span class="sd">        The sum of weights representing the service loads of the clients.</span>
+<span class="sd">    clients : np.array</span>
+<span class="sd">        An array of coordinates of clients.</span>
+<span class="sd">    facilities : np.array</span>
+<span class="sd">        An array of coordinates of facilities.</span>
+<span class="sd">    weights : np.array</span>
+<span class="sd">        An array of weights representing the service loads of the clients.</span>
+<span class="sd">    k_array : np.array</span>
+<span class="sd">        An array of k values representing the number of nearest facilities</span>
+<span class="sd">        for each client.</span>
+<span class="sd">    p_facilities: int</span>
+<span class="sd">        The number of facilities to be located.</span>
+<span class="sd">    capacities : np.array or None</span>
+<span class="sd">        An array of facility capacities. None if capacity constraints are</span>
+<span class="sd">        not considered.</span>
+<span class="sd">    distance_metric : str</span>
+<span class="sd">        The distance metric used for computing distances between clients</span>
+<span class="sd">        and facilities.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    sparse_matrix : Compressed Sparse Row matrix</span>
+<span class="sd">        A cost matrix in the form of a compressed sparse row matrix between</span>
+<span class="sd">        origins and destinations.</span>
+<span class="sd">    aij : Compressed Sparse Row matrix</span>
+<span class="sd">        A weighted cost matrix in the form of a compressed sparse row matrix</span>
+<span class="sd">        between origins and destinations.</span>
+<span class="sd">    problem : pulp.LpProblem</span>
+<span class="sd">        A ``pulp`` instance of an optimization model that contains constraints,</span>
+<span class="sd">        variables, and an objective function.</span>
+<span class="sd">    fac2cli : numpy.array</span>
+<span class="sd">        A 2D array storing facility to client relationships where each</span>
+<span class="sd">        row represents a facility and contains an array of client indices</span>
+<span class="sd">        with which it is associated. An empty client array indicates</span>
+<span class="sd">        the facility is associated with no clients.</span>
+<span class="sd">    cli2fac : numpy.array</span>
+<span class="sd">        The inverse of ``fac2cli`` where client to facility relationships</span>
+<span class="sd">        are shown.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+<div class="viewcode-block" id="KNearestPMedian.__init__">
+<a class="viewcode-back" href="../../../generated/spopt.locate.KNearestPMedian.html#spopt.locate.KNearestPMedian.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ai_sum</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">clients</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">facilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">k_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">p_facilities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">capacities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">distance_metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;euclidean&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ai_sum</span> <span class="o">=</span> <span class="n">ai_sum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clients</span> <span class="o">=</span> <span class="n">clients</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">facilities</span> <span class="o">=</span> <span class="n">facilities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k_array</span> <span class="o">=</span> <span class="n">k_array</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p_facilities</span> <span class="o">=</span> <span class="n">p_facilities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">capacities</span> <span class="o">=</span> <span class="n">capacities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distance_metric</span> <span class="o">=</span> <span class="n">distance_metric</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__add_obj</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">max_distance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">range_clients</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">range_facility</span><span class="p">:</span> <span class="nb">range</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add the objective function to the model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        max_distance : np.array</span>
+<span class="sd">            An array of distances between each client and their k nearest facility.</span>
+<span class="sd">            For example, when k = 2, this array will only store the distances between</span>
+<span class="sd">            each client and their nearest and second nearest facility.</span>
+<span class="sd">        range_clients : range</span>
+<span class="sd">            The range of demand points.</span>
+<span class="sd">        range_facility : range</span>
+<span class="sd">            The range of facility point.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cli_assgn_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;cli_assgn_vars&quot;</span><span class="p">)</span>
+        <span class="n">placeholder_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;placeholder_vars&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="n">pulp</span><span class="o">.</span><span class="n">lpSum</span><span class="p">(</span>
+                <span class="n">pulp</span><span class="o">.</span><span class="n">lpSum</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">aij</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">cli_assgn_vars</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">range_facility</span>
+                <span class="p">)</span>
+                <span class="o">+</span> <span class="p">(</span><span class="n">placeholder_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">max_distance</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">range_clients</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;objective function&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="KNearestPMedian.from_cost_matrix">
+<a class="viewcode-back" href="../../../generated/spopt.locate.KNearestPMedian.html#spopt.locate.KNearestPMedian.from_cost_matrix">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_cost_matrix</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Warning: This method is not supported in the KNearestPMedian subclass.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;The `from_cost_matrix()` method is not &quot;</span>
+            <span class="s2">&quot;supported in `KNearestPMedian` class.&quot;</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_create_sparse_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a sparse matrix representing the distance between clients</span>
+<span class="sd">        and their k nearest facilities.</span>
+
+<span class="sd">        This method uses a suitable tree data structure (built with the</span>
+<span class="sd">        ``pointpats.geometry.build_best_tree()`` function) to efficiently</span>
+<span class="sd">        find the ``k`` nearest facilities for each client based on the</span>
+<span class="sd">        specified distance metric. The resulting distances are stored in a</span>
+<span class="sd">        sparse matrix format to conserve memory for large datasets.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">row_shape</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clients</span><span class="p">)</span>
+        <span class="n">column_shape</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">facilities</span><span class="p">)</span>
+
+        <span class="c1"># check the k value with the total number of facilities</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k_array</span> <span class="o">&lt;=</span> <span class="n">column_shape</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The value of `k` should be no more than the number &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;of total facilities: (</span><span class="si">{</span><span class="n">column_shape</span><span class="si">}</span><span class="s2">).&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Initialize empty lists to store the data for the sparse matrix</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">row_index</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">col_index</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># create the suitable Tree</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">build_best_tree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">facilities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_metric</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k_array</span><span class="p">):</span>
+            <span class="c1"># Query the Tree to find the k nearest facilities for each client</span>
+            <span class="n">distances</span><span class="p">,</span> <span class="n">k_nearest_facilities_indices</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">query</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">clients</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+
+            <span class="c1"># extract the contents of the inner array</span>
+            <span class="n">distances</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">k_nearest_facilities_indices</span> <span class="o">=</span> <span class="n">k_nearest_facilities_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+            <span class="c1"># Append the data for the sparse matrix</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
+            <span class="n">row_index</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">k</span><span class="p">)</span>
+            <span class="n">col_index</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">k_nearest_facilities_indices</span><span class="p">)</span>
+
+        <span class="c1"># Create the sparse matrix using csr_matrix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sparse_matrix</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">row_index</span><span class="p">,</span> <span class="n">col_index</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">row_shape</span><span class="p">,</span> <span class="n">column_shape</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_k_array</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Increase the ``k`` value for clients with any :math:`g_i &gt; 0`</span>
+<span class="sd">        and update the ``k`` array.</span>
+
+<span class="sd">        This method is used to adjust the ``k`` values for clients based on their</span>
+<span class="sd">        placeholder variable :math:`g_i`. For clients with :math:`g_i` greater</span>
+<span class="sd">        than ``0``, the corresponding ``k`` value is increased by ``1`` in the</span>
+<span class="sd">        new ``k`` array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">new_k_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_array</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">placeholder_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;placeholder_vars&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">placeholder_vars</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">placeholder_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">new_k_array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_k_array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k_array</span> <span class="o">=</span> <span class="n">new_k_array</span>
+
+    <span class="k">def</span> <span class="nf">_from_sparse_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the k nearest p-median problem from the sparse distance matrix.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_cli</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">r_cli</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_cli</span><span class="p">)</span>
+        <span class="n">r_fac</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sparse_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="p">(</span><span class="n">n_cli</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="c1"># create and store the weighted sparse matrix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse_matrix</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+
+        <span class="c1"># create the model/problem</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpProblem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpMinimize</span><span class="p">)</span>
+
+        <span class="c1"># add all the 1)decision variable, 2)objective function, and 3)constraints</span>
+
+        <span class="c1"># Facility integer decision variable</span>
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_facility_integer_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">,</span> <span class="s2">&quot;y[</span><span class="si">{i}</span><span class="s2">]&quot;</span><span class="p">)</span>
+        <span class="n">fac_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fac_vars&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Placeholder facility decision variable</span>
+        <span class="n">placeholder_vars</span> <span class="o">=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpVariable</span><span class="o">.</span><span class="n">dicts</span><span class="p">(</span>
+            <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r_cli</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpBinary</span>
+        <span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;placeholder_vars&quot;</span><span class="p">,</span> <span class="n">placeholder_vars</span><span class="p">)</span>
+
+        <span class="c1"># Client assignment integer decision variables</span>
+        <span class="n">row_indices</span><span class="p">,</span> <span class="n">col_indices</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aij</span><span class="p">)</span>
+
+        <span class="n">cli_assgn_vars</span> <span class="o">=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpVariable</span><span class="o">.</span><span class="n">dicts</span><span class="p">(</span>
+            <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">row_indices</span><span class="p">,</span> <span class="n">col_indices</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpBinary</span>
+        <span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;cli_assgn_vars&quot;</span><span class="p">,</span> <span class="n">cli_assgn_vars</span><span class="p">)</span>
+
+        <span class="c1"># Add the objective function</span>
+        <span class="n">max_distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aij</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__add_obj</span><span class="p">(</span><span class="n">max_distance</span><span class="p">,</span> <span class="n">r_cli</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">)</span>
+
+        <span class="c1"># Create the capacity constraints</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sorted_capacities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">capacities</span><span class="p">)</span>
+            <span class="n">highest_possible_capacity</span> <span class="o">=</span> <span class="n">sorted_capacities</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">p_facilities</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">highest_possible_capacity</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ai_sum</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SpecificationError</span><span class="p">(</span>
+                    <span class="s2">&quot;Problem is infeasible. The highest possible capacity &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">highest_possible_capacity</span><span class="si">}</span><span class="s2">), coming from the &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">p_facilities</span><span class="si">}</span><span class="s2"> sites with the highest capacity, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;is smaller than the total demand (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ai_sum</span><span class="si">}</span><span class="s2">).&quot;</span>
+                <span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">col_indices</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">+=</span> <span class="p">(</span>
+                    <span class="n">pulp</span><span class="o">.</span><span class="n">lpSum</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">cli_assgn_vars</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r_cli</span>
+                    <span class="p">)</span>
+                    <span class="o">&lt;=</span> <span class="n">fac_vars</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacities</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Create assignment constraints.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r_cli</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="n">pulp</span><span class="o">.</span><span class="n">lpSum</span><span class="p">(</span><span class="n">cli_assgn_vars</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">col_indices</span><span class="p">))</span>
+                <span class="o">+</span> <span class="n">placeholder_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="o">==</span> <span class="mi">1</span>
+            <span class="p">)</span>
+        <span class="c1"># Create the facility constraint</span>
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_facility_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_facilities</span><span class="p">)</span>
+
+        <span class="c1"># Create opening constraints</span>
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_opening_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">,</span> <span class="n">r_cli</span><span class="p">)</span>
+
+<div class="viewcode-block" id="KNearestPMedian.from_geodataframe">
+<a class="viewcode-back" href="../../../generated/spopt.locate.KNearestPMedian.html#spopt.locate.KNearestPMedian.from_geodataframe">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_geodataframe</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">gdf_demand</span><span class="p">:</span> <span class="n">GeoDataFrame</span><span class="p">,</span>
+        <span class="n">gdf_fac</span><span class="p">:</span> <span class="n">GeoDataFrame</span><span class="p">,</span>
+        <span class="n">demand_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">facility_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">weights_cols</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">p_facilities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">facility_capacity_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">k_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">distance_metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;euclidean&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;k-nearest-p-median&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the object of KNearestPMedian class using input data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gdf_demand : GeoDataFrame</span>
+<span class="sd">            A GeoDataFrame containing demand points with their associated attributes.</span>
+<span class="sd">        gdf_fac : GeoDataFrame</span>
+<span class="sd">            A GeoDataFrame containing facility points with their associated attributes.</span>
+<span class="sd">        demand_col : str</span>
+<span class="sd">            The column name in gdf_demand representing the coordinate of each client.</span>
+<span class="sd">        facility_col : str</span>
+<span class="sd">            The column name in gdf_fac representing the coordinate of each facility.</span>
+<span class="sd">        weights_cols : str</span>
+<span class="sd">            The column name in gdf_demand representing the weights for each client.</span>
+<span class="sd">        p_facilities: int</span>
+<span class="sd">           The number of facilities to be located.</span>
+<span class="sd">        facility_capacity_col : str, optional</span>
+<span class="sd">            The column name in gdf_fac representing the capacity of each facility,</span>
+<span class="sd">            by default None.</span>
+<span class="sd">        k_array : np.array, optional</span>
+<span class="sd">            An array of integers representing the k values for each client.</span>
+<span class="sd">            If not provided, a default value of 5 or the number of facilities,</span>
+<span class="sd">            whichever is smaller, will be used.</span>
+<span class="sd">        distance_metric : str, optional</span>
+<span class="sd">            The distance metric to be used in calculating distances between clients</span>
+<span class="sd">            and facilities, by default &quot;euclidean&quot;.</span>
+<span class="sd">        name : str, optional</span>
+<span class="sd">            The name of the problem, by default &quot;k-nearest-p-median&quot;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.p_median.KNearestPMedian</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from spopt.locate import KNearestPMedian</span>
+<span class="sd">        &gt;&gt;&gt; import geopandas</span>
+
+<span class="sd">        Create the input data and attributes.</span>
+
+<span class="sd">        &gt;&gt;&gt; k = np.array([1, 1])</span>
+<span class="sd">        &gt;&gt;&gt; demand_data = {</span>
+<span class="sd">        ...    &#39;ID&#39;: [1, 2],</span>
+<span class="sd">        ...    &#39;geometry&#39;: [Point(0.5, 1), Point(1.5, 1)],</span>
+<span class="sd">        ...    &#39;demand&#39;: [1, 1]}</span>
+<span class="sd">        &gt;&gt;&gt; facility_data = {</span>
+<span class="sd">        ...    &#39;ID&#39;: [101, 102],</span>
+<span class="sd">        ...    &#39;geometry&#39;: [Point(1,1), Point(0, 2), Point(2, 0)],</span>
+<span class="sd">        ...    &#39;capacity&#39;: [1, 1, 1]}</span>
+<span class="sd">        &gt;&gt;&gt; gdf_demand = geopandas.GeoDataFrame(demand_data, crs=&#39;EPSG:4326&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; gdf_fac = geopandas.GeoDataFrame(facility_data, crs=&#39;EPSG:4326&#39;)</span>
+
+<span class="sd">        Create and solve a ``KNearestPMedian`` instance from the geodataframe.</span>
+
+<span class="sd">        &gt;&gt;&gt; k_nearest_pmedian = KNearestPMedian.from_geodataframe(</span>
+<span class="sd">        ...     gdf_demand, gdf_fac,&#39;geometry&#39;,&#39;geometry&#39;, weights_cols=&#39;demand&#39;,</span>
+<span class="sd">        ...     2, facility_capacity_col=&#39;capacity&#39;, k_array = k)</span>
+<span class="sd">        &gt;&gt;&gt; k_nearest_pmedian = k_nearest_pmedian.solve(pulp.PULP_CBC_CMD(msg=False))</span>
+
+<span class="sd">        Get the facility-client associations.</span>
+
+<span class="sd">        &gt;&gt;&gt; for fac, cli in enumerate(k_nearest_pmedian.fac2cli):</span>
+<span class="sd">        ...     print(f&quot;facility {fac} serving {len(cli)} clients&quot;)</span>
+<span class="sd">        facility 0 serving 1 clients</span>
+<span class="sd">        facility 1 serving 1 clients</span>
+<span class="sd">        facility 2 serving 0 clients</span>
+
+<span class="sd">        Get the total and average weighted travel cost.</span>
+
+<span class="sd">        &gt;&gt;&gt; round(k_nearest_pmedian.problem.objective.value(), 3)</span>
+<span class="sd">        1.618</span>
+<span class="sd">        &gt;&gt;&gt; round(k_nearest_pmedian.mean_dist, 3)</span>
+<span class="sd">        0.809</span>
+
+<span class="sd">        Get the k values for the last iteration.</span>
+
+<span class="sd">        &gt;&gt;&gt; print(k_nearest_pmedian.k_array)</span>
+<span class="sd">        [2, 1]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># check the crs of two geodataframes</span>
+        <span class="k">if</span> <span class="n">gdf_demand</span><span class="o">.</span><span class="n">crs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;GeoDataFrame ``gdf_demand`` does not have a valid CRS.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">gdf_fac</span><span class="o">.</span><span class="n">crs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;GeoDataFrame ``gdf_fac`` does not have a valid CRS.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">gdf_demand</span><span class="o">.</span><span class="n">crs</span> <span class="o">!=</span> <span class="n">gdf_fac</span><span class="o">.</span><span class="n">crs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Geodataframes crs are different: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;gdf_demand-</span><span class="si">{</span><span class="n">gdf_demand</span><span class="o">.</span><span class="n">crs</span><span class="si">}</span><span class="s2">, gdf_fac-</span><span class="si">{</span><span class="n">gdf_fac</span><span class="o">.</span><span class="n">crs</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># create the array of coordinate of clients and facilities</span>
+        <span class="n">dem</span> <span class="o">=</span> <span class="n">gdf_demand</span><span class="p">[</span><span class="n">demand_col</span><span class="p">]</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">gdf_fac</span><span class="p">[</span><span class="n">facility_col</span><span class="p">]</span>
+        <span class="n">dem_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dem</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">dem</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()])</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">fac_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fac</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">fac</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()])</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="c1"># check the values of k_array</span>
+        <span class="k">if</span> <span class="n">k_array</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">k_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dem_data</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fac_data</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k_array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`k_array` should be a numpy array.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="n">k_array</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fac_data</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The value of `k` should be no more than the number &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;of total facilities, which is </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">fac_data</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># demand and capacity</span>
+        <span class="n">service_load</span> <span class="o">=</span> <span class="n">gdf_demand</span><span class="p">[</span><span class="n">weights_cols</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+        <span class="n">weights_sum</span> <span class="o">=</span> <span class="n">service_load</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">facility_capacities</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">facility_capacity_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">facility_capacities</span> <span class="o">=</span> <span class="n">gdf_fac</span><span class="p">[</span><span class="n">facility_capacity_col</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">KNearestPMedian</span><span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot;capacitated-&quot;</span> <span class="o">+</span> <span class="n">name</span> <span class="k">if</span> <span class="n">facility_capacities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span><span class="p">),</span>
+            <span class="n">weights_sum</span><span class="p">,</span>
+            <span class="n">dem_data</span><span class="p">,</span>
+            <span class="n">fac_data</span><span class="p">,</span>
+            <span class="n">service_load</span><span class="p">,</span>
+            <span class="n">k_array</span><span class="p">,</span>
+            <span class="n">p_facilities</span><span class="p">,</span>
+            <span class="n">facility_capacities</span><span class="p">,</span>
+            <span class="n">distance_metric</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="KNearestPMedian.facility_client_array">
+<a class="viewcode-back" href="../../../generated/spopt.locate.KNearestPMedian.html#spopt.locate.KNearestPMedian.facility_client_array">[docs]</a>
+    <span class="k">def</span> <span class="nf">facility_client_array</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Create a 2D array storing **facility to client relationships** where each</span>
+<span class="sd">        row represents a facility and contains an array of client indices with</span>
+<span class="sd">        which it is associated. An empty client array indicates the facility</span>
+<span class="sd">        is associated with no clients.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fac_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fac_vars&quot;</span><span class="p">)</span>
+        <span class="n">cli_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;cli_assgn_vars&quot;</span><span class="p">)</span>
+        <span class="n">len_fac_vars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fac_vars</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fac2cli</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_fac_vars</span><span class="p">):</span>
+            <span class="n">array_cli</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">fac_vars</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cli_vars</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">cli_vars</span> <span class="ow">and</span> <span class="n">cli_vars</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">array_cli</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">fac2cli</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array_cli</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="KNearestPMedian.solve">
+<a class="viewcode-back" href="../../../generated/spopt.locate.KNearestPMedian.html#spopt.locate.KNearestPMedian.solve">[docs]</a>
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solver</span><span class="p">:</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpSolver</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Solve the k-nearest p-median model.</span>
+
+<span class="sd">        This method iteratively solves the ``KNearestPMedian`` model using a specified</span>
+<span class="sd">        solver until no more clients need to be assigned to placeholder facilities.</span>
+<span class="sd">        The ``k`` values for clients are increased dynamically based on the presence of</span>
+<span class="sd">        clients not assigned to ``k`` nearest facilities.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        solver : pulp.LpSolver</span>
+<span class="sd">            The solver to be used for solving the optimization model.</span>
+<span class="sd">        results : bool (default True)</span>
+<span class="sd">            If ``True`` it will create metainfo (which facilities cover which</span>
+<span class="sd">            demand) and vice versa, and the uncovered demand.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.p_median.KNearestPMedian</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># initialize the sum of the values of g_i</span>
+        <span class="n">sum_gi</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># start the loop</span>
+        <span class="k">while</span> <span class="n">sum_gi</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_sparse_matrix</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_from_sparse_matrix</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span>
+
+            <span class="c1"># check the result</span>
+            <span class="n">placeholder_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;placeholder_vars&quot;</span><span class="p">)</span>
+            <span class="n">sum_gi</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="n">placeholder_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">placeholder_vars</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">placeholder_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">sum_gi</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_k_array</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">facility_client_array</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_facility_array</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_mean_distance</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

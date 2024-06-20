@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>SKATER &#8212; spopt v0.6.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Ward" href="ward.html" />
+    <link rel="prev" title="Automatic Zoning Procedure (AZP) algorithm" href="azp.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">SKATER</a><ul>
+<li><a class="reference internal" href="#Spatial-'K'luster-Analysis-by-Tree-Edge-Removal:-Clustering-Airbnb-Spots-in-Chicago">Spatial ‘K’luster Analysis by Tree Edge Removal: Clustering Airbnb Spots in Chicago</a></li>
+<li><a class="reference internal" href="#1.-An-explanation-of-the-SKATER-algorithm">1. An explanation of the <em>SKATER</em> algorithm</a></li>
+<li><a class="reference internal" href="#2.-Supporting-data:-Airbnb-Spots-in-Chicago">2. Supporting data: Airbnb Spots in Chicago</a></li>
+<li><a class="reference internal" href="#3.-Understanding-parameters">3. Understanding parameters</a></li>
+<li><a class="reference internal" href="#4.-Regionalization">4. Regionalization</a></li>
+<li><a class="reference internal" href="#5.-Exploring-parameters">5. Exploring parameters</a><ul>
+<li><a class="reference internal" href="#Increasing-n_clusters">Increasing <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code></a></li>
+<li><a class="reference internal" href="#Increasing-floor">Increasing <code class="docutils literal notranslate"><span class="pre">floor</span></code></a></li>
+<li><a class="reference internal" href="#Clustering-on-more-than-one-variable">Clustering on more than one variable</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/spopt/blob/main/notebooks/skater.ipynb">notebooks/skater.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/spopt/main?filepath=notebooks/skater.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="SKATER">
+<h1>SKATER<a class="headerlink" href="#SKATER" title="Link to this heading">¶</a></h1>
+<section id="Spatial-'K'luster-Analysis-by-Tree-Edge-Removal:-Clustering-Airbnb-Spots-in-Chicago">
+<h2>Spatial ‘K’luster Analysis by Tree Edge Removal: Clustering Airbnb Spots in Chicago<a class="headerlink" href="#Spatial-'K'luster-Analysis-by-Tree-Edge-Removal:-Clustering-Airbnb-Spots-in-Chicago" title="Link to this heading">¶</a></h2>
+<p>Authors: <a class="reference external" href="https://github.com/xf37">Xin Feng</a>, <a class="reference external" href="https://github.com/jGaboardi">James Gaboardi</a></p>
+<hr class="docutils" />
+<p>The tutorial is broken out as follows:</p>
+<ol class="arabic simple">
+<li><p>An explanation of the SKATER algorithm</p></li>
+<li><p>Supporting data: Airbnb Spots in Chicago</p></li>
+<li><p>Understanding parameters</p></li>
+<li><p>Regionalization</p></li>
+<li><p>Exploring parameters</p></li>
+</ol>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+%load_ext watermark
+%watermark
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Last updated: 2023-12-10T14:11:06.498766-05:00
+
+Python implementation: CPython
+Python version       : 3.12.0
+IPython version      : 8.18.0
+
+Compiler    : Clang 15.0.7
+OS          : Darwin
+Release     : 23.1.0
+Machine     : x86_64
+Processor   : i386
+CPU cores   : 8
+Architecture: 64bit
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas
+import libpysal
+import matplotlib.pyplot as plt
+import numpy
+import pandas
+import shapely
+from sklearn.metrics import pairwise as skm
+import spopt
+import warnings
+
+%matplotlib inline
+%watermark -w
+%watermark -iv
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Watermark: 2.4.3
+
+matplotlib: 3.8.2
+numpy     : 1.26.2
+pandas    : 2.1.3
+libpysal  : 4.9.2
+geopandas : 0.14.1
+shapely   : 2.0.2
+sklearn   : 1.3.2
+spopt     : 0.5.1.dev53+g5cadae7
+
+</pre></div></div>
+</div>
+</section>
+<section id="1.-An-explanation-of-the-SKATER-algorithm">
+<h2>1. An explanation of the <em>SKATER</em> algorithm<a class="headerlink" href="#1.-An-explanation-of-the-SKATER-algorithm" title="Link to this heading">¶</a></h2>
+<p><em>SKATER</em> (<a class="reference external" href="https://doi.org/10.1080/13658810600665111">Assunção et al. 2006</a>) is a constrained spatial regionalization algorithm based on spanning tree pruning. The number of edges is pre-specified to be cut in a continuous tree to group spatial units into contiguous regions.</p>
+<p>The first step of <em>SKATER</em> is to create a connectivity graph that captures the neighbourhood relationship between the spatial objects. The cost of each edge in the graph is inversely proportional to the similarity between the regions it joins. The neighbourhood is structured by a <a class="reference external" href="https://en.wikipedia.org/wiki/Minimum_spanning_tree">minimum spanning tree</a> (MST), which is a connected tree with no circuits. The next step is to partition the MST by successive removal of edges that link
+dissimilar regions. The final result is the division of the spatial objects into connected regions that have maximum internal homogeneity.</p>
+<ul class="simple">
+<li><p><strong>RM Assunção, MC Neves, G Câmara, and C da Costa Freitas</strong>. <em>Efficient regionalization techniques for socio-economic geographical units using minimum spanning trees</em>. International Journal of Geographical Information Science, 20(7):797–811, 2006. doi: <a class="reference external" href="https://doi.org/10.1080/13658810600665111">10.1080/13658810600665111</a>.</p></li>
+</ul>
+<p>See also <a class="reference external" href="https://www.dshkol.com/post/spatially-constrained-clustering-and-regionalization/">Dmitry Shkolnik’s tutorial</a> of the <em>SKATER</em> algorithm implemented in Roger Bivand’s <code class="docutils literal notranslate"><span class="pre">R</span></code> package, <a class="reference external" href="https://r-spatial.github.io/spdep/index.html">spdep</a>.</p>
+</section>
+<hr class="docutils" />
+<section id="2.-Supporting-data:-Airbnb-Spots-in-Chicago">
+<h2>2. Supporting data: Airbnb Spots in Chicago<a class="headerlink" href="#2.-Supporting-data:-Airbnb-Spots-in-Chicago" title="Link to this heading">¶</a></h2>
+<p>To illustrate <code class="docutils literal notranslate"><span class="pre">Skater</span></code> we utilize data on Airbnb spots in Chicago, which can be downloaded from <a class="reference external" href="https://pysal.org/notebooks/lib/libpysal/Example_Datasets.html">libpysal.examples</a>. The data is broken down into 77 communites in Chicago, Illinois from 2015, where a number of attributes are listed for each community.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.load_example(&quot;AirBnB&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;libpysal.examples.base.Example at 0x15a3d8dd0&gt;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago = geopandas.read_file(libpysal.examples.get_path(&quot;airbnb_Chicago 2015.shp&quot;))
+chicago.shape
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(77, 21)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago.loc[0]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+community                                               DOUGLAS
+shape_area                                        46004621.1581
+shape_len                                         31027.0545098
+AREAID                                                       35
+response_r                                            98.771429
+accept_r                                              94.514286
+rev_rating                                            87.777778
+price_pp                                              78.157895
+room_type                                              1.789474
+num_spots                                                    38
+poverty                                                    29.6
+crowded                                                     1.8
+dependency                                                 30.7
+without_hs                                                 14.3
+unemployed                                                 18.2
+income_pc                                                 23791
+harship_in                                                   47
+num_crimes                                                 5013
+num_theft                                                  1241
+population                                                18238
+geometry      POLYGON ((-87.60914087617012 41.84469250346108...
+Name: 0, dtype: object
+</pre></div></div>
+</div>
+<p>We can visualize the data by plotting the number of Airbnb spots in each community in the sample, using a quintile classification:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago.plot(
+    figsize=(7, 14),
+    column=&quot;num_spots&quot;,
+    scheme=&quot;Quantiles&quot;,
+    cmap=&quot;GnBu&quot;,
+    edgecolor=&quot;grey&quot;,
+    legend=True
+).axis(&quot;off&quot;);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_skater_8_0.png" class="no-scaled-link" src="../_images/notebooks_skater_8_0.png" style="width: 562px; height: 682px;" />
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="3.-Understanding-parameters">
+<h2>3. Understanding parameters<a class="headerlink" href="#3.-Understanding-parameters" title="Link to this heading">¶</a></h2>
+<p>With Skater, we can cluster these 77 communities into 5 regions such that each region consists of at least 5 communities. The homogeneity of the number of Airbnb spots per community within the regions is maximized.</p>
+<p>We first define the variable that will be used to measure regional homogeneity, which is the number of Airbnb spots in this case.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = [&quot;num_spots&quot;]
+</pre></div>
+</div>
+</div>
+<p>Next, we specify a number of other parameters that will serve as input to the <code class="docutils literal notranslate"><span class="pre">skater</span></code> model, including the spatial weights (to describe the relationship between the spatial objects), the number of regions to include in the solution, the minimal threshold of spatial objects in each region, etc.</p>
+<p>A <a class="reference external" href="https://pysal.org/libpysal/tutorial.html">spatial weights object</a> describes the spatial connectivity of the spatial objects:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w = libpysal.weights.Queen.from_dataframe(chicago, use_index=False)
+</pre></div>
+</div>
+</div>
+<p>The number of contiguous regions that we would like to group spatial units into:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>n_clusters = 5
+</pre></div>
+</div>
+</div>
+<p>The minimum number of spatial objects in each region：</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>floor = 5
+</pre></div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">trace</span></code> is a bool denoting whether to store intermediate labelings as the tree gets pruned.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>trace = False
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">islands</span></code> keyword argument describes what is to be done with islands. It can be set to either <code class="docutils literal notranslate"><span class="pre">'ignore'</span></code>, which will treat each island as its own region when solving for <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> regions, or <code class="docutils literal notranslate"><span class="pre">'increase'</span></code>, which will consider each island as its own region and add to <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> regions.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>islands = &quot;increase&quot;
+</pre></div>
+</div>
+</div>
+<p>We can also specify some keywords as input to the spanning forest algorithm, including:</p>
+<ul class="simple">
+<li><p><strong>dissimilarity</strong></p>
+<ul>
+<li><p>A callable distance metric, with the default as <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.manhattan_distances.html">sklearn.metrics.pairwise.manhattan_distances</a>.</p></li>
+</ul>
+</li>
+<li><p><strong>affinity</strong></p>
+<ul>
+<li><p>A callable affinity metric between 0 and 1, which is inverted to provide a dissimilarity metric. No metric is provided as a default (<code class="docutils literal notranslate"><span class="pre">None</span></code>). If <code class="docutils literal notranslate"><span class="pre">affinity</span></code> is desired, <code class="docutils literal notranslate"><span class="pre">dissimilarity</span></code> <strong>must</strong> explicitly be set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</li>
+<li><p><strong>reduction</strong></p>
+<ul>
+<li><p>The reduction applied over all clusters to provide the map score, with the default as <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.sum.html">numpy.sum()</a>.</p></li>
+</ul>
+</li>
+<li><p><strong>center</strong></p>
+<ul>
+<li><p>The method for computing the center of each region in attribute space with the default as <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.mean.html">numpy.mean()</a>.</p></li>
+</ul>
+</li>
+<li><p><strong>verbose</strong></p>
+<ul>
+<li><p>A flag for how much output to provide to the user in terms of print statements and progress bars. Set to <code class="docutils literal notranslate"><span class="pre">1</span></code> for minimal output and <code class="docutils literal notranslate"><span class="pre">2</span></code> for full output. The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>, which provides no output.</p></li>
+</ul>
+</li>
+</ul>
+<p>See <code class="docutils literal notranslate"><span class="pre">spopt.region.skater.SpanningForest</span></code> for documentation.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spanning_forest_kwds = dict(
+    dissimilarity=skm.manhattan_distances,
+    affinity=None,
+    reduction=numpy.sum,
+    center=numpy.mean,
+    verbose=2
+)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="4.-Regionalization">
+<h2>4. Regionalization<a class="headerlink" href="#4.-Regionalization" title="Link to this heading">¶</a></h2>
+<p>The model can then be instantiated and solved:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = spopt.region.Skater(
+    chicago,
+    w,
+    attrs_name,
+    n_clusters=n_clusters,
+    floor=floor,
+    trace=trace,
+    islands=islands,
+    spanning_forest_kwds=spanning_forest_kwds
+)
+model.solve()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Computing Affinity Kernel took 0.00s
+Computing initial MST took 0.00s
+Computing connected components took 0.00s.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "23e5bae71c6d4f3f9d9adab4a000c0f8", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+making cut deletion(in_node=45, out_node=67, score=3445.5)...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "616e4207c1984c9d86e68895253bd20d", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+making cut deletion(in_node=13, out_node=15, score=2574.6813186813188)...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "256fa6eec99d4524b1bb0a86e9ae346f", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+making cut deletion(in_node=2, out_node=34, score=2146.556998556998)...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "2e8e2ca0e7544844bd9a5b587b4ba05f", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+making cut deletion(in_node=3, out_node=34, score=2025.520634920635)...
+</pre></div></div>
+</div>
+<p>Region labels can then be added to the <code class="docutils literal notranslate"><span class="pre">GeoDataFrame</span></code> from the <code class="docutils literal notranslate"><span class="pre">model</span></code> object and used for plotting.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[&quot;demo_regions&quot;] = model.labels_
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago.plot(
+    figsize=(7, 14), column=&quot;demo_regions&quot;, categorical=True, edgecolor=&quot;w&quot;
+).axis(&quot;off&quot;);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_skater_27_0.png" class="no-scaled-link" src="../_images/notebooks_skater_27_0.png" style="width: 562px; height: 682px;" />
+</div>
+</div>
+<p>The model solution results in five regions, two of which have five communities, one with six, one with seven, and one with fifty-four.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[&quot;count&quot;] = 1
+chicago[[&quot;demo_regions&quot;, &quot;count&quot;]].groupby(by=&quot;demo_regions&quot;).count()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>count</th>
+    </tr>
+    <tr>
+      <th>demo_regions</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>54</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>6</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="5.-Exploring-parameters">
+<h2>5. Exploring parameters<a class="headerlink" href="#5.-Exploring-parameters" title="Link to this heading">¶</a></h2>
+<p>There are myriad parameter combinations that can be passed in for regionalizing with <code class="docutils literal notranslate"><span class="pre">Skater</span></code>. Here we will explore two combinations of parameters.</p>
+<ul class="simple">
+<li><p>Increasing <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> while holding all other parameters constant</p></li>
+<li><p>Increasing <code class="docutils literal notranslate"><span class="pre">floor</span></code> while holding all other parameters constant</p></li>
+<li><p>Clustering on multiple variables</p></li>
+</ul>
+<section id="Increasing-n_clusters">
+<h3>Increasing <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code><a class="headerlink" href="#Increasing-n_clusters" title="Link to this heading">¶</a></h3>
+<p>Let’s see how regionalization results differ when increasing <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> from 2 to 10 by increments of 2.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>n_clusters_range = [2, 4, 6, 8, 10]
+n_clusters_range
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[2, 4, 6, 8, 10]
+</pre></div></div>
+</div>
+<p>For each regionalization run we will hold the other parameters constant.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>floor, trace, islands = 5, False, &quot;increase&quot;
+spanning_forest_kwds = dict(
+    dissimilarity=skm.manhattan_distances,
+    affinity=None,
+    reduction=numpy.sum,
+    center=numpy.mean,
+    verbose=False
+)
+</pre></div>
+</div>
+</div>
+<p>Solve.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for ncluster in n_clusters_range:
+    model = spopt.region.Skater(
+        chicago,
+        w,
+        attrs_name,
+        n_clusters=ncluster,
+        floor=floor,
+        trace=trace,
+        islands=islands,
+        spanning_forest_kwds=spanning_forest_kwds
+    )
+    model.solve()
+    chicago[f&quot;clusters_{ncluster}&quot;] = model.labels_
+</pre></div>
+</div>
+</div>
+<p>Plot results.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, axarr = plt.subplots(1, len(n_clusters_range), figsize=(9, 7.5))
+for ix, clust in enumerate(n_clusters_range):
+    label = f&quot;clusters_{clust}&quot;
+    chicago.plot(column=label, ax=axarr[ix], cmap=&quot;tab20&quot;)
+    axarr[ix].set_title(label)
+    axarr[ix].set_axis_off()
+plt.subplots_adjust(wspace=1, hspace=0.5)
+plt.tight_layout()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_skater_37_0.png" class="no-scaled-link" src="../_images/notebooks_skater_37_0.png" style="width: 889px; height: 239px;" />
+</div>
+</div>
+<p>Above we can see that regions become more dispersed and boundaries become more consistent as the number of desired clusters increases. Also, we can investigate the count of communities and the number of AirBnB spots per region, as shown below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attr1, attr2 = &quot;count&quot;, &quot;num_spots&quot;
+df = pandas.DataFrame(
+    columns=pandas.MultiIndex.from_product(
+        [[f&quot;clusters_{i}&quot; for i in n_clusters_range], [attr1, attr2]]
+    ),
+    index=range(10)
+)
+df.index.name = &quot;region_id&quot;
+for i in n_clusters_range:
+    col = f&quot;clusters_{i}&quot;
+    df[col, attr1] = chicago[[col, attr1]].groupby(by=col).count()[attr1]
+    df[col, attr2] = chicago[[col, attr2]].groupby(by=col).sum()[attr2]
+df.fillna(0).astype(int).astype(str).replace(&quot;0&quot;, &quot;-&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="2" halign="left">clusters_2</th>
+      <th colspan="2" halign="left">clusters_4</th>
+      <th colspan="2" halign="left">clusters_6</th>
+      <th colspan="2" halign="left">clusters_8</th>
+      <th colspan="2" halign="left">clusters_10</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+    </tr>
+    <tr>
+      <th>region_id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>72</td>
+      <td>2321</td>
+      <td>11</td>
+      <td>963</td>
+      <td>5</td>
+      <td>236</td>
+      <td>5</td>
+      <td>236</td>
+      <td>5</td>
+      <td>236</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>5</td>
+      <td>2705</td>
+      <td>54</td>
+      <td>429</td>
+      <td>35</td>
+      <td>143</td>
+      <td>5</td>
+      <td>38</td>
+      <td>5</td>
+      <td>38</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-</td>
+      <td>-</td>
+      <td>7</td>
+      <td>929</td>
+      <td>7</td>
+      <td>929</td>
+      <td>7</td>
+      <td>929</td>
+      <td>7</td>
+      <td>929</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-</td>
+      <td>-</td>
+      <td>5</td>
+      <td>2705</td>
+      <td>19</td>
+      <td>286</td>
+      <td>7</td>
+      <td>60</td>
+      <td>7</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>5</td>
+      <td>2705</td>
+      <td>19</td>
+      <td>286</td>
+      <td>8</td>
+      <td>147</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>6</td>
+      <td>727</td>
+      <td>5</td>
+      <td>2705</td>
+      <td>11</td>
+      <td>139</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>6</td>
+      <td>727</td>
+      <td>5</td>
+      <td>2705</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>23</td>
+      <td>45</td>
+      <td>6</td>
+      <td>727</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>15</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>8</td>
+      <td>20</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="Increasing-floor">
+<h3>Increasing <code class="docutils literal notranslate"><span class="pre">floor</span></code><a class="headerlink" href="#Increasing-floor" title="Link to this heading">¶</a></h3>
+<p>Next we’ll increase <code class="docutils literal notranslate"><span class="pre">floor</span></code> from 3 to 15 by increments of 3.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>floor_range = [3, 6, 9, 12, 15]
+floor_range
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[3, 6, 9, 12, 15]
+</pre></div></div>
+</div>
+<p>For each regionalization run we will hold the other parameters constant.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>n_clusters, trace, islands = 3, True, &quot;increase&quot;
+spanning_forest_kwds = dict(
+    dissimilarity=None,
+    affinity=skm.euclidean_distances,
+    reduction=numpy.sum,
+    center=numpy.std,
+    verbose=False
+)
+</pre></div>
+</div>
+</div>
+<p>Solve.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for floor in floor_range:
+    model = spopt.region.Skater(
+        chicago,
+        w,
+        attrs_name,
+        n_clusters=n_clusters,
+        floor=floor,
+        trace=trace,
+        islands=islands,
+        spanning_forest_kwds=spanning_forest_kwds
+    )
+    with warnings.catch_warnings():
+        # due to `affinity`
+        warnings.filterwarnings(
+            &quot;ignore&quot;,
+            category=RuntimeWarning,
+            message=&quot;divide by zero encountered in log&quot;,
+        )
+        model.solve()
+    chicago[f&quot;floor_{floor}&quot;] = model.labels_
+</pre></div>
+</div>
+</div>
+<p>Plot results.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, axarr = plt.subplots(1, len(floor_range), figsize=(9, 7.5))
+for ix, floor in enumerate(floor_range):
+    label = f&quot;floor_{floor}&quot;
+    chicago.plot(column=label, ax=axarr[ix], cmap=&quot;tab20&quot;)
+    axarr[ix].set_title(label)
+    axarr[ix].set_axis_off()
+plt.subplots_adjust(wspace=1, hspace=0.5)
+plt.tight_layout()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_skater_47_0.png" class="no-scaled-link" src="../_images/notebooks_skater_47_0.png" style="width: 889px; height: 239px;" />
+</div>
+</div>
+<p>Above we can see an interesting pattern. Boundaries are fixed when stipulating a minimum of 3 and 6 communities per region then the smallest region increases by 3 communities when stipulating <code class="docutils literal notranslate"><span class="pre">floor==9</span></code>. However, as the minimum number of communities is increased to 12 and 15 the location, shape, and rank of the 3 desired regions vary greatly. See the count of communities and the number of AirBnB spots per region below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attr1, attr2 = &quot;count&quot;, &quot;num_spots&quot;
+df = pandas.DataFrame(
+    columns=pandas.MultiIndex.from_product(
+        [[f&quot;floor_{i}&quot; for i in floor_range], [attr1, attr2]]
+    ),
+    index=range(3)
+)
+df.index.name = &quot;region_id&quot;
+for i in floor_range:
+    col = f&quot;floor_{i}&quot;
+    df[col, attr1] = chicago[[col, attr1]].groupby(by=col).count()[attr1]
+    df[col, attr2] = chicago[[col, attr2]].groupby(by=col).sum()[attr2]
+df
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="2" halign="left">floor_3</th>
+      <th colspan="2" halign="left">floor_6</th>
+      <th colspan="2" halign="left">floor_9</th>
+      <th colspan="2" halign="left">floor_12</th>
+      <th colspan="2" halign="left">floor_15</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+    </tr>
+    <tr>
+      <th>region_id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>52</td>
+      <td>2867</td>
+      <td>52</td>
+      <td>2867</td>
+      <td>52</td>
+      <td>2867</td>
+      <td>39</td>
+      <td>2637</td>
+      <td>37</td>
+      <td>2601</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>6</td>
+      <td>504</td>
+      <td>6</td>
+      <td>504</td>
+      <td>9</td>
+      <td>1440</td>
+      <td>13</td>
+      <td>230</td>
+      <td>15</td>
+      <td>266</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>19</td>
+      <td>1655</td>
+      <td>19</td>
+      <td>1655</td>
+      <td>16</td>
+      <td>719</td>
+      <td>25</td>
+      <td>2159</td>
+      <td>25</td>
+      <td>2159</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="Clustering-on-more-than-one-variable">
+<h3>Clustering on more than one variable<a class="headerlink" href="#Clustering-on-more-than-one-variable" title="Link to this heading">¶</a></h3>
+<p>First, let’s isolate some of the variables in the dataset that are characterisitc of social vulnerability.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = [
+    &quot;poverty&quot;,
+    &quot;crowded&quot;,
+    &quot;without_hs&quot;,
+    &quot;unemployed&quot;,
+    &quot;harship_in&quot;,
+    &quot;num_crimes&quot;,
+    &quot;num_theft&quot;
+]
+</pre></div>
+</div>
+</div>
+<p>Not all values are available in all communities for each variable, so we’ll set those to 0.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for i in attrs_name:
+    chicago[i] = chicago[i].fillna(0)
+</pre></div>
+</div>
+</div>
+<p>Now we’ll see how regionalization results differ when increasing <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> from 3 to 7 by increments of 1 while considering the 7 social vulnerability variables.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>n_clusters_range = [3, 4, 5, 6, 7]
+n_clusters_range
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[3, 4, 5, 6, 7]
+</pre></div></div>
+</div>
+<p>For each regionalization run we will hold the other parameters constant.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>floor, trace, islands = 8, True, &quot;increase&quot;
+spanning_forest_kwds = dict(
+    dissimilarity=skm.manhattan_distances,
+    affinity=None,
+    reduction=numpy.sum,
+    center=numpy.mean,
+    verbose=False
+)
+</pre></div>
+</div>
+</div>
+<p>Solve.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for ncluster in n_clusters_range:
+    model = spopt.region.Skater(
+        chicago,
+        w,
+        attrs_name,
+        n_clusters=ncluster,
+        floor=floor,
+        trace=trace,
+        islands=islands,
+        spanning_forest_kwds=spanning_forest_kwds
+    )
+    model.solve()
+    chicago[f&quot;clusters_{ncluster}&quot;] = model.labels_
+</pre></div>
+</div>
+</div>
+<p>Plot results.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, axarr = plt.subplots(1, len(n_clusters_range), figsize=(9, 7.5))
+for ix, clust in enumerate(n_clusters_range):
+    label = f&quot;clusters_{clust}&quot;
+    chicago.plot(column=label, ax=axarr[ix], cmap=&quot;tab20&quot;)
+    axarr[ix].set_title(label)
+    axarr[ix].set_axis_off()
+plt.subplots_adjust(wspace=1, hspace=0.5)
+plt.tight_layout()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_skater_61_0.png" class="no-scaled-link" src="../_images/notebooks_skater_61_0.png" style="width: 889px; height: 239px;" />
+</div>
+</div>
+<p>When considering multiple related variables certain cores regions are present in all solutions.</p>
+<hr class="docutils" />
+</section>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/skater.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

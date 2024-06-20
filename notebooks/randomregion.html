@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Random Regions &#8212; spopt v0.6.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Max-P Regionalization for Multiple Components" href="component_policy.html" />
+    <link rel="prev" title="Regional-k-means" href="reg-k-means.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Random Regions</a><ul>
+<li><a class="reference internal" href="#Introduction">Introduction</a></li>
+<li><a class="reference internal" href="#1.-Evaluating-Regional-Partitions:-The-case-of-Mexican-state-incomes">1. Evaluating Regional Partitions: The case of Mexican state incomes</a></li>
+<li><a class="reference internal" href="#How-good-is-HANSON03-as-a-partition?">How good is <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> as a partition?</a><ul>
+<li><a class="reference internal" href="#A-random-partition-respecting-cardinality-constraints">A random partition respecting cardinality constraints</a></li>
+<li><a class="reference internal" href="#A-random-partition-respecting-cardinality-and-contiguity-constraints">A random partition respecting cardinality and contiguity constraints</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Comparing-Partitions">Comparing Partitions</a><ul>
+<li><a class="reference internal" href="#Generating-a-Reference-Distribution">Generating a Reference Distribution</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#2.-Demonstrating-the-max_swaps-parameter">2. Demonstrating the <code class="docutils literal notranslate"><span class="pre">max_swaps</span></code> parameter</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/spopt/blob/main/notebooks/randomregion.ipynb">notebooks/randomregion.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/spopt/main?filepath=notebooks/randomregion.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Random-Regions">
+<h1>Random Regions<a class="headerlink" href="#Random-Regions" title="Link to this heading">¶</a></h1>
+<p>Authors: <a class="reference external" href="https://github.com/sjsrey">Serge Rey</a>, <a class="reference external" href="https://github.com/jGaboardi">James Gaboardi</a></p>
+<section id="Introduction">
+<h2>Introduction<a class="headerlink" href="#Introduction" title="Link to this heading">¶</a></h2>
+<p>In this notebook we demonstrate how to use <code class="docutils literal notranslate"><span class="pre">spopt</span></code> with empirical and synthetic examples by:</p>
+<ol class="arabic simple">
+<li><p>Evaluating the properties of a predefined regionalization scheme.</p></li>
+<li><p>Exploring the <code class="docutils literal notranslate"><span class="pre">max_swaps</span></code> parameter on a simple lattice.</p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">spopt</span></code> offers functionality to generate random regions based on user-defined constraints. There are three optional parameters to constrain the regionalization: number of regions, cardinality, and contiguity. The default case simply takes a list of area IDs and randomly selects the number of regions and then allocates areas to each region. The user can also pass a vector of integers to the cardinality parameter to designate the number of areas to randomly assign to each region. The contiguity
+parameter takes a spatial weights object and uses that to ensure that each region is made up of spatially contiguous areas. When the contiguity constraint is enforced, it is possible to arrive at infeasible solutions; the <code class="docutils literal notranslate"><span class="pre">maxiter</span></code> parameter can be set to make multiple attempts to find a feasible solution.</p>
+<p>We begin with importing the relevant packages:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+%load_ext watermark
+%watermark
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Last updated: 2023-12-10T14:07:40.178142-05:00
+
+Python implementation: CPython
+Python version       : 3.12.0
+IPython version      : 8.18.0
+
+Compiler    : Clang 15.0.7
+OS          : Darwin
+Release     : 23.1.0
+Machine     : x86_64
+Processor   : i386
+CPU cores   : 8
+Architecture: 64bit
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas
+import inequality
+import libpysal
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy
+import pandas
+import seaborn
+import spopt
+from spopt.region import RandomRegion, RandomRegions
+import warnings
+
+RANDOM_SEED = 12345
+
+%watermark -w
+%watermark -iv
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Watermark: 2.4.3
+
+numpy     : 1.26.2
+pandas    : 2.1.3
+spopt     : 0.5.1.dev53+g5cadae7
+geopandas : 0.14.1
+matplotlib: 3.8.2
+inequality: 1.0.1
+libpysal  : 4.9.2
+seaborn   : 0.13.0
+
+</pre></div></div>
+</div>
+</section>
+<section id="1.-Evaluating-Regional-Partitions:-The-case-of-Mexican-state-incomes">
+<h2>1. Evaluating Regional Partitions: The case of Mexican state incomes<a class="headerlink" href="#1.-Evaluating-Regional-Partitions:-The-case-of-Mexican-state-incomes" title="Link to this heading">¶</a></h2>
+<p>We will be using the built-in example data set <code class="docutils literal notranslate"><span class="pre">mexico</span></code> from the <a class="reference external" href="https://pysal.org/libpysal/">libpysal</a> package. First, we get a high-level overview of the example:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.explain(&quot;mexico&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+mexico
+======
+
+Decennial per capita incomes of Mexican states 1940-2000
+--------------------------------------------------------
+
+* mexico.csv: attribute data. (n=32, k=13)
+* mexico.gal: spatial weights in GAL format.
+* mexicojoin.shp: Polygon shapefile. (n=32)
+
+Data used in Rey, S.J. and M.L. Sastre Gutierrez. (2010) &#34;Interregional inequality dynamics in Mexico.&#34; Spatial Economic Analysis, 5: 277-298.
+
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdf = geopandas.read_file(libpysal.examples.get_path(&quot;mexicojoin.shp&quot;))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdf.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>POLY_ID</th>
+      <th>AREA</th>
+      <th>CODE</th>
+      <th>NAME</th>
+      <th>PERIMETER</th>
+      <th>ACRES</th>
+      <th>HECTARES</th>
+      <th>PCGDP1940</th>
+      <th>PCGDP1950</th>
+      <th>PCGDP1960</th>
+      <th>...</th>
+      <th>GR9000</th>
+      <th>LPCGDP40</th>
+      <th>LPCGDP50</th>
+      <th>LPCGDP60</th>
+      <th>LPCGDP70</th>
+      <th>LPCGDP80</th>
+      <th>LPCGDP90</th>
+      <th>LPCGDP00</th>
+      <th>TEST</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>7.252751e+10</td>
+      <td>MX02</td>
+      <td>Baja California Norte</td>
+      <td>2040312.385</td>
+      <td>1.792187e+07</td>
+      <td>7252751.376</td>
+      <td>22361.0</td>
+      <td>20977.0</td>
+      <td>17865.0</td>
+      <td>...</td>
+      <td>0.05</td>
+      <td>4.35</td>
+      <td>4.32</td>
+      <td>4.25</td>
+      <td>4.40</td>
+      <td>4.47</td>
+      <td>4.43</td>
+      <td>4.48</td>
+      <td>1.0</td>
+      <td>MULTIPOLYGON (((-113.13972 29.01778, -113.2405...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>7.225988e+10</td>
+      <td>MX03</td>
+      <td>Baja California Sur</td>
+      <td>2912880.772</td>
+      <td>1.785573e+07</td>
+      <td>7225987.769</td>
+      <td>9573.0</td>
+      <td>16013.0</td>
+      <td>16707.0</td>
+      <td>...</td>
+      <td>0.00</td>
+      <td>3.98</td>
+      <td>4.20</td>
+      <td>4.22</td>
+      <td>4.39</td>
+      <td>4.46</td>
+      <td>4.41</td>
+      <td>4.42</td>
+      <td>2.0</td>
+      <td>MULTIPOLYGON (((-111.20612 25.80278, -111.2302...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>2.731957e+10</td>
+      <td>MX18</td>
+      <td>Nayarit</td>
+      <td>1034770.341</td>
+      <td>6.750785e+06</td>
+      <td>2731956.859</td>
+      <td>4836.0</td>
+      <td>7515.0</td>
+      <td>7621.0</td>
+      <td>...</td>
+      <td>-0.05</td>
+      <td>3.68</td>
+      <td>3.88</td>
+      <td>3.88</td>
+      <td>4.04</td>
+      <td>4.13</td>
+      <td>4.11</td>
+      <td>4.06</td>
+      <td>3.0</td>
+      <td>MULTIPOLYGON (((-106.62108 21.56531, -106.6475...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>7.961008e+10</td>
+      <td>MX14</td>
+      <td>Jalisco</td>
+      <td>2324727.436</td>
+      <td>1.967200e+07</td>
+      <td>7961008.285</td>
+      <td>5309.0</td>
+      <td>8232.0</td>
+      <td>9953.0</td>
+      <td>...</td>
+      <td>0.03</td>
+      <td>3.73</td>
+      <td>3.92</td>
+      <td>4.00</td>
+      <td>4.21</td>
+      <td>4.32</td>
+      <td>4.30</td>
+      <td>4.33</td>
+      <td>4.0</td>
+      <td>POLYGON ((-101.52490 21.85664, -101.58830 21.7...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>5.467030e+09</td>
+      <td>MX01</td>
+      <td>Aguascalientes</td>
+      <td>313895.530</td>
+      <td>1.350927e+06</td>
+      <td>546702.985</td>
+      <td>10384.0</td>
+      <td>6234.0</td>
+      <td>8714.0</td>
+      <td>...</td>
+      <td>0.13</td>
+      <td>4.02</td>
+      <td>3.79</td>
+      <td>3.94</td>
+      <td>4.21</td>
+      <td>4.32</td>
+      <td>4.32</td>
+      <td>4.44</td>
+      <td>5.0</td>
+      <td>POLYGON ((-101.84620 22.01176, -101.96530 21.8...</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 35 columns</p>
+</div></div>
+</div>
+<p>This data set records per capital Gross Domestic Product (PCGDP) for the decades 1940-2000 for 32 Mexican states.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdf.columns
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Index([&#39;POLY_ID&#39;, &#39;AREA&#39;, &#39;CODE&#39;, &#39;NAME&#39;, &#39;PERIMETER&#39;, &#39;ACRES&#39;, &#39;HECTARES&#39;,
+       &#39;PCGDP1940&#39;, &#39;PCGDP1950&#39;, &#39;PCGDP1960&#39;, &#39;PCGDP1970&#39;, &#39;PCGDP1980&#39;,
+       &#39;PCGDP1990&#39;, &#39;PCGDP2000&#39;, &#39;HANSON03&#39;, &#39;HANSON98&#39;, &#39;ESQUIVEL99&#39;, &#39;INEGI&#39;,
+       &#39;INEGI2&#39;, &#39;MAXP&#39;, &#39;GR4000&#39;, &#39;GR5000&#39;, &#39;GR6000&#39;, &#39;GR7000&#39;, &#39;GR8000&#39;,
+       &#39;GR9000&#39;, &#39;LPCGDP40&#39;, &#39;LPCGDP50&#39;, &#39;LPCGDP60&#39;, &#39;LPCGDP70&#39;, &#39;LPCGDP80&#39;,
+       &#39;LPCGDP90&#39;, &#39;LPCGDP00&#39;, &#39;TEST&#39;, &#39;geometry&#39;],
+      dtype=&#39;object&#39;)
+</pre></div></div>
+</div>
+<p>We can plot the spatial distribution of regional incomes in the last decade of the sample:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdf.plot(
+    figsize=(8, 6),
+    column=&quot;PCGDP2000&quot;,
+    scheme=&quot;quantiles&quot;,
+    cmap=&quot;Blues&quot;,
+    edgecolor=&quot;grey&quot;,
+    legend=True,
+    legend_kwds={&quot;fmt&quot;: &quot;{:.0f}&quot;},
+).axis(&quot;off&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(-118.64174423217773, -85.21563186645508, 13.6420334815979, 33.6293231010437)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_randomregion_11_1.png" class="no-scaled-link" src="../_images/notebooks_randomregion_11_1.png" style="width: 640px; height: 390px;" />
+</div>
+</div>
+<p>Here we see the north-south divide in the Mexican space economy. This pattern has been the subject of much recent research, and a common methodological strategy in these studies is to <em>partition</em> the states into mutually exclusive and exhaustive regions. The motivation is similar to that in traditional clustering where one attempts to group like objects together. Here the regional sets should be composed of states that are more similar to other members of the same set, and distinct from those
+states in other sets.</p>
+<p>Our dataset has a number of regionalization schemes from the published literature. Here we will focus on one <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code>. We can plot this partition using a categorical scheme:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdf.plot(figsize=(8, 6), column=&quot;HANSON03&quot;, categorical=True).axis(&quot;off&quot;);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_randomregion_13_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_13_0.png" style="width: 640px; height: 390px;" />
+</div>
+</div>
+<p>Here the different colors symbolize membership in a different region. We can examine the cardinality structure of this partition:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cards = mdf.groupby(by=&quot;HANSON03&quot;).count().NAME.values.tolist()
+cards
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[6, 7, 10, 2, 3, 4]
+</pre></div></div>
+</div>
+<p>Thus, we see there six regions (sets) of different sizes, the smallest region has only two states, while the largest (in a set-theory sense) has 10 states. We can explore the regional definitions in tabular form:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdf[[&quot;NAME&quot;, &quot;HANSON03&quot;, &quot;PCGDP2000&quot;]].sort_values(by=&quot;HANSON03&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>NAME</th>
+      <th>HANSON03</th>
+      <th>PCGDP2000</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Baja California Norte</td>
+      <td>1.0</td>
+      <td>29855.0</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>Nuevo Leon</td>
+      <td>1.0</td>
+      <td>38672.0</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>Chihuahua</td>
+      <td>1.0</td>
+      <td>30735.0</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>Tamaulipas</td>
+      <td>1.0</td>
+      <td>23546.0</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>Coahuila De Zaragoza</td>
+      <td>1.0</td>
+      <td>28460.0</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>Sonora</td>
+      <td>1.0</td>
+      <td>24068.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Nayarit</td>
+      <td>2.0</td>
+      <td>11478.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Baja California Sur</td>
+      <td>2.0</td>
+      <td>26103.0</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Zacatecas</td>
+      <td>2.0</td>
+      <td>11130.0</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>Durango</td>
+      <td>2.0</td>
+      <td>17379.0</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>Sinaloa</td>
+      <td>2.0</td>
+      <td>15242.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Aguascalientes</td>
+      <td>2.0</td>
+      <td>27782.0</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>San Luis Potosi</td>
+      <td>2.0</td>
+      <td>15866.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Jalisco</td>
+      <td>3.0</td>
+      <td>21610.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Queretaro de Arteaga</td>
+      <td>3.0</td>
+      <td>26149.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Guanajuato</td>
+      <td>3.0</td>
+      <td>15585.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Hidalgo</td>
+      <td>3.0</td>
+      <td>12348.0</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>Tlaxcala</td>
+      <td>3.0</td>
+      <td>11701.0</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>Veracruz-Llave</td>
+      <td>3.0</td>
+      <td>12191.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Michoacan de Ocampo</td>
+      <td>3.0</td>
+      <td>11838.0</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Morelos</td>
+      <td>3.0</td>
+      <td>18170.0</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Puebla</td>
+      <td>3.0</td>
+      <td>15685.0</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Colima</td>
+      <td>3.0</td>
+      <td>21358.0</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Distrito Federal</td>
+      <td>4.0</td>
+      <td>54349.0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Mexico</td>
+      <td>4.0</td>
+      <td>16322.0</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>Chiapas</td>
+      <td>5.0</td>
+      <td>8684.0</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>Oaxaca</td>
+      <td>5.0</td>
+      <td>9010.0</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>Guerrero</td>
+      <td>5.0</td>
+      <td>11820.0</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Campeche</td>
+      <td>6.0</td>
+      <td>36163.0</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Yucatan</td>
+      <td>6.0</td>
+      <td>17509.0</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>Tabasco</td>
+      <td>6.0</td>
+      <td>13360.0</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>Quintana Roo</td>
+      <td>6.0</td>
+      <td>33442.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="How-good-is-HANSON03-as-a-partition?">
+<h2>How good is <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> as a partition?<a class="headerlink" href="#How-good-is-HANSON03-as-a-partition?" title="Link to this heading">¶</a></h2>
+<p>One question we might ask about the partition, is how good of a job does it do at capturing the spatial distribution of incomes in Mexico? To answer this question, we are going to leverage the random regions functionality in <code class="docutils literal notranslate"><span class="pre">spopt</span></code>.</p>
+<section id="A-random-partition-respecting-cardinality-constraints">
+<h3>A random partition respecting cardinality constraints<a class="headerlink" href="#A-random-partition-respecting-cardinality-constraints" title="Link to this heading">¶</a></h3>
+<p>We will first create a new random partition that has the same cardinality structure/distribution as the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ids = mdf.index.values.tolist()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>numpy.random.seed(RANDOM_SEED)
+rrmx = RandomRegion(ids, num_regions=6, cardinality=cards)
+</pre></div>
+</div>
+</div>
+<p>This creates a new <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instance. One of its attributes is the definition of the regions in the partition:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rrmx.regions
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[27, 12, 18, 3, 15, 8],
+ [0, 25, 21, 20, 7, 6, 24],
+ [23, 10, 13, 11, 19, 16, 26, 14, 17, 22],
+ [28, 31],
+ [30, 9, 4],
+ [1, 29, 5, 2]]
+</pre></div></div>
+</div>
+<p>This will have the same cardinality as the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>set([len(region) for region in rrmx.regions]) == set(cards)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+<p>A simple helper function let’s us attach the region labels for this new partition into the dataframe:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def region_labels(df, solution, name=&quot;labels_&quot;):
+    n, k = df.shape
+    labels_ = numpy.zeros((n,), int)
+    for i, region in enumerate(solution.regions):
+        labels_[region] = i
+    df[name] = labels_
+</pre></div>
+</div>
+</div>
+<p>And, then we can visualize the new partition:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>region_labels(mdf, rrmx, name=&quot;rrmx&quot;)
+mdf.plot(figsize=(8, 6), column=&quot;rrmx&quot;, categorical=True).axis(&quot;off&quot;);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_randomregion_28_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_28_0.png" style="width: 640px; height: 390px;" />
+</div>
+</div>
+<p>While the <code class="docutils literal notranslate"><span class="pre">rrmx</span></code> partition and the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partitions have identical cardinality structures, their spatial distributions are radically different. The <code class="docutils literal notranslate"><span class="pre">rrmx</span></code> map looks nothing like the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> map.</p>
+<p>One of the key differences is that the sets in the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition are each spatially connected components while this is not the case for the “regions” in the <code class="docutils literal notranslate"><span class="pre">rrmx</span></code> partition.</p>
+</section>
+<section id="A-random-partition-respecting-cardinality-and-contiguity-constraints">
+<h3>A random partition respecting cardinality and contiguity constraints<a class="headerlink" href="#A-random-partition-respecting-cardinality-and-contiguity-constraints" title="Link to this heading">¶</a></h3>
+<p>A second way to form a random partition is to add an additional constraint in the form of the spatial connectivity between the states. To do so, we will construct a spatial weights object using the <code class="docutils literal notranslate"><span class="pre">Queen</span></code> contiguity criterion:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with warnings.catch_warnings(record=True) as w:
+    w = libpysal.weights.Queen.from_dataframe(mdf)
+</pre></div>
+</div>
+</div>
+<p>and then add this as an additional parameter to instantiate a new <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>numpy.random.seed(RANDOM_SEED)
+rrmxc = RandomRegion(ids, num_regions=6, cardinality=cards, contiguity=w)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rrmxc.regions
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[27, 5, 28, 8, 11, 24, 3, 4, 2, 29],
+ [18, 19, 9, 21, 10, 12, 20],
+ [0, 22, 1, 25, 23, 26],
+ [13, 16, 14],
+ [15, 17, 7, 6],
+ [31, 30]]
+</pre></div></div>
+</div>
+<p>This will also have the same cardinality as the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>set([len(region) for region in rrmxc.regions]) == set(cards)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+<p>But, more importantly, we see the partition yields spatially connected components for the regions:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>region_labels(mdf, rrmxc, name=&quot;rrmxc&quot;)
+mdf.plot(figsize=(8, 6), column=&quot;rrmxc&quot;, categorical=True).axis(&quot;off&quot;);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_randomregion_37_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_37_0.png" style="width: 640px; height: 390px;" />
+</div>
+</div>
+</section>
+</section>
+<section id="Comparing-Partitions">
+<h2>Comparing Partitions<a class="headerlink" href="#Comparing-Partitions" title="Link to this heading">¶</a></h2>
+<p>We now can get back to the question of how good the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition does in capturing the spatial structure of state incomes in Mexico. Two alternative random partitions have been constructed using <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> and we can compare these with the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, axs = plt.subplots(1, 3, figsize=(12, 8))
+ax1, ax2, ax3 = axs
+
+mdf.plot(column=&quot;HANSON03&quot;, categorical=True, ax=ax1)
+ax1.set_axis_off()
+ax1.set_aspect(&quot;equal&quot;)
+ax1.set_title(&quot;HANSON03&quot;)
+
+mdf.plot(column=&quot;rrmx&quot;, categorical=True, ax=ax2)
+ax2.set_axis_off()
+ax2.set_aspect(&quot;equal&quot;)
+ax2.set_title(&quot;Cardinality Constrained&quot;)
+
+mdf.plot(column=&quot;rrmxc&quot;, categorical=True, ax=ax3)
+ax3.set_axis_off()
+ax3.set_aspect(&quot;equal&quot;)
+ax3.set_title(&quot;Cardinality and Contiguity Constrained&quot;)
+
+plt.subplots_adjust(wspace=-0.2);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_randomregion_39_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_39_0.png" style="width: 950px; height: 255px;" />
+</div>
+</div>
+<p>In order to judge the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> regions against those from the two random solutions, we need some objective function to serve as our benchmark. Given the interest in the spatial distribution of incomes, we might ask if a partition has minimized the internal heterogeneity of the incomes for states belonging to each set?</p>
+<p>We can use the PySAL <a class="reference external" href="https://inequality.readthedocs.io/en/latest/">inequality</a> package to implement this measure:</p>
+<p>Let’s focus on the last year in the sample and pull out the state incomes:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>y = mdf.PCGDP2000
+</pre></div>
+</div>
+</div>
+<p>The <a class="reference external" href="https://inequality.readthedocs.io/en/latest/generated/inequality.theil.TheilD.html#inequality.theil.TheilD">TheilD</a> statistic decomposes the inequality of the 32 state incomes into two parts:</p>
+<ul class="simple">
+<li><p>inequality between states belonging to different regions (inequality between regions)</p></li>
+<li><p>inequality between states belonging to the same region (inequality within regions)</p></li>
+</ul>
+<p>We can calculate this for the original partition:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_hanson = inequality.theil.TheilD(y, mdf.HANSON03)
+</pre></div>
+</div>
+</div>
+<p>The overall level of inequality is:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_hanson.T
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.10660832349588024
+</pre></div></div>
+</div>
+<p>which is decomposed into the “between-regions” component:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_hanson.bg
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([0.05373534])
+</pre></div></div>
+</div>
+<p>and the “within-regions” component:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_hanson.wg
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([0.05287298])
+</pre></div></div>
+</div>
+<p>For this partition, the two components are roughly equal. How does this compare to a random partition? Well, for a random partition with the same cardinality structure as <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> we can carry out the same decomposition:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_rrmx = inequality.theil.TheilD(y, mdf.rrmx)
+</pre></div>
+</div>
+</div>
+<p>The level of overall inequality will be the same:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_rrmx.T
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.10660832349588024
+</pre></div></div>
+</div>
+<p>However, the decomposition is very different now, with the within component being much larger than the between component.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_rrmx.bg
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([0.02096667])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_rrmx.wg
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([0.08564165])
+</pre></div></div>
+</div>
+<p>How about when both cardinality and contiguity are taken into account when developing the random partition? We can pass in the partition definition for this solution into the decomposition:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_rrmxc = inequality.theil.TheilD(y, mdf.rrmxc)
+</pre></div>
+</div>
+</div>
+<p>Again, the total inequality remains the same:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_rrmxc.T
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.10660832349588024
+</pre></div></div>
+</div>
+<p>and the within-region component is even larger than either the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> and <code class="docutils literal notranslate"><span class="pre">rrmx</span></code> partitions:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_rrmxc.bg
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([0.01313884])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_rrmxc.wg
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([0.09346949])
+</pre></div></div>
+</div>
+<section id="Generating-a-Reference-Distribution">
+<h3>Generating a Reference Distribution<a class="headerlink" href="#Generating-a-Reference-Distribution" title="Link to this heading">¶</a></h3>
+<p>Both of the comparison partitions are examples of random partitions, subject to matching the cardinality (<code class="docutils literal notranslate"><span class="pre">rrmx</span></code>) or cardinality and contiguity constraints (<code class="docutils literal notranslate"><span class="pre">rmxc</span></code>). As such, the generated partitions should be viewed as samples from the population of all possible random partitions that also respect those constraints. Rather than relying on a single draw from each of these distributions, as we have done up to now, if we sample from these distributions, we can develop an empirical reference
+distribution to compare the original <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition against. In other words, we can ask if the latter partition is performing any better than a random partition that respects the cardinality and contiguity constraints.</p>
+<p>We can do this by adding in a <code class="docutils literal notranslate"><span class="pre">permutations</span></code> argument to the class <code class="docutils literal notranslate"><span class="pre">RandomRegions</span></code>. Note the plural here in that this class is intended to generate <code class="docutils literal notranslate"><span class="pre">permutations</span></code> solutions for the random regions that respect the relevant cardinality and contiguity constraints. We will generate <code class="docutils literal notranslate"><span class="pre">permutations=99</span></code> solutions and calculate the inequality decomposition for each of the 99 partitions, extracting the <code class="docutils literal notranslate"><span class="pre">wg</span></code> component to develop the reference distribution against which we can evaluate the
+observed <code class="docutils literal notranslate"><span class="pre">wg</span></code> value from the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>numpy.random.seed(RANDOM_SEED)
+rrmxcs = RandomRegions(
+    ids, num_regions=6, cardinality=cards, contiguity=w, permutations=99
+)
+with warnings.catch_warnings():
+    warnings.simplefilter(&quot;ignore&quot;)
+    wg = []
+    for i, solution in enumerate(rrmxcs.solutions_feas):
+        name = f&quot;rrmxc_{i}&quot;
+        region_labels(mdf, solution, name=name)
+        wg.append(inequality.theil.TheilD(y, mdf[name]).wg)
+wg = numpy.array(wg)
+</pre></div>
+</div>
+</div>
+<p>The mean of the within-region inequality component is:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wg.mean()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.08499903576350978
+</pre></div></div>
+</div>
+<p>which is larger than the observed value for <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_hanson.wg
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([0.05287298])
+</pre></div></div>
+</div>
+<p>Examining the empirical distribution of the within-region inequality component for the random partitions:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rdf = pandas.DataFrame(data=wg, columns=[&quot;Within-region inequality&quot;])
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>_ = seaborn.displot(
+    rdf, kind=&quot;kde&quot;, legend=False, x=&quot;Within-region inequality&quot;, rug=True
+);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_randomregion_72_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_72_0.png" style="width: 489px; height: 489px;" />
+</div>
+</div>
+<p>provides a more comprehensive benchmark for evaluating the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition. We see that the observed within-region component is extreme relative to what we would expect if the partitions were formed randomly subject to the cardinality and contiguity constraints:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>t_hanson.wg
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([0.05287298])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wg.min()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.052392123130697854
+</pre></div></div>
+</div>
+<p>We could even formalize this statement by developing a pseudo p-value for the observed component:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pvalue = (1 + (wg &lt;= t_hanson.wg[0]).sum()) / 100
+pvalue
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.02
+</pre></div></div>
+</div>
+<p>which would lead us to conclude that the observed value is significantly different from what would be expected under a random region null.</p>
+<p>So, yes,the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition does appear to be capturing the spatial pattern of incomes in Mexico in the sense that its larger within-region inequality component is not due to random chance.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="2.-Demonstrating-the-max_swaps-parameter">
+<h2>2. Demonstrating the <code class="docutils literal notranslate"><span class="pre">max_swaps</span></code> parameter<a class="headerlink" href="#2.-Demonstrating-the-max_swaps-parameter" title="Link to this heading">¶</a></h2>
+<p>Generate a 20 x 20 lattice in <code class="docutils literal notranslate"><span class="pre">spenc</span></code> with synthetic labels &amp; plot.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>hori, vert = 20, 20
+n_polys = hori * vert
+gdf = spopt.region.spenclib.utils.lattice(hori, vert)
+numpy.random.seed(RANDOM_SEED)
+gdf[&quot;synth_data&quot;] = numpy.random.laplace(100, 10, n_polys)
+gdf.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>synth_data</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POLYGON ((0.00000 0.00000, 1.00000 0.00000, 1....</td>
+      <td>119.606435</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POLYGON ((0.00000 1.00000, 1.00000 1.00000, 1....</td>
+      <td>95.423219</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POLYGON ((0.00000 2.00000, 1.00000 2.00000, 1....</td>
+      <td>89.998863</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POLYGON ((0.00000 3.00000, 1.00000 3.00000, 1....</td>
+      <td>91.062546</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POLYGON ((0.00000 4.00000, 1.00000 4.00000, 1....</td>
+      <td>101.455462</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plt.rcParams[&quot;figure.figsize&quot;] = [10, 10]
+gdf.plot(
+    column=&quot;synth_data&quot;,
+    scheme=&quot;quantiles&quot;,
+    cmap=&quot;Blues&quot;,
+    edgecolor=&quot;grey&quot;,
+    legend=True,
+    legend_kwds={&quot;fmt&quot;: &quot;{:.2f}&quot;},
+);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_randomregion_81_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_81_0.png" style="width: 830px; height: 813px;" />
+</div>
+</div>
+<p>Set the number of desired regions to 4.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>n_regions = 4
+</pre></div>
+</div>
+</div>
+<p>Define IDs &amp; set cardinality to 100 areas per region.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ids = gdf.index.values.tolist()
+cards = [int(n_polys / n_regions)] * n_regions
+cards
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[100, 100, 100, 100]
+</pre></div></div>
+</div>
+<p>Generate a <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instance (constraining only region count and cardinality) and plot.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>numpy.random.seed(RANDOM_SEED)
+rrlat = RandomRegion(ids, num_regions=n_regions, cardinality=cards)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>region_labels(gdf, rrlat, name=&quot;rrlat&quot;)
+gdf.plot(column=&quot;rrlat&quot;, cmap=&quot;tab20&quot;);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_randomregion_88_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_88_0.png" style="width: 830px; height: 813px;" />
+</div>
+</div>
+<p>Create a <code class="docutils literal notranslate"><span class="pre">Queen</span></code> weights object to define spatial contiguity.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with warnings.catch_warnings(record=True) as w:
+    w = libpysal.weights.Queen.from_dataframe(gdf)
+</pre></div>
+</div>
+</div>
+<p>Iterate over <code class="docutils literal notranslate"><span class="pre">max_swaps=[100,</span> <span class="pre">350,</span> <span class="pre">650,</span> <span class="pre">999]</span></code> for 4 <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instances.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for swaps in [100, 350, 650, 999]:
+    swap_str = f&quot;rrlatms{swaps}&quot;
+    numpy.random.seed(RANDOM_SEED)
+    result = RandomRegion(
+        ids,
+        num_regions=n_regions,
+        cardinality=cards,
+        contiguity=w,
+        compact=True,
+        max_swaps=swaps,
+    )
+    region_labels(gdf, result, name=swap_str)
+</pre></div>
+</div>
+</div>
+<p>Assign labels and titles, then plot.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>labels = [
+    [&quot;synth_data&quot;, &quot;rrlatms100&quot;, &quot;rrlatms650&quot;],
+    [&quot;rrlat&quot;, &quot;rrlatms350&quot;, &quot;rrlatms999&quot;],
+]
+titles = [
+    [&quot;Data&quot;, &quot;Max 100 Swaps&quot;, &quot;Max 650 Swaps&quot;],
+    [&quot;Unconstrained&quot;, &quot;Max 350 Swaps&quot;, &quot;Max 999 Swaps&quot;],
+]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rows, cols = 2, 3
+f, axs = plt.subplots(rows, cols, figsize=(9, 7.5))
+for i in range(rows):
+    for j in range(cols):
+        label, title = labels[i][j], titles[i][j]
+        _ax = axs[i, j]
+        if i == j and i == 0:
+            kws = {&quot;scheme&quot;: &quot;quantiles&quot;, &quot;cmap&quot;: &quot;Blues&quot;, &quot;ec&quot;: &quot;grey&quot;}
+            gdf.plot(column=label, ax=_ax, **kws)
+        else:
+            gdf.plot(column=label, ax=_ax, cmap=&quot;tab20&quot;)
+        _ax.set_title(title)
+        _ax.set_axis_off()
+        _ax.set_aspect(&quot;equal&quot;)
+plt.subplots_adjust(wspace=1, hspace=0.5)
+plt.tight_layout()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_randomregion_95_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_95_0.png" style="width: 889px; height: 653px;" />
+</div>
+</div>
+<p>As shown here, the results obtained from setting the maximum number of swaps clearly vary.</p>
+<hr class="docutils" />
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/randomregion.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>spopt.locate.KNearestPMedian &#8212; spopt v0.6.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
+    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="spopt.locate.PCenter" href="spopt.locate.PCenter.html" />
+    <link rel="prev" title="spopt.locate.PMedian" href="spopt.locate.PMedian.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">spopt.locate.KNearestPMedian</a><ul>
+<li><a class="reference internal" href="#spopt.locate.KNearestPMedian"><code class="docutils literal notranslate"><span class="pre">KNearestPMedian</span></code></a><ul>
+<li><a class="reference internal" href="#spopt.locate.KNearestPMedian.__init__"><code class="docutils literal notranslate"><span class="pre">KNearestPMedian.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.KNearestPMedian.facility_client_array"><code class="docutils literal notranslate"><span class="pre">KNearestPMedian.facility_client_array()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.KNearestPMedian.from_cost_matrix"><code class="docutils literal notranslate"><span class="pre">KNearestPMedian.from_cost_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.KNearestPMedian.from_geodataframe"><code class="docutils literal notranslate"><span class="pre">KNearestPMedian.from_geodataframe()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.KNearestPMedian.solve"><code class="docutils literal notranslate"><span class="pre">KNearestPMedian.solve()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="spopt-locate-knearestpmedian">
+<h1>spopt.locate.KNearestPMedian<a class="headerlink" href="#spopt-locate-knearestpmedian" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="spopt.locate.KNearestPMedian">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spopt.locate.</span></span><span class="sig-name descname"><span class="pre">KNearestPMedian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ai_sum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">clients</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">facilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_facilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'euclidean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/locate/p_median.html#KNearestPMedian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.KNearestPMedian" title="Link to this definition">¶</a></dt>
+<dd><p>Implement the P-Median Model with Near-Far Cost Allocation and solve it.
+The model is adapted from <span id="id1">[<a class="reference internal" href="../references.html#id6" title="Richard L. Church. Tobler's law and spatial optimization: why bakersfield? International Regional Science Review, 41(3):287-310, 2018. doi:10.1177/0160017616650612.">Chu18</a>]</span>, and can be formulated as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{lllll}
+\displaystyle \textbf{Minimize}      &amp; \displaystyle \sum_{i \in I}\sum_{k \in k_{i}}{a_i d_{ik} X_{ik}} + \sum_{i \in I}{g_i (d_{i{k_i}} + 1)}  &amp;&amp;                                          &amp; (1)                                                                               \\
+\displaystyle \textbf{Subject To}    &amp; \sum_{k \in k_{i}}{X_{ik} + g_i = 1}                                                                      &amp;&amp; \forall i \in I                          &amp; (2)                                                                               \\
+                                     &amp; \sum_{j \in J}{Y_j} = p                                                                                   &amp;&amp;                                          &amp; (3)                                                                               \\
+                                     &amp; \sum_{i \in I}{a_i X_{ik}} \leq {Y_{k} c_{k}}                                                             &amp;&amp; \forall k \in k_{i}                      &amp; (4)                                                                               \\
+                                     &amp; X_{ij} \leq Y_{j}                                                                                         &amp;&amp; \forall i \in I \quad \forall j \in J    &amp; (5)                                                                               \\
+                                     &amp; X_{ij} \in \{0, 1\}                                                                                       &amp;&amp; \forall i \in I \quad \forall j \in J    &amp; (6)                                                                               \\
+                                     &amp; Y_j \in \{0, 1\}                                                                                          &amp;&amp; \forall j \in J                          &amp; (7)                                                                               \\
+                                     &amp;                                                                                                           &amp;&amp;                                          &amp;                                                                                   \\
+\displaystyle \textbf{Where}         &amp;&amp; i                                                                                                        &amp; =                                         &amp; \textrm{index of demand points/areas/objects in set } I                           \\
+                                     &amp;&amp; j                                                                                                        &amp; =                                         &amp; \textrm{index of potential facility sites in set } J                              \\
+                                     &amp;&amp; p                                                                                                        &amp; =                                         &amp; \textrm{the number of facilities to be sited}                                     \\
+                                     &amp;&amp; a_i                                                                                                      &amp; =                                         &amp; \textrm{service load or population demand at client location } i                  \\
+                                     &amp;&amp; k_{i}                                                                                                    &amp; =                                         &amp; \textrm{the } k \textrm{nearest facilities of client location } i                 \\
+                                     &amp;&amp; c_{j}                                                                                                    &amp; =                                         &amp; \textrm{the capacity of facility} j                                               \\
+                                     &amp;&amp; d_{ij}                                                                                                   &amp; =                                         &amp; \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
+                                     &amp;&amp; X_{ij}                                                                                                   &amp; =                                         &amp; \begin{cases}
+                                                                                                                                                                                                1, \textrm{if client location } i \textrm{ is served by facility } j             \\
+                                                                                                                                                                                                0, \textrm{otherwise}                                                            \\
+                                                                                                                                                                                               \end{cases}                                                                       \\
+                                     &amp;&amp; Y_j                                                                                                      &amp; =                                         &amp; \begin{cases}
+                                                                                                                                                                                                1, \textrm{if a facility is sited at location } j                                \\
+                                                                                                                                                                                                0, \textrm{otherwise}                                                            \\
+                                                                                                                                                                                               \end{cases}                                                                       \\
+                                     &amp;&amp; g_i                                                                                                      &amp; =                                         &amp; \begin{cases}
+                                                                                                                                                                                                1, \textrm{if the client } i \textrm{ needs to be served by non-k-nearest facilities}     \\
+                                                                                                                                                                                                0, \textrm{otherwise}                                                            \\
+                                                                                                                                                                                               \end{cases}                                                                       \\
+\end{array}\end{split}\]</div>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>name</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>The problem name.</p>
+</dd>
+<dt><strong>ai_sum</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a>]</span></dt><dd><p>The sum of weights representing the service loads of the clients.</p>
+</dd>
+<dt><strong>clients</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code></span></dt><dd><p>An array of coordinates of clients.</p>
+</dd>
+<dt><strong>facilities</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code></span></dt><dd><p>An array of coordinates of facilities.</p>
+</dd>
+<dt><strong>weights</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code></span></dt><dd><p>An array of weights representing the service loads of the clients.</p>
+</dd>
+<dt><strong>k_array</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code></span></dt><dd><p>An array of k values representing the number of nearest facilities
+for each client.</p>
+</dd>
+<dt><strong>p_facilities: int</strong></dt><dd><p>The number of facilities to be located.</p>
+</dd>
+<dt><strong>capacities</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code> or <a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a></span></dt><dd><p>An array of facility capacities. None if capacity constraints are
+not considered.</p>
+</dd>
+<dt><strong>distance_metric</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>The distance metric used for computing distances between clients
+and facilities.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>sparse_matrix</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Compressed</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">Sparse</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">Row</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix</span></code></span></dt><dd><p>A cost matrix in the form of a compressed sparse row matrix between
+origins and destinations.</p>
+</dd>
+<dt><strong>aij</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Compressed</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">Sparse</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">Row</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix</span></code></span></dt><dd><p>A weighted cost matrix in the form of a compressed sparse row matrix
+between origins and destinations.</p>
+</dd>
+<dt><strong>problem</strong><span class="classifier"><a class="reference external" href="https://coin-or.github.io/pulp/technical/pulp.html#pulp.LpProblem" title="(in PuLP v2.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pulp.LpProblem</span></code></a></span></dt><dd><p>A <code class="docutils literal notranslate"><span class="pre">pulp</span></code> instance of an optimization model that contains constraints,
+variables, and an objective function.</p>
+</dd>
+<dt><strong>fac2cli</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a></span></dt><dd><p>A 2D array storing facility to client relationships where each
+row represents a facility and contains an array of client indices
+with which it is associated. An empty client array indicates
+the facility is associated with no clients.</p>
+</dd>
+<dt><strong>cli2fac</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a></span></dt><dd><p>The inverse of <code class="docutils literal notranslate"><span class="pre">fac2cli</span></code> where client to facility relationships
+are shown.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.KNearestPMedian.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ai_sum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">clients</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">facilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_facilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'euclidean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/locate/p_median.html#KNearestPMedian.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.KNearestPMedian.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>name</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>The desired name for the model.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.KNearestPMedian.__init__" title="spopt.locate.KNearestPMedian.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(name, ai_sum, clients, facilities, ...)</p></td>
+<td><p>Initialize.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_status</span></code>()</p></td>
+<td><p>Ensure a model is solved.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">client_facility_array</span></code>()</p></td>
+<td><p>Create a 2D array storing <strong>client to facility relationships</strong> where each row represents a client and contains an array of facility indices with which it is associated.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.KNearestPMedian.facility_client_array" title="spopt.locate.KNearestPMedian.facility_client_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">facility_client_array</span></code></a>()</p></td>
+<td><p>Create a 2D array storing <strong>facility to client relationships</strong> where each row represents a facility and contains an array of client indices with which it is associated.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.KNearestPMedian.from_cost_matrix" title="spopt.locate.KNearestPMedian.from_cost_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_cost_matrix</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Warning: This method is not supported in the KNearestPMedian subclass.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.KNearestPMedian.from_geodataframe" title="spopt.locate.KNearestPMedian.from_geodataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_geodataframe</span></code></a>(gdf_demand, gdf_fac, ...)</p></td>
+<td><p>Create the object of KNearestPMedian class using input data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mean_distance</span></code>()</p></td>
+<td><p>Calculate the mean distance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.KNearestPMedian.solve" title="spopt.locate.KNearestPMedian.solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve</span></code></a>(solver[, results])</p></td>
+<td><p>Solve the k-nearest p-median model.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.KNearestPMedian.facility_client_array">
+<span class="sig-name descname"><span class="pre">facility_client_array</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/p_median.html#KNearestPMedian.facility_client_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.KNearestPMedian.facility_client_array" title="Link to this definition">¶</a></dt>
+<dd><p>Create a 2D array storing <strong>facility to client relationships</strong> where each
+row represents a facility and contains an array of client indices with
+which it is associated. An empty client array indicates the facility
+is associated with no clients.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.KNearestPMedian.from_cost_matrix">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_cost_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/locate/p_median.html#KNearestPMedian.from_cost_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.KNearestPMedian.from_cost_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Warning: This method is not supported in the KNearestPMedian subclass.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.KNearestPMedian.from_geodataframe">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_geodataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf_demand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://geopandas.org/en/latest/docs/reference/api/geopandas.GeoDataFrame.html#geopandas.GeoDataFrame" title="(in GeoPandas v1.0.0rc1.dev+1)"><span class="pre">GeoDataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gdf_fac</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://geopandas.org/en/latest/docs/reference/api/geopandas.GeoDataFrame.html#geopandas.GeoDataFrame" title="(in GeoPandas v1.0.0rc1.dev+1)"><span class="pre">GeoDataFrame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">demand_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">facility_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_facilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">facility_capacity_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'euclidean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'k-nearest-p-median'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/locate/p_median.html#KNearestPMedian.from_geodataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.KNearestPMedian.from_geodataframe" title="Link to this definition">¶</a></dt>
+<dd><p>Create the object of KNearestPMedian class using input data.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>gdf_demand</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoDataFrame</span></code></span></dt><dd><p>A GeoDataFrame containing demand points with their associated attributes.</p>
+</dd>
+<dt><strong>gdf_fac</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoDataFrame</span></code></span></dt><dd><p>A GeoDataFrame containing facility points with their associated attributes.</p>
+</dd>
+<dt><strong>demand_col</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>The column name in gdf_demand representing the coordinate of each client.</p>
+</dd>
+<dt><strong>facility_col</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>The column name in gdf_fac representing the coordinate of each facility.</p>
+</dd>
+<dt><strong>weights_cols</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>The column name in gdf_demand representing the weights for each client.</p>
+</dd>
+<dt><strong>p_facilities: int</strong></dt><dd><p>The number of facilities to be located.</p>
+</dd>
+<dt><strong>facility_capacity_col</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, optional</span></dt><dd><p>The column name in gdf_fac representing the capacity of each facility,
+by default None.</p>
+</dd>
+<dt><strong>k_array</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code>, optional</span></dt><dd><p>An array of integers representing the k values for each client.
+If not provided, a default value of 5 or the number of facilities,
+whichever is smaller, will be used.</p>
+</dd>
+<dt><strong>distance_metric</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, optional</span></dt><dd><p>The distance metric to be used in calculating distances between clients
+and facilities, by default “euclidean”.</p>
+</dd>
+<dt><strong>name</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, optional</span></dt><dd><p>The name of the problem, by default “k-nearest-p-median”.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference internal" href="#spopt.locate.KNearestPMedian" title="spopt.locate.p_median.KNearestPMedian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spopt.locate.p_median.KNearestPMedian</span></code></a></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spopt.locate</span> <span class="kn">import</span> <span class="n">KNearestPMedian</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">geopandas</span>
+</pre></div>
+</div>
+<p>Create the input data and attributes.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">demand_data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>   <span class="s1">&#39;ID&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">Point</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
+<span class="gp">... </span>   <span class="s1">&#39;demand&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">facility_data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>   <span class="s1">&#39;ID&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">Point</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
+<span class="gp">... </span>   <span class="s1">&#39;capacity&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gdf_demand</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">demand_data</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s1">&#39;EPSG:4326&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gdf_fac</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">facility_data</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s1">&#39;EPSG:4326&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create and solve a <code class="docutils literal notranslate"><span class="pre">KNearestPMedian</span></code> instance from the geodataframe.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">k_nearest_pmedian</span> <span class="o">=</span> <span class="n">KNearestPMedian</span><span class="o">.</span><span class="n">from_geodataframe</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">gdf_demand</span><span class="p">,</span> <span class="n">gdf_fac</span><span class="p">,</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="n">weights_cols</span><span class="o">=</span><span class="s1">&#39;demand&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="mi">2</span><span class="p">,</span> <span class="n">facility_capacity_col</span><span class="o">=</span><span class="s1">&#39;capacity&#39;</span><span class="p">,</span> <span class="n">k_array</span> <span class="o">=</span> <span class="n">k</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">k_nearest_pmedian</span> <span class="o">=</span> <span class="n">k_nearest_pmedian</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">pulp</span><span class="o">.</span><span class="n">PULP_CBC_CMD</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Get the facility-client associations.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">fac</span><span class="p">,</span> <span class="n">cli</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">k_nearest_pmedian</span><span class="o">.</span><span class="n">fac2cli</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;facility </span><span class="si">{</span><span class="n">fac</span><span class="si">}</span><span class="s2"> serving </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span><span class="si">}</span><span class="s2"> clients&quot;</span><span class="p">)</span>
+<span class="go">facility 0 serving 1 clients</span>
+<span class="go">facility 1 serving 1 clients</span>
+<span class="go">facility 2 serving 0 clients</span>
+</pre></div>
+</div>
+<p>Get the total and average weighted travel cost.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">k_nearest_pmedian</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">1.618</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">k_nearest_pmedian</span><span class="o">.</span><span class="n">mean_dist</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.809</span>
+</pre></div>
+</div>
+<p>Get the k values for the last iteration.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">k_nearest_pmedian</span><span class="o">.</span><span class="n">k_array</span><span class="p">)</span>
+<span class="go">[2, 1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.KNearestPMedian.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://coin-or.github.io/pulp/technical/solvers.html#pulp.apis.LpSolver" title="(in PuLP v2.8)"><span class="pre">LpSolver</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/locate/p_median.html#KNearestPMedian.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.KNearestPMedian.solve" title="Link to this definition">¶</a></dt>
+<dd><p>Solve the k-nearest p-median model.</p>
+<p>This method iteratively solves the <code class="docutils literal notranslate"><span class="pre">KNearestPMedian</span></code> model using a specified
+solver until no more clients need to be assigned to placeholder facilities.
+The <code class="docutils literal notranslate"><span class="pre">k</span></code> values for clients are increased dynamically based on the presence of
+clients not assigned to <code class="docutils literal notranslate"><span class="pre">k</span></code> nearest facilities.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>solver</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pulp.LpSolver</span></code></span></dt><dd><p>The solver to be used for solving the optimization model.</p>
+</dd>
+<dt><strong>results</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.12)"><span class="xref std std-ref">bool</span></a> (default <a class="reference external" href="https://docs.python.org/3.12/library/constants.html#True" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">True</span></code></a>)</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> it will create metainfo (which facilities cover which
+demand) and vice versa, and the uncovered demand.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference internal" href="#spopt.locate.KNearestPMedian" title="spopt.locate.p_median.KNearestPMedian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spopt.locate.p_median.KNearestPMedian</span></code></a></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/spopt.locate.KNearestPMedian.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

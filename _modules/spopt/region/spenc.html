@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spopt.region.spenc &#8212; spopt v0.6.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=e5dd7357" />
+    <script src="../../../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../installation.html">Installation</a></li>
+                <li><a href="../../../tutorials.html">Tutorials</a></li>
+                <li><a href="../../../api.html">API</a></li>
+                <li><a href="../../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for spopt.region.spenc</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ruff: noqa: C408, B006, N806</span>
+
+
+<span class="kn">from</span> <span class="nn">..BaseClass</span> <span class="kn">import</span> <span class="n">BaseSpOptHeuristicSolver</span>
+<span class="kn">from</span> <span class="nn">.spenclib</span> <span class="kn">import</span> <span class="n">SPENC</span>
+
+
+<div class="viewcode-block" id="Spenc">
+<a class="viewcode-back" href="../../../generated/spopt.region.Spenc.html#spopt.region.Spenc">[docs]</a>
+<span class="k">class</span> <span class="nc">Spenc</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Spatially encouraged spectral clustering found in :cite:`wolf2018`.</span>
+
+<span class="sd">    Apply clustering to a projection of the normalized laplacian, using</span>
+<span class="sd">    spatial information to constrain the clustering. In practice Spectral</span>
+<span class="sd">    Clustering is very useful when the structure of the individual clusters</span>
+<span class="sd">    is highly non-convex or more generally when a measure of the center and</span>
+<span class="sd">    spread of the cluster is not a suitable description of the complete cluster.</span>
+<span class="sd">    For instance when clusters are nested circles on the 2D plan.</span>
+
+<span class="sd">    Spatially-Encouraged Spectral Clustering (*SPENC*) is useful for when</span>
+<span class="sd">    there may be highly non-convex clusters or clusters with irregular</span>
+<span class="sd">    topology in a geographic context. If a binary weights matrix is provided</span>
+<span class="sd">    during fit, this method can be used to find weighted normalized graph cuts.</span>
+
+<span class="sd">    When calling ``fit``, an affinity matrix is constructed using either</span>
+<span class="sd">    kernel function such the Gaussian (aka RBF) kernel of the euclidean</span>
+<span class="sd">    distanced :math:`d(X, X)`::</span>
+
+<span class="sd">        numpy.exp(-gamma * d(X,X) ** 2)</span>
+
+<span class="sd">    or a :math:`k`-nearest neighbors connectivity matrix. Alternatively,</span>
+<span class="sd">    using ``precomputed``, a user-provided affinity matrix can be used.</span>
+<span class="sd">    Read more in the ``scikit-learn`` user guide on spectral clustering.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Spenc.__init__">
+<a class="viewcode-back" href="../../../generated/spopt.region.Spenc.html#spopt.region.Spenc.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">gdf</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">,</span>
+        <span class="n">attrs_name</span><span class="p">,</span>
+        <span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">gamma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">eigen_solver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">n_init</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">affinity</span><span class="o">=</span><span class="s2">&quot;rbf&quot;</span><span class="p">,</span>
+        <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">eigen_tol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span>
+        <span class="n">assign_labels</span><span class="o">=</span><span class="s2">&quot;discretize&quot;</span><span class="p">,</span>
+        <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">coef0</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">kernel_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        gdf : geopandas.GeoDataFrame</span>
+<span class="sd">            Input data.</span>
+<span class="sd">        w : libpywal.weights.W</span>
+<span class="sd">            Spatial weights matrix.</span>
+<span class="sd">        attrs_name : list</span>
+<span class="sd">            Strings for attribute names from columns in ``gdf``.</span>
+<span class="sd">        n_clusters : int (default 5)</span>
+<span class="sd">            The number of clusters to form.</span>
+<span class="sd">        random_state : int or numpy.random.RandomState (default None)</span>
+<span class="sd">            A pseudo random number generator used for the initialization of the lobpcg</span>
+<span class="sd">            eigen vectors decomposition when ``eigen_solver=&#39;amg&#39;`` and by the</span>
+<span class="sd">            :math:`k`-Means initialization.  If ``int``, ``random_state`` is the seed</span>
+<span class="sd">            used by the random number generator; If ``numpy.random.RandomState``,</span>
+<span class="sd">            ``random_state`` is the random number generator; If ``None``,</span>
+<span class="sd">            the random number generator is the numpy.random.RandomState</span>
+<span class="sd">            instance used by ``numpy.random``.</span>
+<span class="sd">        gamma : int, float (default 1)</span>
+<span class="sd">            Kernel coefficient for rbf, poly, sigmoid, laplacian and chi2 kernels.</span>
+<span class="sd">            Ignored for ``affinity=&#39;nearest_neighbors&#39;``.</span>
+<span class="sd">        eigen_solver : str (default None)</span>
+<span class="sd">            The eigenvalue decomposition strategy to use. Valid values include</span>
+<span class="sd">            ``{&#39;arpack&#39;, &#39;lobpcg&#39;, &#39;amg&#39;}``. AMG requires ``pyamg`` to be installed,</span>
+<span class="sd">            which may be faster on very large, sparse problems, but may also lead to</span>
+<span class="sd">            instabilities. *Note* – ``eigen_solver`` is ignored unless fitting using</span>
+<span class="sd">            the ``breakme`` flag in the ``.fit()`` method (so do not use then).</span>
+<span class="sd">        n_init : int (default 10)</span>
+<span class="sd">            The number of times the :math:`k`-means algorithm will be run with</span>
+<span class="sd">            different centroid seeds. The final results will be the best output of</span>
+<span class="sd">            ``n_init`` consecutive runs in terms of inertia.</span>
+<span class="sd">        affinity : str, array-like, callable (default &#39;rbf&#39;)</span>
+<span class="sd">            If a ``str``, valid values include</span>
+<span class="sd">            ``{&#39;nearest_neighbors&#39;, &#39;precomputed&#39;, &#39;rbf&#39;}`` or one of the kernels</span>
+<span class="sd">            supported by ``sklearn.metrics.pairwise_kernels``. Only kernels that</span>
+<span class="sd">            produce similarity scores (non-negative values that increase with</span>
+<span class="sd">            similarity) should be used. *This property is not checked</span>
+<span class="sd">            by the clustering algorithm*.</span>
+<span class="sd">        n_neighbors : int (default 10)</span>
+<span class="sd">            The number of neighbors to use when constructing the affinity matrix using</span>
+<span class="sd">            the nearest neighbors method. Ignored for ``affinity=&#39;rbf&#39;``.</span>
+<span class="sd">        eigen_tol : float (default 1e-7)</span>
+<span class="sd">            Stopping criterion for eigen decomposition of the Laplacian matrix</span>
+<span class="sd">            when using ``&#39;arpack&#39;`` as the ``eigen_solver``.</span>
+<span class="sd">        assign_labels : str (default &#39;discretize&#39;)</span>
+<span class="sd">            The strategy to use to assign labels in the embedding</span>
+<span class="sd">            space. There are three ways to assign labels after the laplacian</span>
+<span class="sd">            embedding: ``{&#39;kmeans&#39;, &#39;discretize&#39;, &#39;hierarchical&#39;}``:</span>
+
+<span class="sd">            * ``&#39;kmeans&#39;`` can be applied and is a popular choice. But it can also be sensitive to initialization.</span>
+<span class="sd">            * ``&#39;discretize&#39;`` is another approach which is less sensitive to random initialization, and which usually finds better clusters.</span>
+<span class="sd">            * ``&#39;hierarchical&#39;`` decomposition repeatedly bi-partitions the graph, instead of finding the decomposition all at once, as suggested in :cite:`shi_malik_2000`.</span>
+
+<span class="sd">        degree : float (default 3)</span>
+<span class="sd">            Degree of the polynomial affinity kernel. Ignored by other kernels.</span>
+<span class="sd">        coef0 : float (default 1)</span>
+<span class="sd">            Zero coefficient for polynomial and sigmoid affinity kernels.</span>
+<span class="sd">            Ignored by other kernels.</span>
+<span class="sd">        kernel_params : dict (default None)</span>
+<span class="sd">            Parameters (keyword arguments) and values for affinity kernel passed as</span>
+<span class="sd">            callable object. Ignored by other affinity kernels.</span>
+<span class="sd">        n_jobs : int (default 1)</span>
+<span class="sd">            The number of parallel jobs to run for the nearest-neighbors</span>
+<span class="sd">            affinity kernel, if used. If ``-1``, then the number of jobs</span>
+<span class="sd">            is set to the number of CPU cores.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        affinity_matrix_ : array-like</span>
+<span class="sd">            Affinity matrix used for clustering in the shape of</span>
+<span class="sd">            ``(n_samples, n_samples)``. Available only if after calling ``fit``.</span>
+<span class="sd">        labels_ : list</span>
+<span class="sd">            Cluster labels of each point or area.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        If you have an affinity matrix, such as a distance matrix,</span>
+<span class="sd">        for which ``0`` means identical elements, and high values mean</span>
+<span class="sd">        very dissimilar elements, it can be transformed in a</span>
+<span class="sd">        similarity matrix that is well suited for the algorithm by</span>
+<span class="sd">        applying the Gaussian (RBF, heat) kernel::</span>
+
+<span class="sd">            numpy.exp(-dist_matrix ** 2 / (2. * delta ** 2))</span>
+
+<span class="sd">        Where ``delta`` is a free parameter representing the width of the Gaussian</span>
+<span class="sd">        kernel.</span>
+
+<span class="sd">        Another alternative is to take a symmetric version of the</span>
+<span class="sd">        :math:`k`-nearest neighbors connectivity matrix of the points/areas.</span>
+
+<span class="sd">        References</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        * :cite:`shi_malik_2000` Normalized cuts and image segmentation, 2000 Jianbo Shi, Jitendra Malik – https://doi.org/10.1109/34.868688</span>
+<span class="sd">        * :cite:`von2007tutorial` A Tutorial on Spectral Clustering, 2007 Ulrike von Luxburg – https://doi.org/10.1007/s11222-007-9033-z</span>
+<span class="sd">        * :cite:`yu_shi_2003` Multiclass spectral clustering, 2003 Stella X. Yu, Jianbo Shi – https://doi.org/10.1109/ICCV.2003.1238361</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span> <span class="o">=</span> <span class="n">attrs_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">n_clusters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eigen_solver</span> <span class="o">=</span> <span class="n">eigen_solver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_init</span> <span class="o">=</span> <span class="n">n_init</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">affinity</span> <span class="o">=</span> <span class="n">affinity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">n_neighbors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eigen_tol</span> <span class="o">=</span> <span class="n">eigen_tol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assign_labels</span> <span class="o">=</span> <span class="n">assign_labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">degree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coef0</span> <span class="o">=</span> <span class="n">coef0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernel_params</span> <span class="o">=</span> <span class="n">kernel_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span></div>
+
+
+<div class="viewcode-block" id="Spenc.solve">
+<a class="viewcode-back" href="../../../generated/spopt.region.Spenc.html#spopt.region.Spenc.solve">[docs]</a>
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">()):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Solve the spenc.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        fit_kwargs : dict</span>
+<span class="sd">            Keyword arguments passed into ``spenclib.abstracts.SPENC.fit()``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">SPENC</span><span class="p">(</span>
+            <span class="n">n_clusters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
+            <span class="n">gamma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span>
+            <span class="n">eigen_solver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eigen_solver</span><span class="p">,</span>
+            <span class="n">n_init</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_init</span><span class="p">,</span>
+            <span class="n">affinity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">affinity</span><span class="p">,</span>
+            <span class="n">n_neighbors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span><span class="p">,</span>
+            <span class="n">eigen_tol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eigen_tol</span><span class="p">,</span>
+            <span class="n">assign_labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">assign_labels</span><span class="p">,</span>
+            <span class="n">degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+            <span class="n">coef0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">coef0</span><span class="p">,</span>
+            <span class="n">kernel_params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_params</span><span class="p">,</span>
+            <span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">sparse</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">labels_</span></div>
+</div>
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spopt.region.region_k_means &#8212; spopt v0.6.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=e5dd7357" />
+    <script src="../../../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../installation.html">Installation</a></li>
+                <li><a href="../../../tutorials.html">Tutorials</a></li>
+                <li><a href="../../../api.html">API</a></li>
+                <li><a href="../../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for spopt.region.region_k_means</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Region k-means</span>
+
+
+<span class="sd">K-means with the constraint that all clusters form a spatially connected component.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Serge Rey&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;sjsrey@gmail.com&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">..BaseClass</span> <span class="kn">import</span> <span class="n">BaseSpOptHeuristicSolver</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_centroid</span><span class="p">,</span>
+    <span class="n">_closest</span><span class="p">,</span>
+    <span class="n">_seeds</span><span class="p">,</span>
+    <span class="n">move_ok</span><span class="p">,</span>
+    <span class="n">ok_moves</span><span class="p">,</span>
+    <span class="n">region_neighbors</span><span class="p">,</span>
+    <span class="n">w_to_g</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">region_k_means</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">n_clusters</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">drop_islands</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>  <span class="c1"># noqa: N803</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Solve the region-K-means problem with the constraint</span>
+<span class="sd">    that each cluster forms a spatially connected component.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    X : {numpy.ndarray, list}</span>
+<span class="sd">        The observations to cluster shaped ``(n_samples, n_features)``.</span>
+<span class="sd">    n_clusters : int</span>
+<span class="sd">        The number of clusters to form.</span>
+<span class="sd">    w : libpysal.weights.W</span>
+<span class="sd">        Weights object created from given data.</span>
+<span class="sd">    drop_islands : bool</span>
+<span class="sd">        Drop observations that are islands (``True``) or keep them (``False``).</span>
+<span class="sd">        Default is ``True``.</span>
+<span class="sd">    seed : int</span>
+<span class="sd">        Random state to pass into ``_seeds()``. Default is ``0``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    label : numpy.ndarray</span>
+<span class="sd">        Integer array with shape ``(n_samples,)``, where ``label[i]`` is the</span>
+<span class="sd">        code or index of the centroid the ``i``th observation is closest to.</span>
+<span class="sd">    centroid : numpy.ndarray</span>
+<span class="sd">       Floating point array of centroids in the shape of ``(k, n_features)``</span>
+<span class="sd">       found at the last iteration of ``region_k_means``.</span>
+<span class="sd">    iters : int</span>
+<span class="sd">        The number of iterations for the reassignment phase.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">X</span>
+    <span class="n">a_list</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">to_adjlist</span><span class="p">(</span><span class="n">remove_symmetric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">drop_islands</span><span class="o">=</span><span class="n">drop_islands</span><span class="p">)</span>
+    <span class="n">areas</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">n_clusters</span>
+    <span class="n">seeds</span> <span class="o">=</span> <span class="n">_seeds</span><span class="p">(</span><span class="n">areas</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+
+    <span class="c1"># initial assignment phase</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">w</span><span class="o">.</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">seed</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">seeds</span><span class="p">):</span>
+        <span class="n">label</span><span class="p">[</span><span class="n">seed</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="n">to_assign</span> <span class="o">=</span> <span class="n">areas</span><span class="p">[</span><span class="n">label</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">while</span> <span class="n">to_assign</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">assignments</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">rid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+            <span class="n">region</span> <span class="o">=</span> <span class="n">areas</span><span class="p">[</span><span class="n">label</span> <span class="o">==</span> <span class="n">rid</span><span class="p">]</span>
+            <span class="n">neighbors</span> <span class="o">=</span> <span class="n">region_neighbors</span><span class="p">(</span><span class="n">a_list</span><span class="p">,</span> <span class="n">region</span><span class="p">)</span>
+            <span class="n">neighbors</span> <span class="o">=</span> <span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">neighbors</span> <span class="k">if</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">to_assign</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">neighbors</span><span class="p">:</span>
+                <span class="n">d_min</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">inf</span>
+                <span class="n">centroid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">region</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">:</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="p">((</span><span class="n">data</span><span class="p">[</span><span class="n">neighbor</span><span class="p">]</span> <span class="o">-</span> <span class="n">centroid</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">d_min</span><span class="p">:</span>
+                        <span class="n">idx</span> <span class="o">=</span> <span class="n">neighbor</span>
+                        <span class="n">d_min</span> <span class="o">=</span> <span class="n">d</span>
+                <span class="n">assignments</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">rid</span><span class="p">,</span> <span class="n">d_min</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">assignments</span><span class="p">:</span>
+            <span class="n">assignment</span> <span class="o">=</span> <span class="n">assignments</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">assignment</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">r</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">assignment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">label</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">d_min</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">inf</span>
+                <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">assignment</span><span class="p">:</span>
+                    <span class="n">r</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">match</span>
+                    <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">d_min</span><span class="p">:</span>
+                        <span class="n">idx</span> <span class="o">=</span> <span class="n">r</span>
+                        <span class="n">d_min</span> <span class="o">=</span> <span class="n">d</span>
+                <span class="n">label</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+
+        <span class="n">to_assign</span> <span class="o">=</span> <span class="n">areas</span><span class="p">[</span><span class="n">label</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># reassignment phase</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">w_to_g</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+    <span class="n">iters</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># want to loop this until candidates is empty</span>
+    <span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="n">areas</span><span class="p">[</span><span class="n">label</span> <span class="o">==</span> <span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>
+    <span class="n">centroid</span> <span class="o">=</span> <span class="n">_centroid</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">closest</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_closest</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">centroid</span><span class="p">))</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="n">areas</span><span class="p">[</span><span class="n">closest</span> <span class="o">!=</span> <span class="n">label</span><span class="p">]</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="n">ok_moves</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">regions</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">closest</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">areas</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">candidates</span><span class="p">:</span>
+        <span class="n">area</span> <span class="o">=</span> <span class="n">candidates</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="c1"># need to check move doesn&#39;t break component</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">areas</span><span class="p">[</span><span class="n">label</span> <span class="o">==</span> <span class="n">label</span><span class="p">[</span><span class="n">area</span><span class="p">]]</span>
+        <span class="n">destination</span> <span class="o">=</span> <span class="n">areas</span><span class="p">[</span><span class="n">label</span> <span class="o">==</span> <span class="n">closest</span><span class="p">[</span><span class="n">area</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">move_ok</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+            <span class="c1"># make move and update assignments, centroids, closest, candidates</span>
+            <span class="n">label</span><span class="p">[</span><span class="n">area</span><span class="p">]</span> <span class="o">=</span> <span class="n">closest</span><span class="p">[</span><span class="n">area</span><span class="p">]</span>
+            <span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="n">areas</span><span class="p">[</span><span class="n">label</span> <span class="o">==</span> <span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>
+            <span class="n">centroid</span> <span class="o">=</span> <span class="n">_centroid</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="n">closest</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_closest</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">centroid</span><span class="p">))</span>
+            <span class="n">candidates</span> <span class="o">=</span> <span class="n">areas</span><span class="p">[</span><span class="n">closest</span> <span class="o">!=</span> <span class="n">label</span><span class="p">]</span>
+            <span class="n">candidates</span> <span class="o">=</span> <span class="n">ok_moves</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">regions</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">closest</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">areas</span><span class="p">)</span>
+        <span class="n">iters</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">centroid</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">iters</span>
+
+
+<div class="viewcode-block" id="RegionKMeansHeuristic">
+<a class="viewcode-back" href="../../../generated/spopt.region.RegionKMeansHeuristic.html#spopt.region.RegionKMeansHeuristic">[docs]</a>
+<span class="k">class</span> <span class="nc">RegionKMeansHeuristic</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Solve the region-K-means problem with the constraint</span>
+<span class="sd">    that each cluster forms a spatially connected component.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    data : {numpy.ndarray, list}, required</span>
+<span class="sd">        The observations to cluster shaped ``(n_samples, n_features)``.</span>
+<span class="sd">    n_clusters : int</span>
+<span class="sd">        The number of clusters to form.</span>
+<span class="sd">    w : libpysal.weights.W, required</span>
+<span class="sd">        Weights object created from given data.</span>
+<span class="sd">    drop_islands : bool</span>
+<span class="sd">        Drop observations that are islands (``True``) or keep them (``False``).</span>
+<span class="sd">        Default is ``True``.</span>
+<span class="sd">    seed : int</span>
+<span class="sd">        Random state to pass into ``_seeds()``. Default is ``0``.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    labels_ : numpy.array</span>
+<span class="sd">        Region IDs for observations.</span>
+<span class="sd">    centroids_ : numpy.ndarray</span>
+<span class="sd">       Floating point array of centroids in the shape of ``(k, n_features)``</span>
+<span class="sd">       found at the last iteration of ``region_k_means``.</span>
+<span class="sd">    iters_ : int</span>
+<span class="sd">        The number of iterations for the reassignment phase.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RegionKMeansHeuristic.__init__">
+<a class="viewcode-back" href="../../../generated/spopt.region.RegionKMeansHeuristic.html#spopt.region.RegionKMeansHeuristic.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">n_clusters</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">drop_islands</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">n_clusters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drop_islands</span> <span class="o">=</span> <span class="n">drop_islands</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span></div>
+
+
+<div class="viewcode-block" id="RegionKMeansHeuristic.solve">
+<a class="viewcode-back" href="../../../generated/spopt.region.RegionKMeansHeuristic.html#spopt.region.RegionKMeansHeuristic.solve">[docs]</a>
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Solve the region k-means heuristic.&quot;&quot;&quot;</span>
+        <span class="n">centroid</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">iters</span> <span class="o">=</span> <span class="n">region_k_means</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
+            <span class="n">drop_islands</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">drop_islands</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centroids_</span> <span class="o">=</span> <span class="n">centroid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iters_</span> <span class="o">=</span> <span class="n">iters</span></div>
+</div>
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

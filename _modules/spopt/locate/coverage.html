@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spopt.locate.coverage &#8212; spopt v0.6.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=e5dd7357" />
+    <script src="../../../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../installation.html">Installation</a></li>
+                <li><a href="../../../tutorials.html">Tutorials</a></li>
+                <li><a href="../../../api.html">API</a></li>
+                <li><a href="../../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for spopt.locate.coverage</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ruff: noqa: B009</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pulp</span>
+<span class="kn">from</span> <span class="nn">geopandas</span> <span class="kn">import</span> <span class="n">GeoDataFrame</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">cdist</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BackupPercentageMixinMixin</span><span class="p">,</span>
+    <span class="n">BaseOutputMixin</span><span class="p">,</span>
+    <span class="n">CoveragePercentageMixin</span><span class="p">,</span>
+    <span class="n">FacilityModelBuilder</span><span class="p">,</span>
+    <span class="n">LocateSolver</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="LSCP">
+<a class="viewcode-back" href="../../../generated/spopt.locate.LSCP.html#spopt.locate.LSCP">[docs]</a>
+<span class="k">class</span> <span class="nc">LSCP</span><span class="p">(</span><span class="n">LocateSolver</span><span class="p">,</span> <span class="n">BaseOutputMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implement the Location Set Covering Problem (*LSCP*) optimization model</span>
+<span class="sd">    and solve it. A capacitated version, the Capacitated Location Set Covering</span>
+<span class="sd">    Problem – System Optimal (*CLSCP-SO*), can also be solved by passing</span>
+<span class="sd">    in client client demand and facility capacities.</span>
+
+<span class="sd">    The standard *LSCP*, as adapted from :cite:`church_murray_2018`,</span>
+<span class="sd">    can be formulated as:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \begin{array}{lllll}</span>
+<span class="sd">       \displaystyle \textbf{Minimize}      &amp; \displaystyle \sum_{j \in J}{Y_j}             &amp;&amp;                  &amp; (1)                                                                               \\</span>
+<span class="sd">       \displaystyle \textbf{Subject To}    &amp; \displaystyle \sum_{j \in N_i}{Y_j} \geq 1    &amp;&amp; \forall i \in I  &amp; (2)                                                                               \\</span>
+<span class="sd">                                            &amp; Y_j \in \{0,1\}                               &amp;&amp; \forall j \in J  &amp; (3)                                                                               \\</span>
+<span class="sd">                                            &amp;                                               &amp;&amp;                  &amp;                                                                                   \\</span>
+<span class="sd">       \displaystyle \textbf{Where}         &amp;&amp; i                                            &amp; =                 &amp; \textrm{index of demand points/areas/objects in set } I                           \\</span>
+<span class="sd">                                            &amp;&amp; j                                            &amp; =                 &amp; \textrm{index of potential facility sites in set } J                              \\</span>
+<span class="sd">                                            &amp;&amp; S                                            &amp; =                 &amp; \textrm{maximum acceptable service distance or time standard}                     \\</span>
+<span class="sd">                                            &amp;&amp; d_{ij}                                       &amp; =                 &amp; \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\</span>
+<span class="sd">                                            &amp;&amp; N_i                                          &amp; =                 &amp; \{j | d_{ij} &lt; S\}                                                                \\</span>
+<span class="sd">                                            &amp;&amp; Y_j                                          &amp; =                 &amp; \begin{cases}</span>
+<span class="sd">                                                                                                                   1, \textrm{if a facility is sited at location } j                                \\</span>
+<span class="sd">                                                                                                                   0, \textrm{otherwise}                                                            \\</span>
+<span class="sd">                                                                                                                  \end{cases}</span>
+<span class="sd">       \end{array}</span>
+
+<span class="sd">    The *CLSCP-SO*, as adapted from :cite:`church_murray_2018`</span>
+<span class="sd">    (see also :cite:`current1988capacitated`), can be formulated as:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \begin{array}{lllll}</span>
+<span class="sd">       \displaystyle \textbf{Minimize}      &amp; \displaystyle \sum_{j \in J}{Y_j}                      &amp;&amp;                                          &amp; (1)                                                                           \\</span>
+<span class="sd">       \displaystyle \textbf{Subject to}    &amp; \displaystyle \sum_{j \in N_i}{z_{ij}} = 1            &amp;&amp; \forall i \in I                          &amp; (2)                                                                           \\</span>
+<span class="sd">                                            &amp; \displaystyle \sum_{i \in I} a_i z_{ij} \leq C_jx_j   &amp;&amp; \forall j \in J                          &amp; (3)                                                                           \\</span>
+<span class="sd">                                            &amp; Y_j \in {0,1}                                         &amp;&amp; \forall j \in J                          &amp; (4)                                                                           \\</span>
+<span class="sd">                                            &amp; z_{ij} \geq 0                                         &amp;&amp; \forall i \in I \quad \forall j \in N_i  &amp; (5)                                                                           \\</span>
+<span class="sd">                                            &amp;                                                       &amp;&amp;                                          &amp;                                                                               \\</span>
+<span class="sd">       \displaystyle \textbf{Where:}        &amp;&amp; i                                                    &amp; =                                         &amp; \textrm{index of demand points/areas/objects in set } I                       \\</span>
+<span class="sd">                                            &amp;&amp; j                                                    &amp; =                                         &amp; \textrm{index of potential facility sites in set } J                          \\</span>
+<span class="sd">                                            &amp;&amp; S                                                    &amp; =                                         &amp; \textrm{maximal acceptable service distance or time standard}                 \\</span>
+<span class="sd">                                            &amp;&amp; d_{ij}                                               &amp; =                                         &amp; \textrm{shortest distance or travel time between nodes } i \textrm{ and } j   \\</span>
+<span class="sd">                                            &amp;&amp; N_i                                                  &amp; =                                         &amp; \{j | d_{ij} &lt; S\}                                                            \\</span>
+<span class="sd">                                            &amp;&amp; a_i                                                  &amp; =                                         &amp; \textrm{amount of demand at } i                                               \\</span>
+<span class="sd">                                            &amp;&amp; C_j                                                  &amp; =                                         &amp; \textrm{capacity of potential facility } j                                    \\</span>
+<span class="sd">                                            &amp;&amp; z_{ij}                                               &amp; =                                         &amp; \textrm{fraction of demand } i \textrm{ that is assigned to facility } j      \\</span>
+<span class="sd">                                            &amp;&amp; Y_j                                                  &amp; =                                         &amp; \begin{cases}</span>
+<span class="sd">                                                                                                                                                   1, \text{if a facility is located at node } j                                \\</span>
+<span class="sd">                                                                                                                                                   0, \text{otherwise}                                                          \\</span>
+<span class="sd">                                                                                                                                                  \end{cases}</span>
+<span class="sd">       \end{array}</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    name : str</span>
+<span class="sd">        The problem name.</span>
+<span class="sd">    problem : pulp.LpProblem</span>
+<span class="sd">        A ``pulp`` instance of an optimization model that contains</span>
+<span class="sd">        constraints, variables, and an objective function.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    name : str</span>
+<span class="sd">        The problem name.</span>
+<span class="sd">    problem : pulp.LpProblem</span>
+<span class="sd">        A ``pulp`` instance of an optimization model that contains</span>
+<span class="sd">        constraints, variables, and an objective function.</span>
+<span class="sd">    fac2cli : numpy.array</span>
+<span class="sd">        A 2D array storing facility to client relationships where each</span>
+<span class="sd">        row represents a facility and contains an array of client indices</span>
+<span class="sd">        with which it is associated. An empty client array indicates</span>
+<span class="sd">        the facility is associated with no clients.</span>
+<span class="sd">    cli2fac : numpy.array</span>
+<span class="sd">        The inverse of ``fac2cli`` where client to facility relationships</span>
+<span class="sd">        are shown.</span>
+<span class="sd">    aij : numpy.array</span>
+<span class="sd">        A cost matrix in the form of a 2D array between origins and destinations.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+<div class="viewcode-block" id="LSCP.__init__">
+<a class="viewcode-back" href="../../../generated/spopt.locate.LSCP.html#spopt.locate.LSCP.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">problem</span><span class="p">:</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpProblem</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">problem</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__add_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add the objective function to the model.</span>
+
+<span class="sd">        Minimize y1 + y2 + ... + yj</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fac_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fac_vars&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">+=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">lpSum</span><span class="p">(</span><span class="n">fac_vars</span><span class="p">),</span> <span class="s2">&quot;objective function&quot;</span>
+
+<div class="viewcode-block" id="LSCP.from_cost_matrix">
+<a class="viewcode-back" href="../../../generated/spopt.locate.LSCP.html#spopt.locate.LSCP.from_cost_matrix">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_cost_matrix</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">cost_matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">service_radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">predefined_facilities_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">demand_quantity_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">facility_capacity_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lscp&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an ``LSCP`` object based on a cost matrix. A capacitated</span>
+<span class="sd">        version of the *LSCP* (the *CLSCP-SO*) can be solved by passing</span>
+<span class="sd">        in the ``demand_quantity_arr`` and ``facility_capacity_arr``</span>
+<span class="sd">        keyword arguments.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        cost_matrix : numpy.array</span>
+<span class="sd">            A cost matrix in the form of a 2D array between origins and destinations.</span>
+<span class="sd">        service_radius : float</span>
+<span class="sd">            Maximum acceptable service distance.</span>
+<span class="sd">        predefined_facilities_arr : numpy.array (default None)</span>
+<span class="sd">            A binary 1D array of service facilities that must appear in the</span>
+<span class="sd">            solution. For example, consider 3 facilites ``[&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]``.</span>
+<span class="sd">            If facility ``&#39;B&#39;`` must be in the model solution, then the passed</span>
+<span class="sd">            in array should be ``[0, 1, 0]``.</span>
+<span class="sd">        demand_quantity_arr : numpy.array (default None)</span>
+<span class="sd">            Amount of demand at each client location.</span>
+<span class="sd">        facility_capacity_arr : numpy.array (default None)</span>
+<span class="sd">            Capacity for service at each facility location.</span>
+<span class="sd">        name : str, (default &#39;lscp&#39;)</span>
+<span class="sd">            The name of the problem.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.coverage.LSCP</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &gt;&gt;&gt; from spopt.locate import LSCP</span>
+<span class="sd">        &gt;&gt;&gt; from spopt.locate.util import simulated_geo_points</span>
+<span class="sd">        &gt;&gt;&gt; import geopandas</span>
+<span class="sd">        &gt;&gt;&gt; import numpy</span>
+<span class="sd">        &gt;&gt;&gt; import pulp</span>
+<span class="sd">        &gt;&gt;&gt; import spaghetti</span>
+
+<span class="sd">        Create a regular lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)</span>
+<span class="sd">        &gt;&gt;&gt; ntw = spaghetti.Network(in_data=lattice)</span>
+<span class="sd">        &gt;&gt;&gt; streets = spaghetti.element_as_gdf(ntw, arcs=True)</span>
+<span class="sd">        &gt;&gt;&gt; streets_buffered = geopandas.GeoDataFrame(</span>
+<span class="sd">        ...     geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.2).unary_union),</span>
+<span class="sd">        ...     crs=streets.crs,</span>
+<span class="sd">        ...     columns=[&quot;geometry&quot;]</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Simulate points about the lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)</span>
+<span class="sd">        &gt;&gt;&gt; facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)</span>
+
+<span class="sd">        Snap the points to the network of lattice edges.</span>
+
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(demand_points, &quot;clients&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; clients_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;clients&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(facility_points, &quot;facilities&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; facilities_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;facilities&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Calculate the cost matrix from origins to destinations.</span>
+
+<span class="sd">        &gt;&gt;&gt; cost_matrix = ntw.allneighbordistances(</span>
+<span class="sd">        ...    sourcepattern=ntw.pointpatterns[&quot;clients&quot;],</span>
+<span class="sd">        ...    destpattern=ntw.pointpatterns[&quot;facilities&quot;])</span>
+
+<span class="sd">        Create and solve an ``LSCP`` instance from the cost matrix.</span>
+
+<span class="sd">        &gt;&gt;&gt; lscp_from_cost_matrix = LSCP.from_cost_matrix(</span>
+<span class="sd">        ...     cost_matrix, service_radius=8</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; lscp_from_cost_matrix = lscp_from_cost_matrix.solve(</span>
+<span class="sd">        ...     pulp.PULP_CBC_CMD(msg=False)</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Get the facility lookup demand coverage array.</span>
+
+<span class="sd">        &gt;&gt;&gt; for fac, cli in enumerate(lscp_from_cost_matrix.fac2cli):</span>
+<span class="sd">        ...     print(f&quot;facility {fac} serving {len(cli)} clients&quot;)</span>
+<span class="sd">        facility 0 serving 0 clients</span>
+<span class="sd">        facility 1 serving 63 clients</span>
+<span class="sd">        facility 2 serving 85 clients</span>
+<span class="sd">        facility 3 serving 0 clients</span>
+<span class="sd">        facility 4 serving 58 clients</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">n_cli</span> <span class="o">=</span> <span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">r_cli</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_cli</span><span class="p">)</span>
+        <span class="n">r_fac</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpProblem</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpMinimize</span><span class="p">)</span>
+        <span class="n">lscp</span> <span class="o">=</span> <span class="n">LSCP</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">demand_quantity_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">facility_capacity_arr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Demand quantities supplied with no facility capacities. &quot;</span>
+                <span class="s2">&quot;Model cannot satisfy clients with different &quot;</span>
+                <span class="s2">&quot;demands without facility capacities.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">lscp</span><span class="o">.</span><span class="n">aij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">lscp</span><span class="o">.</span><span class="n">aij</span><span class="p">[</span><span class="n">cost_matrix</span> <span class="o">&lt;=</span> <span class="n">service_radius</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">demand_quantity_arr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">facility_capacity_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">demand_quantity_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_cli</span><span class="p">)</span>
+
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_facility_integer_variable</span><span class="p">(</span><span class="n">lscp</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">,</span> <span class="s2">&quot;y[</span><span class="si">{i}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">predefined_facilities_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_predefined_facility_constraint</span><span class="p">(</span>
+                <span class="n">lscp</span><span class="p">,</span> <span class="n">predefined_facilities_arr</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">demand_quantity_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sum_demand</span> <span class="o">=</span> <span class="n">demand_quantity_arr</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">sum_capacity</span> <span class="o">=</span> <span class="n">facility_capacity_arr</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">sum_demand</span> <span class="o">&gt;</span> <span class="n">sum_capacity</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Infeasible model. Demand greater than capacity &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">sum_demand</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">{</span><span class="n">sum_capacity</span><span class="si">}</span><span class="s2">).&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_client_assign_variable</span><span class="p">(</span>
+                <span class="n">lscp</span><span class="p">,</span>
+                <span class="n">r_cli</span><span class="p">,</span>
+                <span class="n">r_fac</span><span class="p">,</span>
+                <span class="s2">&quot;z[</span><span class="si">{i}</span><span class="s2">_</span><span class="si">{j}</span><span class="s2">]&quot;</span><span class="p">,</span>
+                <span class="n">up_bound</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">lp_category</span><span class="o">=</span><span class="n">pulp</span><span class="o">.</span><span class="n">LpContinuous</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_facility_capacity_constraint</span><span class="p">(</span>
+                <span class="n">lscp</span><span class="p">,</span> <span class="n">demand_quantity_arr</span><span class="p">,</span> <span class="n">facility_capacity_arr</span><span class="p">,</span> <span class="n">r_cli</span><span class="p">,</span> <span class="n">r_fac</span>
+            <span class="p">)</span>
+
+            <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_client_demand_satisfaction_constraint</span><span class="p">(</span>
+                <span class="n">lscp</span><span class="p">,</span> <span class="n">r_cli</span><span class="p">,</span> <span class="n">r_fac</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_set_covering_constraint</span><span class="p">(</span><span class="n">lscp</span><span class="p">,</span> <span class="n">r_cli</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">)</span>
+
+        <span class="n">lscp</span><span class="o">.</span><span class="n">__add_obj</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">lscp</span></div>
+
+
+<div class="viewcode-block" id="LSCP.from_geodataframe">
+<a class="viewcode-back" href="../../../generated/spopt.locate.LSCP.html#spopt.locate.LSCP.from_geodataframe">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_geodataframe</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">gdf_demand</span><span class="p">:</span> <span class="n">GeoDataFrame</span><span class="p">,</span>
+        <span class="n">gdf_fac</span><span class="p">:</span> <span class="n">GeoDataFrame</span><span class="p">,</span>
+        <span class="n">demand_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">facility_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">service_radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">predefined_facility_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">demand_quantity_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">facility_capacity_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">distance_metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;euclidean&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lscp&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an ``LSCP`` object from ``geopandas.GeoDataFrame`` objects.</span>
+<span class="sd">        Calculate the cost matrix between demand and facility locations</span>
+<span class="sd">        before building the problem within the ``from_cost_matrix()`` method.</span>
+<span class="sd">        A capacitated version of the *LSCP* (the *CLSCP-SO*) can be solved by</span>
+<span class="sd">        passing in the ``demand_quantity_col`` and ``facility_capacity_col``</span>
+<span class="sd">        keyword arguments.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        gdf_demand : geopandas.GeoDataFrame</span>
+<span class="sd">            Demand locations.</span>
+<span class="sd">        gdf_fac : geopandas.GeoDataFrame</span>
+<span class="sd">            Facility locations.</span>
+<span class="sd">        demand_col : str</span>
+<span class="sd">            Demand sites geometry column name.</span>
+<span class="sd">        facility_col : str</span>
+<span class="sd">            Facility candidate sites geometry column name.</span>
+<span class="sd">        service_radius : float</span>
+<span class="sd">             Maximum acceptable service distance.</span>
+<span class="sd">        predefined_facility_col : str (default None)</span>
+<span class="sd">            Column name representing facilities are already defined.</span>
+<span class="sd">            This a binary assignment per facility. For example, consider 3 facilites</span>
+<span class="sd">            ``[&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]``. If facility ``&#39;B&#39;`` must be in the model solution,</span>
+<span class="sd">            then the column should be ``[0, 1, 0]``.</span>
+<span class="sd">        demand_quantity_col : str</span>
+<span class="sd">            Column name representing amount of demand at each client location.</span>
+<span class="sd">        facility_capacity_arr : str</span>
+<span class="sd">            Column name representing capacity for service at each facility location.</span>
+<span class="sd">        distance_metric : str (default &#39;euclidean&#39;)</span>
+<span class="sd">            A metric used for the distance calculations supported by</span>
+<span class="sd">            `scipy.spatial.distance.cdist &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html&gt;`_.</span>
+<span class="sd">        name : str (default &#39;lscp&#39;)</span>
+<span class="sd">            The name of the problem.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.coverage.LSCP</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &gt;&gt;&gt; from spopt.locate import LSCP</span>
+<span class="sd">        &gt;&gt;&gt; from spopt.locate.util import simulated_geo_points</span>
+<span class="sd">        &gt;&gt;&gt; import geopandas</span>
+<span class="sd">        &gt;&gt;&gt; import numpy</span>
+<span class="sd">        &gt;&gt;&gt; import pulp</span>
+<span class="sd">        &gt;&gt;&gt; import spaghetti</span>
+
+<span class="sd">        Create a regular lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)</span>
+<span class="sd">        &gt;&gt;&gt; ntw = spaghetti.Network(in_data=lattice)</span>
+<span class="sd">        &gt;&gt;&gt; streets = spaghetti.element_as_gdf(ntw, arcs=True)</span>
+<span class="sd">        &gt;&gt;&gt; streets_buffered = geopandas.GeoDataFrame(</span>
+<span class="sd">        ...     geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.2).unary_union),</span>
+<span class="sd">        ...     crs=streets.crs,</span>
+<span class="sd">        ...     columns=[&quot;geometry&quot;]</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Simulate points about the lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)</span>
+<span class="sd">        &gt;&gt;&gt; facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)</span>
+
+<span class="sd">        Snap the points to the network of lattice edges</span>
+<span class="sd">        and extract as ``GeoDataFrame`` objects.</span>
+
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(demand_points, &quot;clients&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; clients_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;clients&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(facility_points, &quot;facilities&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; facilities_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;facilities&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Create and solve an ``LSCP`` instance from the ``GeoDataFrame`` objects.</span>
+
+<span class="sd">        &gt;&gt;&gt; lscp_from_geodataframe = LSCP.from_geodataframe(</span>
+<span class="sd">        ...     clients_snapped,</span>
+<span class="sd">        ...     facilities_snapped,</span>
+<span class="sd">        ...     &quot;geometry&quot;,</span>
+<span class="sd">        ...     &quot;geometry&quot;,</span>
+<span class="sd">        ...     service_radius=8,</span>
+<span class="sd">        ...     distance_metric=&quot;euclidean&quot;</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; lscp_from_geodataframe = lscp_from_geodataframe.solve(</span>
+<span class="sd">        ...     pulp.PULP_CBC_CMD(msg=False)</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Get the facility lookup demand coverage array.</span>
+
+<span class="sd">        &gt;&gt;&gt; for fac, cli in enumerate(lscp_from_geodataframe.fac2cli):</span>
+<span class="sd">        ...     print(f&quot;facility {fac} serving {len(cli)} clients&quot;)</span>
+<span class="sd">        facility 0 serving 0 clients</span>
+<span class="sd">        facility 1 serving 0 clients</span>
+<span class="sd">        facility 2 serving 100 clients</span>
+<span class="sd">        facility 3 serving 0 clients</span>
+<span class="sd">        facility 4 serving 0 clients</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+        <span class="n">demand_quantity_arr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">demand_quantity_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">demand_quantity_arr</span> <span class="o">=</span> <span class="n">gdf_demand</span><span class="p">[</span><span class="n">demand_quantity_col</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+        <span class="n">facility_capacity_arr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">facility_capacity_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">facility_capacity_arr</span> <span class="o">=</span> <span class="n">gdf_fac</span><span class="p">[</span><span class="n">facility_capacity_col</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">demand_quantity_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">facility_capacity_arr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Demand quantities supplied with no facility capacities. &quot;</span>
+                <span class="s2">&quot;Model cannot satisfy clients with different &quot;</span>
+                <span class="s2">&quot;demands without facility capacities.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">predefined_facilities_arr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">predefined_facility_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">predefined_facilities_arr</span> <span class="o">=</span> <span class="n">gdf_fac</span><span class="p">[</span><span class="n">predefined_facility_col</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+        <span class="n">dem</span> <span class="o">=</span> <span class="n">gdf_demand</span><span class="p">[</span><span class="n">demand_col</span><span class="p">]</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">gdf_fac</span><span class="p">[</span><span class="n">facility_col</span><span class="p">]</span>
+
+        <span class="n">dem_type_geom</span> <span class="o">=</span> <span class="n">dem</span><span class="o">.</span><span class="n">geom_type</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="n">fac_type_geom</span> <span class="o">=</span> <span class="n">fac</span><span class="o">.</span><span class="n">geom_type</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+        <span class="n">_msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot; geodataframe contains mixed type geometries or is not a point. Be &quot;</span>
+            <span class="s2">&quot;sure deriving centroid from geometries doesn&#39;t affect the results.&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dem_type_geom</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="s2">&quot;Point&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dem_type_geom</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Demand</span><span class="si">{</span><span class="n">_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">dem</span> <span class="o">=</span> <span class="n">dem</span><span class="o">.</span><span class="n">centroid</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fac_type_geom</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="s2">&quot;Point&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fac_type_geom</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Facility</span><span class="si">{</span><span class="n">_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">fac</span> <span class="o">=</span> <span class="n">fac</span><span class="o">.</span><span class="n">centroid</span>
+
+        <span class="n">dem_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dem</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">dem</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()])</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">fac_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fac</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">fac</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()])</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">if</span> <span class="n">gdf_demand</span><span class="o">.</span><span class="n">crs</span> <span class="o">!=</span> <span class="n">gdf_fac</span><span class="o">.</span><span class="n">crs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Geodataframes crs are different: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;gdf_demand-</span><span class="si">{</span><span class="n">gdf_demand</span><span class="o">.</span><span class="n">crs</span><span class="si">}</span><span class="s2">, gdf_fac-</span><span class="si">{</span><span class="n">gdf_fac</span><span class="o">.</span><span class="n">crs</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">cdist</span><span class="p">(</span><span class="n">dem_data</span><span class="p">,</span> <span class="n">fac_data</span><span class="p">,</span> <span class="n">distance_metric</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+            <span class="n">distances</span><span class="p">,</span>
+            <span class="n">service_radius</span><span class="p">,</span>
+            <span class="n">predefined_facilities_arr</span><span class="p">,</span>
+            <span class="n">demand_quantity_arr</span><span class="p">,</span>
+            <span class="n">facility_capacity_arr</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;capacitated-&quot;</span> <span class="o">+</span> <span class="n">name</span> <span class="k">if</span> <span class="n">facility_capacity_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LSCP.facility_client_array">
+<a class="viewcode-back" href="../../../generated/spopt.locate.LSCP.html#spopt.locate.LSCP.facility_client_array">[docs]</a>
+    <span class="k">def</span> <span class="nf">facility_client_array</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a 2D array storing **facility to client relationships** where each</span>
+<span class="sd">        row represents a facility and contains an array of client indices</span>
+<span class="sd">        with which it is associated. An empty client array indicates</span>
+<span class="sd">        the facility is associated with no clients.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">fac_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fac_vars&quot;</span><span class="p">)</span>
+        <span class="n">len_fac_vars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fac_vars</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fac2cli</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_fac_vars</span><span class="p">):</span>
+            <span class="n">array_cli</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">fac_vars</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aij</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">aij</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">array_cli</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">fac2cli</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array_cli</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LSCP.solve">
+<a class="viewcode-back" href="../../../generated/spopt.locate.LSCP.html#spopt.locate.LSCP.solve">[docs]</a>
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solver</span><span class="p">:</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpSolver</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solve the ``LSCP`` model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        solver : pulp.apis.LpSolver</span>
+<span class="sd">            A solver supported by ``pulp``.</span>
+<span class="sd">        results : bool (default True)</span>
+<span class="sd">            If ``True`` it will create metainfo (which facilities cover</span>
+<span class="sd">            which demand) and vice-versa, and the uncovered demand.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.coverage.LSCP</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">facility_client_array</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_facility_array</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="LSCPB">
+<a class="viewcode-back" href="../../../generated/spopt.locate.LSCPB.html#spopt.locate.LSCPB">[docs]</a>
+<span class="k">class</span> <span class="nc">LSCPB</span><span class="p">(</span><span class="n">LocateSolver</span><span class="p">,</span> <span class="n">BaseOutputMixin</span><span class="p">,</span> <span class="n">BackupPercentageMixinMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implement the Location Set Covering Problem - Backup (*LSCP-B*) optimization</span>
+<span class="sd">    model and solve it. The *LSCP-B*, as adapted from :cite:`church_murray_2018`,</span>
+<span class="sd">    can be formulated as:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \begin{array}{lllll}</span>
+<span class="sd">       \displaystyle \textbf{Maximize}      &amp; \displaystyle \sum_{i \in I}{U_i}                         &amp;&amp;                  &amp; (1)                                                                          \\</span>
+<span class="sd">       \displaystyle \textbf{Subject To}    &amp; \displaystyle \sum_{j \in J}{a_{ij}}{Y_j} \geq 1 + U_i    &amp;&amp; \forall i \in I  &amp; (2)                                                                          \\</span>
+<span class="sd">                                            &amp; \displaystyle \sum_{j \in J}{Y_j} = p                     &amp;&amp;                  &amp; (3)                                                                          \\</span>
+<span class="sd">                                            &amp; U_i \leq 1                                                &amp;&amp; \forall i \in I  &amp; (4)                                                                          \\</span>
+<span class="sd">                                            &amp; Y_j \in \{0, 1\}                                          &amp;&amp; \forall j \in J  &amp; (5)                                                                          \\</span>
+<span class="sd">                                            &amp;                                                           &amp;&amp;                  &amp;                                                                              \\</span>
+<span class="sd">       \displaystyle \textbf{Where}         &amp;&amp; i                                                        &amp; =                 &amp; \textrm{index of demand points/areas/objects in set } I                      \\</span>
+<span class="sd">                                            &amp;&amp; j                                                        &amp; =                 &amp; \textrm{index of potential facility sites in set } J                         \\</span>
+<span class="sd">                                            &amp;&amp; p                                                        &amp; =                 &amp; \textrm{objective value identified by using the } LSCP                       \\</span>
+<span class="sd">                                            &amp;&amp; U_i                                                      &amp; =                 &amp; \begin{cases}</span>
+<span class="sd">                                                                                                                               1, \textrm{if demand location is covered twice}                             \\</span>
+<span class="sd">                                                                                                                               0, \textrm{if demand location is covered once}                              \\</span>
+<span class="sd">                                                                                                                              \end{cases}                                                                  \\</span>
+<span class="sd">                                            &amp;&amp; a_{ij}                                                   &amp; =                 &amp; \begin{cases}</span>
+<span class="sd">                                                                                                                               1, \textrm{if facility location } j \textrm{ covers demand location } i     \\</span>
+<span class="sd">                                                                                                                               0, \textrm{otherwise}                                                       \\</span>
+<span class="sd">                                                                                                                              \end{cases}                                                                  \\</span>
+<span class="sd">                                            &amp;&amp; Y_j                                                      &amp; =                 &amp; \begin{cases}</span>
+<span class="sd">                                                                                                                               1, \textrm{if a facility is sited at location } j                           \\</span>
+<span class="sd">                                                                                                                               0, \textrm{otherwise}                                                       \\</span>
+<span class="sd">                                                                                                                              \end{cases}</span>
+<span class="sd">       \end{array}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    name : str</span>
+<span class="sd">        The problem name.</span>
+<span class="sd">    problem : pulp.LpProblem</span>
+<span class="sd">        A ``pulp`` instance of an optimization model that contains</span>
+<span class="sd">        constraints, variables, and an objective function.</span>
+<span class="sd">    solver : pulp.LpSolver</span>
+<span class="sd">        A solver supported by ``pulp``.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    name : str</span>
+<span class="sd">        The problem name.</span>
+<span class="sd">    problem : pulp.LpProblem</span>
+<span class="sd">        A ``pulp`` instance of an optimization model that contains</span>
+<span class="sd">        constraints, variables, and an objective function.</span>
+<span class="sd">    solver : pulp.LpSolver</span>
+<span class="sd">        A solver supported by ``pulp``.</span>
+<span class="sd">    lscp_obj_value : float</span>
+<span class="sd">        The objective value returned from a solved ``LSCP`` instance.</span>
+<span class="sd">    fac2cli : numpy.array</span>
+<span class="sd">        A 2D array storing facility to client relationships where each</span>
+<span class="sd">        row represents a facility and contains an array of client indices</span>
+<span class="sd">        with which it is associated. An empty client array indicates</span>
+<span class="sd">        the facility is associated with no clients.</span>
+<span class="sd">    cli2fac : numpy.array</span>
+<span class="sd">        The inverse of ``fac2cli`` where client to facility relationships</span>
+<span class="sd">        are shown.</span>
+<span class="sd">    aij : numpy.array</span>
+<span class="sd">        A cost matrix in the form of a 2D array between origins and destinations.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+<div class="viewcode-block" id="LSCPB.__init__">
+<a class="viewcode-back" href="../../../generated/spopt.locate.LSCPB.html#spopt.locate.LSCPB.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">problem</span><span class="p">:</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpProblem</span><span class="p">,</span>
+        <span class="n">solver</span><span class="p">:</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpSolver</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="n">solver</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">problem</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__add_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add the objective function to the model.</span>
+
+<span class="sd">        Maximize U1 + U2 + ... + Uj</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cov_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;cli_vars&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">+=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">lpSum</span><span class="p">(</span><span class="n">cov_vars</span><span class="p">),</span> <span class="s2">&quot;objective function&quot;</span>
+
+<div class="viewcode-block" id="LSCPB.from_cost_matrix">
+<a class="viewcode-back" href="../../../generated/spopt.locate.LSCPB.html#spopt.locate.LSCPB.from_cost_matrix">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_cost_matrix</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">cost_matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">service_radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">solver</span><span class="p">:</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpSolver</span><span class="p">,</span>
+        <span class="n">predefined_facilities_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lscp-b&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an ``LSCPB`` object based on a cost matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        cost_matrix : numpy.array</span>
+<span class="sd">            A cost matrix in the form of a 2D array between origins and destinations.</span>
+<span class="sd">        service_radius : float</span>
+<span class="sd">            Maximum acceptable service distance.</span>
+<span class="sd">        solver : pulp.LpSolver</span>
+<span class="sd">            A solver supported by ``pulp``.</span>
+<span class="sd">        predefined_facilities_arr : numpy.array (default None)</span>
+<span class="sd">            A binary 1D array of service facilities that must appear in the</span>
+<span class="sd">            solution. For example, consider 3 facilites ``[&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]``.</span>
+<span class="sd">            If facility ``&#39;B&#39;`` must be in the model solution, then the passed</span>
+<span class="sd">            in array should be ``[0, 1, 0]``.</span>
+<span class="sd">        name : str (default &#39;lscp-b&#39;)</span>
+<span class="sd">            The problem name.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.coverage.LSCPB</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &gt;&gt;&gt; from spopt.locate import LSCPB</span>
+<span class="sd">        &gt;&gt;&gt; from spopt.locate.util import simulated_geo_points</span>
+<span class="sd">        &gt;&gt;&gt; import geopandas</span>
+<span class="sd">        &gt;&gt;&gt; import numpy</span>
+<span class="sd">        &gt;&gt;&gt; import pulp</span>
+<span class="sd">        &gt;&gt;&gt; import spaghetti</span>
+
+<span class="sd">        Create a regular lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)</span>
+<span class="sd">        &gt;&gt;&gt; ntw = spaghetti.Network(in_data=lattice)</span>
+<span class="sd">        &gt;&gt;&gt; streets = spaghetti.element_as_gdf(ntw, arcs=True)</span>
+<span class="sd">        &gt;&gt;&gt; streets_buffered = geopandas.GeoDataFrame(</span>
+<span class="sd">        ...     geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.2).unary_union),</span>
+<span class="sd">        ...     crs=streets.crs,</span>
+<span class="sd">        ...     columns=[&quot;geometry&quot;]</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Simulate points about the lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)</span>
+<span class="sd">        &gt;&gt;&gt; facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)</span>
+
+<span class="sd">        Snap the points to the network of lattice edges.</span>
+
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(demand_points, &quot;clients&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; clients_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;clients&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(facility_points, &quot;facilities&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; facilities_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;facilities&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Calculate the cost matrix from origins to destinations.</span>
+
+<span class="sd">        &gt;&gt;&gt; cost_matrix = ntw.allneighbordistances(</span>
+<span class="sd">        ...     sourcepattern=ntw.pointpatterns[&quot;clients&quot;],</span>
+<span class="sd">        ...     destpattern=ntw.pointpatterns[&quot;facilities&quot;]</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Create and solve an ``LSCPB`` instance from the cost matrix.</span>
+
+<span class="sd">        &gt;&gt;&gt; lscpb_from_cost_matrix = LSCPB.from_cost_matrix(</span>
+<span class="sd">        ...     cost_matrix, service_radius=8, solver=pulp.PULP_CBC_CMD(msg=False)</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; lscpb_from_cost_matrix = lscpb_from_cost_matrix.solve()</span>
+
+<span class="sd">        Get the facility lookup demand coverage array.</span>
+
+<span class="sd">        &gt;&gt;&gt; for fac, cli in enumerate(lscpb_from_cost_matrix.fac2cli):</span>
+<span class="sd">        ...     print(f&quot;facility {fac} serving {len(cli)} clients&quot;)</span>
+<span class="sd">        facility 0 serving 0 clients</span>
+<span class="sd">        facility 1 serving 63 clients</span>
+<span class="sd">        facility 2 serving 85 clients</span>
+<span class="sd">        facility 3 serving 92 clients</span>
+<span class="sd">        facility 4 serving 0 clients</span>
+
+<span class="sd">        Get the percentage of clients covered by more than one facility.</span>
+
+<span class="sd">        &gt;&gt;&gt; round(lscpb_from_cost_matrix.backup_perc, 3)</span>
+<span class="sd">        88.0</span>
+
+<span class="sd">        88% of clients are covered by more than 1 facility</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">predefined_facilities_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lscp</span> <span class="o">=</span> <span class="n">LSCP</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+                <span class="n">cost_matrix</span><span class="p">,</span> <span class="n">service_radius</span><span class="p">,</span> <span class="n">predefined_facilities_arr</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lscp</span> <span class="o">=</span> <span class="n">LSCP</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span><span class="n">cost_matrix</span><span class="p">,</span> <span class="n">service_radius</span><span class="p">)</span>
+        <span class="n">lscp</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+
+        <span class="n">r_cli</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">r_fac</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpProblem</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpMaximize</span><span class="p">)</span>
+
+        <span class="n">lscpb</span> <span class="o">=</span> <span class="n">LSCPB</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">solver</span><span class="p">)</span>
+        <span class="n">lscpb</span><span class="o">.</span><span class="n">lscp_obj_value</span> <span class="o">=</span> <span class="n">lscp</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_facility_integer_variable</span><span class="p">(</span><span class="n">lscpb</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">,</span> <span class="s2">&quot;y[</span><span class="si">{i}</span><span class="s2">]&quot;</span><span class="p">)</span>
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_client_integer_variable</span><span class="p">(</span><span class="n">lscpb</span><span class="p">,</span> <span class="n">r_cli</span><span class="p">,</span> <span class="s2">&quot;x[</span><span class="si">{i}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+        <span class="n">lscpb</span><span class="o">.</span><span class="n">aij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">lscpb</span><span class="o">.</span><span class="n">aij</span><span class="p">[</span><span class="n">cost_matrix</span> <span class="o">&lt;=</span> <span class="n">service_radius</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">predefined_facilities_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_predefined_facility_constraint</span><span class="p">(</span>
+                <span class="n">lscpb</span><span class="p">,</span> <span class="n">predefined_facilities_arr</span>
+            <span class="p">)</span>
+
+        <span class="n">lscpb</span><span class="o">.</span><span class="n">__add_obj</span><span class="p">()</span>
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_facility_constraint</span><span class="p">(</span><span class="n">lscpb</span><span class="p">,</span> <span class="n">lscpb</span><span class="o">.</span><span class="n">lscp_obj_value</span><span class="p">)</span>
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_backup_covering_constraint</span><span class="p">(</span><span class="n">lscpb</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">,</span> <span class="n">r_cli</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">lscpb</span></div>
+
+
+<div class="viewcode-block" id="LSCPB.from_geodataframe">
+<a class="viewcode-back" href="../../../generated/spopt.locate.LSCPB.html#spopt.locate.LSCPB.from_geodataframe">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_geodataframe</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">gdf_demand</span><span class="p">:</span> <span class="n">GeoDataFrame</span><span class="p">,</span>
+        <span class="n">gdf_fac</span><span class="p">:</span> <span class="n">GeoDataFrame</span><span class="p">,</span>
+        <span class="n">demand_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">facility_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">service_radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">solver</span><span class="p">:</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpSolver</span><span class="p">,</span>
+        <span class="n">predefined_facility_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">distance_metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;euclidean&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lscp-b&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Create an ``LSCPB`` object from ``geopandas.GeoDataFrame`` objects.</span>
+<span class="sd">        Calculate the cost matrix between demand and facility locations</span>
+<span class="sd">        before building the problem within the ``from_cost_matrix()`` method.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        gdf_demand : geopandas.GeoDataFrame</span>
+<span class="sd">            Demand locations.</span>
+<span class="sd">        gdf_fac : geopandas.GeoDataFrame</span>
+<span class="sd">            Facility locations.</span>
+<span class="sd">        demand_col : str</span>
+<span class="sd">            Demand sites geometry column name.</span>
+<span class="sd">        facility_col : str</span>
+<span class="sd">            Facility candidate sites geometry column name.</span>
+<span class="sd">        service_radius : float</span>
+<span class="sd">             Maximum acceptable service distance.</span>
+<span class="sd">        solver : pulp.LpSolver</span>
+<span class="sd">            A solver supported by ``pulp``.</span>
+<span class="sd">        predefined_facility_col : str (default None)</span>
+<span class="sd">            Column name representing facilities are already defined.</span>
+<span class="sd">            This a binary assignment per facility. For example, consider 3 facilites</span>
+<span class="sd">            ``[&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]``. If facility ``&#39;B&#39;`` must be in the model solution,</span>
+<span class="sd">            then the column should be ``[0, 1, 0]``.</span>
+<span class="sd">        distance_metric : str (default &#39;euclidean&#39;)</span>
+<span class="sd">            A metric used for the distance calculations supported by</span>
+<span class="sd">            `scipy.spatial.distance.cdist &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html&gt;`_.</span>
+<span class="sd">        name : str (default &#39;lscp-b&#39;)</span>
+<span class="sd">            The name of the problem.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.coverage.LSCPB</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &gt;&gt;&gt; from spopt.locate import LSCPB</span>
+<span class="sd">        &gt;&gt;&gt; from spopt.locate.util import simulated_geo_points</span>
+<span class="sd">        &gt;&gt;&gt; import geopandas</span>
+<span class="sd">        &gt;&gt;&gt; import numpy</span>
+<span class="sd">        &gt;&gt;&gt; import pulp</span>
+<span class="sd">        &gt;&gt;&gt; import spaghetti</span>
+
+<span class="sd">        Create a regular lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)</span>
+<span class="sd">        &gt;&gt;&gt; ntw = spaghetti.Network(in_data=lattice)</span>
+<span class="sd">        &gt;&gt;&gt; streets = spaghetti.element_as_gdf(ntw, arcs=True)</span>
+<span class="sd">        &gt;&gt;&gt; streets_buffered = geopandas.GeoDataFrame(</span>
+<span class="sd">        ...     geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.2).unary_union),</span>
+<span class="sd">        ...     crs=streets.crs,</span>
+<span class="sd">        ...     columns=[&quot;geometry&quot;]</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Simulate points about the lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)</span>
+<span class="sd">        &gt;&gt;&gt; facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)</span>
+
+<span class="sd">        Snap the points to the network of lattice edges</span>
+<span class="sd">        and extract as ``GeoDataFrame`` objects.</span>
+
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(demand_points, &quot;clients&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; clients_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;clients&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(facility_points, &quot;facilities&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; facilities_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;facilities&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Create and solve an ``LSCPB`` instance from the ``GeoDataFrame`` objects.</span>
+
+<span class="sd">        &gt;&gt;&gt; lscpb_from_geodataframe = LSCPB.from_geodataframe(</span>
+<span class="sd">        ...     clients_snapped,</span>
+<span class="sd">        ...     facilities_snapped,</span>
+<span class="sd">        ...     &quot;geometry&quot;,</span>
+<span class="sd">        ...     &quot;geometry&quot;,</span>
+<span class="sd">        ...     service_radius=8,</span>
+<span class="sd">        ...     solver=pulp.PULP_CBC_CMD(msg=False),</span>
+<span class="sd">        ...     distance_metric=&quot;euclidean&quot;</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; lscpb_from_geodataframe = lscpb_from_geodataframe.solve()</span>
+
+<span class="sd">        Get the facility lookup demand coverage array.</span>
+
+<span class="sd">        &gt;&gt;&gt; for fac, cli in enumerate(lscpb_from_geodataframe.fac2cli):</span>
+<span class="sd">        ...     print(f&quot;facility {fac} serving {len(cli)} clients&quot;)</span>
+<span class="sd">        facility 0 serving 0 clients</span>
+<span class="sd">        facility 1 serving 0 clients</span>
+<span class="sd">        facility 2 serving 100 clients</span>
+<span class="sd">        facility 3 serving 0 clients</span>
+<span class="sd">        facility 4 serving 0 clients</span>
+
+<span class="sd">        Get the percentage of clients covered by more than one facility.</span>
+
+<span class="sd">        &gt;&gt;&gt; round(lscpb_from_geodataframe.backup_perc, 3)</span>
+<span class="sd">        0.0</span>
+
+<span class="sd">        All clients are covered by 1 facility because only one facility</span>
+<span class="sd">        is needed to solve the LSCP.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+        <span class="n">predefined_facilities_arr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">predefined_facility_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">predefined_facilities_arr</span> <span class="o">=</span> <span class="n">gdf_fac</span><span class="p">[</span><span class="n">predefined_facility_col</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+        <span class="n">dem</span> <span class="o">=</span> <span class="n">gdf_demand</span><span class="p">[</span><span class="n">demand_col</span><span class="p">]</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">gdf_fac</span><span class="p">[</span><span class="n">facility_col</span><span class="p">]</span>
+
+        <span class="n">dem_type_geom</span> <span class="o">=</span> <span class="n">dem</span><span class="o">.</span><span class="n">geom_type</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="n">fac_type_geom</span> <span class="o">=</span> <span class="n">fac</span><span class="o">.</span><span class="n">geom_type</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+        <span class="n">_msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot; geodataframe contains mixed type geometries or is not a point. Be &quot;</span>
+            <span class="s2">&quot;sure deriving centroid from geometries doesn&#39;t affect the results.&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dem_type_geom</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="s2">&quot;Point&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dem_type_geom</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Demand</span><span class="si">{</span><span class="n">_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">dem</span> <span class="o">=</span> <span class="n">dem</span><span class="o">.</span><span class="n">centroid</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fac_type_geom</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="s2">&quot;Point&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fac_type_geom</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Facility</span><span class="si">{</span><span class="n">_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">fac</span> <span class="o">=</span> <span class="n">fac</span><span class="o">.</span><span class="n">centroid</span>
+
+        <span class="n">dem_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dem</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">dem</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()])</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">fac_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fac</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">fac</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()])</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">if</span> <span class="n">gdf_demand</span><span class="o">.</span><span class="n">crs</span> <span class="o">!=</span> <span class="n">gdf_fac</span><span class="o">.</span><span class="n">crs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Geodataframes crs are different: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;gdf_demand-</span><span class="si">{</span><span class="n">gdf_demand</span><span class="o">.</span><span class="n">crs</span><span class="si">}</span><span class="s2">, gdf_fac-</span><span class="si">{</span><span class="n">gdf_fac</span><span class="o">.</span><span class="n">crs</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">cdist</span><span class="p">(</span><span class="n">dem_data</span><span class="p">,</span> <span class="n">fac_data</span><span class="p">,</span> <span class="n">distance_metric</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+            <span class="n">distances</span><span class="p">,</span> <span class="n">service_radius</span><span class="p">,</span> <span class="n">solver</span><span class="p">,</span> <span class="n">predefined_facilities_arr</span><span class="p">,</span> <span class="n">name</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LSCPB.facility_client_array">
+<a class="viewcode-back" href="../../../generated/spopt.locate.LSCPB.html#spopt.locate.LSCPB.facility_client_array">[docs]</a>
+    <span class="k">def</span> <span class="nf">facility_client_array</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Create a 2D array storing **facility to client relationships** where each</span>
+<span class="sd">        row represents a facility and contains an array of client indices</span>
+<span class="sd">        with which it is associated. An empty client array indicates</span>
+<span class="sd">        the facility is associated with no clients.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">fac_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fac_vars&quot;</span><span class="p">)</span>
+        <span class="n">len_fac_vars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fac_vars</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fac2cli</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_fac_vars</span><span class="p">):</span>
+            <span class="n">array_cli</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">fac_vars</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aij</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">aij</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">array_cli</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">fac2cli</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array_cli</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LSCPB.solve">
+<a class="viewcode-back" href="../../../generated/spopt.locate.LSCPB.html#spopt.locate.LSCPB.solve">[docs]</a>
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solve the ``LSCPB`` model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        results : bool (default True)</span>
+<span class="sd">            If ``True`` it will create metainfo (which facilities cover</span>
+<span class="sd">            which demand) and vice-versa, and the uncovered demand.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.coverage.LSCPB</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">facility_client_array</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_facility_array</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_percentage</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MCLP">
+<a class="viewcode-back" href="../../../generated/spopt.locate.MCLP.html#spopt.locate.MCLP">[docs]</a>
+<span class="k">class</span> <span class="nc">MCLP</span><span class="p">(</span><span class="n">LocateSolver</span><span class="p">,</span> <span class="n">BaseOutputMixin</span><span class="p">,</span> <span class="n">CoveragePercentageMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implement the Maximal Coverage Location Problem (*MCLP*) optimization model</span>
+<span class="sd">    and solve it. The *MCLP*, as adapted from :cite:`church_murray_2018`,</span>
+<span class="sd">    can be formulated as:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \begin{array}{lllll}</span>
+<span class="sd">       \displaystyle \textbf{Maximize}      &amp; \displaystyle \sum_{i \in I}{a_iX_i}          &amp;&amp;                  &amp; (1)                                                                                   \\</span>
+<span class="sd">       \displaystyle \textbf{Subject To}    &amp; \displaystyle \sum_{j \in N_i}{Y_j \geq X_i}  &amp;&amp; \forall i \in I  &amp; (2)                                                                                   \\</span>
+<span class="sd">                                            &amp; \displaystyle \sum_{j \in J}{Y_j} = p         &amp;&amp;                  &amp; (3)                                                                                   \\</span>
+<span class="sd">                                            &amp; X_i \in \{0, 1\}                              &amp;&amp; \forall i \in I  &amp; (4)                                                                                   \\</span>
+<span class="sd">                                            &amp; Y_j \in \{0, 1\}                              &amp;&amp; \forall j \in J  &amp; (5)                                                                                   \\</span>
+<span class="sd">                                            &amp;                                               &amp;&amp;                  &amp;                                                                                       \\</span>
+<span class="sd">       \displaystyle \textbf{Where}         &amp;&amp; i                                            &amp; =                 &amp; \textrm{index of demand points/areas/objects in set } I                               \\</span>
+<span class="sd">                                            &amp;&amp; j                                            &amp; =                 &amp; \textrm{index of potential facility sites in set } J                                  \\</span>
+<span class="sd">                                            &amp;&amp; p                                            &amp; =                 &amp; \textrm{the number of facilities to be sited}                                         \\</span>
+<span class="sd">                                            &amp;&amp; S                                            &amp; =                 &amp; \textrm{maximum acceptable service distance or time standard}                         \\</span>
+<span class="sd">                                            &amp;&amp; d_{ij}                                       &amp; =                 &amp; \textrm{shortest distance or travel time between locations } i \textrm{ and } j       \\</span>
+<span class="sd">                                            &amp;&amp; N_i                                          &amp; =                 &amp; \{j | d_{ij} &lt; S\}                                                                    \\</span>
+<span class="sd">                                            &amp;&amp; X_i                                          &amp; =                 &amp; \begin{cases}</span>
+<span class="sd">                                                                                                                   1, \textrm{if client location } i \textrm{ is covered within service standard } S    \\</span>
+<span class="sd">                                                                                                                   0, \textrm{otherwise}                                                                \\</span>
+<span class="sd">                                                                                                                  \end{cases}                                                                           \\</span>
+<span class="sd">                                            &amp;&amp; Y_j                                          &amp; =                 &amp; \begin{cases}</span>
+<span class="sd">                                                                                                                   1, \textrm{if a facility is sited at location } j                                    \\</span>
+<span class="sd">                                                                                                                   0, \textrm{otherwise}                                                                \\</span>
+<span class="sd">                                                                                                                  \end{cases}</span>
+<span class="sd">       \end{array}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    name : str</span>
+<span class="sd">        The problem name.</span>
+<span class="sd">    problem : pulp.LpProblem</span>
+<span class="sd">        A ``pulp`` instance of an optimization model that contains</span>
+<span class="sd">        constraints, variables, and an objective function.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    name : str</span>
+<span class="sd">        The problem name.</span>
+<span class="sd">    problem : pulp.LpProblem</span>
+<span class="sd">        A ``pulp`` instance of an optimization model that contains</span>
+<span class="sd">        constraints, variables, and an objective function.</span>
+<span class="sd">    fac2cli : numpy.array</span>
+<span class="sd">        A 2D array storing facility to client relationships where each</span>
+<span class="sd">        row represents a facility and contains an array of client indices</span>
+<span class="sd">        with which it is associated. An empty client array indicates</span>
+<span class="sd">        the facility is associated with no clients.</span>
+<span class="sd">    cli2fac : numpy.array</span>
+<span class="sd">        The inverse of ``fac2cli`` where client to facility relationships</span>
+<span class="sd">        are shown.</span>
+<span class="sd">    aij : numpy.array</span>
+<span class="sd">        A cost matrix in the form of a 2D array between origins and destinations.</span>
+<span class="sd">    n_cli_uncov : int</span>
+<span class="sd">        The number of uncovered client locations.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+<div class="viewcode-block" id="MCLP.__init__">
+<a class="viewcode-back" href="../../../generated/spopt.locate.MCLP.html#spopt.locate.MCLP.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">problem</span><span class="p">:</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpProblem</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">problem</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__add_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">range_clients</span><span class="p">:</span> <span class="nb">range</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add the objective function to the model.</span>
+
+<span class="sd">        Maximize w1 * y1 + w2 * y2 +  ... + wi * yi</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dem_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;cli_vars&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="n">pulp</span><span class="o">.</span><span class="n">lpSum</span><span class="p">([</span><span class="n">weights</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">dem_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">range_clients</span><span class="p">]),</span>
+            <span class="s2">&quot;objective function&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="MCLP.from_cost_matrix">
+<a class="viewcode-back" href="../../../generated/spopt.locate.MCLP.html#spopt.locate.MCLP.from_cost_matrix">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_cost_matrix</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">cost_matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">service_radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">p_facilities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">predefined_facilities_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mclp&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a ``MCLP`` object based on cost matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        cost_matrix : numpy.array</span>
+<span class="sd">            A cost matrix in the form of a 2D array between origins and destinations.</span>
+<span class="sd">        weights : numpy.array</span>
+<span class="sd">            A 1D array of service load or population demand.</span>
+<span class="sd">        service_radius : float</span>
+<span class="sd">            Maximum acceptable service distance.</span>
+<span class="sd">        p_facilities : int</span>
+<span class="sd">            The number of facilities to be located.</span>
+<span class="sd">        predefined_facilities_arr : numpy.array (default None)</span>
+<span class="sd">            A binary 1D array of service facilities that must appear in the</span>
+<span class="sd">            solution. For example, consider 3 facilites ``[&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]``.</span>
+<span class="sd">            If facility ``&#39;B&#39;`` must be in the model solution, then the passed</span>
+<span class="sd">            in array should be ``[0, 1, 0]``.</span>
+<span class="sd">        name : str (default &#39;mclp&#39;)</span>
+<span class="sd">            The problem name.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.coverage.MCLP</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &gt;&gt;&gt; from spopt.locate import MCLP</span>
+<span class="sd">        &gt;&gt;&gt; from spopt.locate.util import simulated_geo_points</span>
+<span class="sd">        &gt;&gt;&gt; import geopandas</span>
+<span class="sd">        &gt;&gt;&gt; import numpy</span>
+<span class="sd">        &gt;&gt;&gt; import pulp</span>
+<span class="sd">        &gt;&gt;&gt; import spaghetti</span>
+
+<span class="sd">        Create a regular lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)</span>
+<span class="sd">        &gt;&gt;&gt; ntw = spaghetti.Network(in_data=lattice)</span>
+<span class="sd">        &gt;&gt;&gt; streets = spaghetti.element_as_gdf(ntw, arcs=True)</span>
+<span class="sd">        &gt;&gt;&gt; streets_buffered = geopandas.GeoDataFrame(</span>
+<span class="sd">        ...     geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.2).unary_union),</span>
+<span class="sd">        ...     crs=streets.crs,</span>
+<span class="sd">        ...     columns=[&quot;geometry&quot;]</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Simulate points about the lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)</span>
+<span class="sd">        &gt;&gt;&gt; facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)</span>
+
+<span class="sd">        Snap the points to the network of lattice edges.</span>
+
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(demand_points, &quot;clients&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; clients_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;clients&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(facility_points, &quot;facilities&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; facilities_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;facilities&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Calculate the cost matrix from origins to destinations.</span>
+
+<span class="sd">        &gt;&gt;&gt; cost_matrix = ntw.allneighbordistances(</span>
+<span class="sd">        ...    sourcepattern=ntw.pointpatterns[&quot;clients&quot;],</span>
+<span class="sd">        ...    destpattern=ntw.pointpatterns[&quot;facilities&quot;]</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Simulate demand weights from ``1`` to ``12``.</span>
+
+<span class="sd">        &gt;&gt;&gt; ai = numpy.random.randint(1, 12, 100)</span>
+
+<span class="sd">        Create and solve an ``MCLP`` instance from the cost matrix.</span>
+
+<span class="sd">        &gt;&gt;&gt; mclp_from_cost_matrix = MCLP.from_cost_matrix(</span>
+<span class="sd">        ...     cost_matrix, ai, service_radius=7, p_facilities=4</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; mclp_from_cost_matrix = mclp_from_cost_matrix.solve(</span>
+<span class="sd">        ...     pulp.PULP_CBC_CMD(msg=False)</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Get the facility lookup demand coverage array.</span>
+
+<span class="sd">        &gt;&gt;&gt; for fac, cli in enumerate(mclp_from_cost_matrix.fac2cli):</span>
+<span class="sd">        ...     print(f&quot;facility {fac} serving {len(cli)} clients&quot;)</span>
+<span class="sd">        facility 0 serving 44 clients</span>
+<span class="sd">        facility 1 serving 54 clients</span>
+<span class="sd">        facility 2 serving 75 clients</span>
+<span class="sd">        facility 3 serving 77 clients</span>
+<span class="sd">        facility 4 serving 0 clients</span>
+
+<span class="sd">        Get the number of clients uncovered and percentage covered.</span>
+
+<span class="sd">        &gt;&gt;&gt; mclp_from_cost_matrix.n_cli_uncov</span>
+<span class="sd">        1</span>
+<span class="sd">        &gt;&gt;&gt; mclp_from_cost_matrix.perc_cov</span>
+<span class="sd">        99.0</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">n_cli</span> <span class="o">=</span> <span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">r_cli</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_cli</span><span class="p">)</span>
+        <span class="n">r_fac</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpProblem</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpMaximize</span><span class="p">)</span>
+        <span class="n">mclp</span> <span class="o">=</span> <span class="n">MCLP</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_facility_integer_variable</span><span class="p">(</span><span class="n">mclp</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">,</span> <span class="s2">&quot;x[</span><span class="si">{i}</span><span class="s2">]&quot;</span><span class="p">)</span>
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_client_integer_variable</span><span class="p">(</span><span class="n">mclp</span><span class="p">,</span> <span class="n">r_cli</span><span class="p">,</span> <span class="s2">&quot;y[</span><span class="si">{i}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+        <span class="n">mclp</span><span class="o">.</span><span class="n">aij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">mclp</span><span class="o">.</span><span class="n">aij</span><span class="p">[</span><span class="n">cost_matrix</span> <span class="o">&lt;=</span> <span class="n">service_radius</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="p">(</span><span class="n">n_cli</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">mclp</span><span class="o">.</span><span class="n">__add_obj</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">r_cli</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">predefined_facilities_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_predefined_facility_constraint</span><span class="p">(</span>
+                <span class="n">mclp</span><span class="p">,</span> <span class="n">predefined_facilities_arr</span>
+            <span class="p">)</span>
+
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_maximal_coverage_constraint</span><span class="p">(</span><span class="n">mclp</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">,</span> <span class="n">r_cli</span><span class="p">)</span>
+
+        <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_facility_constraint</span><span class="p">(</span><span class="n">mclp</span><span class="p">,</span> <span class="n">p_facilities</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">mclp</span></div>
+
+
+<div class="viewcode-block" id="MCLP.from_geodataframe">
+<a class="viewcode-back" href="../../../generated/spopt.locate.MCLP.html#spopt.locate.MCLP.from_geodataframe">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_geodataframe</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">gdf_demand</span><span class="p">:</span> <span class="n">GeoDataFrame</span><span class="p">,</span>
+        <span class="n">gdf_fac</span><span class="p">:</span> <span class="n">GeoDataFrame</span><span class="p">,</span>
+        <span class="n">demand_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">facility_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">weights_cols</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">service_radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">p_facilities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">predefined_facility_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">distance_metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;euclidean&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mclp&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Create an ``MCLP`` object from ``geopandas.GeoDataFrame`` objects.</span>
+<span class="sd">        Calculate the cost matrix between demand and facility locations</span>
+<span class="sd">        before building the problem within the ``from_cost_matrix()`` method.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        gdf_demand : geopandas.GeoDataFrame</span>
+<span class="sd">            Demand locations.</span>
+<span class="sd">        gdf_fac : geopandas.GeoDataFrame</span>
+<span class="sd">            Facility locations.</span>
+<span class="sd">        demand_col : str</span>
+<span class="sd">            Demand sites geometry column name.</span>
+<span class="sd">        facility_col : str</span>
+<span class="sd">            Facility candidate sites geometry column name.</span>
+<span class="sd">        weights_cols : str</span>
+<span class="sd">            The weight column name representing service load or demand.</span>
+<span class="sd">        service_radius : float</span>
+<span class="sd">             Maximum acceptable service distance.</span>
+<span class="sd">        p_facilities: int</span>
+<span class="sd">           The number of facilities to be located.</span>
+<span class="sd">        predefined_facility_col : str (default None)</span>
+<span class="sd">            Column name representing facilities are already defined.</span>
+<span class="sd">            This a binary assignment per facility. For example, consider 3 facilites</span>
+<span class="sd">            ``[&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]``. If facility ``&#39;B&#39;`` must be in the model solution,</span>
+<span class="sd">            then the column should be ``[0, 1, 0]``.</span>
+<span class="sd">        distance_metric : str (default &#39;euclidean&#39;)</span>
+<span class="sd">            A metric used for the distance calculations supported by</span>
+<span class="sd">            `scipy.spatial.distance.cdist &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html&gt;`_.</span>
+<span class="sd">        name : str (default &#39;mclp&#39;)</span>
+<span class="sd">            The name of the problem.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.coverage.MCLP</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &gt;&gt;&gt; from spopt.locate import MCLP</span>
+<span class="sd">        &gt;&gt;&gt; from spopt.locate.util import simulated_geo_points</span>
+<span class="sd">        &gt;&gt;&gt; import geopandas</span>
+<span class="sd">        &gt;&gt;&gt; import pulp</span>
+<span class="sd">        &gt;&gt;&gt; import numpy</span>
+<span class="sd">        &gt;&gt;&gt; import spaghetti</span>
+
+<span class="sd">        Create a regular lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)</span>
+<span class="sd">        &gt;&gt;&gt; ntw = spaghetti.Network(in_data=lattice)</span>
+<span class="sd">        &gt;&gt;&gt; streets = spaghetti.element_as_gdf(ntw, arcs=True)</span>
+<span class="sd">        &gt;&gt;&gt; streets_buffered = geopandas.GeoDataFrame(</span>
+<span class="sd">        ...     geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.2).unary_union),</span>
+<span class="sd">        ...     crs=streets.crs,</span>
+<span class="sd">        ...     columns=[&quot;geometry&quot;]</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Simulate points about the lattice.</span>
+
+<span class="sd">        &gt;&gt;&gt; demand_points = simulated_geo_points(streets_buffered, needed=100, seed=5)</span>
+<span class="sd">        &gt;&gt;&gt; facility_points = simulated_geo_points(streets_buffered, needed=5, seed=6)</span>
+
+<span class="sd">        Snap the points to the network of lattice edges</span>
+<span class="sd">        and extract as ``GeoDataFrame`` objects.</span>
+
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(demand_points, &quot;clients&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; clients_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;clients&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(facility_points, &quot;facilities&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; facilities_snapped = spaghetti.element_as_gdf(</span>
+<span class="sd">        ...     ntw, pp_name=&quot;facilities&quot;, snapped=True</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Simulate demand weights from ``1`` to ``12``.</span>
+
+<span class="sd">        &gt;&gt;&gt; ai = numpy.random.randint(1, 12, 100)</span>
+<span class="sd">        &gt;&gt;&gt; clients_snapped[&#39;weights&#39;] = ai</span>
+
+<span class="sd">        Create and solve an ``MCLP`` instance from the ``GeoDataFrame`` objects.</span>
+
+<span class="sd">        &gt;&gt;&gt; mclp_from_geodataframe = MCLP.from_geodataframe(</span>
+<span class="sd">        ...     clients_snapped,</span>
+<span class="sd">        ...     facilities_snapped,</span>
+<span class="sd">        ...     &quot;geometry&quot;,</span>
+<span class="sd">        ...     &quot;geometry&quot;,</span>
+<span class="sd">        ...     &quot;weights&quot;,</span>
+<span class="sd">        ...     service_radius=7,</span>
+<span class="sd">        ...     p_facilities=4,</span>
+<span class="sd">        ...     distance_metric=&quot;euclidean&quot;</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        &gt;&gt;&gt; mclp_from_geodataframe = mclp_from_geodataframe.solve(</span>
+<span class="sd">        ...     pulp.PULP_CBC_CMD(msg=False)</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Get the facility lookup demand coverage array.</span>
+
+<span class="sd">        &gt;&gt;&gt; for fac, cli in enumerate(mclp_from_geodataframe.fac2cli):</span>
+<span class="sd">        ...     print(f&quot;facility {fac} serving {len(cli)} clients&quot;)</span>
+<span class="sd">        facility 0 serving 63 clients</span>
+<span class="sd">        facility 1 serving 80 clients</span>
+<span class="sd">        facility 2 serving 96 clients</span>
+<span class="sd">        facility 3 serving 0 clients</span>
+<span class="sd">        facility 4 serving 58 clients</span>
+
+<span class="sd">        Get the number of clients uncovered and percentage covered.</span>
+
+<span class="sd">        &gt;&gt;&gt; mclp_from_geodataframe.n_cli_uncov</span>
+<span class="sd">        0</span>
+<span class="sd">        &gt;&gt;&gt; mclp_from_geodataframe.perc_cov</span>
+<span class="sd">        100.0</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa E501</span>
+
+        <span class="n">predefined_facilities_arr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">predefined_facility_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">predefined_facilities_arr</span> <span class="o">=</span> <span class="n">gdf_fac</span><span class="p">[</span><span class="n">predefined_facility_col</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+        <span class="n">service_load</span> <span class="o">=</span> <span class="n">gdf_demand</span><span class="p">[</span><span class="n">weights_cols</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+        <span class="n">dem</span> <span class="o">=</span> <span class="n">gdf_demand</span><span class="p">[</span><span class="n">demand_col</span><span class="p">]</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">gdf_fac</span><span class="p">[</span><span class="n">facility_col</span><span class="p">]</span>
+
+        <span class="n">dem_type_geom</span> <span class="o">=</span> <span class="n">dem</span><span class="o">.</span><span class="n">geom_type</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="n">fac_type_geom</span> <span class="o">=</span> <span class="n">fac</span><span class="o">.</span><span class="n">geom_type</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+        <span class="n">_msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot; geodataframe contains mixed type geometries or is not a point. Be &quot;</span>
+            <span class="s2">&quot;sure deriving centroid from geometries doesn&#39;t affect the results.&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dem_type_geom</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="s2">&quot;Point&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dem_type_geom</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Demand</span><span class="si">{</span><span class="n">_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">dem</span> <span class="o">=</span> <span class="n">dem</span><span class="o">.</span><span class="n">centroid</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fac_type_geom</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="s2">&quot;Point&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fac_type_geom</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Facility</span><span class="si">{</span><span class="n">_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">fac</span> <span class="o">=</span> <span class="n">fac</span><span class="o">.</span><span class="n">centroid</span>
+
+        <span class="n">dem_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dem</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">dem</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()])</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">fac_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fac</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">fac</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()])</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">if</span> <span class="n">gdf_demand</span><span class="o">.</span><span class="n">crs</span> <span class="o">!=</span> <span class="n">gdf_fac</span><span class="o">.</span><span class="n">crs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Geodataframes crs are different: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;gdf_demand-</span><span class="si">{</span><span class="n">gdf_demand</span><span class="o">.</span><span class="n">crs</span><span class="si">}</span><span class="s2">, gdf_fac-</span><span class="si">{</span><span class="n">gdf_fac</span><span class="o">.</span><span class="n">crs</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">cdist</span><span class="p">(</span><span class="n">dem_data</span><span class="p">,</span> <span class="n">fac_data</span><span class="p">,</span> <span class="n">distance_metric</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+            <span class="n">distances</span><span class="p">,</span>
+            <span class="n">service_load</span><span class="p">,</span>
+            <span class="n">service_radius</span><span class="p">,</span>
+            <span class="n">p_facilities</span><span class="p">,</span>
+            <span class="n">predefined_facilities_arr</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MCLP.facility_client_array">
+<a class="viewcode-back" href="../../../generated/spopt.locate.MCLP.html#spopt.locate.MCLP.facility_client_array">[docs]</a>
+    <span class="k">def</span> <span class="nf">facility_client_array</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Create a 2D array storing **facility to client relationships** where each</span>
+<span class="sd">        row represents a facility and contains an array of client indices</span>
+<span class="sd">        with which it is associated. An empty client array indicates</span>
+<span class="sd">        the facility is associated with no clients.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">fac_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fac_vars&quot;</span><span class="p">)</span>
+        <span class="n">cli_vars</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;cli_vars&quot;</span><span class="p">)</span>
+        <span class="n">len_fac_vars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fac_vars</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fac2cli</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_fac_vars</span><span class="p">):</span>
+            <span class="n">array_cli</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">fac_vars</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aij</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="n">cli_vars</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">aij</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">array_cli</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">fac2cli</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array_cli</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MCLP.solve">
+<a class="viewcode-back" href="../../../generated/spopt.locate.MCLP.html#spopt.locate.MCLP.solve">[docs]</a>
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solver</span><span class="p">:</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpSolver</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solve the ``MCLP`` model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        solver : pulp.LpSolver</span>
+<span class="sd">            A solver supported by ``pulp``.</span>
+<span class="sd">        results : bool (default True)</span>
+<span class="sd">            If ``True`` it will create metainfo (which facilities cover</span>
+<span class="sd">            which demand) and vice-versa, and the uncovered demand.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        spopt.locate.coverage.MCLP</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">facility_client_array</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client_facility_array</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">uncovered_clients</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_percentage</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

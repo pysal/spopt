@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Max-P Regionalization for Multiple Components &#8212; spopt v0.6.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The Location Set Covering Problem (LSCP)" href="lscp.html" />
+    <link rel="prev" title="Random Regions" href="randomregion.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="randomregion.html">Random Regions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Max-P Regionalization for Multiple Components</a><ul>
+<li><a class="reference internal" href="#Solution:-multiple-attach">Solution: <code class="docutils literal notranslate"><span class="pre">multiple</span> <span class="pre">attach</span></code></a></li>
+<li><a class="reference internal" href="#Solution:-single-attach">Solution: <code class="docutils literal notranslate"><span class="pre">single</span> <span class="pre">attach</span></code></a></li>
+<li><a class="reference internal" href="#Solution:-drop">Solution: <code class="docutils literal notranslate"><span class="pre">drop</span></code></a></li>
+<li><a class="reference internal" href="#No-Feasible-Components">No Feasible Components</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/spopt/blob/main/notebooks/component_policy.ipynb">notebooks/component_policy.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/spopt/main?filepath=notebooks/component_policy.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Max-P-Regionalization-for-Multiple-Components">
+<h1>Max-P Regionalization for Multiple Components<a class="headerlink" href="#Max-P-Regionalization-for-Multiple-Components" title="Link to this heading">¶</a></h1>
+<p>Authors: <a class="reference external" href="https://github.com/sjsrey">Sergio Rey</a>, <a class="reference external" href="https://github.com/jGaboardi">James Gaboardi</a></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">max-p</span></code> problem involves the clustering of a set of geographic areas into the maximum number of homogeneous regions such that the value of a spatially extensive regional attribute is above a predefined threshold value. The spatially extensive attribute can be specified to ensure that each region contains sufficient population size, or a minimum number of enumeration units. The number of regions <span class="math notranslate nohighlight">\(p\)</span> is endogenous to the problem and is useful for regionalization problems where the
+analyst does not require a fixed number of regions a-priori.</p>
+<p>Originally formulated as a mixed-integer problem in <a class="reference external" href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1467-9787.2011.00743.x">Duque, Anselin, Rey (2012)</a>, <code class="docutils literal notranslate"><span class="pre">max-p</span></code> is an <a class="reference external" href="https://en.wikipedia.org/wiki/NP-hardness">NP-hard problem</a> and exact solutions are only feasible for small problem sizes. As such, a number of heuristic solution approaches have been suggested. PySAL implements the heuristic approach described in <a class="reference external" href="https://www.tandfonline.com/doi/full/10.1080/13658816.2020.1759806">Wei, Rey, and Knaap
+(2020)</a>.</p>
+<p>One issue with the current version of maxp is when it is applied to a collection of areas that have multiple connected components <em>and</em> some of the components do not allow for feasible region building.</p>
+<p>In this notebook we outline a number of alternatives to use when encountering infeasible components.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+%load_ext watermark
+%watermark
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Last updated: 2023-12-10T13:30:11.099582-05:00
+
+Python implementation: CPython
+Python version       : 3.12.0
+IPython version      : 8.18.0
+
+Compiler    : Clang 15.0.7
+OS          : Darwin
+Release     : 23.1.0
+Machine     : x86_64
+Processor   : i386
+CPU cores   : 8
+Architecture: 64bit
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas
+import libpysal
+import matplotlib.pyplot as plt
+import numpy
+import scipy
+from scipy.spatial import KDTree
+import shapely
+from shapely.geometry import Polygon, box
+import spopt
+from spopt.region import MaxPHeuristic as MaxP
+import warnings
+
+plt.rcParams[&quot;figure.figsize&quot;] = [12, 8]
+warnings.filterwarnings(&quot;ignore&quot;)
+
+RANDOM_SEED = 123456
+
+%watermark -w
+%watermark -iv
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Watermark: 2.4.3
+
+libpysal  : 4.9.2
+geopandas : 0.14.1
+numpy     : 1.26.2
+shapely   : 2.0.2
+spopt     : 0.5.1.dev53+g5cadae7
+scipy     : 1.11.4
+matplotlib: 3.8.2
+
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>n_cols = 5
+n_rows = 10
+b = 0
+h = w = 10
+component_0 = [box(l * w, b, l * w + w, b + h) for l in range(n_cols)]
+b = b + h * 2
+component_1 = [
+    box(l * w, b + h * r, l * w + w, b + h + h * r)
+    for r in range(n_rows)
+    for l in range(n_cols)
+]
+geometries = component_0 + component_1
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>len(geometries)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+55
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf = geopandas.GeoDataFrame(
+    geometry=geometries,
+    data=numpy.ones((n_cols * n_rows + n_cols, 1), int),
+    columns=[&quot;var&quot;],
+)
+gdf.plot(edgecolor=&quot;black&quot;);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_component_policy_5_0.png" class="no-scaled-link" src="../_images/notebooks_component_policy_5_0.png" style="width: 312px; height: 659px;" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>var</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>POLYGON ((10.00000 0.00000, 10.00000 10.00000,...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>POLYGON ((20.00000 0.00000, 20.00000 10.00000,...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>POLYGON ((30.00000 0.00000, 30.00000 10.00000,...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>POLYGON ((40.00000 0.00000, 40.00000 10.00000,...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1</td>
+      <td>POLYGON ((50.00000 0.00000, 50.00000 10.00000,...</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w = libpysal.weights.Queen.from_dataframe(gdf)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w.component_labels
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], dtype=int32)
+</pre></div></div>
+</div>
+<p>So we have two components, one with 5 areas in the south and a larger northern component with 50 areas.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>numpy.unique(w.component_labels)
+rng = numpy.random.default_rng(2021)  # set seed for random numbers
+</pre></div>
+</div>
+</div>
+<p>We first attempt to solve where the threshold=5. The small southern component is feasible in this case so we should get a solution:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, &quot;var&quot;, &quot;var&quot;, 5, 2, policy=&quot;keep&quot;)
+model.solve()
+gdf[&quot;region&quot;] = model.labels_
+gdf.explore(column=&quot;region&quot;, categorical=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div style="width:100%;"><div style="position:relative;width:100%;height:0;padding-bottom:60%;"><span style="color:#565656">Make this Notebook Trusted to load map: File -> Trust Notebook</span><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+
+    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+
+        &lt;script&gt;
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        &lt;/script&gt;
+
+    &lt;style&gt;html, body {width: 100%;height: 100%;margin: 0;padding: 0;}&lt;/style&gt;
+    &lt;style&gt;#map {position:absolute;top:0;bottom:0;right:0;left:0;}&lt;/style&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://code.jquery.com/jquery-3.7.1.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
+
+            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
+            &lt;style&gt;
+                #map_068867f8725d4984e16006a157782c0b {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            &lt;/style&gt;
+
+
+                    &lt;style&gt;
+                        .foliumtooltip {
+
+                        }
+                       .foliumtooltip table{
+                            margin: auto;
+                        }
+                        .foliumtooltip tr{
+                            text-align: left;
+                        }
+                        .foliumtooltip th{
+                            padding: 2px; padding-right: 8px;
+                        }
+                    &lt;/style&gt;
+
+
+    &lt;script src=&quot;https://code.jquery.com/ui/1.12.1/jquery-ui.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;$( function() {
+        $( &quot;.maplegend&quot; ).draggable({
+            start: function (event, ui) {
+                $(this).css({
+                    right: &quot;auto&quot;,
+                    top: &quot;auto&quot;,
+                    bottom: &quot;auto&quot;
+                });
+            }
+        });
+    });
+    &lt;/script&gt;
+    &lt;style type=&#x27;text/css&#x27;&gt;
+      .maplegend {
+        position: absolute;
+        z-index:9999;
+        background-color: rgba(255, 255, 255, .8);
+        border-radius: 5px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        padding: 10px;
+        font: 12px/14px Arial, Helvetica, sans-serif;
+        right: 10px;
+        bottom: 20px;
+      }
+      .maplegend .legend-title {
+        text-align: left;
+        margin-bottom: 5px;
+        font-weight: bold;
+        }
+      .maplegend .legend-scale ul {
+        margin: 0;
+        margin-bottom: 0px;
+        padding: 0;
+        float: left;
+        list-style: none;
+        }
+      .maplegend .legend-scale ul li {
+        list-style: none;
+        margin-left: 0;
+        line-height: 16px;
+        margin-bottom: 2px;
+        }
+      .maplegend ul.legend-labels li span {
+        display: block;
+        float: left;
+        height: 14px;
+        width: 14px;
+        margin-right: 5px;
+        margin-left: 0;
+        border: 0px solid #ccc;
+        }
+      .maplegend .legend-source {
+        color: #777;
+        clear: both;
+        }
+      .maplegend a {
+        color: #777;
+        }
+    &lt;/style&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+
+
+    &lt;div id=&#x27;maplegend region&#x27; class=&#x27;maplegend&#x27;&gt;
+        &lt;div class=&#x27;legend-title&#x27;&gt;region&lt;/div&gt;
+        &lt;div class=&#x27;legend-scale&#x27;&gt;
+            &lt;ul class=&#x27;legend-labels&#x27;&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#1f77b4&#x27;&gt;&lt;/span&gt;1&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#ff7f0e&#x27;&gt;&lt;/span&gt;2&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#2ca02c&#x27;&gt;&lt;/span&gt;3&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#d62728&#x27;&gt;&lt;/span&gt;4&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#9467bd&#x27;&gt;&lt;/span&gt;5&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#c49c94&#x27;&gt;&lt;/span&gt;6&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#f7b6d2&#x27;&gt;&lt;/span&gt;7&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#c7c7c7&#x27;&gt;&lt;/span&gt;8&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#dbdb8d&#x27;&gt;&lt;/span&gt;9&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#9edae5&#x27;&gt;&lt;/span&gt;10&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+
+            &lt;div class=&quot;folium-map&quot; id=&quot;map_068867f8725d4984e16006a157782c0b&quot; &gt;&lt;/div&gt;
+
+&lt;/body&gt;
+&lt;script&gt;
+
+
+            var map_068867f8725d4984e16006a157782c0b = L.map(
+                &quot;map_068867f8725d4984e16006a157782c0b&quot;,
+                {
+                    center: [60.0, 25.0],
+                    crs: L.CRS.Simple,
+                    zoom: 10,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+            L.control.scale().addTo(map_068867f8725d4984e16006a157782c0b);
+
+
+
+
+
+            map_068867f8725d4984e16006a157782c0b.fitBounds(
+                [[0.0, 0.0], [120.0, 50.0]],
+                {}
+            );
+
+
+        function geo_json_4afbe6ef73c43368b0f7fe32da9eb12c_styler(feature) {
+            switch(feature.id) {
+                case &quot;0&quot;: case &quot;1&quot;: case &quot;2&quot;: case &quot;3&quot;: case &quot;4&quot;:
+                    return {&quot;color&quot;: &quot;#ff7f0e&quot;, &quot;fillColor&quot;: &quot;#ff7f0e&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;5&quot;: case &quot;10&quot;: case &quot;15&quot;: case &quot;16&quot;: case &quot;20&quot;: case &quot;21&quot;:
+                    return {&quot;color&quot;: &quot;#1f77b4&quot;, &quot;fillColor&quot;: &quot;#1f77b4&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;6&quot;: case &quot;7&quot;: case &quot;8&quot;: case &quot;11&quot;: case &quot;12&quot;: case &quot;17&quot;:
+                    return {&quot;color&quot;: &quot;#f7b6d2&quot;, &quot;fillColor&quot;: &quot;#f7b6d2&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;22&quot;: case &quot;23&quot;: case &quot;27&quot;: case &quot;32&quot;: case &quot;33&quot;:
+                    return {&quot;color&quot;: &quot;#2ca02c&quot;, &quot;fillColor&quot;: &quot;#2ca02c&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;25&quot;: case &quot;26&quot;: case &quot;30&quot;: case &quot;31&quot;: case &quot;35&quot;:
+                    return {&quot;color&quot;: &quot;#9edae5&quot;, &quot;fillColor&quot;: &quot;#9edae5&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;28&quot;: case &quot;29&quot;: case &quot;34&quot;: case &quot;39&quot;: case &quot;43&quot;: case &quot;44&quot;:
+                    return {&quot;color&quot;: &quot;#dbdb8d&quot;, &quot;fillColor&quot;: &quot;#dbdb8d&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;36&quot;: case &quot;37&quot;: case &quot;38&quot;: case &quot;41&quot;: case &quot;42&quot;:
+                    return {&quot;color&quot;: &quot;#9467bd&quot;, &quot;fillColor&quot;: &quot;#9467bd&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;40&quot;: case &quot;45&quot;: case &quot;46&quot;: case &quot;47&quot;: case &quot;50&quot;: case &quot;51&quot;:
+                    return {&quot;color&quot;: &quot;#c49c94&quot;, &quot;fillColor&quot;: &quot;#c49c94&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;48&quot;: case &quot;49&quot;: case &quot;52&quot;: case &quot;53&quot;: case &quot;54&quot;:
+                    return {&quot;color&quot;: &quot;#d62728&quot;, &quot;fillColor&quot;: &quot;#d62728&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                default:
+                    return {&quot;color&quot;: &quot;#c7c7c7&quot;, &quot;fillColor&quot;: &quot;#c7c7c7&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+            }
+        }
+        function geo_json_4afbe6ef73c43368b0f7fe32da9eb12c_highlighter(feature) {
+            switch(feature.id) {
+                default:
+                    return {&quot;fillOpacity&quot;: 0.75};
+            }
+        }
+        function geo_json_4afbe6ef73c43368b0f7fe32da9eb12c_pointToLayer(feature, latlng) {
+            var opts = {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#3388ff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#3388ff&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 2, &quot;stroke&quot;: true, &quot;weight&quot;: 3};
+
+            let style = geo_json_4afbe6ef73c43368b0f7fe32da9eb12c_styler(feature)
+            Object.assign(opts, style)
+
+            return new L.CircleMarker(latlng, opts)
+        }
+
+        function geo_json_4afbe6ef73c43368b0f7fe32da9eb12c_onEachFeature(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if(typeof e.target.setStyle === &quot;function&quot;){
+                        geo_json_4afbe6ef73c43368b0f7fe32da9eb12c.resetStyle(e.target);
+                    }
+                },
+                mouseover: function(e) {
+                    if(typeof e.target.setStyle === &quot;function&quot;){
+                        const highlightStyle = geo_json_4afbe6ef73c43368b0f7fe32da9eb12c_highlighter(e.target.feature)
+                        e.target.setStyle(highlightStyle);
+                    }
+                },
+            });
+        };
+        var geo_json_4afbe6ef73c43368b0f7fe32da9eb12c = L.geoJson(null, {
+                onEachFeature: geo_json_4afbe6ef73c43368b0f7fe32da9eb12c_onEachFeature,
+
+                style: geo_json_4afbe6ef73c43368b0f7fe32da9eb12c_styler,
+                pointToLayer: geo_json_4afbe6ef73c43368b0f7fe32da9eb12c_pointToLayer,
+        });
+
+        function geo_json_4afbe6ef73c43368b0f7fe32da9eb12c_add (data) {
+            geo_json_4afbe6ef73c43368b0f7fe32da9eb12c
+                .addData(data);
+        }
+            geo_json_4afbe6ef73c43368b0f7fe32da9eb12c_add({&quot;bbox&quot;: [0.0, 0.0, 50.0, 120.0], &quot;features&quot;: [{&quot;bbox&quot;: [0.0, 0.0, 10.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 0.0], [10.0, 10.0], [0.0, 10.0], [0.0, 0.0], [10.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;0&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 0.0, 20.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 0.0], [20.0, 10.0], [10.0, 10.0], [10.0, 0.0], [20.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;1&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 0.0, 30.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 0.0], [30.0, 10.0], [20.0, 10.0], [20.0, 0.0], [30.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;2&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 0.0, 40.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 0.0], [40.0, 10.0], [30.0, 10.0], [30.0, 0.0], [40.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;3&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 0.0, 50.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 0.0], [50.0, 10.0], [40.0, 10.0], [40.0, 0.0], [50.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;4&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 20.0, 10.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 20.0], [10.0, 30.0], [0.0, 30.0], [0.0, 20.0], [10.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;5&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 20.0, 20.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 20.0], [20.0, 30.0], [10.0, 30.0], [10.0, 20.0], [20.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;6&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#f7b6d2&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 20.0, 30.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 20.0], [30.0, 30.0], [20.0, 30.0], [20.0, 20.0], [30.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;7&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#f7b6d2&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 20.0, 40.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 20.0], [40.0, 30.0], [30.0, 30.0], [30.0, 20.0], [40.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;8&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#f7b6d2&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 20.0, 50.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 20.0], [50.0, 30.0], [40.0, 30.0], [40.0, 20.0], [50.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;9&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 30.0, 10.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 30.0], [10.0, 40.0], [0.0, 40.0], [0.0, 30.0], [10.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;10&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 30.0, 20.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 30.0], [20.0, 40.0], [10.0, 40.0], [10.0, 30.0], [20.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;11&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#f7b6d2&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 30.0, 30.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 30.0], [30.0, 40.0], [20.0, 40.0], [20.0, 30.0], [30.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;12&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#f7b6d2&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 30.0, 40.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 30.0], [40.0, 40.0], [30.0, 40.0], [30.0, 30.0], [40.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;13&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 30.0, 50.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 30.0], [50.0, 40.0], [40.0, 40.0], [40.0, 30.0], [50.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;14&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 40.0, 10.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 40.0], [10.0, 50.0], [0.0, 50.0], [0.0, 40.0], [10.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;15&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 40.0, 20.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 40.0], [20.0, 50.0], [10.0, 50.0], [10.0, 40.0], [20.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;16&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 40.0, 30.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 40.0], [30.0, 50.0], [20.0, 50.0], [20.0, 40.0], [30.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;17&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#f7b6d2&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 40.0, 40.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 40.0], [40.0, 50.0], [30.0, 50.0], [30.0, 40.0], [40.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;18&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 40.0, 50.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 40.0], [50.0, 50.0], [40.0, 50.0], [40.0, 40.0], [50.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;19&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 50.0, 10.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 50.0], [10.0, 60.0], [0.0, 60.0], [0.0, 50.0], [10.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;20&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 50.0, 20.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 50.0], [20.0, 60.0], [10.0, 60.0], [10.0, 50.0], [20.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;21&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 50.0, 30.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 50.0], [30.0, 60.0], [20.0, 60.0], [20.0, 50.0], [30.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;22&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#2ca02c&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 50.0, 40.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 50.0], [40.0, 60.0], [30.0, 60.0], [30.0, 50.0], [40.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;23&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#2ca02c&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 50.0, 50.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 50.0], [50.0, 60.0], [40.0, 60.0], [40.0, 50.0], [50.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;24&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 60.0, 10.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 60.0], [10.0, 70.0], [0.0, 70.0], [0.0, 60.0], [10.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;25&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 10, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 60.0, 20.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 60.0], [20.0, 70.0], [10.0, 70.0], [10.0, 60.0], [20.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;26&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 10, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 60.0, 30.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 60.0], [30.0, 70.0], [20.0, 70.0], [20.0, 60.0], [30.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;27&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#2ca02c&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 60.0, 40.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 60.0], [40.0, 70.0], [30.0, 70.0], [30.0, 60.0], [40.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;28&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 60.0, 50.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 60.0], [50.0, 70.0], [40.0, 70.0], [40.0, 60.0], [50.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;29&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 70.0, 10.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 70.0], [10.0, 80.0], [0.0, 80.0], [0.0, 70.0], [10.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;30&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 10, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 70.0, 20.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 70.0], [20.0, 80.0], [10.0, 80.0], [10.0, 70.0], [20.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;31&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 10, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 70.0, 30.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 70.0], [30.0, 80.0], [20.0, 80.0], [20.0, 70.0], [30.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;32&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#2ca02c&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 70.0, 40.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 70.0], [40.0, 80.0], [30.0, 80.0], [30.0, 70.0], [40.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;33&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#2ca02c&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 70.0, 50.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 70.0], [50.0, 80.0], [40.0, 80.0], [40.0, 70.0], [50.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;34&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 80.0, 10.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 80.0], [10.0, 90.0], [0.0, 90.0], [0.0, 80.0], [10.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;35&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 10, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 80.0, 20.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 80.0], [20.0, 90.0], [10.0, 90.0], [10.0, 80.0], [20.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;36&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9467bd&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 80.0, 30.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 80.0], [30.0, 90.0], [20.0, 90.0], [20.0, 80.0], [30.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;37&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9467bd&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 80.0, 40.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 80.0], [40.0, 90.0], [30.0, 90.0], [30.0, 80.0], [40.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;38&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9467bd&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 80.0, 50.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 80.0], [50.0, 90.0], [40.0, 90.0], [40.0, 80.0], [50.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;39&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 90.0, 10.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 90.0], [10.0, 100.0], [0.0, 100.0], [0.0, 90.0], [10.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;40&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c49c94&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 90.0, 20.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 90.0], [20.0, 100.0], [10.0, 100.0], [10.0, 90.0], [20.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;41&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9467bd&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 90.0, 30.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 90.0], [30.0, 100.0], [20.0, 100.0], [20.0, 90.0], [30.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;42&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9467bd&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 90.0, 40.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 90.0], [40.0, 100.0], [30.0, 100.0], [30.0, 90.0], [40.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;43&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 90.0, 50.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 90.0], [50.0, 100.0], [40.0, 100.0], [40.0, 90.0], [50.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;44&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 100.0, 10.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 100.0], [10.0, 110.0], [0.0, 110.0], [0.0, 100.0], [10.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;45&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c49c94&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 100.0, 20.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 100.0], [20.0, 110.0], [10.0, 110.0], [10.0, 100.0], [20.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;46&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c49c94&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 100.0, 30.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 100.0], [30.0, 110.0], [20.0, 110.0], [20.0, 100.0], [30.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;47&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c49c94&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 100.0, 40.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 100.0], [40.0, 110.0], [30.0, 110.0], [30.0, 100.0], [40.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;48&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#d62728&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 100.0, 50.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 100.0], [50.0, 110.0], [40.0, 110.0], [40.0, 100.0], [50.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;49&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#d62728&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 110.0, 10.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 110.0], [10.0, 120.0], [0.0, 120.0], [0.0, 110.0], [10.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;50&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c49c94&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 110.0, 20.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 110.0], [20.0, 120.0], [10.0, 120.0], [10.0, 110.0], [20.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;51&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c49c94&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 110.0, 30.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 110.0], [30.0, 120.0], [20.0, 120.0], [20.0, 110.0], [30.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;52&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#d62728&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 110.0, 40.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 110.0], [40.0, 120.0], [30.0, 120.0], [30.0, 110.0], [40.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;53&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#d62728&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 110.0, 50.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 110.0], [50.0, 120.0], [40.0, 120.0], [40.0, 110.0], [50.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;54&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#d62728&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}], &quot;type&quot;: &quot;FeatureCollection&quot;});
+
+
+
+    geo_json_4afbe6ef73c43368b0f7fe32da9eb12c.bindTooltip(
+    function(layer){
+    let div = L.DomUtil.create(&#x27;div&#x27;);
+
+    let handleObject = feature=&gt;typeof(feature)==&#x27;object&#x27; ? JSON.stringify(feature) : feature;
+    let fields = [&quot;var&quot;, &quot;region&quot;];
+    let aliases = [&quot;var&quot;, &quot;region&quot;];
+    let table = &#x27;&lt;table&gt;&#x27; +
+        String(
+        fields.map(
+        (v,i)=&gt;
+        `&lt;tr&gt;
+            &lt;th&gt;${aliases[i]}&lt;/th&gt;
+
+            &lt;td&gt;${handleObject(layer.feature.properties[v])}&lt;/td&gt;
+        &lt;/tr&gt;`).join(&#x27;&#x27;))
+    +&#x27;&lt;/table&gt;&#x27;;
+    div.innerHTML=table;
+
+    return div
+    }
+    ,{&quot;className&quot;: &quot;foliumtooltip&quot;, &quot;sticky&quot;: true});
+
+
+                geo_json_4afbe6ef73c43368b0f7fe32da9eb12c.addTo(map_068867f8725d4984e16006a157782c0b);
+&lt;/script&gt;
+&lt;/html&gt;" style="position:absolute;width:100%;height:100%;left:0;top:0;border:none !important;" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe></div></div></div>
+</div>
+<p>Next we increase the threshold beyond the level of feasibility for this small component:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>try:
+    model = MaxP(gdf, w, &quot;var&quot;, &quot;var&quot;, 6, 2, policy=&quot;keep&quot;)
+    model.solve()
+except:
+    print(&quot;No feasible solution!&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+No feasible solution!
+</pre></div></div>
+</div>
+<section id="Solution:-multiple-attach">
+<h2>Solution: <code class="docutils literal notranslate"><span class="pre">multiple</span> <span class="pre">attach</span></code><a class="headerlink" href="#Solution:-multiple-attach" title="Link to this heading">¶</a></h2>
+<p>We can handle the small component by attaching each area in the infeasible component with its nearest neighbor area belonging to a feasible component. This is done with setting the policy to <code class="docutils literal notranslate"><span class="pre">multiple</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, &quot;var&quot;, &quot;var&quot;, 6, 2, policy=&quot;multiple&quot;)
+model.solve()
+gdf[&quot;region&quot;] = model.labels_
+gdf.explore(column=&quot;region&quot;, categorical=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div style="width:100%;"><div style="position:relative;width:100%;height:0;padding-bottom:60%;"><span style="color:#565656">Make this Notebook Trusted to load map: File -> Trust Notebook</span><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+
+    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+
+        &lt;script&gt;
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        &lt;/script&gt;
+
+    &lt;style&gt;html, body {width: 100%;height: 100%;margin: 0;padding: 0;}&lt;/style&gt;
+    &lt;style&gt;#map {position:absolute;top:0;bottom:0;right:0;left:0;}&lt;/style&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://code.jquery.com/jquery-3.7.1.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
+
+            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
+            &lt;style&gt;
+                #map_5c5f4df1978f004aeff756f6bd971e89 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            &lt;/style&gt;
+
+
+                    &lt;style&gt;
+                        .foliumtooltip {
+
+                        }
+                       .foliumtooltip table{
+                            margin: auto;
+                        }
+                        .foliumtooltip tr{
+                            text-align: left;
+                        }
+                        .foliumtooltip th{
+                            padding: 2px; padding-right: 8px;
+                        }
+                    &lt;/style&gt;
+
+
+    &lt;script src=&quot;https://code.jquery.com/ui/1.12.1/jquery-ui.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;$( function() {
+        $( &quot;.maplegend&quot; ).draggable({
+            start: function (event, ui) {
+                $(this).css({
+                    right: &quot;auto&quot;,
+                    top: &quot;auto&quot;,
+                    bottom: &quot;auto&quot;
+                });
+            }
+        });
+    });
+    &lt;/script&gt;
+    &lt;style type=&#x27;text/css&#x27;&gt;
+      .maplegend {
+        position: absolute;
+        z-index:9999;
+        background-color: rgba(255, 255, 255, .8);
+        border-radius: 5px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        padding: 10px;
+        font: 12px/14px Arial, Helvetica, sans-serif;
+        right: 10px;
+        bottom: 20px;
+      }
+      .maplegend .legend-title {
+        text-align: left;
+        margin-bottom: 5px;
+        font-weight: bold;
+        }
+      .maplegend .legend-scale ul {
+        margin: 0;
+        margin-bottom: 0px;
+        padding: 0;
+        float: left;
+        list-style: none;
+        }
+      .maplegend .legend-scale ul li {
+        list-style: none;
+        margin-left: 0;
+        line-height: 16px;
+        margin-bottom: 2px;
+        }
+      .maplegend ul.legend-labels li span {
+        display: block;
+        float: left;
+        height: 14px;
+        width: 14px;
+        margin-right: 5px;
+        margin-left: 0;
+        border: 0px solid #ccc;
+        }
+      .maplegend .legend-source {
+        color: #777;
+        clear: both;
+        }
+      .maplegend a {
+        color: #777;
+        }
+    &lt;/style&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+
+
+    &lt;div id=&#x27;maplegend region&#x27; class=&#x27;maplegend&#x27;&gt;
+        &lt;div class=&#x27;legend-title&#x27;&gt;region&lt;/div&gt;
+        &lt;div class=&#x27;legend-scale&#x27;&gt;
+            &lt;ul class=&#x27;legend-labels&#x27;&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#1f77b4&#x27;&gt;&lt;/span&gt;1&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#ff7f0e&#x27;&gt;&lt;/span&gt;2&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#98df8a&#x27;&gt;&lt;/span&gt;3&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#ff9896&#x27;&gt;&lt;/span&gt;4&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#8c564b&#x27;&gt;&lt;/span&gt;5&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#e377c2&#x27;&gt;&lt;/span&gt;6&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#c7c7c7&#x27;&gt;&lt;/span&gt;7&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#dbdb8d&#x27;&gt;&lt;/span&gt;8&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#9edae5&#x27;&gt;&lt;/span&gt;9&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+
+            &lt;div class=&quot;folium-map&quot; id=&quot;map_5c5f4df1978f004aeff756f6bd971e89&quot; &gt;&lt;/div&gt;
+
+&lt;/body&gt;
+&lt;script&gt;
+
+
+            var map_5c5f4df1978f004aeff756f6bd971e89 = L.map(
+                &quot;map_5c5f4df1978f004aeff756f6bd971e89&quot;,
+                {
+                    center: [60.0, 25.0],
+                    crs: L.CRS.Simple,
+                    zoom: 10,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+            L.control.scale().addTo(map_5c5f4df1978f004aeff756f6bd971e89);
+
+
+
+
+
+            map_5c5f4df1978f004aeff756f6bd971e89.fitBounds(
+                [[0.0, 0.0], [120.0, 50.0]],
+                {}
+            );
+
+
+        function geo_json_96b296915cd4c36d873e7386804a6891_styler(feature) {
+            switch(feature.id) {
+                case &quot;0&quot;: case &quot;5&quot;: case &quot;6&quot;: case &quot;10&quot;: case &quot;11&quot;: case &quot;12&quot;:
+                    return {&quot;color&quot;: &quot;#e377c2&quot;, &quot;fillColor&quot;: &quot;#e377c2&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;1&quot;: case &quot;2&quot;: case &quot;3&quot;: case &quot;4&quot;: case &quot;7&quot;: case &quot;8&quot;:
+                    return {&quot;color&quot;: &quot;#ff9896&quot;, &quot;fillColor&quot;: &quot;#ff9896&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;18&quot;: case &quot;19&quot;: case &quot;23&quot;: case &quot;24&quot;: case &quot;28&quot;: case &quot;29&quot;:
+                    return {&quot;color&quot;: &quot;#98df8a&quot;, &quot;fillColor&quot;: &quot;#98df8a&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;20&quot;: case &quot;21&quot;: case &quot;22&quot;: case &quot;25&quot;: case &quot;26&quot;: case &quot;32&quot;:
+                    return {&quot;color&quot;: &quot;#1f77b4&quot;, &quot;fillColor&quot;: &quot;#1f77b4&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;27&quot;: case &quot;30&quot;: case &quot;31&quot;: case &quot;35&quot;: case &quot;36&quot;: case &quot;37&quot;: case &quot;40&quot;:
+                    return {&quot;color&quot;: &quot;#ff7f0e&quot;, &quot;fillColor&quot;: &quot;#ff7f0e&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;33&quot;: case &quot;38&quot;: case &quot;41&quot;: case &quot;42&quot;: case &quot;43&quot;: case &quot;48&quot;:
+                    return {&quot;color&quot;: &quot;#dbdb8d&quot;, &quot;fillColor&quot;: &quot;#dbdb8d&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;34&quot;: case &quot;39&quot;: case &quot;44&quot;: case &quot;49&quot;: case &quot;53&quot;: case &quot;54&quot;:
+                    return {&quot;color&quot;: &quot;#9edae5&quot;, &quot;fillColor&quot;: &quot;#9edae5&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;45&quot;: case &quot;46&quot;: case &quot;47&quot;: case &quot;50&quot;: case &quot;51&quot;: case &quot;52&quot;:
+                    return {&quot;color&quot;: &quot;#8c564b&quot;, &quot;fillColor&quot;: &quot;#8c564b&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                default:
+                    return {&quot;color&quot;: &quot;#c7c7c7&quot;, &quot;fillColor&quot;: &quot;#c7c7c7&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+            }
+        }
+        function geo_json_96b296915cd4c36d873e7386804a6891_highlighter(feature) {
+            switch(feature.id) {
+                default:
+                    return {&quot;fillOpacity&quot;: 0.75};
+            }
+        }
+        function geo_json_96b296915cd4c36d873e7386804a6891_pointToLayer(feature, latlng) {
+            var opts = {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#3388ff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#3388ff&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 2, &quot;stroke&quot;: true, &quot;weight&quot;: 3};
+
+            let style = geo_json_96b296915cd4c36d873e7386804a6891_styler(feature)
+            Object.assign(opts, style)
+
+            return new L.CircleMarker(latlng, opts)
+        }
+
+        function geo_json_96b296915cd4c36d873e7386804a6891_onEachFeature(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if(typeof e.target.setStyle === &quot;function&quot;){
+                        geo_json_96b296915cd4c36d873e7386804a6891.resetStyle(e.target);
+                    }
+                },
+                mouseover: function(e) {
+                    if(typeof e.target.setStyle === &quot;function&quot;){
+                        const highlightStyle = geo_json_96b296915cd4c36d873e7386804a6891_highlighter(e.target.feature)
+                        e.target.setStyle(highlightStyle);
+                    }
+                },
+            });
+        };
+        var geo_json_96b296915cd4c36d873e7386804a6891 = L.geoJson(null, {
+                onEachFeature: geo_json_96b296915cd4c36d873e7386804a6891_onEachFeature,
+
+                style: geo_json_96b296915cd4c36d873e7386804a6891_styler,
+                pointToLayer: geo_json_96b296915cd4c36d873e7386804a6891_pointToLayer,
+        });
+
+        function geo_json_96b296915cd4c36d873e7386804a6891_add (data) {
+            geo_json_96b296915cd4c36d873e7386804a6891
+                .addData(data);
+        }
+            geo_json_96b296915cd4c36d873e7386804a6891_add({&quot;bbox&quot;: [0.0, 0.0, 50.0, 120.0], &quot;features&quot;: [{&quot;bbox&quot;: [0.0, 0.0, 10.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 0.0], [10.0, 10.0], [0.0, 10.0], [0.0, 0.0], [10.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;0&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 0.0, 20.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 0.0], [20.0, 10.0], [10.0, 10.0], [10.0, 0.0], [20.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;1&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 0.0, 30.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 0.0], [30.0, 10.0], [20.0, 10.0], [20.0, 0.0], [30.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;2&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 0.0, 40.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 0.0], [40.0, 10.0], [30.0, 10.0], [30.0, 0.0], [40.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;3&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 0.0, 50.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 0.0], [50.0, 10.0], [40.0, 10.0], [40.0, 0.0], [50.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;4&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 20.0, 10.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 20.0], [10.0, 30.0], [0.0, 30.0], [0.0, 20.0], [10.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;5&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 20.0, 20.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 20.0], [20.0, 30.0], [10.0, 30.0], [10.0, 20.0], [20.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;6&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 20.0, 30.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 20.0], [30.0, 30.0], [20.0, 30.0], [20.0, 20.0], [30.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;7&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 20.0, 40.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 20.0], [40.0, 30.0], [30.0, 30.0], [30.0, 20.0], [40.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;8&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 20.0, 50.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 20.0], [50.0, 30.0], [40.0, 30.0], [40.0, 20.0], [50.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;9&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 30.0, 10.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 30.0], [10.0, 40.0], [0.0, 40.0], [0.0, 30.0], [10.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;10&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 30.0, 20.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 30.0], [20.0, 40.0], [10.0, 40.0], [10.0, 30.0], [20.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;11&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 30.0, 30.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 30.0], [30.0, 40.0], [20.0, 40.0], [20.0, 30.0], [30.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;12&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 30.0, 40.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 30.0], [40.0, 40.0], [30.0, 40.0], [30.0, 30.0], [40.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;13&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 30.0, 50.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 30.0], [50.0, 40.0], [40.0, 40.0], [40.0, 30.0], [50.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;14&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 40.0, 10.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 40.0], [10.0, 50.0], [0.0, 50.0], [0.0, 40.0], [10.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;15&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 40.0, 20.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 40.0], [20.0, 50.0], [10.0, 50.0], [10.0, 40.0], [20.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;16&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 40.0, 30.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 40.0], [30.0, 50.0], [20.0, 50.0], [20.0, 40.0], [30.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;17&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 40.0, 40.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 40.0], [40.0, 50.0], [30.0, 50.0], [30.0, 40.0], [40.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;18&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 40.0, 50.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 40.0], [50.0, 50.0], [40.0, 50.0], [40.0, 40.0], [50.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;19&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 50.0, 10.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 50.0], [10.0, 60.0], [0.0, 60.0], [0.0, 50.0], [10.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;20&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 50.0, 20.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 50.0], [20.0, 60.0], [10.0, 60.0], [10.0, 50.0], [20.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;21&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 50.0, 30.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 50.0], [30.0, 60.0], [20.0, 60.0], [20.0, 50.0], [30.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;22&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 50.0, 40.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 50.0], [40.0, 60.0], [30.0, 60.0], [30.0, 50.0], [40.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;23&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 50.0, 50.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 50.0], [50.0, 60.0], [40.0, 60.0], [40.0, 50.0], [50.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;24&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 60.0, 10.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 60.0], [10.0, 70.0], [0.0, 70.0], [0.0, 60.0], [10.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;25&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 60.0, 20.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 60.0], [20.0, 70.0], [10.0, 70.0], [10.0, 60.0], [20.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;26&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 60.0, 30.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 60.0], [30.0, 70.0], [20.0, 70.0], [20.0, 60.0], [30.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;27&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 60.0, 40.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 60.0], [40.0, 70.0], [30.0, 70.0], [30.0, 60.0], [40.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;28&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 60.0, 50.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 60.0], [50.0, 70.0], [40.0, 70.0], [40.0, 60.0], [50.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;29&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 70.0, 10.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 70.0], [10.0, 80.0], [0.0, 80.0], [0.0, 70.0], [10.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;30&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 70.0, 20.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 70.0], [20.0, 80.0], [10.0, 80.0], [10.0, 70.0], [20.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;31&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 70.0, 30.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 70.0], [30.0, 80.0], [20.0, 80.0], [20.0, 70.0], [30.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;32&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 70.0, 40.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 70.0], [40.0, 80.0], [30.0, 80.0], [30.0, 70.0], [40.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;33&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 70.0, 50.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 70.0], [50.0, 80.0], [40.0, 80.0], [40.0, 70.0], [50.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;34&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 80.0, 10.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 80.0], [10.0, 90.0], [0.0, 90.0], [0.0, 80.0], [10.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;35&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 80.0, 20.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 80.0], [20.0, 90.0], [10.0, 90.0], [10.0, 80.0], [20.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;36&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 80.0, 30.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 80.0], [30.0, 90.0], [20.0, 90.0], [20.0, 80.0], [30.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;37&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 80.0, 40.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 80.0], [40.0, 90.0], [30.0, 90.0], [30.0, 80.0], [40.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;38&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 80.0, 50.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 80.0], [50.0, 90.0], [40.0, 90.0], [40.0, 80.0], [50.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;39&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 90.0, 10.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 90.0], [10.0, 100.0], [0.0, 100.0], [0.0, 90.0], [10.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;40&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 90.0, 20.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 90.0], [20.0, 100.0], [10.0, 100.0], [10.0, 90.0], [20.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;41&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 90.0, 30.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 90.0], [30.0, 100.0], [20.0, 100.0], [20.0, 90.0], [30.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;42&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 90.0, 40.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 90.0], [40.0, 100.0], [30.0, 100.0], [30.0, 90.0], [40.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;43&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 90.0, 50.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 90.0], [50.0, 100.0], [40.0, 100.0], [40.0, 90.0], [50.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;44&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 100.0, 10.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 100.0], [10.0, 110.0], [0.0, 110.0], [0.0, 100.0], [10.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;45&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 100.0, 20.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 100.0], [20.0, 110.0], [10.0, 110.0], [10.0, 100.0], [20.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;46&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 100.0, 30.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 100.0], [30.0, 110.0], [20.0, 110.0], [20.0, 100.0], [30.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;47&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 100.0, 40.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 100.0], [40.0, 110.0], [30.0, 110.0], [30.0, 100.0], [40.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;48&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 100.0, 50.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 100.0], [50.0, 110.0], [40.0, 110.0], [40.0, 100.0], [50.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;49&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 110.0, 10.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 110.0], [10.0, 120.0], [0.0, 120.0], [0.0, 110.0], [10.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;50&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 110.0, 20.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 110.0], [20.0, 120.0], [10.0, 120.0], [10.0, 110.0], [20.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;51&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 110.0, 30.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 110.0], [30.0, 120.0], [20.0, 120.0], [20.0, 110.0], [30.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;52&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 110.0, 40.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 110.0], [40.0, 120.0], [30.0, 120.0], [30.0, 110.0], [40.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;53&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 110.0, 50.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 110.0], [50.0, 120.0], [40.0, 120.0], [40.0, 110.0], [50.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;54&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}], &quot;type&quot;: &quot;FeatureCollection&quot;});
+
+
+
+    geo_json_96b296915cd4c36d873e7386804a6891.bindTooltip(
+    function(layer){
+    let div = L.DomUtil.create(&#x27;div&#x27;);
+
+    let handleObject = feature=&gt;typeof(feature)==&#x27;object&#x27; ? JSON.stringify(feature) : feature;
+    let fields = [&quot;var&quot;, &quot;region&quot;];
+    let aliases = [&quot;var&quot;, &quot;region&quot;];
+    let table = &#x27;&lt;table&gt;&#x27; +
+        String(
+        fields.map(
+        (v,i)=&gt;
+        `&lt;tr&gt;
+            &lt;th&gt;${aliases[i]}&lt;/th&gt;
+
+            &lt;td&gt;${handleObject(layer.feature.properties[v])}&lt;/td&gt;
+        &lt;/tr&gt;`).join(&#x27;&#x27;))
+    +&#x27;&lt;/table&gt;&#x27;;
+    div.innerHTML=table;
+
+    return div
+    }
+    ,{&quot;className&quot;: &quot;foliumtooltip&quot;, &quot;sticky&quot;: true});
+
+
+                geo_json_96b296915cd4c36d873e7386804a6891.addTo(map_5c5f4df1978f004aeff756f6bd971e89);
+&lt;/script&gt;
+&lt;/html&gt;" style="position:absolute;width:100%;height:100%;left:0;top:0;border:none !important;" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe></div></div></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">multiple</span></code> may allow areas from the same original infeasible component to be assigned to different regions.</p>
+</section>
+<section id="Solution:-single-attach">
+<h2>Solution: <code class="docutils literal notranslate"><span class="pre">single</span> <span class="pre">attach</span></code><a class="headerlink" href="#Solution:-single-attach" title="Link to this heading">¶</a></h2>
+<p>We can handle the small component by attaching an infeasible component to a feasible component using a single join. That join is based on the minimum nearest neighbor distance separating an area in the infeasible component with an area from a feasible component. This will always result in the areas from the original infeasible component being assigned to the same region.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, &quot;var&quot;, &quot;var&quot;, 6, 2, policy=&quot;single&quot;)
+model.solve()
+gdf[&quot;region&quot;] = model.labels_
+gdf.explore(column=&quot;region&quot;, categorical=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div style="width:100%;"><div style="position:relative;width:100%;height:0;padding-bottom:60%;"><span style="color:#565656">Make this Notebook Trusted to load map: File -> Trust Notebook</span><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+
+    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+
+        &lt;script&gt;
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        &lt;/script&gt;
+
+    &lt;style&gt;html, body {width: 100%;height: 100%;margin: 0;padding: 0;}&lt;/style&gt;
+    &lt;style&gt;#map {position:absolute;top:0;bottom:0;right:0;left:0;}&lt;/style&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://code.jquery.com/jquery-3.7.1.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
+
+            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
+            &lt;style&gt;
+                #map_f5046693f438255bcf7d93d06e271bef {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            &lt;/style&gt;
+
+
+                    &lt;style&gt;
+                        .foliumtooltip {
+
+                        }
+                       .foliumtooltip table{
+                            margin: auto;
+                        }
+                        .foliumtooltip tr{
+                            text-align: left;
+                        }
+                        .foliumtooltip th{
+                            padding: 2px; padding-right: 8px;
+                        }
+                    &lt;/style&gt;
+
+
+    &lt;script src=&quot;https://code.jquery.com/ui/1.12.1/jquery-ui.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;$( function() {
+        $( &quot;.maplegend&quot; ).draggable({
+            start: function (event, ui) {
+                $(this).css({
+                    right: &quot;auto&quot;,
+                    top: &quot;auto&quot;,
+                    bottom: &quot;auto&quot;
+                });
+            }
+        });
+    });
+    &lt;/script&gt;
+    &lt;style type=&#x27;text/css&#x27;&gt;
+      .maplegend {
+        position: absolute;
+        z-index:9999;
+        background-color: rgba(255, 255, 255, .8);
+        border-radius: 5px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        padding: 10px;
+        font: 12px/14px Arial, Helvetica, sans-serif;
+        right: 10px;
+        bottom: 20px;
+      }
+      .maplegend .legend-title {
+        text-align: left;
+        margin-bottom: 5px;
+        font-weight: bold;
+        }
+      .maplegend .legend-scale ul {
+        margin: 0;
+        margin-bottom: 0px;
+        padding: 0;
+        float: left;
+        list-style: none;
+        }
+      .maplegend .legend-scale ul li {
+        list-style: none;
+        margin-left: 0;
+        line-height: 16px;
+        margin-bottom: 2px;
+        }
+      .maplegend ul.legend-labels li span {
+        display: block;
+        float: left;
+        height: 14px;
+        width: 14px;
+        margin-right: 5px;
+        margin-left: 0;
+        border: 0px solid #ccc;
+        }
+      .maplegend .legend-source {
+        color: #777;
+        clear: both;
+        }
+      .maplegend a {
+        color: #777;
+        }
+    &lt;/style&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+
+
+    &lt;div id=&#x27;maplegend region&#x27; class=&#x27;maplegend&#x27;&gt;
+        &lt;div class=&#x27;legend-title&#x27;&gt;region&lt;/div&gt;
+        &lt;div class=&#x27;legend-scale&#x27;&gt;
+            &lt;ul class=&#x27;legend-labels&#x27;&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#1f77b4&#x27;&gt;&lt;/span&gt;1&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#ff7f0e&#x27;&gt;&lt;/span&gt;2&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#98df8a&#x27;&gt;&lt;/span&gt;3&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#ff9896&#x27;&gt;&lt;/span&gt;4&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#8c564b&#x27;&gt;&lt;/span&gt;5&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#e377c2&#x27;&gt;&lt;/span&gt;6&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#c7c7c7&#x27;&gt;&lt;/span&gt;7&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#dbdb8d&#x27;&gt;&lt;/span&gt;8&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#9edae5&#x27;&gt;&lt;/span&gt;9&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+
+            &lt;div class=&quot;folium-map&quot; id=&quot;map_f5046693f438255bcf7d93d06e271bef&quot; &gt;&lt;/div&gt;
+
+&lt;/body&gt;
+&lt;script&gt;
+
+
+            var map_f5046693f438255bcf7d93d06e271bef = L.map(
+                &quot;map_f5046693f438255bcf7d93d06e271bef&quot;,
+                {
+                    center: [60.0, 25.0],
+                    crs: L.CRS.Simple,
+                    zoom: 10,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+            L.control.scale().addTo(map_f5046693f438255bcf7d93d06e271bef);
+
+
+
+
+
+            map_f5046693f438255bcf7d93d06e271bef.fitBounds(
+                [[0.0, 0.0], [120.0, 50.0]],
+                {}
+            );
+
+
+        function geo_json_020375ada208637dbf0f4a2bf6fa4c80_styler(feature) {
+            switch(feature.id) {
+                case &quot;0&quot;: case &quot;1&quot;: case &quot;2&quot;: case &quot;3&quot;: case &quot;4&quot;: case &quot;5&quot;:
+                    return {&quot;color&quot;: &quot;#1f77b4&quot;, &quot;fillColor&quot;: &quot;#1f77b4&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;10&quot;: case &quot;11&quot;: case &quot;12&quot;: case &quot;15&quot;: case &quot;16&quot;: case &quot;17&quot;:
+                    return {&quot;color&quot;: &quot;#ff9896&quot;, &quot;fillColor&quot;: &quot;#ff9896&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;18&quot;: case &quot;19&quot;: case &quot;23&quot;: case &quot;24&quot;: case &quot;28&quot;: case &quot;29&quot;:
+                    return {&quot;color&quot;: &quot;#c7c7c7&quot;, &quot;fillColor&quot;: &quot;#c7c7c7&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;20&quot;: case &quot;21&quot;: case &quot;22&quot;: case &quot;25&quot;: case &quot;26&quot;: case &quot;32&quot;:
+                    return {&quot;color&quot;: &quot;#ff7f0e&quot;, &quot;fillColor&quot;: &quot;#ff7f0e&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;27&quot;: case &quot;33&quot;: case &quot;34&quot;: case &quot;37&quot;: case &quot;38&quot;: case &quot;39&quot;:
+                    return {&quot;color&quot;: &quot;#98df8a&quot;, &quot;fillColor&quot;: &quot;#98df8a&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;30&quot;: case &quot;31&quot;: case &quot;35&quot;: case &quot;36&quot;: case &quot;40&quot;: case &quot;41&quot;:
+                    return {&quot;color&quot;: &quot;#9edae5&quot;, &quot;fillColor&quot;: &quot;#9edae5&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;42&quot;: case &quot;43&quot;: case &quot;44&quot;: case &quot;48&quot;: case &quot;49&quot;: case &quot;53&quot;: case &quot;54&quot;:
+                    return {&quot;color&quot;: &quot;#8c564b&quot;, &quot;fillColor&quot;: &quot;#8c564b&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;45&quot;: case &quot;46&quot;: case &quot;47&quot;: case &quot;50&quot;: case &quot;51&quot;: case &quot;52&quot;:
+                    return {&quot;color&quot;: &quot;#e377c2&quot;, &quot;fillColor&quot;: &quot;#e377c2&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                default:
+                    return {&quot;color&quot;: &quot;#dbdb8d&quot;, &quot;fillColor&quot;: &quot;#dbdb8d&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+            }
+        }
+        function geo_json_020375ada208637dbf0f4a2bf6fa4c80_highlighter(feature) {
+            switch(feature.id) {
+                default:
+                    return {&quot;fillOpacity&quot;: 0.75};
+            }
+        }
+        function geo_json_020375ada208637dbf0f4a2bf6fa4c80_pointToLayer(feature, latlng) {
+            var opts = {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#3388ff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#3388ff&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 2, &quot;stroke&quot;: true, &quot;weight&quot;: 3};
+
+            let style = geo_json_020375ada208637dbf0f4a2bf6fa4c80_styler(feature)
+            Object.assign(opts, style)
+
+            return new L.CircleMarker(latlng, opts)
+        }
+
+        function geo_json_020375ada208637dbf0f4a2bf6fa4c80_onEachFeature(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if(typeof e.target.setStyle === &quot;function&quot;){
+                        geo_json_020375ada208637dbf0f4a2bf6fa4c80.resetStyle(e.target);
+                    }
+                },
+                mouseover: function(e) {
+                    if(typeof e.target.setStyle === &quot;function&quot;){
+                        const highlightStyle = geo_json_020375ada208637dbf0f4a2bf6fa4c80_highlighter(e.target.feature)
+                        e.target.setStyle(highlightStyle);
+                    }
+                },
+            });
+        };
+        var geo_json_020375ada208637dbf0f4a2bf6fa4c80 = L.geoJson(null, {
+                onEachFeature: geo_json_020375ada208637dbf0f4a2bf6fa4c80_onEachFeature,
+
+                style: geo_json_020375ada208637dbf0f4a2bf6fa4c80_styler,
+                pointToLayer: geo_json_020375ada208637dbf0f4a2bf6fa4c80_pointToLayer,
+        });
+
+        function geo_json_020375ada208637dbf0f4a2bf6fa4c80_add (data) {
+            geo_json_020375ada208637dbf0f4a2bf6fa4c80
+                .addData(data);
+        }
+            geo_json_020375ada208637dbf0f4a2bf6fa4c80_add({&quot;bbox&quot;: [0.0, 0.0, 50.0, 120.0], &quot;features&quot;: [{&quot;bbox&quot;: [0.0, 0.0, 10.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 0.0], [10.0, 10.0], [0.0, 10.0], [0.0, 0.0], [10.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;0&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 0.0, 20.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 0.0], [20.0, 10.0], [10.0, 10.0], [10.0, 0.0], [20.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;1&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 0.0, 30.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 0.0], [30.0, 10.0], [20.0, 10.0], [20.0, 0.0], [30.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;2&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 0.0, 40.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 0.0], [40.0, 10.0], [30.0, 10.0], [30.0, 0.0], [40.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;3&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 0.0, 50.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 0.0], [50.0, 10.0], [40.0, 10.0], [40.0, 0.0], [50.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;4&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 20.0, 10.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 20.0], [10.0, 30.0], [0.0, 30.0], [0.0, 20.0], [10.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;5&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 20.0, 20.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 20.0], [20.0, 30.0], [10.0, 30.0], [10.0, 20.0], [20.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;6&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 20.0, 30.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 20.0], [30.0, 30.0], [20.0, 30.0], [20.0, 20.0], [30.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;7&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 20.0, 40.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 20.0], [40.0, 30.0], [30.0, 30.0], [30.0, 20.0], [40.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;8&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 20.0, 50.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 20.0], [50.0, 30.0], [40.0, 30.0], [40.0, 20.0], [50.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;9&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 30.0, 10.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 30.0], [10.0, 40.0], [0.0, 40.0], [0.0, 30.0], [10.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;10&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 30.0, 20.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 30.0], [20.0, 40.0], [10.0, 40.0], [10.0, 30.0], [20.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;11&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 30.0, 30.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 30.0], [30.0, 40.0], [20.0, 40.0], [20.0, 30.0], [30.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;12&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 30.0, 40.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 30.0], [40.0, 40.0], [30.0, 40.0], [30.0, 30.0], [40.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;13&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 30.0, 50.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 30.0], [50.0, 40.0], [40.0, 40.0], [40.0, 30.0], [50.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;14&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 40.0, 10.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 40.0], [10.0, 50.0], [0.0, 50.0], [0.0, 40.0], [10.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;15&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 40.0, 20.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 40.0], [20.0, 50.0], [10.0, 50.0], [10.0, 40.0], [20.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;16&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 40.0, 30.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 40.0], [30.0, 50.0], [20.0, 50.0], [20.0, 40.0], [30.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;17&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 40.0, 40.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 40.0], [40.0, 50.0], [30.0, 50.0], [30.0, 40.0], [40.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;18&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 40.0, 50.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 40.0], [50.0, 50.0], [40.0, 50.0], [40.0, 40.0], [50.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;19&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 50.0, 10.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 50.0], [10.0, 60.0], [0.0, 60.0], [0.0, 50.0], [10.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;20&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 50.0, 20.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 50.0], [20.0, 60.0], [10.0, 60.0], [10.0, 50.0], [20.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;21&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 50.0, 30.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 50.0], [30.0, 60.0], [20.0, 60.0], [20.0, 50.0], [30.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;22&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 50.0, 40.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 50.0], [40.0, 60.0], [30.0, 60.0], [30.0, 50.0], [40.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;23&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 50.0, 50.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 50.0], [50.0, 60.0], [40.0, 60.0], [40.0, 50.0], [50.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;24&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 60.0, 10.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 60.0], [10.0, 70.0], [0.0, 70.0], [0.0, 60.0], [10.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;25&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 60.0, 20.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 60.0], [20.0, 70.0], [10.0, 70.0], [10.0, 60.0], [20.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;26&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 60.0, 30.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 60.0], [30.0, 70.0], [20.0, 70.0], [20.0, 60.0], [30.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;27&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 60.0, 40.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 60.0], [40.0, 70.0], [30.0, 70.0], [30.0, 60.0], [40.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;28&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 60.0, 50.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 60.0], [50.0, 70.0], [40.0, 70.0], [40.0, 60.0], [50.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;29&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 70.0, 10.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 70.0], [10.0, 80.0], [0.0, 80.0], [0.0, 70.0], [10.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;30&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 70.0, 20.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 70.0], [20.0, 80.0], [10.0, 80.0], [10.0, 70.0], [20.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;31&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 70.0, 30.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 70.0], [30.0, 80.0], [20.0, 80.0], [20.0, 70.0], [30.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;32&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 70.0, 40.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 70.0], [40.0, 80.0], [30.0, 80.0], [30.0, 70.0], [40.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;33&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 70.0, 50.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 70.0], [50.0, 80.0], [40.0, 80.0], [40.0, 70.0], [50.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;34&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 80.0, 10.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 80.0], [10.0, 90.0], [0.0, 90.0], [0.0, 80.0], [10.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;35&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 80.0, 20.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 80.0], [20.0, 90.0], [10.0, 90.0], [10.0, 80.0], [20.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;36&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 80.0, 30.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 80.0], [30.0, 90.0], [20.0, 90.0], [20.0, 80.0], [30.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;37&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 80.0, 40.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 80.0], [40.0, 90.0], [30.0, 90.0], [30.0, 80.0], [40.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;38&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 80.0, 50.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 80.0], [50.0, 90.0], [40.0, 90.0], [40.0, 80.0], [50.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;39&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 90.0, 10.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 90.0], [10.0, 100.0], [0.0, 100.0], [0.0, 90.0], [10.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;40&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 90.0, 20.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 90.0], [20.0, 100.0], [10.0, 100.0], [10.0, 90.0], [20.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;41&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 9, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 90.0, 30.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 90.0], [30.0, 100.0], [20.0, 100.0], [20.0, 90.0], [30.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;42&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 90.0, 40.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 90.0], [40.0, 100.0], [30.0, 100.0], [30.0, 90.0], [40.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;43&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 90.0, 50.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 90.0], [50.0, 100.0], [40.0, 100.0], [40.0, 90.0], [50.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;44&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 100.0, 10.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 100.0], [10.0, 110.0], [0.0, 110.0], [0.0, 100.0], [10.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;45&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 100.0, 20.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 100.0], [20.0, 110.0], [10.0, 110.0], [10.0, 100.0], [20.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;46&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 100.0, 30.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 100.0], [30.0, 110.0], [20.0, 110.0], [20.0, 100.0], [30.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;47&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 100.0, 40.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 100.0], [40.0, 110.0], [30.0, 110.0], [30.0, 100.0], [40.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;48&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 100.0, 50.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 100.0], [50.0, 110.0], [40.0, 110.0], [40.0, 100.0], [50.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;49&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 110.0, 10.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 110.0], [10.0, 120.0], [0.0, 120.0], [0.0, 110.0], [10.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;50&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 110.0, 20.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 110.0], [20.0, 120.0], [10.0, 120.0], [10.0, 110.0], [20.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;51&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 110.0, 30.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 110.0], [30.0, 120.0], [20.0, 120.0], [20.0, 110.0], [30.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;52&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 110.0, 40.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 110.0], [40.0, 120.0], [30.0, 120.0], [30.0, 110.0], [40.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;53&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 110.0, 50.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 110.0], [50.0, 120.0], [40.0, 120.0], [40.0, 110.0], [50.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;54&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}], &quot;type&quot;: &quot;FeatureCollection&quot;});
+
+
+
+    geo_json_020375ada208637dbf0f4a2bf6fa4c80.bindTooltip(
+    function(layer){
+    let div = L.DomUtil.create(&#x27;div&#x27;);
+
+    let handleObject = feature=&gt;typeof(feature)==&#x27;object&#x27; ? JSON.stringify(feature) : feature;
+    let fields = [&quot;var&quot;, &quot;region&quot;];
+    let aliases = [&quot;var&quot;, &quot;region&quot;];
+    let table = &#x27;&lt;table&gt;&#x27; +
+        String(
+        fields.map(
+        (v,i)=&gt;
+        `&lt;tr&gt;
+            &lt;th&gt;${aliases[i]}&lt;/th&gt;
+
+            &lt;td&gt;${handleObject(layer.feature.properties[v])}&lt;/td&gt;
+        &lt;/tr&gt;`).join(&#x27;&#x27;))
+    +&#x27;&lt;/table&gt;&#x27;;
+    div.innerHTML=table;
+
+    return div
+    }
+    ,{&quot;className&quot;: &quot;foliumtooltip&quot;, &quot;sticky&quot;: true});
+
+
+                geo_json_020375ada208637dbf0f4a2bf6fa4c80.addTo(map_f5046693f438255bcf7d93d06e271bef);
+&lt;/script&gt;
+&lt;/html&gt;" style="position:absolute;width:100%;height:100%;left:0;top:0;border:none !important;" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe></div></div></div>
+</div>
+</section>
+<section id="Solution:-drop">
+<h2>Solution: <code class="docutils literal notranslate"><span class="pre">drop</span></code><a class="headerlink" href="#Solution:-drop" title="Link to this heading">¶</a></h2>
+<p>An alternative approach is to drop the areas belonging to infeasible components, and then solve for the remaining feasible components.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from spopt.region.base import infeasible_components
+
+gdf = geopandas.GeoDataFrame(
+    geometry=geometries,
+    data=numpy.ones((n_cols * n_rows + n_cols, 1), int),
+    columns=[&quot;var&quot;],
+)
+gdf.plot(edgecolor=&quot;black&quot;);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_component_policy_21_0.png" class="no-scaled-link" src="../_images/notebooks_component_policy_21_0.png" style="width: 312px; height: 659px;" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, &quot;var&quot;, &quot;var&quot;, 6, 2, policy=&quot;drop&quot;)
+model.solve()
+ifcs = infeasible_components(gdf, w, &quot;var&quot;, 6)
+keep_ids = numpy.where(~numpy.isin(w.component_labels, ifcs))[0]
+gdf[&quot;region&quot;] = -1
+gdf.loc[keep_ids, &quot;region&quot;] = model.labels_
+gdf.explore(column=&quot;region&quot;, categorical=True)  # areas in region -1 are dropped
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div style="width:100%;"><div style="position:relative;width:100%;height:0;padding-bottom:60%;"><span style="color:#565656">Make this Notebook Trusted to load map: File -> Trust Notebook</span><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+
+    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+
+        &lt;script&gt;
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        &lt;/script&gt;
+
+    &lt;style&gt;html, body {width: 100%;height: 100%;margin: 0;padding: 0;}&lt;/style&gt;
+    &lt;style&gt;#map {position:absolute;top:0;bottom:0;right:0;left:0;}&lt;/style&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://code.jquery.com/jquery-3.7.1.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
+
+            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
+            &lt;style&gt;
+                #map_9c8c4777411c0b759120223ffe2eacfd {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            &lt;/style&gt;
+
+
+                    &lt;style&gt;
+                        .foliumtooltip {
+
+                        }
+                       .foliumtooltip table{
+                            margin: auto;
+                        }
+                        .foliumtooltip tr{
+                            text-align: left;
+                        }
+                        .foliumtooltip th{
+                            padding: 2px; padding-right: 8px;
+                        }
+                    &lt;/style&gt;
+
+
+    &lt;script src=&quot;https://code.jquery.com/ui/1.12.1/jquery-ui.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;$( function() {
+        $( &quot;.maplegend&quot; ).draggable({
+            start: function (event, ui) {
+                $(this).css({
+                    right: &quot;auto&quot;,
+                    top: &quot;auto&quot;,
+                    bottom: &quot;auto&quot;
+                });
+            }
+        });
+    });
+    &lt;/script&gt;
+    &lt;style type=&#x27;text/css&#x27;&gt;
+      .maplegend {
+        position: absolute;
+        z-index:9999;
+        background-color: rgba(255, 255, 255, .8);
+        border-radius: 5px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        padding: 10px;
+        font: 12px/14px Arial, Helvetica, sans-serif;
+        right: 10px;
+        bottom: 20px;
+      }
+      .maplegend .legend-title {
+        text-align: left;
+        margin-bottom: 5px;
+        font-weight: bold;
+        }
+      .maplegend .legend-scale ul {
+        margin: 0;
+        margin-bottom: 0px;
+        padding: 0;
+        float: left;
+        list-style: none;
+        }
+      .maplegend .legend-scale ul li {
+        list-style: none;
+        margin-left: 0;
+        line-height: 16px;
+        margin-bottom: 2px;
+        }
+      .maplegend ul.legend-labels li span {
+        display: block;
+        float: left;
+        height: 14px;
+        width: 14px;
+        margin-right: 5px;
+        margin-left: 0;
+        border: 0px solid #ccc;
+        }
+      .maplegend .legend-source {
+        color: #777;
+        clear: both;
+        }
+      .maplegend a {
+        color: #777;
+        }
+    &lt;/style&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+
+
+    &lt;div id=&#x27;maplegend region&#x27; class=&#x27;maplegend&#x27;&gt;
+        &lt;div class=&#x27;legend-title&#x27;&gt;region&lt;/div&gt;
+        &lt;div class=&#x27;legend-scale&#x27;&gt;
+            &lt;ul class=&#x27;legend-labels&#x27;&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#1f77b4&#x27;&gt;&lt;/span&gt;-1&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#ff7f0e&#x27;&gt;&lt;/span&gt;1&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#98df8a&#x27;&gt;&lt;/span&gt;2&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#ff9896&#x27;&gt;&lt;/span&gt;3&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#8c564b&#x27;&gt;&lt;/span&gt;4&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#e377c2&#x27;&gt;&lt;/span&gt;5&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#c7c7c7&#x27;&gt;&lt;/span&gt;6&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#dbdb8d&#x27;&gt;&lt;/span&gt;7&lt;/li&gt;
+                &lt;li&gt;&lt;span style=&#x27;background:#9edae5&#x27;&gt;&lt;/span&gt;8&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+
+            &lt;div class=&quot;folium-map&quot; id=&quot;map_9c8c4777411c0b759120223ffe2eacfd&quot; &gt;&lt;/div&gt;
+
+&lt;/body&gt;
+&lt;script&gt;
+
+
+            var map_9c8c4777411c0b759120223ffe2eacfd = L.map(
+                &quot;map_9c8c4777411c0b759120223ffe2eacfd&quot;,
+                {
+                    center: [60.0, 25.0],
+                    crs: L.CRS.Simple,
+                    zoom: 10,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+            L.control.scale().addTo(map_9c8c4777411c0b759120223ffe2eacfd);
+
+
+
+
+
+            map_9c8c4777411c0b759120223ffe2eacfd.fitBounds(
+                [[0.0, 0.0], [120.0, 50.0]],
+                {}
+            );
+
+
+        function geo_json_b7644449456c7a5a04fd18158d2125cb_styler(feature) {
+            switch(feature.id) {
+                case &quot;0&quot;: case &quot;1&quot;: case &quot;2&quot;: case &quot;3&quot;: case &quot;4&quot;:
+                    return {&quot;color&quot;: &quot;#1f77b4&quot;, &quot;fillColor&quot;: &quot;#1f77b4&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;5&quot;: case &quot;6&quot;: case &quot;7&quot;: case &quot;8&quot;: case &quot;10&quot;: case &quot;11&quot;: case &quot;12&quot;:
+                    return {&quot;color&quot;: &quot;#ff9896&quot;, &quot;fillColor&quot;: &quot;#ff9896&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;15&quot;: case &quot;16&quot;: case &quot;20&quot;: case &quot;21&quot;: case &quot;27&quot;: case &quot;32&quot;:
+                    return {&quot;color&quot;: &quot;#e377c2&quot;, &quot;fillColor&quot;: &quot;#e377c2&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;23&quot;: case &quot;24&quot;: case &quot;28&quot;: case &quot;29&quot;: case &quot;33&quot;: case &quot;34&quot;:
+                    return {&quot;color&quot;: &quot;#9edae5&quot;, &quot;fillColor&quot;: &quot;#9edae5&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;25&quot;: case &quot;26&quot;: case &quot;30&quot;: case &quot;31&quot;: case &quot;35&quot;: case &quot;36&quot;:
+                    return {&quot;color&quot;: &quot;#ff7f0e&quot;, &quot;fillColor&quot;: &quot;#ff7f0e&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;37&quot;: case &quot;38&quot;: case &quot;39&quot;: case &quot;42&quot;: case &quot;43&quot;: case &quot;44&quot;:
+                    return {&quot;color&quot;: &quot;#98df8a&quot;, &quot;fillColor&quot;: &quot;#98df8a&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;40&quot;: case &quot;41&quot;: case &quot;45&quot;: case &quot;46&quot;: case &quot;50&quot;: case &quot;51&quot;:
+                    return {&quot;color&quot;: &quot;#dbdb8d&quot;, &quot;fillColor&quot;: &quot;#dbdb8d&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                case &quot;47&quot;: case &quot;48&quot;: case &quot;49&quot;: case &quot;52&quot;: case &quot;53&quot;: case &quot;54&quot;:
+                    return {&quot;color&quot;: &quot;#c7c7c7&quot;, &quot;fillColor&quot;: &quot;#c7c7c7&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+                default:
+                    return {&quot;color&quot;: &quot;#8c564b&quot;, &quot;fillColor&quot;: &quot;#8c564b&quot;, &quot;fillOpacity&quot;: 0.5, &quot;weight&quot;: 2};
+            }
+        }
+        function geo_json_b7644449456c7a5a04fd18158d2125cb_highlighter(feature) {
+            switch(feature.id) {
+                default:
+                    return {&quot;fillOpacity&quot;: 0.75};
+            }
+        }
+        function geo_json_b7644449456c7a5a04fd18158d2125cb_pointToLayer(feature, latlng) {
+            var opts = {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#3388ff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;#3388ff&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 2, &quot;stroke&quot;: true, &quot;weight&quot;: 3};
+
+            let style = geo_json_b7644449456c7a5a04fd18158d2125cb_styler(feature)
+            Object.assign(opts, style)
+
+            return new L.CircleMarker(latlng, opts)
+        }
+
+        function geo_json_b7644449456c7a5a04fd18158d2125cb_onEachFeature(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if(typeof e.target.setStyle === &quot;function&quot;){
+                        geo_json_b7644449456c7a5a04fd18158d2125cb.resetStyle(e.target);
+                    }
+                },
+                mouseover: function(e) {
+                    if(typeof e.target.setStyle === &quot;function&quot;){
+                        const highlightStyle = geo_json_b7644449456c7a5a04fd18158d2125cb_highlighter(e.target.feature)
+                        e.target.setStyle(highlightStyle);
+                    }
+                },
+            });
+        };
+        var geo_json_b7644449456c7a5a04fd18158d2125cb = L.geoJson(null, {
+                onEachFeature: geo_json_b7644449456c7a5a04fd18158d2125cb_onEachFeature,
+
+                style: geo_json_b7644449456c7a5a04fd18158d2125cb_styler,
+                pointToLayer: geo_json_b7644449456c7a5a04fd18158d2125cb_pointToLayer,
+        });
+
+        function geo_json_b7644449456c7a5a04fd18158d2125cb_add (data) {
+            geo_json_b7644449456c7a5a04fd18158d2125cb
+                .addData(data);
+        }
+            geo_json_b7644449456c7a5a04fd18158d2125cb_add({&quot;bbox&quot;: [0.0, 0.0, 50.0, 120.0], &quot;features&quot;: [{&quot;bbox&quot;: [0.0, 0.0, 10.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 0.0], [10.0, 10.0], [0.0, 10.0], [0.0, 0.0], [10.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;0&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: -1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 0.0, 20.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 0.0], [20.0, 10.0], [10.0, 10.0], [10.0, 0.0], [20.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;1&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: -1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 0.0, 30.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 0.0], [30.0, 10.0], [20.0, 10.0], [20.0, 0.0], [30.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;2&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: -1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 0.0, 40.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 0.0], [40.0, 10.0], [30.0, 10.0], [30.0, 0.0], [40.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;3&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: -1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 0.0, 50.0, 10.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 0.0], [50.0, 10.0], [40.0, 10.0], [40.0, 0.0], [50.0, 0.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;4&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#1f77b4&quot;, &quot;region&quot;: -1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 20.0, 10.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 20.0], [10.0, 30.0], [0.0, 30.0], [0.0, 20.0], [10.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;5&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 20.0, 20.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 20.0], [20.0, 30.0], [10.0, 30.0], [10.0, 20.0], [20.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;6&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 20.0, 30.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 20.0], [30.0, 30.0], [20.0, 30.0], [20.0, 20.0], [30.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;7&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 20.0, 40.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 20.0], [40.0, 30.0], [30.0, 30.0], [30.0, 20.0], [40.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;8&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 20.0, 50.0, 30.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 20.0], [50.0, 30.0], [40.0, 30.0], [40.0, 20.0], [50.0, 20.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;9&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 30.0, 10.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 30.0], [10.0, 40.0], [0.0, 40.0], [0.0, 30.0], [10.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;10&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 30.0, 20.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 30.0], [20.0, 40.0], [10.0, 40.0], [10.0, 30.0], [20.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;11&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 30.0, 30.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 30.0], [30.0, 40.0], [20.0, 40.0], [20.0, 30.0], [30.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;12&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff9896&quot;, &quot;region&quot;: 3, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 30.0, 40.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 30.0], [40.0, 40.0], [30.0, 40.0], [30.0, 30.0], [40.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;13&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 30.0, 50.0, 40.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 30.0], [50.0, 40.0], [40.0, 40.0], [40.0, 30.0], [50.0, 30.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;14&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 40.0, 10.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 40.0], [10.0, 50.0], [0.0, 50.0], [0.0, 40.0], [10.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;15&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 40.0, 20.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 40.0], [20.0, 50.0], [10.0, 50.0], [10.0, 40.0], [20.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;16&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 40.0, 30.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 40.0], [30.0, 50.0], [20.0, 50.0], [20.0, 40.0], [30.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;17&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 40.0, 40.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 40.0], [40.0, 50.0], [30.0, 50.0], [30.0, 40.0], [40.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;18&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 40.0, 50.0, 50.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 40.0], [50.0, 50.0], [40.0, 50.0], [40.0, 40.0], [50.0, 40.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;19&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 50.0, 10.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 50.0], [10.0, 60.0], [0.0, 60.0], [0.0, 50.0], [10.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;20&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 50.0, 20.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 50.0], [20.0, 60.0], [10.0, 60.0], [10.0, 50.0], [20.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;21&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 50.0, 30.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 50.0], [30.0, 60.0], [20.0, 60.0], [20.0, 50.0], [30.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;22&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#8c564b&quot;, &quot;region&quot;: 4, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 50.0, 40.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 50.0], [40.0, 60.0], [30.0, 60.0], [30.0, 50.0], [40.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;23&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 50.0, 50.0, 60.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 50.0], [50.0, 60.0], [40.0, 60.0], [40.0, 50.0], [50.0, 50.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;24&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 60.0, 10.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 60.0], [10.0, 70.0], [0.0, 70.0], [0.0, 60.0], [10.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;25&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 60.0, 20.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 60.0], [20.0, 70.0], [10.0, 70.0], [10.0, 60.0], [20.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;26&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 60.0, 30.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 60.0], [30.0, 70.0], [20.0, 70.0], [20.0, 60.0], [30.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;27&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 60.0, 40.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 60.0], [40.0, 70.0], [30.0, 70.0], [30.0, 60.0], [40.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;28&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 60.0, 50.0, 70.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 60.0], [50.0, 70.0], [40.0, 70.0], [40.0, 60.0], [50.0, 60.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;29&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 70.0, 10.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 70.0], [10.0, 80.0], [0.0, 80.0], [0.0, 70.0], [10.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;30&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 70.0, 20.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 70.0], [20.0, 80.0], [10.0, 80.0], [10.0, 70.0], [20.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;31&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 70.0, 30.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 70.0], [30.0, 80.0], [20.0, 80.0], [20.0, 70.0], [30.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;32&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#e377c2&quot;, &quot;region&quot;: 5, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 70.0, 40.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 70.0], [40.0, 80.0], [30.0, 80.0], [30.0, 70.0], [40.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;33&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 70.0, 50.0, 80.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 70.0], [50.0, 80.0], [40.0, 80.0], [40.0, 70.0], [50.0, 70.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;34&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#9edae5&quot;, &quot;region&quot;: 8, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 80.0, 10.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 80.0], [10.0, 90.0], [0.0, 90.0], [0.0, 80.0], [10.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;35&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 80.0, 20.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 80.0], [20.0, 90.0], [10.0, 90.0], [10.0, 80.0], [20.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;36&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#ff7f0e&quot;, &quot;region&quot;: 1, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 80.0, 30.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 80.0], [30.0, 90.0], [20.0, 90.0], [20.0, 80.0], [30.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;37&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 80.0, 40.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 80.0], [40.0, 90.0], [30.0, 90.0], [30.0, 80.0], [40.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;38&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 80.0, 50.0, 90.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 80.0], [50.0, 90.0], [40.0, 90.0], [40.0, 80.0], [50.0, 80.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;39&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 90.0, 10.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 90.0], [10.0, 100.0], [0.0, 100.0], [0.0, 90.0], [10.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;40&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 90.0, 20.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 90.0], [20.0, 100.0], [10.0, 100.0], [10.0, 90.0], [20.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;41&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 90.0, 30.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 90.0], [30.0, 100.0], [20.0, 100.0], [20.0, 90.0], [30.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;42&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 90.0, 40.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 90.0], [40.0, 100.0], [30.0, 100.0], [30.0, 90.0], [40.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;43&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 90.0, 50.0, 100.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 90.0], [50.0, 100.0], [40.0, 100.0], [40.0, 90.0], [50.0, 90.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;44&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#98df8a&quot;, &quot;region&quot;: 2, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 100.0, 10.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 100.0], [10.0, 110.0], [0.0, 110.0], [0.0, 100.0], [10.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;45&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 100.0, 20.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 100.0], [20.0, 110.0], [10.0, 110.0], [10.0, 100.0], [20.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;46&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 100.0, 30.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 100.0], [30.0, 110.0], [20.0, 110.0], [20.0, 100.0], [30.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;47&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 100.0, 40.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 100.0], [40.0, 110.0], [30.0, 110.0], [30.0, 100.0], [40.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;48&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 100.0, 50.0, 110.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 100.0], [50.0, 110.0], [40.0, 110.0], [40.0, 100.0], [50.0, 100.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;49&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [0.0, 110.0, 10.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[10.0, 110.0], [10.0, 120.0], [0.0, 120.0], [0.0, 110.0], [10.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;50&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [10.0, 110.0, 20.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[20.0, 110.0], [20.0, 120.0], [10.0, 120.0], [10.0, 110.0], [20.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;51&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#dbdb8d&quot;, &quot;region&quot;: 7, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [20.0, 110.0, 30.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[30.0, 110.0], [30.0, 120.0], [20.0, 120.0], [20.0, 110.0], [30.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;52&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [30.0, 110.0, 40.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[40.0, 110.0], [40.0, 120.0], [30.0, 120.0], [30.0, 110.0], [40.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;53&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}, {&quot;bbox&quot;: [40.0, 110.0, 50.0, 120.0], &quot;geometry&quot;: {&quot;coordinates&quot;: [[[50.0, 110.0], [50.0, 120.0], [40.0, 120.0], [40.0, 110.0], [50.0, 110.0]]], &quot;type&quot;: &quot;Polygon&quot;}, &quot;id&quot;: &quot;54&quot;, &quot;properties&quot;: {&quot;__folium_color&quot;: &quot;#c7c7c7&quot;, &quot;region&quot;: 6, &quot;var&quot;: 1}, &quot;type&quot;: &quot;Feature&quot;}], &quot;type&quot;: &quot;FeatureCollection&quot;});
+
+
+
+    geo_json_b7644449456c7a5a04fd18158d2125cb.bindTooltip(
+    function(layer){
+    let div = L.DomUtil.create(&#x27;div&#x27;);
+
+    let handleObject = feature=&gt;typeof(feature)==&#x27;object&#x27; ? JSON.stringify(feature) : feature;
+    let fields = [&quot;var&quot;, &quot;region&quot;];
+    let aliases = [&quot;var&quot;, &quot;region&quot;];
+    let table = &#x27;&lt;table&gt;&#x27; +
+        String(
+        fields.map(
+        (v,i)=&gt;
+        `&lt;tr&gt;
+            &lt;th&gt;${aliases[i]}&lt;/th&gt;
+
+            &lt;td&gt;${handleObject(layer.feature.properties[v])}&lt;/td&gt;
+        &lt;/tr&gt;`).join(&#x27;&#x27;))
+    +&#x27;&lt;/table&gt;&#x27;;
+    div.innerHTML=table;
+
+    return div
+    }
+    ,{&quot;className&quot;: &quot;foliumtooltip&quot;, &quot;sticky&quot;: true});
+
+
+                geo_json_b7644449456c7a5a04fd18158d2125cb.addTo(map_9c8c4777411c0b759120223ffe2eacfd);
+&lt;/script&gt;
+&lt;/html&gt;" style="position:absolute;width:100%;height:100%;left:0;top:0;border:none !important;" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe></div></div></div>
+</div>
+</section>
+<section id="No-Feasible-Components">
+<h2>No Feasible Components<a class="headerlink" href="#No-Feasible-Components" title="Link to this heading">¶</a></h2>
+<p>We also handle the case when none of the components are feasible by rasing an exception.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, &quot;var&quot;, &quot;var&quot;, 55, 2, policy=&quot;drop&quot;)
+try:
+    model.solve()
+except Exception as e:
+    print(e)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+No feasible components found in input.
+</pre></div></div>
+</div>
+<hr class="docutils" />
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/component_policy.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

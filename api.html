@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>API reference &#8212; spopt v0.6.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pysal-styles.css?v=e5dd7357" />
+    <script src="_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="spopt.region.AZP" href="generated/spopt.region.AZP.html" />
+    <link rel="prev" title="The P-Dispersion Problem: An Empirical Example" href="notebooks/facloc-disperse-real-world.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="tutorials.html">Tutorials</a></li>
+                <li><a href="#">API</a></li>
+                <li><a href="references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">API reference</a><ul>
+<li><a class="reference internal" href="#region-methods">Region Methods</a></li>
+<li><a class="reference internal" href="#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="api-reference">
+<span id="api-ref"></span><h1>API reference<a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h1>
+<section id="region-methods">
+<span id="data-api"></span><h2>Region Methods<a class="headerlink" href="#region-methods" title="Link to this heading">¶</a></h2>
+<p>Model based approaches for aggregating a large set of geographic units (with small footprints) into a smaller number of regions (with large footprints).</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/spopt.region.AZP.html#spopt.region.AZP" title="spopt.region.AZP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.AZP</span></code></a>(gdf, w, attrs_name[, n_clusters, ...])</p></td>
+<td><p>AZP involves class offering the implementation of the automatic zoning procedure algorithm.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/spopt.region.MaxPHeuristic.html#spopt.region.MaxPHeuristic" title="spopt.region.MaxPHeuristic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.MaxPHeuristic</span></code></a>(gdf, w, attrs_name, ...)</p></td>
+<td><p>The max-p-regions involves the aggregation of n areas into an unknown maximum number of homogeneous regions, while ensuring that each region is contiguious and satisfies a minimum threshold value imposed on a predefined spatially extensive attribute.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/spopt.region.RandomRegion.html#spopt.region.RandomRegion" title="spopt.region.RandomRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.RandomRegion</span></code></a>(area_ids[, num_regions, ...])</p></td>
+<td><p>Randomly combine a given set of areas into two or more regions based on various constraints.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/spopt.region.RandomRegions.html#spopt.region.RandomRegions" title="spopt.region.RandomRegions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.RandomRegions</span></code></a>(area_ids[, ...])</p></td>
+<td><p>Generate a list of RandomRegion instances.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/spopt.region.RegionKMeansHeuristic.html#spopt.region.RegionKMeansHeuristic" title="spopt.region.RegionKMeansHeuristic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.RegionKMeansHeuristic</span></code></a>(data, n_clusters, w)</p></td>
+<td><p>Solve the region-K-means problem with the constraint that each cluster forms a spatially connected component.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/spopt.region.Skater.html#spopt.region.Skater" title="spopt.region.Skater"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.Skater</span></code></a>(gdf, w, attrs_name[, ...])</p></td>
+<td><p>Skater is a spatial regionalization algorithm based on spanning tree pruning introduced in <span id="id1">[<a class="reference internal" href="references.html#id2" title="RM Assunção, MC Neves, G Câmara, and C da Costa Freitas. Efficient regionalization techniques for socio-economic geographical units using minimum spanning trees. International Journal of Geographical Information Science, 20(7):797–811, 2006. doi:10.1080/13658810600665111.">ANCdCF06</a>]</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/spopt.region.Spenc.html#spopt.region.Spenc" title="spopt.region.Spenc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.Spenc</span></code></a>(gdf, w, attrs_name[, ...])</p></td>
+<td><p>Spatially encouraged spectral clustering found in <span id="id2">[<a class="reference internal" href="references.html#id23" title="LJ Wolf. ljwolf/spenc: GISRUK. 2018. doi:10.5281/zenodo.1219904.">Wol18</a>]</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/spopt.region.WardSpatial.html#spopt.region.WardSpatial" title="spopt.region.WardSpatial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region.WardSpatial</span></code></a>(gdf, w, attrs_name[, ...])</p></td>
+<td><p>Agglomerative clustering using Ward linkage with a spatial connectivity constraint.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="locate-methods">
+<h2>Locate Methods<a class="headerlink" href="#locate-methods" title="Link to this heading">¶</a></h2>
+<p>Exact solution approaches to facility location modeling problems.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/spopt.locate.LSCP.html#spopt.locate.LSCP" title="spopt.locate.LSCP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">locate.LSCP</span></code></a>(name, problem)</p></td>
+<td><p>Implement the Location Set Covering Problem (<em>LSCP</em>) optimization model and solve it.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/spopt.locate.LSCPB.html#spopt.locate.LSCPB" title="spopt.locate.LSCPB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">locate.LSCPB</span></code></a>(name, problem, solver)</p></td>
+<td><p>Implement the Location Set Covering Problem - Backup (<em>LSCP-B</em>) optimization model and solve it.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/spopt.locate.MCLP.html#spopt.locate.MCLP" title="spopt.locate.MCLP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">locate.MCLP</span></code></a>(name, problem)</p></td>
+<td><p>Implement the Maximal Coverage Location Problem (<em>MCLP</em>) optimization model and solve it.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/spopt.locate.PMedian.html#spopt.locate.PMedian" title="spopt.locate.PMedian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">locate.PMedian</span></code></a>(name, problem, aij, weights_sum)</p></td>
+<td><p>Implement the <span class="math notranslate nohighlight">\(p\)</span>-median optimization model and solve it.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/spopt.locate.KNearestPMedian.html#spopt.locate.KNearestPMedian" title="spopt.locate.KNearestPMedian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">locate.KNearestPMedian</span></code></a>(name, ai_sum, ...[, ...])</p></td>
+<td><p>Implement the P-Median Model with Near-Far Cost Allocation and solve it.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/spopt.locate.PCenter.html#spopt.locate.PCenter" title="spopt.locate.PCenter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">locate.PCenter</span></code></a>(name, problem, aij)</p></td>
+<td><p>Implement the <span class="math notranslate nohighlight">\(p\)</span>-center optimization model and solve it.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/spopt.locate.PDispersion.html#spopt.locate.PDispersion" title="spopt.locate.PDispersion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">locate.PDispersion</span></code></a>(name, problem, p_facilities)</p></td>
+<td><p>Implement the <span class="math notranslate nohighlight">\(p\)</span>-dispersion optimization model and solve it <span id="id3">[<a class="reference internal" href="references.html#id15" title="MJ Kuby. Programming models for facility dispersion: the p-dispersion and maxisum dispersion problems. Geographical Analysis, 1987. doi:10.1111/j.1538-4632.1987.tb00133.x.">Kub87</a>]</span>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/api.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
