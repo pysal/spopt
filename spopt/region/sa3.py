@@ -9,6 +9,37 @@ from pandas import Series, concat
 from libpysal.graph import Graph
 from libpysal.weights import W
 
+def get_clusters(linkage_matrix, min_cluster_size, eom_clusters=True):
+    '''Extract hdbscan cluster types from a linkage matrix.'''
+    
+    n_samples = linkage_matrix.shape[0] + 1
+
+    try: 
+        from fast_hdbscan.cluster_trees import (
+            cluster_tree_from_condensed_tree,
+            condense_tree,
+            extract_eom_clusters,
+            extract_leaves,
+            get_cluster_label_vector,
+        )
+    except ImportError as e:
+        raise "The fast_hdbscan and numba librarries are required for this functionality."
+
+    condensed_tree = condense_tree(linkage_matrix, 
+                            min_cluster_size=min_cluster_size)
+    
+    cluster_tree = cluster_tree_from_condensed_tree(condensed_tree)
+
+    if eom_clusters:
+        selected_clusters = extract_eom_clusters(
+            condensed_tree, cluster_tree, allow_single_cluster=False
+        )
+    else:
+        selected_clusters = extract_leaves(
+                condensed_tree, allow_single_cluster=False
+            )
+        
+    return get_cluster_label_vector(condensed_tree, selected_clusters, 0, n_samples)
 
 
 class SA3(BaseSpOptHeuristicSolver):
@@ -76,10 +107,9 @@ class SA3(BaseSpOptHeuristicSolver):
             # check if tree distances are always increasing
             assert (component_tree[1:, 2] >= component_tree[0:-1, 2]).all()
             
-            component_clusters = self._get_clusters(component_tree, 
-                                                    self.min_cluster_size, 
-                                                    component_data.shape[0], 
-                                                    eom_clusters=self.eom_clusters)
+            component_clusters = get_clusters(component_tree, 
+                                              self.min_cluster_size, 
+                                              eom_clusters=self.eom_clusters)
             
             results.append(Series(component_clusters, index=component_members))
 
@@ -125,34 +155,3 @@ class SA3(BaseSpOptHeuristicSolver):
         ).astype(float)
 
         return linkage_matrix
-
-
-    def _get_clusters(self, linkage_matrix, min_cluster_size, n_samples, eom_clusters=True):
-        '''Extract hdbscan cluster types from a linkage matrix.'''
-
-        try: 
-            from fast_hdbscan.cluster_trees import (
-                cluster_tree_from_condensed_tree,
-                condense_tree,
-                extract_eom_clusters,
-                extract_leaves,
-                get_cluster_label_vector,
-            )
-        except ImportError as e:
-            raise "The fast_hdbscan and numba librarries are required for this functionality."
-
-        condensed_tree = condense_tree(linkage_matrix, 
-                                min_cluster_size=min_cluster_size)
-        
-        cluster_tree = cluster_tree_from_condensed_tree(condensed_tree)
-
-        if eom_clusters:
-            selected_clusters = extract_eom_clusters(
-                condensed_tree, cluster_tree, allow_single_cluster=False
-            )
-        else:
-            selected_clusters = extract_leaves(
-                    condensed_tree, allow_single_cluster=False
-                )
-            
-        return get_cluster_label_vector(condensed_tree, selected_clusters, 0, n_samples)
