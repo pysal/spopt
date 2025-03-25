@@ -114,14 +114,21 @@ class SA3(BaseSpOptHeuristicSolver):
         new_labels = []
         next_cluster_val = 0
         for labels_set in results:
-            not_noise = labels_set != - 1
-            labels_set[not_noise] = labels_set[not_noise] + next_cluster_val
-            new_labels.append(labels_set)
-            
-            next_cluster_val += (labels_set.max() + 1)
 
+            is_noise = labels_set == - 1
+            # if this component is all noise, add it but skip the cluster increment
+            if is_noise.all():
+                new_labels.append(labels_set)
+                continue
+            
+            highest_cluster_count = labels_set.max()
+            labels_set[~is_noise] = labels_set[~is_noise] + next_cluster_val
+            new_labels.append(labels_set)
+            next_cluster_val += (highest_cluster_count + 1)
+        
         # set the labels in the same order as the input data
         self.labels_ = concat(new_labels).loc[self.gdf.index]
+
 
     def _get_tree(self, training_data, clustering_graph, clustering_kwds):
         '''Carry out AgglomerativeClustering and return the linkage matrix.'''
