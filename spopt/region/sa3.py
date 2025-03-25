@@ -9,7 +9,7 @@ from pandas import Series, concat
 from libpysal.graph import Graph
 from libpysal.weights import W
 
-def get_clusters(linkage_matrix, min_cluster_size, eom_clusters=True):
+def extract_clusters(linkage_matrix, min_cluster_size, eom_clusters=True):
     '''Extract hdbscan cluster types from a linkage matrix.'''
     
     n_samples = linkage_matrix.shape[0] + 1
@@ -50,15 +50,13 @@ class SA3(BaseSpOptHeuristicSolver):
 
     def __init__(self, gdf, w, attrs_name, min_cluster_size=15, eom_clusters=True, clustering_kwds=dict()):
 
-
         self.gdf = gdf
 
         if isinstance(w, W):
             w = Graph.from_W(w)
         elif not isinstance(w, W) and not isinstance(w, Graph):
             raise "Unkown graph type."
-            
-
+        
         self.w = w
         self.attrs_name = attrs_name
         self.min_cluster_size = min_cluster_size
@@ -74,8 +72,6 @@ class SA3(BaseSpOptHeuristicSolver):
         
         # label input data, could work with empty tess as well
         labels = self.w.component_labels
-
-        
         
         ### have to be careful about assigning labels to the variables and be careful of noise.
         results = []
@@ -107,7 +103,7 @@ class SA3(BaseSpOptHeuristicSolver):
             # check if tree distances are always increasing
             assert (component_tree[1:, 2] >= component_tree[0:-1, 2]).all()
             
-            component_clusters = get_clusters(component_tree, 
+            component_clusters = extract_clusters(component_tree, 
                                               self.min_cluster_size, 
                                               eom_clusters=self.eom_clusters)
             
