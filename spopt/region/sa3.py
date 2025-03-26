@@ -1,20 +1,42 @@
 # ruff: noqa: B006, C408
 
+from libpysal.graph import Graph
+from libpysal.weights import W
+from numpy import column_stack, full, unique, where, zeros
+from pandas import Series, concat
 from sklearn.cluster import AgglomerativeClustering
 
 from spopt.BaseClass import BaseSpOptHeuristicSolver
 
-from numpy import full, zeros, unique, where, column_stack
-from pandas import Series, concat
-from libpysal.graph import Graph
-from libpysal.weights import W
 
 def extract_clusters(linkage_matrix, min_cluster_size, eom_clusters=True):
-    '''Extract hdbscan cluster types from a linkage matrix.'''
-    
+    """Extract cluster types from a linkage matrix.
+
+    Parameters
+    ----------
+
+    linkage_matrix : np.ndarray
+        A hierarchical clustering encoded as an array in
+        ``scipy.cluster.hierarchy.linkage`` format.
+    min_cluster_size : int
+        The minimum number of observations that forms a cluster.
+    eom_clusters: boolean (default True)
+        The cluster extraction scheme. True is Excess of Mass, False - Leaf.
+
+    Returns
+    -------
+    numpy.array
+        Cluster labels for observations.
+
+    Note
+    ----
+    This function requires ``fast_hdbscan`` and ``numba``.
+
+    """
+
     n_samples = linkage_matrix.shape[0] + 1
 
-    try: 
+    try:
         from fast_hdbscan.cluster_trees import (
             cluster_tree_from_condensed_tree,
             condense_tree,
@@ -23,11 +45,12 @@ def extract_clusters(linkage_matrix, min_cluster_size, eom_clusters=True):
             get_cluster_label_vector,
         )
     except ImportError as e:
-        raise "The fast_hdbscan and numba librarries are required for this functionality."
+        raise ImportError(
+            "The fast_hdbscan and numba libraries are required for this functionality."
+        ) from e
 
-    condensed_tree = condense_tree(linkage_matrix, 
-                            min_cluster_size=min_cluster_size)
-    
+    condensed_tree = condense_tree(linkage_matrix, min_cluster_size=min_cluster_size)
+
     cluster_tree = cluster_tree_from_condensed_tree(condensed_tree)
 
     if eom_clusters:
@@ -35,109 +58,147 @@ def extract_clusters(linkage_matrix, min_cluster_size, eom_clusters=True):
             condensed_tree, cluster_tree, allow_single_cluster=False
         )
     else:
-        selected_clusters = extract_leaves(
-                condensed_tree, allow_single_cluster=False
-            )
-        
+        selected_clusters = extract_leaves(condensed_tree, allow_single_cluster=False)
+
     return get_cluster_label_vector(condensed_tree, selected_clusters, 0, n_samples)
 
 
 class SA3(BaseSpOptHeuristicSolver):
-    """Spatial Adaptive Agglomerative Aggregation. SA^3
-    
-    Note: This is a conservative clustering in general. Leaf is more conservative than EOM.
+    """Spatial Adaptive Agglomerative Aggregation (SA3) clustering.
+
+    The algorithm carries out ``sklearn.cluster.AgglometariveClustering``
+    per the specified parameters and extracts clusters from it, using density-clustering
+    extraction algorithms - Excess of Mass or Leaf. This results in multiscale,
+    contiguous clusters with noise.
+
+
+
+    Parameters
+    ----------
+
+    gdf : geopandas.GeoDataFrame
+        Geodataframe containing original data.
+    w : libpysal.weights.W | libpysal.graph.Graph
+        Weights or Graph object created from given data.
+    attrs_name : list
+        Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
+    min_cluster_size : int
+        The minimum number of observations to form a cluster.
+    eom_clusters: boolean (default True)
+        The cluster extraction scheme. True is Excess of Mass, False - Leaf.
+    clustering_kwds: dict
+        Parameters about clustering could be used in
+        ``sklearn.cluster.AgglometariveClustering.``
+
+    Attributes
+    ----------
+
+    labels_ : numpy.array
+        Cluster labels for observations.
+
     """
 
-    def __init__(self, gdf, w, attrs_name, min_cluster_size=15, eom_clusters=True, clustering_kwds=dict()):
-
+    def __init__(
+        self,
+        gdf,
+        w,
+        attrs_name,
+        min_cluster_size=15,
+        eom_clusters=True,
+        clustering_kwds=dict(),
+    ):
         self.gdf = gdf
 
         if isinstance(w, W):
             w = Graph.from_W(w)
         elif not isinstance(w, W) and not isinstance(w, Graph):
-            raise "Unkown graph type."
-        
+            raise ValueError("Unkown graph type.")
+
         self.w = w
         self.attrs_name = attrs_name
         self.min_cluster_size = min_cluster_size
         self.eom_clusters = eom_clusters
         self.clustering_kwds = clustering_kwds
-        if 'linkage' not in self.clustering_kwds:
-            self.clustering_kwds['linkage'] = 'ward'
-        if 'metric' not in self.clustering_kwds:
-            self.clustering_kwds['metric'] = 'euclidean'
+        if "linkage" not in self.clustering_kwds:
+            self.clustering_kwds["linkage"] = "ward"
+        if "metric" not in self.clustering_kwds:
+            self.clustering_kwds["metric"] = "euclidean"
 
     def solve(self):
-        '''Split the input data into connected components and carry out an agglomerative clustering for each component independently, then combine all the seperate clusterings into one set.'''
-        
+        """Compute the labels."""
+
         # label input data, could work with empty tess as well
         labels = self.w.component_labels
-        
-        ### have to be careful about assigning labels to the variables and be careful of noise.
-        results = []
-        
-        for label in unique(labels):
 
+        results = []
+        for label in unique(labels):
             component_members = labels[labels == label].index.values
 
             # there are few component members, label all as noise
             if component_members.shape[0] <= self.min_cluster_size:
                 results.append(
-                    Series(full(component_members.shape[0], -1),
-                           index=component_members))
+                    Series(
+                        full(component_members.shape[0], -1), index=component_members
+                    )
+                )
                 continue
-        
+
             component_graph = self.w.subgraph(component_members)
             component_data = self.gdf.loc[component_members, self.attrs_name]
-            component_tree = self._get_tree(component_data, 
-                                            component_graph.transform('B').sparse,
-                                            self.clustering_kwds)
-    
+            component_tree = self._get_tree(
+                component_data,
+                component_graph.transform("B").sparse,
+                self.clustering_kwds,
+            )
+
             # # sometimes ward/average linkage breaks the monotonic increase in the MST
             # # if that happens shift all distances by the max drop
             # # need a loop because several connections might be problematic
             problem_idxs = where(component_tree[1:, 2] < component_tree[0:-1, 2])[0]
             while problem_idxs.shape[0]:
-                component_tree[problem_idxs + 1, 2] = component_tree[problem_idxs, 2] + .01
+                component_tree[problem_idxs + 1, 2] = (
+                    component_tree[problem_idxs, 2] + 0.01
+                )
                 problem_idxs = where(component_tree[1:, 2] < component_tree[0:-1, 2])[0]
             # check if tree distances are always increasing
             assert (component_tree[1:, 2] >= component_tree[0:-1, 2]).all()
-            
-            component_clusters = extract_clusters(component_tree, 
-                                              self.min_cluster_size, 
-                                              eom_clusters=self.eom_clusters)
-            
+
+            component_clusters = extract_clusters(
+                component_tree, self.min_cluster_size, eom_clusters=self.eom_clusters
+            )
+
             results.append(Series(component_clusters, index=component_members))
 
-        # relabel local clusters - [[0,1,2], [0,1]] to global clusters  - [0, 1, 2, 3, 4]
+        # relabel local clusters [[0,1,2], [0,1]] to global clusters [0, 1, 2, 3, 4],
         # while keeping noise labels as they are
         new_labels = []
         next_cluster_val = 0
         for labels_set in results:
-
-            is_noise = labels_set == - 1
+            is_noise = labels_set == -1
             # if this component is all noise, add it but skip the cluster increment
             if is_noise.all():
                 new_labels.append(labels_set)
                 continue
-            
+
             highest_cluster_count = labels_set.max()
             labels_set[~is_noise] = labels_set[~is_noise] + next_cluster_val
             new_labels.append(labels_set)
-            next_cluster_val += (highest_cluster_count + 1)
-        
+            next_cluster_val += highest_cluster_count + 1
+
         # set the labels in the same order as the input data
         self.labels_ = concat(new_labels).loc[self.gdf.index]
 
-
     def _get_tree(self, training_data, clustering_graph, clustering_kwds):
-        '''Carry out AgglomerativeClustering and return the linkage matrix.'''
+        """Carry the agglomerative clustering, transform the result
+        and return the linkage matrix."""
 
-        clusterer = AgglomerativeClustering(connectivity = clustering_graph,
-                                            metric=clustering_kwds['metric'],
-                                            linkage=clustering_kwds['linkage'],
-                                            compute_full_tree=True,
-                                            compute_distances=True)
+        clusterer = AgglomerativeClustering(
+            connectivity=clustering_graph,
+            metric=clustering_kwds["metric"],
+            linkage=clustering_kwds["linkage"],
+            compute_full_tree=True,
+            compute_distances=True,
+        )
         model = clusterer.fit(training_data)
 
         # Create a linkage matrix from a sklearn hierarchical clustering model.
