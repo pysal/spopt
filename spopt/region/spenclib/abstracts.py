@@ -427,9 +427,9 @@ class SPENC(clust.SpectralClustering):
             left_cut[left_cut] *= new_cut
             right_cut = this_cut.copy()
             right_cut[right_cut] *= ~new_cut
-            assert (
-                len(this_cut) == len(left_cut) == len(right_cut)
-            ), "Indexing Error in cutting!"
+            assert len(this_cut) == len(left_cut) == len(right_cut), (
+                "Indexing Error in cutting!"
+            )
             if ((left_cut * floor_weights).sum() > floor) & (
                 (right_cut * floor_weights).sum() > floor
             ) and (tuple(left_cut) not in accepted_cuts) & (

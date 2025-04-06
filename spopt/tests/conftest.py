@@ -181,9 +181,9 @@ def toy_fac_data() -> geopandas.GeoDataFrame:
 
 
 @pytest.fixture
-def toy_dem_data() -> (
-    tuple[geopandas.GeoDataFrame, geopandas.GeoDataFrame, geopandas.GeoDataFrame]
-):
+def toy_dem_data() -> tuple[
+    geopandas.GeoDataFrame, geopandas.GeoDataFrame, geopandas.GeoDataFrame
+]:
     """Toy demand data used in ``locate`` error & warning tests."""
 
     point = shapely.Point(10, 10)
