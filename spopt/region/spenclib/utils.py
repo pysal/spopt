@@ -9,9 +9,9 @@ import scipy.sparse.csgraph as csg
 
 def check_weights(W, X=None):
     if X is not None:
-        assert (
-            W.shape[0] == X.shape[0]
-        ), "W does not have the same number of samples as X"
+        assert W.shape[0] == X.shape[0], (
+            "W does not have the same number of samples as X"
+        )
     graph = sp.csc_matrix(W)
     graph.eliminate_zeros()
     components, labels = csg.connected_components(graph)
