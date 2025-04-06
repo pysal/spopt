@@ -33,7 +33,7 @@ def is_component(w, ids):
     """
 
     components = 0
-    marks = {node: 0 for node in ids}
+    marks = dict.fromkeys(ids, 0)
     q = []
     for node in ids:
         if marks[node] == 0:
