@@ -2,7 +2,7 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.12
+  - python=3.13
   - geopandas
   - libpysal
   - mapclassify
@@ -20,6 +20,12 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
+  # docs - only this env
+  - nbsphinx
+  - numpydoc
+  - sphinx
+  - sphinxcontrib-bibtex
+  - sphinx_bootstrap_theme
   # with pip
   - pip
   - pip:
