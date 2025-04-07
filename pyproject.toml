@@ -81,6 +81,7 @@ include = ["spopt", "spopt.*"]
 
 [tool.ruff]
 line-length = 88
+extend-include = ["*.ipynb"]
 lint.select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
 
 [tool.ruff.lint.per-file-ignores]
@@ -88,6 +89,10 @@ lint.select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
      "F401",  # imported but unused
      "F403",  # star import; unable to detect undefined names
  ]
+"*.ipynb" = [
+    #"C408",  # Unnecessary `dict` call
+    "F401",  # imported but unused
+]
 
 [tool.coverage.run]
 source = ["./spopt"]
