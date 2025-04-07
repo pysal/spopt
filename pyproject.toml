@@ -90,7 +90,6 @@ lint.select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
      "F403",  # star import; unable to detect undefined names
  ]
 "*.ipynb" = [
-    #"C408",  # Unnecessary `dict` call
     "F401",  # imported but unused
 ]
 
