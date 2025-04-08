@@ -3,8 +3,8 @@
 Installation
 ============
 
-spopt supports Python >= 3.10_. Please make sure that you are
-operating in a Python >= 3.10 environment.
+spopt supports Python >= 3.11_. Please make sure that you are
+operating in a Python >= 3.11 environment.
 
 Installing released version
 ---------------------------
@@ -39,7 +39,7 @@ your fork. By making changes
 to your local clone and submitting a pull request to `pysal/spopt`_, you can
 contribute to spopt development.
 
-.. _3.10: https://docs.python.org/3.10/
+.. _3.11: https://docs.python.org/3.11/
 .. _Python Package Index: https://pypi.org/project/spopt/
 .. _pysal/spopt: https://github.com/pysal/spopt
 .. _fork: https://help.github.com/articles/fork-a-repo/ 
