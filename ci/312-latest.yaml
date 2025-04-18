@@ -20,12 +20,6 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
-  # docs - only this env
-  - nbsphinx
-  - numpydoc
-  - sphinx
-  - sphinxcontrib-bibtex
-  - sphinx_bootstrap_theme
   # with pip
   - pip
   - pip:

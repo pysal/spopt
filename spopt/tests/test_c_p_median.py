@@ -145,8 +145,7 @@ class TestRealWorldLocate:
         with pytest.raises(
             SpecificationError,
             match=(
-                "Problem is infeasible. "
-                "The predefined facilities can't be fulfilled, "
+                "Problem is infeasible. The predefined facilities can't be fulfilled, "
             ),
         ):
             PMedian.from_cost_matrix(

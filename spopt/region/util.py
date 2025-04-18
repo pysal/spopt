@@ -674,7 +674,7 @@ def generate_initial_sol(adj, n_regions):
             f"or equal to the number of areas ({n_areas})."
         )
     if n_regions == 1:
-        yield {area: 0 for area in range(n_areas)}
+        yield dict.fromkeys(range(n_areas), 0)
         return
 
     n_comps, comp_labels = csg.connected_components(adj)
