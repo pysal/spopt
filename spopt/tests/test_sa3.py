@@ -2,19 +2,17 @@ import geopandas
 import libpysal
 import numpy
 from packaging.version import Version
-
+import pytest
 from spopt.region import SA3, extract_clusters
 
-# see gh:spopt#437
-LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")
-w_kwargs = {"use_index": True} if LIBPYSAL_GE_48 else {}
+LIBPYSAL_L_410 = Version(libpysal.__version__) < Version("4.10.0")
 
 
 RANDOM_STATE = 12345
 pth = libpysal.examples.get_path("airbnb_Chicago 2015.shp")
 chicago = geopandas.read_file(pth)
 
-
+@pytest.mark.skipif(LIBPYSAL_L_410, 'Subgraph required')
 class TestSA3:
     def setup_method(self):
         self.chicago = chicago.copy()
