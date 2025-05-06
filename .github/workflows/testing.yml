@@ -70,6 +70,13 @@
        
        - name: spatial versions
          run: 'python -c "import geopandas; geopandas.show_versions();"'
+        
+       - name: Download test files
+         run: |
+          python -c '
+          import libpysal
+          libpysal.examples.fetch_all()
+          '
        
        - name: run tests
          run: |
