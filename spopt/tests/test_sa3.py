@@ -14,7 +14,7 @@ pth = libpysal.examples.get_path("airbnb_Chicago 2015.shp")
 chicago = geopandas.read_file(pth)
 
 
-@pytest.mark.skipif(LIBPYSAL_L_410, "libysal.subgraph required")
+@pytest.mark.skipif(LIBPYSAL_L_410, resason="libysal.subgraph required")
 class TestSA3:
     def setup_method(self):
         self.chicago = chicago.copy()
