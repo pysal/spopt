@@ -70,9 +70,6 @@ class SA3(BaseSpOptHeuristicSolver):
     per the specified parameters and extracts clusters from it, using density-clustering
     extraction algorithms - Excess of Mass or Leaf. This results in multiscale,
     contiguous clusters with noise.
-
-
-
     Parameters
     ----------
 
