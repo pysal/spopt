@@ -1,5 +1,3 @@
-# ruff: noqa: B006, C408
-
 import libpysal
 import numpy as np
 import pandas as pd
@@ -8,7 +6,7 @@ from sklearn.cluster import AgglomerativeClustering
 from spopt.BaseClass import BaseSpOptHeuristicSolver
 
 
-def extract_clusters(linkage_matrix, min_cluster_size, eom_clusters=True):
+def extract_clusters(linkage_matrix, min_cluster_size, extraction="eom"):
     """Extract cluster types from a linkage matrix.
 
     Parameters
@@ -19,8 +17,9 @@ def extract_clusters(linkage_matrix, min_cluster_size, eom_clusters=True):
         ``scipy.cluster.hierarchy.linkage`` format.
     min_cluster_size : int
         The minimum number of observations that forms a cluster.
-    eom_clusters: boolean (default True)
-        The cluster extraction scheme. True is Excess of Mass, False - Leaf.
+    extraction: str (default "eom")
+        The cluster extraction scheme. "eom" is Excess of Mass, "leaf" is Leaf
+        extraction.
 
     Returns
     -------
@@ -52,12 +51,14 @@ def extract_clusters(linkage_matrix, min_cluster_size, eom_clusters=True):
 
     cluster_tree = cluster_tree_from_condensed_tree(condensed_tree)
 
-    if eom_clusters:
+    if extraction == "eom":
         selected_clusters = extract_eom_clusters(
             condensed_tree, cluster_tree, allow_single_cluster=False
         )
-    else:
+    elif extraction == "leaf":
         selected_clusters = extract_leaves(condensed_tree, allow_single_cluster=False)
+    else:
+        raise ValueError("Unsupported extraction method. Use one of ('eom', 'leaf').")
 
     return get_cluster_label_vector(condensed_tree, selected_clusters, 0, n_samples)
 
@@ -81,10 +82,11 @@ class SA3(BaseSpOptHeuristicSolver):
         Strings for attribute names (cols of ``geopandas.GeoDataFrame``).
     min_cluster_size : int
         The minimum number of observations to form a cluster.
-    eom_clusters: boolean (default True)
-        The cluster extraction scheme. True is Excess of Mass, False - Leaf.
-    clustering_kwds: dict
-        Parameters about clustering could be used in
+    extraction: str (default "eom")
+        The cluster extraction scheme. "eom" is Excess of Mass, "leaf" is Leaf
+        extraction.
+    **kwargs
+        Additional keyword arguments to be used in
         ``sklearn.cluster.AgglometariveClustering.``
 
     Attributes
@@ -96,13 +98,7 @@ class SA3(BaseSpOptHeuristicSolver):
     """
 
     def __init__(
-        self,
-        gdf,
-        w,
-        attrs_name,
-        min_cluster_size=15,
-        eom_clusters=True,
-        clustering_kwds=dict(),
+        self, gdf, w, attrs_name, min_cluster_size=15, extraction="eom", **kwargs
     ):
         self.gdf = gdf
 
@@ -117,8 +113,8 @@ class SA3(BaseSpOptHeuristicSolver):
         self.w = w
         self.attrs_name = attrs_name
         self.min_cluster_size = min_cluster_size
-        self.eom_clusters = eom_clusters
-        self.clustering_kwds = clustering_kwds
+        self.extraction = extraction
+        self.clustering_kwds = kwargs
         if "linkage" not in self.clustering_kwds:
             self.clustering_kwds["linkage"] = "ward"
         if "metric" not in self.clustering_kwds:
@@ -166,7 +162,7 @@ class SA3(BaseSpOptHeuristicSolver):
             assert (component_tree[1:, 2] >= component_tree[0:-1, 2]).all()
 
             component_clusters = extract_clusters(
-                component_tree, self.min_cluster_size, eom_clusters=self.eom_clusters
+                component_tree, self.min_cluster_size, extraction=self.extraction
             )
 
             results.append(pd.Series(component_clusters, index=component_members))

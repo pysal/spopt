@@ -197,7 +197,7 @@ class TestSA3:
             w=self.w,
             attrs_name=self.attrs_name,
             min_cluster_size=10,
-            eom_clusters=False,
+            extraction="leaf",
         )
         model.solve()
         numpy.testing.assert_equal(model.labels_, self.leaf_labels_10)
@@ -208,7 +208,7 @@ class TestSA3:
             w=self.w,
             attrs_name=self.attrs_name,
             min_cluster_size=10,
-            eom_clusters=True,
+            extraction="eom",
         )
         model2.solve()
         assert not numpy.array_equal(model.labels_, model2.labels_)
@@ -220,7 +220,7 @@ class TestSA3:
             w=self.w,
             attrs_name=self.attrs_name,
             min_cluster_size=10,
-            eom_clusters=False,
+            extraction="leaf",
         )
         model.solve()
 
@@ -228,10 +228,21 @@ class TestSA3:
         linkage_matrix = model._get_tree(
             self.chicago[self.attrs_name].values,
             graph.transform("B").sparse,
-            clustering_kwds={"linkage": "ward", "metric": "euclidean"},
+            linkage="ward",
+            metric="euclidean",
         )
         explicit_results = extract_clusters(
-            linkage_matrix, min_cluster_size=10, eom_clusters=False
+            linkage_matrix, min_cluster_size=10, extraction="leaf"
         )
         numpy.testing.assert_equal(model.labels_, explicit_results)
         numpy.testing.assert_equal(self.leaf_labels_10, explicit_results)
+
+    def test_invalid_extraction(self):
+        with pytest.raises(ValueError, match="Unsupported extraction method"):
+            SA3(
+                gdf=self.chicago,
+                w=self.w,
+                attrs_name=self.attrs_name,
+                min_cluster_size=10,
+                extraction="unsupported",
+            )
