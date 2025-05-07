@@ -228,8 +228,7 @@ class TestSA3:
         linkage_matrix = model._get_tree(
             self.chicago[self.attrs_name].values,
             graph.transform("B").sparse,
-            linkage="ward",
-            metric="euclidean",
+            clustering_kwds={"linkage": "ward", "metric": "euclidean"},
         )
         explicit_results = extract_clusters(
             linkage_matrix, min_cluster_size=10, extraction="leaf"
@@ -239,10 +238,11 @@ class TestSA3:
 
     def test_invalid_extraction(self):
         with pytest.raises(ValueError, match="Unsupported extraction method"):
-            SA3(
+            model = SA3(
                 gdf=self.chicago,
                 w=self.w,
                 attrs_name=self.attrs_name,
                 min_cluster_size=10,
                 extraction="unsupported",
             )
+            model.solve()
