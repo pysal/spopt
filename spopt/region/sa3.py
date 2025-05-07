@@ -1,9 +1,8 @@
 # ruff: noqa: B006, C408
 
-from libpysal.graph import Graph
-from libpysal.weights import W
-from numpy import column_stack, full, unique, where, zeros
-from pandas import Series, concat
+import libpysal
+import numpy as np
+import pandas as pd
 from sklearn.cluster import AgglomerativeClustering
 
 from spopt.BaseClass import BaseSpOptHeuristicSolver
@@ -70,6 +69,7 @@ class SA3(BaseSpOptHeuristicSolver):
     per the specified parameters and extracts clusters from it, using density-clustering
     extraction algorithms - Excess of Mass or Leaf. This results in multiscale,
     contiguous clusters with noise.
+
     Parameters
     ----------
 
@@ -106,10 +106,13 @@ class SA3(BaseSpOptHeuristicSolver):
     ):
         self.gdf = gdf
 
-        if isinstance(w, W):
-            w = Graph.from_W(w)
-        elif not isinstance(w, W) and not isinstance(w, Graph):
-            raise ValueError("Unkown graph type.")
+        if isinstance(w, libpysal.weights.W):
+            w = libpysal.graph.Graph.from_W(w)
+        elif not isinstance(w, libpysal.graph.Graph):
+            raise ValueError(
+                "Unkown graph type. Pass either libpysal.graph.Graph "
+                "or libpysal.weights.W."
+            )
 
         self.w = w
         self.attrs_name = attrs_name
@@ -128,14 +131,14 @@ class SA3(BaseSpOptHeuristicSolver):
         labels = self.w.component_labels
 
         results = []
-        for label in unique(labels):
+        for label in np.unique(labels):
             component_members = labels[labels == label].index.values
 
             # there are few component members, label all as noise
             if component_members.shape[0] <= self.min_cluster_size:
                 results.append(
-                    Series(
-                        full(component_members.shape[0], -1), index=component_members
+                    pd.Series(
+                        np.full(component_members.shape[0], -1), index=component_members
                     )
                 )
                 continue
@@ -151,12 +154,14 @@ class SA3(BaseSpOptHeuristicSolver):
             # # sometimes ward/average linkage breaks the monotonic increase in the MST
             # # if that happens shift all distances by the max drop
             # # need a loop because several connections might be problematic
-            problem_idxs = where(component_tree[1:, 2] < component_tree[0:-1, 2])[0]
+            problem_idxs = np.where(component_tree[1:, 2] < component_tree[0:-1, 2])[0]
             while problem_idxs.shape[0]:
                 component_tree[problem_idxs + 1, 2] = (
                     component_tree[problem_idxs, 2] + 0.01
                 )
-                problem_idxs = where(component_tree[1:, 2] < component_tree[0:-1, 2])[0]
+                problem_idxs = np.where(
+                    component_tree[1:, 2] < component_tree[0:-1, 2]
+                )[0]
             # check if tree distances are always increasing
             assert (component_tree[1:, 2] >= component_tree[0:-1, 2]).all()
 
@@ -164,7 +169,7 @@ class SA3(BaseSpOptHeuristicSolver):
                 component_tree, self.min_cluster_size, eom_clusters=self.eom_clusters
             )
 
-            results.append(Series(component_clusters, index=component_members))
+            results.append(pd.Series(component_clusters, index=component_members))
 
         # relabel local clusters [[0,1,2], [0,1]] to global clusters [0, 1, 2, 3, 4],
         # while keeping noise labels as they are
@@ -183,7 +188,7 @@ class SA3(BaseSpOptHeuristicSolver):
             next_cluster_val += highest_cluster_count + 1
 
         # set the labels in the same order as the input data
-        self.labels_ = concat(new_labels).loc[self.gdf.index]
+        self.labels_ = pd.concat(new_labels).loc[self.gdf.index]
 
     def _get_tree(self, training_data, clustering_graph, clustering_kwds):
         """Carry the agglomerative clustering, transform the result
@@ -200,7 +205,7 @@ class SA3(BaseSpOptHeuristicSolver):
 
         # Create a linkage matrix from a sklearn hierarchical clustering model.
         # by getting the counts for every connection
-        counts = zeros(model.children_.shape[0])
+        counts = np.zeros(model.children_.shape[0])
         n_samples = len(model.labels_)
         for i, merge in enumerate(model.children_):
             current_count = 0
@@ -211,7 +216,7 @@ class SA3(BaseSpOptHeuristicSolver):
                     current_count += counts[child_idx - n_samples]
             counts[i] = current_count
 
-        linkage_matrix = column_stack(
+        linkage_matrix = np.column_stack(
             [model.children_, model.distances_, counts]
         ).astype(float)
 
