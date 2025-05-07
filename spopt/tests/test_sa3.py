@@ -7,19 +7,15 @@ from packaging.version import Version
 from spopt.region import SA3, extract_clusters
 
 LIBPYSAL_L_410 = Version(libpysal.__version__) < Version("4.10.0")
-
-
 RANDOM_STATE = 12345
-pth = libpysal.examples.get_path("airbnb_Chicago 2015.shp")
-chicago = geopandas.read_file(pth)
-
 
 @pytest.mark.skipif(LIBPYSAL_L_410, reason="libysal.subgraph required")
 class TestSA3:
     def setup_method(self):
-        self.chicago = chicago.copy()
+        pth = libpysal.examples.get_path("airbnb_Chicago 2015.shp")
+        self.chicago = geopandas.read_file(pth)
         self.attrs_name = ["num_spots"]
-        self.w = libpysal.weights.Queen.from_dataframe(chicago, use_index=False)
+        self.w = libpysal.weights.Queen.from_dataframe(self.chicago, use_index=False)
 
         self.eom_labels_3 = numpy.array(
             [
