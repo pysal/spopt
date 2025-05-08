@@ -1,6 +1,6 @@
-import libpysal
 import numpy as np
 import pandas as pd
+from libpysal import graph, weights
 from sklearn.cluster import AgglomerativeClustering
 
 from spopt.BaseClass import BaseSpOptHeuristicSolver
@@ -102,9 +102,9 @@ class SA3(BaseSpOptHeuristicSolver):
     ):
         self.gdf = gdf
 
-        if isinstance(w, libpysal.weights.W):
-            w = libpysal.graph.Graph.from_W(w)
-        elif not isinstance(w, libpysal.graph.Graph):
+        if isinstance(w, weights.W):
+            w = graph.Graph.from_W(w)
+        elif not isinstance(w, graph.Graph):
             raise ValueError(
                 "Unkown graph type. Pass either libpysal.graph.Graph "
                 "or libpysal.weights.W."
