@@ -1,7 +1,7 @@
 name: spopt
 channels:
   - conda-forge
-dependencies: 
+dependencies:
   - python=3.13
   - geopandas
   - jupyterlab
@@ -17,7 +17,8 @@ dependencies:
   - shapely
   - tqdm
   - pointpats
-  
+  - fast_hdbscan
+
   # notebook/binder specific
   - folium
   - glpk
@@ -28,7 +29,7 @@ dependencies:
   - seaborn
   - spaghetti
   - watermark
-  
+
   # bleeding edge spopt
   - pip:
     - git+https://github.com/pysal/spopt.git@main
