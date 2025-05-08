@@ -15,6 +15,7 @@ dependencies:
   - spaghetti=1.6.4
   - tqdm=4.63
   - pointpats=2.3
+  - fast_hdbscan=0.2.2
   # testing
   - codecov
   - coverage
