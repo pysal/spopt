@@ -4,6 +4,7 @@ channels:
 dependencies:
   - python=3.11
   - fast_hdbscan=0.2.2 # for sa3
+  - fiona<1.10 # see gh#492
   - geopandas=0.14.0
   - libpysal=4.10.0
   - mapclassify=2.7.0
