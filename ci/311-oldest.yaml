@@ -3,26 +3,30 @@ channels:
   - conda-forge
 dependencies:
   - python=3.11
-  - geopandas=0.12
-  - libpysal=4.10
-  - mapclassify=2.5
+  - fast_hdbscan=0.2.2 # for sa3
+  - fiona<1.10 # see gh#492
+  - geopandas=0.14.0
+  - libpysal=4.10.0
+  - mapclassify=2.7.0
   - networkx=3.2
-  - numpy=1.23
-  - pandas=2.0
-  - scikit-learn=1.3
-  - scipy=1.11
-  - shapely=2.0.1
-  - spaghetti=1.6.4
-  - tqdm=4.63
-  - pointpats=2.3
-  - fast_hdbscan=0.2.2
+  - numba # for sa3
+  - numpy=1.26.0
+  - pandas=2.1.0
+  - pointpats=2.4.0
+  - scikit-learn=1.4.0
+  - scipy=1.12.0
+  - shapely=2.1.0
+  - spaghetti=1.7.4
+  - tqdm=4.66.0
+  
   # testing
   - codecov
   - coverage
   - pytest
   - pytest-cov
   - pytest-xdist
+
   # with pip
   - pip
   - pip:
-    - pulp==2.7
+    - pulp==2.8

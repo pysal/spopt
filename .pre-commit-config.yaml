@@ -1,9 +1,9 @@
 files: "spopt\/|notebooks\/"
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.11.4"
+    rev: "v0.11.13"
     hooks:
-      - id: ruff
+      - id: ruff-check
       - id: ruff-format
 
 ci:

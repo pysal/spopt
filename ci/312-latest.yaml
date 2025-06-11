@@ -3,26 +3,29 @@ channels:
   - conda-forge
 dependencies:
   - python=3.12
+  - fast_hdbscan # for sa3
   - geopandas
   - libpysal
   - mapclassify
   - networkx
+  - numba # for sa3
   - numpy
   - pandas
+  - pointpats
   - scikit-learn
   - scipy
+  - shapely
   - spaghetti
   - tqdm
-  - pointpats
-  - fast_hdbscan # for sa3
+
   # testing
   - codecov
   - coverage
   - pytest
   - pytest-cov
   - pytest-xdist
+
   # with pip
   - pip
   - pip:
     - pulp
-
