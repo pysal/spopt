@@ -3,21 +3,22 @@ channels:
   - conda-forge
 dependencies:
   - python=3.13
+  - fast_hdbscan
   - geopandas
   - jupyterlab
   - libpysal
   - mapclassify
   - networkx
+  - numba
   - numpy
   - pandas
+  - pointpats
   - pip
   - pulp
   - scikit-learn
   - scipy
   - shapely
   - tqdm
-  - pointpats
-  - fast_hdbscan
 
   # notebook/binder specific
   - folium

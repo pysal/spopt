@@ -2,7 +2,6 @@ import pathlib
 import pickle
 import warnings
 
-import _pytest
 import geopandas
 import numpy
 import pandas
@@ -134,37 +133,37 @@ _warns_geo_crs = pytest.warns(UserWarning, match="Geometry is in a geographic CR
 
 
 @pytest.fixture
-def loc_warns_geo_crs() -> _pytest.recwarn.WarningsChecker:
+def loc_warns_geo_crs():
     """`locate` warning"""
     return _warns_geo_crs
 
 
 @pytest.fixture
-def loc_warns_mixed_type_dem() -> _pytest.recwarn.WarningsChecker:
+def loc_warns_mixed_type_dem():
     """`locate` warning"""
     return pytest.warns(UserWarning, match="Demand geodataframe contains mixed type")
 
 
 @pytest.fixture
-def loc_warns_mixed_type_fac() -> _pytest.recwarn.WarningsChecker:
+def loc_warns_mixed_type_fac():
     """`locate` warning"""
     return pytest.warns(UserWarning, match="Facility geodataframe contains mixed type")
 
 
 @pytest.fixture
-def loc_raises_diff_crs() -> _pytest.python_api.RaisesContext:
+def loc_raises_diff_crs():
     """`locate` error"""
     return pytest.raises(ValueError, match="Geodataframes crs are different: ")
 
 
 @pytest.fixture
-def loc_raises_infeasible() -> _pytest.python_api.RaisesContext:
+def loc_raises_infeasible():
     """`locate` error"""
     return pytest.raises(RuntimeError, match="Model is not solved: Infeasible.")
 
 
 @pytest.fixture
-def loc_raises_fac_constr() -> _pytest.python_api.RaisesContext:
+def loc_raises_fac_constr():
     """`locate` error"""
     return pytest.raises(AttributeError, match="Before setting facility constraint")
 
