@@ -3,17 +3,19 @@ channels:
   - conda-forge
 dependencies:
   - python=3.13
+  - fast_hdbscan # for sa3
   - folium # for geopandas.explore()
-  - geos # for shapely
   - matplotlib # for geopandas.explore()
+  - numba # for sa3
   - tqdm
+
   # testing
   - codecov
   - coverage
   - pytest
   - pytest-cov
   - pytest-xdist
-  - fast_hdbscan # for sa3
+  
   # with pip
   - pip
   - pip:
@@ -26,10 +28,10 @@ dependencies:
     - pulp
     - scikit-learn
     - scipy
+    - shapely
     - git+https://github.com/geopandas/geopandas.git
+    - git+https://github.com/networkx/networkx.git
     - git+https://github.com/pysal/libpysal.git
     - git+https://github.com/pysal/mapclassify.git
-    - git+https://github.com/networkx/networkx.git
     - git+https://github.com/pysal/pointpats.git
-    - git+https://github.com/shapely/shapely.git
     - git+https://github.com/pysal/spaghetti.git
