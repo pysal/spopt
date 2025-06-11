@@ -76,7 +76,7 @@ notebooks = [
 ]
 sa-three = [
     "fast_hdbscan>=0.2.2",
-    "numba>=0.57.0",
+    "numba",
 ]
 
 

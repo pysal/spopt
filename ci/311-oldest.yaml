@@ -8,7 +8,7 @@ dependencies:
   - libpysal=4.10.0
   - mapclassify=2.7.0
   - networkx=3.2
-  - numba=0.57.0 # for sa3
+  - numba # for sa3
   - numpy=1.26.0
   - pandas=2.1.0
   - pointpats=2.4.0
