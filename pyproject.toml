@@ -27,7 +27,7 @@ classifiers = [
 requires-python = ">=3.11"
 dependencies = [
     "geopandas>=0.12",
-    "libpysal>=4.6",
+    "libpysal>=4.10",
     "mapclassify>=2.5",
     "networkx>=3.2",
     "numpy>=1.23",

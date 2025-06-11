@@ -139,7 +139,7 @@ def sub_adj_matrix(adj, nodes, wo_nodes=None):
 
     """
     if wo_nodes is not None:
-        mask = np.in1d(nodes, wo_nodes, invert=True)
+        mask = np.isin(nodes, wo_nodes, invert=True)
         nodes = nodes[mask]
     nodes = nodes[:, None]
     return csr_matrix(adj[nodes, nodes.T])
