@@ -74,7 +74,7 @@ notebooks = [
     "seaborn",
     "watermark",
 ]
-sa-three = [
+sa3 = [
     "fast_hdbscan>=0.2.2",
     "numba",
 ]
