@@ -13,6 +13,9 @@ import logging
 import scipy.sparse as sp
 import libpysal
 import scipy.sparse.csgraph as csgraph
+from collections import deque
+from .base import FacilityModelBuilder
+from .util import convert_to_scipy_sparse, rising_combination
 
 class GreedyVariable:
     def __init__(self, name, value):
@@ -28,6 +31,336 @@ class GreedyConstraint:
         self.pi = info.get("shadow_price", 0.0)
         self.slack = info.get("slack", 0.0)
 
+class FlowModelBuilder:
+    """
+    Builder class for constructing optimization variables and constraints 
+    for Flow Refueling Location Model (FRLM).
+    """
+    
+    @staticmethod
+    def add_facility_variables(
+        obj: Any, 
+        candidate_sites: List[Any], 
+        var_name: str = "x_{i}"
+    ) -> None:
+        """
+        Add facility location binary variables.
+
+        Parameters
+        ----------
+        obj : Any
+            The optimization model object
+        candidate_sites : List[Any]
+            List of potential facility locations
+        var_name : str, optional
+            Variable name format string
+        """
+
+        fac_vars = [
+            pulp.LpVariable(
+                var_name.format(i=i), 
+                lowBound=0, 
+                upBound=1, 
+                cat=pulp.LpInteger
+            ) 
+            for i in candidate_sites
+        ]
+
+        setattr(obj, "facility_vars", fac_vars)
+        setattr(obj, "fac_vars", fac_vars)
+
+    @staticmethod
+    def add_flow_variables(
+        obj: Any, 
+        flows: Dict[Tuple[Any, Any], float],
+        path_refueling_combinations: Optional[Dict[Tuple[Any, Any], List[List[Any]]]] = None,
+        var_name: str = "y_{q}_{h}"
+    ) -> None:
+        """
+        Add flow coverage continuous variables.
+
+        Parameters
+        ----------
+        obj : Any
+            The optimization model object
+        flows : Dict[Tuple[Any, Any], float]
+            Dictionary of flows between origin-destination pairs
+        path_refueling_combinations : Dict[Tuple[Any, Any], List[List[Any]]], optional
+            Valid facility combinations for each flow path
+        var_name : str, optional
+            Variable name format string
+        """
+        flow_vars = {}
+
+        if path_refueling_combinations is None:
+            for q, od_pair in enumerate(flows.keys()):
+                flow_vars[q] = pulp.LpVariable(
+                    f"y_{q}",  
+                    lowBound=0,
+                    upBound=1,
+                    cat=pulp.LpContinuous
+                )
+        else:
+            for q, od_pair in enumerate(flows.keys()):
+                valid_combinations = path_refueling_combinations[od_pair]
+                for h, combination in enumerate(valid_combinations):
+                    flow_vars[(q, h)] = pulp.LpVariable(
+                        var_name.format(q=q, h=h),
+                        lowBound=0,
+                        upBound=1,
+                        cat=pulp.LpContinuous
+                    )
+        
+        setattr(obj, "flow_vars", flow_vars)
+
+    @staticmethod
+    def add_flow_coverage_constraints(
+        obj: Any,
+        flows: Dict[Tuple[Any, Any], float],
+        path_refueling_combinations: Optional[Dict[Tuple[Any, Any], List[List[Any]]]] = None
+    ) -> None:
+        """
+        Add flow coverage constraints.
+
+        Parameters
+        ----------
+        obj : Any
+            The optimization model object
+        flows : Dict[Tuple[Any, Any], float]
+            Dictionary of flows between origin-destination pairs
+        path_refueling_combinations :Dict[Tuple[Any, Any], List[List[Any]]], optional
+            Valid facility combinations for each flow path
+        """
+        if hasattr(obj, "flow_vars") and hasattr(obj, "facility_vars"):
+            flow_vars = getattr(obj, "flow_vars")
+            model = getattr(obj, "problem")
+
+            if path_refueling_combinations is None:
+                for q, od_pair in enumerate(flows.keys()):
+                    model += flow_vars[q] <= 1
+            else:
+                for q, od_pair in enumerate(flows.keys()):
+                    model += (
+                        pulp.lpSum(
+                            flow_vars[(q, h)] 
+                            for h in range(len(path_refueling_combinations[od_pair]))
+                        ) <= 1
+                    )
+        else:
+            raise AttributeError(
+                "Flow and facility variables must be set before adding flow coverage constraints."
+            )
+
+    @staticmethod
+    def _compute_facility_usage(
+        origin: Any, 
+        destination: Any, 
+        facility: Any, 
+        combination: List
+    ) -> int:
+        """
+            Compute facility usage coefficient for capacitated model.
+
+            Parameters
+            ----------
+            origin : Any
+                Origin node of the flow
+            destination : Any
+                Destination node of the flow
+            facility : Any
+                Facility being evaluated
+            combination : List
+                List of facilities in the current combination
+
+            Returns
+            -------
+            int
+                Facility usage coefficient
+        """
+        # Facility not in the combination
+        if facility not in combination:
+            return 0
+
+        # Facility is at origin or destination
+        if facility == origin or facility == destination:
+            return 1
+
+        # Facility is used as an intermediate refueling point
+        return 2
+    
+    @staticmethod
+    def add_capacity_constraints(
+        obj: Any,
+        flows: Dict[Tuple[Any, Any], float],
+        path_refueling_combinations: Dict[Tuple[Any, Any], List[List[Any]]],
+        e_coefficients: Dict[Tuple[Any, Any], float],
+        capacity: float,
+        candidate_sites: List[Any]
+    ) -> None:
+        """
+        Add facility capacity constraints.
+
+        Parameters
+        ----------
+        obj : Any
+            The optimization model object
+        flows : Dict[Tuple[Any, Any], float]
+            Dictionary of flows between origin-destination pairs
+        path_refueling_combinations : Dict[Tuple[Any, Any], List[List[Any]]]
+            Valid facility combinations for each flow path
+        e_coefficients : Dict[Tuple[Any, Any], float]
+            Refueling frequency coefficients
+        capacity : float
+            Facility module capacity
+        candidate_sites : List[Any]
+            List of potential facility locations
+        """
+        if hasattr(obj, "facility_vars") and hasattr(obj, "flow_vars"):
+            facility_vars = getattr(obj, "facility_vars")
+            flow_vars = getattr(obj, "flow_vars")
+            model = getattr(obj, "problem")
+
+            for k in candidate_sites:
+                model += (
+                    pulp.lpSum(
+                        e_coefficients[od_pair]
+                        * FlowModelBuilder._compute_facility_usage(od_pair[0], od_pair[1], k, combination)
+                        * flows[od_pair]
+                        * flow_vars[(q, h)]
+                        for q, od_pair in enumerate(flows.keys())
+                        for h, combination in enumerate(
+                            path_refueling_combinations[od_pair]
+                        )
+                        if k in combination
+                    )
+                    <= capacity * facility_vars[k]
+                )
+        else:
+            raise AttributeError(
+                "Facility and flow variables must be set before adding capacity constraints."
+            )
+    @staticmethod
+    def add_threshold_constraints(
+        obj: Any,
+        flows: Dict[Tuple[Any, Any], float],
+        node_weights: np.ndarray,
+        threshold: float,
+        weight: float
+    ) -> None:
+        """
+        Add threshold extension constraints to the model.
+
+        Parameters
+        ----------
+        obj : Any
+            The optimization model object
+        flows : Dict[Tuple[Any, Any], float]
+            Dictionary of flows between origin-destination pairs
+        node_weights : np.ndarray
+            Weights for each node
+        threshold : float
+            Minimum flow coverage threshold
+        weight : float
+            Weight parameter for combining node and flow coverage
+        """
+        if hasattr(obj, "facility_vars") and hasattr(obj, "flow_vars"):
+            model = getattr(obj, "problem")
+            facility_vars = getattr(obj, "facility_vars")
+            flow_vars = getattr(obj, "flow_vars")
+
+            node_coverage_vars = {}
+            for origin in set(od[0] for od in flows.keys()):
+                node_coverage_vars[origin] = pulp.LpVariable(
+                    f"node_coverage_{origin}", 
+                    lowBound=0, 
+                    upBound=1, 
+                    cat=pulp.LpBinary
+                )
+                
+            for origin in node_coverage_vars:
+                origin_flows = [
+                    (q, od_pair) for q, od_pair in enumerate(flows.keys()) 
+                    if od_pair[0] == origin
+                ]
+
+                total_origin_flow = sum(flows[od_pair] for _, od_pair in origin_flows)
+
+                model += (
+                    pulp.lpSum(
+                        flows[od_pair] * flow_vars[(q, h)]
+                        for q, od_pair in origin_flows
+                        for h in range(len(obj.path_refueling_combinations[od_pair]))
+                    )
+                    >= threshold * total_origin_flow * node_coverage_vars[origin]
+                )
+
+            if hasattr(obj, "original_objective"):
+                original_objective = getattr(obj, "original_objective")
+
+                node_coverage_term = pulp.lpSum(
+                    node_weights[origin] * node_coverage_vars[origin]
+                    for origin in node_coverage_vars
+                )
+                
+                flow_coverage_term = original_objective
+
+
+                model += (
+                    weight * node_coverage_term + 
+                    (1 - weight) * flow_coverage_term
+                )
+
+            setattr(obj, "node_coverage_vars", node_coverage_vars)
+        else:
+            raise AttributeError(
+                "Facility and flow variables must be set before adding threshold constraints."
+            )
+    @staticmethod
+    def add_path_refueling_constraints(
+        obj: Any,
+        a: Dict[int, List[int]],
+        K: Dict[Tuple[int, int], List[Any]],
+        candidate_sites: List[Any]
+    ) -> None:
+        """
+        Add path refueling constraints to ensure sufficient refueling facilities 
+        are available for each path segment.
+
+        Parameters
+        ----------
+        obj : Any
+            The optimization model object
+        a : Dict[int, List[int]]
+            Dictionary mapping path IDs to arc indices
+        K : Dict[Tuple[int, int], List[Any]]
+            Dictionary of refueling nodes for each path segment
+        candidate_sites : List[Any]
+            List of potential facility locations
+        """
+        if hasattr(obj, "facility_vars") and hasattr(obj, "flow_vars"):
+            facility_vars = getattr(obj, "facility_vars")
+            flow_vars = getattr(obj, "flow_vars")
+            model = getattr(obj, "problem")
+
+            facility_index_map = {site: idx for idx, site in enumerate(candidate_sites)}
+
+            for q in flow_vars:
+                if q in a:
+                    for arc in a[q]:
+                        key = (q, arc)
+                        if key in K:
+                            refuel_facilities = pulp.lpSum(
+                                facility_vars[facility_index_map[node]] 
+                                for node in K[key] 
+                                if node in facility_index_map
+                            )
+
+                            model += refuel_facilities >= flow_vars[q]
+        else:
+            raise AttributeError(
+                "Facility and flow variables must be set before adding path refueling constraints."
+            )
+    
 
 class FRLM:
     """
@@ -129,6 +462,19 @@ class FRLM:
 
         self.bounds = {"lower": None, "upper": None}
 
+    def _initialize_variables(self):
+        self.variables = {}
+        self.constraints = {}
+        self.lagrange_multipliers = {}
+        self.reduced_costs = {}
+        self.shadow_prices = {}
+        self.greedy_iterations = []
+        self.marginal_contributions = {}
+        self.solver_stats = {}
+        self.bounds = {"lower": None, "upper": None}
+        self.model = None
+        self.pulp_status = None
+
         
     def get_variable_value(self, var_name: str) -> Optional[float]:
         return self.variables.get(var_name)
@@ -138,43 +484,10 @@ class FRLM:
 
     def get_reduced_cost(self, var_name: str) -> Optional[float]:
         return self.reduced_costs.get(var_name)
-    
-    @classmethod
-    def convert_to_scipy_sparse(cls, network):
-        """
-        Convert various network formats (networkx, libpysal.graph, numpy arrays) to scipy sparse matrix.
-
-        Parameters
-        ----------
-        network : object
-            Input network 
-
-        Returns
-        -------
-        scipy.sparse.csr_matrix
-        """
-        if isinstance(network, nx.Graph):
-            return nx.to_scipy_sparse_array(
-                network, 
-                weight='weight',  
-                format='csr'
-            )
-
-        if isinstance(network, libpysal.graph.Graph):
-            return network.sparse
-
-        if sp.issparse(network):
-            return network
-
-        if isinstance(network, np.ndarray):
-            return sp.csr_matrix(network)
-        
-        else:
-            raise TypeError(f"Unsupported network type: {type(network)}, expected networkx.Graph, libpysal.graph.Graph, numpy.ndarray, or scipy.sparse matrix.")
 
     @classmethod
     def from_flow_dataframe(cls, 
-                  network, 
+                  network: Union[nx.Graph, libpysal.graph.Graph, np.ndarray, sp.csr_matrix], 
                   flows: Union[pd.DataFrame, Dict], 
                   **kwargs):
         """
@@ -182,12 +495,11 @@ class FRLM:
 
         Parameters
         ----------
-        network : object
-            Network representation
+        network : Union[nx.Graph, libpysal.graph.Graph, np.ndarray, sp.csr_matrix]
         flows : Union[pd.DataFrame, Dict]
             Flow data
         """
-        scipy_network = cls.convert_to_scipy_sparse(network)
+        scipy_network = convert_to_scipy_sparse(network)
         frlm = cls(**kwargs)
         
         frlm.scipy_network = scipy_network
@@ -196,13 +508,13 @@ class FRLM:
 
         if flows is not None:
             if isinstance(flows, dict):
-                frlm.load_flows_from_dict(flows)
+                frlm._load_flows_from_dict(flows)
             elif isinstance(flows, pd.DataFrame):
                 required_columns = ['origin', 'destination', 'volume']
                 if not all(col in flows.columns for col in required_columns):
                     raise ValueError(f"Flows DataFrame must contain columns: {required_columns}")
                 
-                frlm.load_flows_from_dataframe(flows)
+                frlm._load_flows_from_dataframe(flows)
             else:
                 raise TypeError("Flows must be a dictionary or DataFrame")
         else:
@@ -216,34 +528,37 @@ class FRLM:
                 raise KeyError(f"Site {site} is not a node in the network")
         self.candidate_sites = sites
     
-    def add_network(self, network):
+    def add_network(self, 
+                    network: Union[nx.Graph, libpysal.graph.Graph, np.ndarray, sp.csr_matrix]):
         """
         Add network to the FRLM instance.
-        
+    
         Parameters
         ----------
-        network : object
-            Network representation to be converted to scipy sparse matrix
+        network : Union[nx.Graph, libpysal.graph.Graph, np.ndarray, sp.csr_matrix]
         
         Returns
         -------
         self : FRLM
             Returns the instance for method chaining
         """
-        self.scipy_network = self.convert_to_scipy_sparse(network)
+        self.scipy_network = convert_to_scipy_sparse(network)
         self.network = network
         self.candidate_sites = list(range(self.scipy_network.shape[0]))
         
         return self
 
-    def add_flows(self, flows):
+    def add_flows(self, 
+                  flows: Union[pd.DataFrame, Dict[Tuple[Any, Any], float]]):
         """
         Add multiple flows to the FRLM instance.
         
         Parameters
         ----------
         flows : Union[pd.DataFrame, Dict[Tuple[Any, Any], float]]
-            Flows to be added
+            Flows to be added. Can be either:
+            - A pandas DataFrame with flow information
+            - A dictionary mapping (origin, destination) tuples to flow volumes
         
         Returns
         -------
@@ -254,13 +569,55 @@ class FRLM:
             raise ValueError("Network must be added before adding flows")
 
         if isinstance(flows, dict):
-            self.load_flows_from_dict(flows)
+            self._load_flows_from_dict(flows)
         elif isinstance(flows, pd.DataFrame):
-            self.load_flows_from_dataframe(flows)
+            self._load_flows_from_dataframe(flows)
         else:
-            raise TypeError("Flows must be a dictionary or DataFrame")
+            raise TypeError("Flows must be a dictionary or pandas.DataFrame")
         
         return self
+    
+    def _reconstruct_path(self, 
+        predecessors: List[int], 
+        origin: int, 
+        destination: int
+        ) -> List[int]:
+
+        """
+        Reconstruct the shortest path between origin and destination.
+
+        Parameters
+        ----------
+        predecessors : List[int]
+            Predecessor array from shortest path algorithm
+        origin : int
+            Starting node of the path
+        destination : int
+            Ending node of the path
+
+        Returns
+        -------
+        List[int]
+            Shortest path from origin to destination
+        """
+        if predecessors[destination] == -9999:
+            raise KeyError(f"No path exists between {origin} and {destination}")
+
+        path = deque([destination])
+        current = destination
+
+        while current != origin:
+            prev = predecessors[current]
+            if prev == -9999:
+                raise KeyError(f"No path exists between {origin} and {destination}")
+
+            path.appendleft(prev)
+            current = prev
+
+        if path[0] != origin:
+            path.appendleft(origin)
+
+        return list(path)
 
     def add_flow(
         self, origin: Any, destination: Any, volume: float, path: Optional[List] = None
@@ -301,25 +658,7 @@ class FRLM:
             if np.isinf(distances[destination]):
                 raise KeyError(f"No path exists between {origin} and {destination}")
 
-            def reconstruct_path(distances, predecessors, origin, destination):
-                if predecessors[destination] == -9999:
-                    raise KeyError(f"No path exists between {origin} and {destination}")
-
-                path = [destination]
-                current = destination
-
-                while current != origin:
-                    prev = predecessors[current]
-                    if prev == -9999:
-                        raise KeyError(f"No path exists between {origin} and {destination}")
-
-                    path.insert(0, prev)
-
-                    current = prev
-
-                return path
-
-            path = reconstruct_path(distances, predecessors, origin, destination)
+            path = self._reconstruct_path(predecessors, origin, destination)
             if path[0] != origin or path[-1] != destination:
                 raise KeyError(f"Path reconstruction failed for {origin} to {destination}")
 
@@ -332,18 +671,15 @@ class FRLM:
 
         self._set_adaptive_vehicle_range()
 
-    def load_flows_from_dict(self, flows: Dict[Tuple[Any, Any], float], compute_paths: bool = True) -> None:
+    def _load_flows_from_dict(self, flows: Dict[Tuple[Any, Any], float]) -> None:
         """
-        Load flows from dictionary by converting to DataFrame and using load_flows_from_dataframe().
+        Load flows from dictionary by converting to DataFrame and using _load_flows_from_dataframe().
         
         Parameters
         ----------
         flows : Dict[Tuple[Any, Any], float]
             Dictionary mapping (origin, destination) tuples to flow volumes
-        compute_paths : bool, default=True
-            Whether to compute shortest paths for each flow
         """
-
         data = []
         for (origin, destination), volume in flows.items():
             data.append({
@@ -354,7 +690,7 @@ class FRLM:
         
         df = pd.DataFrame(data)
 
-        self.load_flows_from_dataframe(
+        self._load_flows_from_dataframe(
             df, 
             origin_col='origin',
             destination_col='destination', 
@@ -362,7 +698,7 @@ class FRLM:
             path_col=None
         )
 
-    def load_flows_from_dataframe(
+    def _load_flows_from_dataframe(
         self,
         df: pd.DataFrame,
         origin_col: str = "origin",
@@ -483,38 +819,6 @@ class FRLM:
 
         return self.K, self.a
 
-    @staticmethod
-    def rising_combination(values: List, start: int = 1, stop: int = None) -> Iterable[List]:
-    
-        """
-        Generate combinations of increasing sizes from a list of values.
-        
-        Parameters
-        ----------
-        values : list
-            Input list to generate combinations from
-        start : int, optional
-            Minimum size of combinations (default is 1)
-        stop : int or None, optional
-            Maximum size of combinations
-        
-        Yields
-        ------
-        List
-            Combinations of different sizes
-        """
-        if stop is None:
-            stop = len(values)
-        
-        if start < 1:
-            raise ValueError("Start must be at least 1")
-        if stop > len(values):
-            stop = len(values)
-        
-        for size in range(start, min(stop + 1, len(values) + 1)):
-            yield from map(list, itertools.combinations(values, size))
-
-
     def compute_refueling_frequency(self, origin: Any, destination: Any) -> float:
         od_pair = (origin, destination)
 
@@ -542,46 +846,6 @@ class FRLM:
 
         self.e_coefficients[od_pair] = e_q
         return e_q
-
-    def compute_facility_usage(
-        self, 
-        origin: Any, 
-        destination: Any, 
-        facility: Any, 
-        combination: List
-    ) -> int:
-        """
-        Compute facility usage coefficient for capacitated model.
-
-        Parameters
-        ----------
-        origin : Any
-            Origin node of the flow
-        destination : Any
-            Destination node of the flow
-        facility : Any
-            Facility being evaluated
-        combination : List
-            List of facilities in the current combination
-
-        Returns
-        -------
-        int
-            Facility usage coefficient:
-            - 0: Facility is not in the combination or not used
-            - 1: Facility is at origin/destination or used once
-            - 2: Facility is used twice (intermediate refueling), account for round trip usage 
-        """
-        # Facility not in the combination
-        if facility not in combination:
-            return 0
-
-        # Facility is at origin or destination
-        if facility == origin or facility == destination:
-            return 1
-
-        # Facility is used as an intermediate refueling point
-        return 2
 
     def check_path_refueling_feasibility(self, path: List, facilities: List) -> bool:
         """
@@ -675,7 +939,7 @@ class FRLM:
             stop = stop if stop is not None else self.p_facilities
 
             self.facility_combinations = list(
-                self.rising_combination(
+                rising_combination(
                     self.candidate_sites, 
                     start=start, 
                     stop=stop
@@ -793,7 +1057,7 @@ class FRLM:
         if not self.flows:
             raise ValueError("No flows loaded. ")
 
-        self._clear_solution_data()
+        self._initialize_variables()
 
         if solver == "greedy":
             self.solver_type = "greedy"
@@ -807,7 +1071,7 @@ class FRLM:
             )
 
         else:
-            self.solver_type = type(solver).__name__
+            self.solver_type = "pulp"
             return self._solve_pulp(
                 solver_instance=solver,
                 objective=objective,
@@ -815,23 +1079,9 @@ class FRLM:
                 **kwargs,
             )
 
-    def _clear_solution_data(self):
-        self.variables = {}
-        self.constraints = {}
-        self.lagrange_multipliers = {}
-        self.reduced_costs = {}
-        self.shadow_prices = {}
-        self.greedy_iterations = []
-        self.marginal_contributions = {}
-        self.solver_stats = {}
-        self.bounds = {"lower": None, "upper": None}
-        self.model = None
-        self.pulp_status = None
-
     def _solve_greedy(
         self,
         objective: str = "flow",
-        weight_method: str = "double",
         seed: Optional[int] = None,
         initialization_method: str = "empty",
         max_iterations: int = 100,
@@ -1417,7 +1667,6 @@ class FRLM:
         self,
         solver_instance: pulp.LpSolver = None,
         objective: str = "flow",
-        weight_method: str = "double",
         facility_combinations: Optional[List[List]] = None,
         **kwargs,
     ) -> Dict:
@@ -1429,210 +1678,109 @@ class FRLM:
             if not self.path_refueling_combinations:
                 self.generate_path_refueling_combinations(facility_combinations=facility_combinations)
 
-            start_time = time.time()
-            path_distances = {}
-            if objective == "vmt":
-                for od_pair, path in self.flow_paths.items():
-                    distance = sum(
-                        self.network[path[i]][path[i + 1]]["length"]
-                        for i in range(len(path) - 1)
-                    )
-                    path_distances[od_pair] = distance
+        start_time = time.time()
 
-            model_name = (
-                "Capacitated_FRLM_VMT" if objective == "vmt" else "Capacitated_FRLM"
+        path_distances = {}
+        if objective == "vmt":
+            for od_pair, path in self.flow_paths.items():
+                distance = sum(
+                    self.network[path[i]][path[i + 1]]["length"]
+                    for i in range(len(path) - 1)
+                )
+                path_distances[od_pair] = distance
+
+        model_name = (
+            "Capacitated_FRLM_VMT" if objective == "vmt" else "Capacitated_FRLM"
+        )
+        model = pulp.LpProblem(model_name, pulp.LpMaximize)
+        self.model = model
+
+        FlowModelBuilder.add_facility_variables(
+            self, 
+            candidate_sites=self.candidate_sites
+        )
+
+        # Add facility count constraint
+        FacilityModelBuilder.add_facility_constraint(
+            self, 
+            p_facilities=self.p_facilities
+        )
+
+        # Add capacity constraints if applicable
+        if self.capacity is not None:
+            FlowModelBuilder.add_capacity_constraints(
+                self,
+                flows=self.flows,
+                path_refueling_combinations=self.path_refueling_combinations,
+                e_coefficients=self.e_coefficients,
+                capacity=self.capacity,
+                candidate_sites=self.candidate_sites
             )
-            model = pulp.LpProblem(model_name, pulp.LpMaximize)
-            self.model = model
 
-            x = {
-                k: pulp.LpVariable(f"x_{k}", lowBound=0, cat=pulp.LpInteger)
-                for k in self.candidate_sites
-            }
-
-            y = {}
-            for q, od_pair in enumerate(self.flows.keys()):
-                valid_combinations = self.path_refueling_combinations[od_pair]
-                for h, combination in enumerate(valid_combinations):
-                    y[(q, h)] = pulp.LpVariable(
-                        f"y_{q}_{h}", lowBound=0, upBound=1, cat=pulp.LpContinuous
-                    )
-
-            constraint_refs = {}
-
-            if objective == "vmt":
-                model += pulp.lpSum(
-                    self.flows[od_pair] * path_distances[od_pair] * y[(q, h)]
-                    for q, od_pair in enumerate(self.flows.keys())
-                    for h, combination in enumerate(
-                        self.path_refueling_combinations[od_pair]
-                    )
-                )
-            else:
-                model += pulp.lpSum(
-                    self.flows[od_pair] * y[(q, h)]
-                    for q, od_pair in enumerate(self.flows.keys())
-                    for h, combination in enumerate(
-                        self.path_refueling_combinations[od_pair]
-                    )
-                )
-
-            for k in self.candidate_sites:
-                capacity_constraint = (
-                    pulp.lpSum(
-                        self.e_coefficients[od_pair]
-                        * self.compute_facility_usage(
-                            od_pair[0], od_pair[1], k, combination
-                        )
-                        * self.flows[od_pair]
-                        * y[(q, h)]
-                        for q, od_pair in enumerate(self.flows.keys())
-                        for h, combination in enumerate(
-                            self.path_refueling_combinations[od_pair]
-                        )
-                        if k in combination
-                    )
-                    <= self.capacity * x[k]
-                )
-                model += capacity_constraint
-                constraint_refs[f"capacity_{k}"] = capacity_constraint
-
-            module_constraint = pulp.lpSum(x.values()) == self.p_facilities
-            model += module_constraint
-            constraint_refs["module_count"] = module_constraint
-
-            for q, od_pair in enumerate(self.flows.keys()):
-                flow_constraint = (
-                    pulp.lpSum(
-                        y[(q, h)]
-                        for h in range(len(self.path_refueling_combinations[od_pair]))
-                    )
-                    <= 1
-                )
-                model += flow_constraint
-                constraint_refs[f"flow_coverage_{q}"] = flow_constraint
-
+            FlowModelBuilder.add_flow_variables(
+                self, 
+                flows=self.flows,
+                path_refueling_combinations=self.path_refueling_combinations
+            )
+            FlowModelBuilder.add_flow_coverage_constraints(
+                self,
+                flows=self.flows,
+                path_refueling_combinations=self.path_refueling_combinations
+            )
         else:
-            if not self.K or not self.a:
-                self._generate_k_a_sets()
-
-            start_time = time.time()
-            model = pulp.LpProblem("Basic_FRLM", pulp.LpMaximize)
-            self.model = model
-
-            num_facilities = (
-                max([node for key in self.K for node in self.K[key]]) if self.K else 0
+            FlowModelBuilder.add_flow_variables(
+                self, 
+                flows=self.flows
             )
-            num_flows = len(self.a)
+            FlowModelBuilder.add_flow_coverage_constraints(
+                self,
+                flows=self.flows
+            )
+    
+        FlowModelBuilder.add_path_refueling_constraints(
+            self,
+            a=self.a,  
+            K=self.K,  
+            candidate_sites=self.candidate_sites
+        )
 
-            z = {
-                i: pulp.LpVariable(f"z_{i}", cat=pulp.LpBinary)
-                for i in range(1, num_facilities + 1)
-            }
-            y = {
-                q: pulp.LpVariable(f"y_{q}", cat=pulp.LpBinary)
-                for q in range(1, num_flows + 1)
-                if q in self.a
-            }
+        if self.threshold > 0:
+            self.calculate_node_weights(
+                include_destination=self.include_destination
+            )
 
-            constraint_refs = {}
+            FlowModelBuilder.add_threshold_constraints(
+                self,
+                flows=self.flows,
+                node_weights=self.node_weights,
+                threshold=self.threshold,
+                weight=self.weight
+            )
 
-            path_distances = {}
-            if objective == "vmt":
-                for od_pair, path in self.flow_paths.items():
-                    distance = sum(
-                        self.network[path[i]][path[i + 1]]["length"]
-                        for i in range(len(path) - 1)
+        # Set the objective function
+        if objective == "vmt":
+            model += pulp.lpSum(
+                self.flows[od_pair] * path_distances[od_pair] * self.flow_vars[(q, h)]
+                for q, od_pair in enumerate(self.flows.keys())
+                for h, combination in enumerate(
+                    self.path_refueling_combinations[od_pair]
+                )
+            )
+        else:
+            if self.capacity is not None:
+                model += pulp.lpSum(
+                    self.flows[od_pair] * self.flow_vars[(q, h)]
+                    for q, od_pair in enumerate(self.flows.keys())
+                    for h, combination in enumerate(
+                        self.path_refueling_combinations[od_pair]
                     )
-                    path_distances[od_pair] = distance
-
-            if self.threshold > 0:
-                # self.calculate_node_weights(method=weight_method)
-                c = {
-                    j: pulp.LpVariable(f"c_{j}", cat=pulp.LpBinary)
-                    for j in range(1, len(self.node_weights))
-                    if self.node_weights[j] > 0
-                }
-
-                for j in c:
-                    flows_for_node = []
-                    flow_sum = 0
-                    for i, od_pair in enumerate(self.flows.keys()):
-                        if od_pair[0] == j:
-                            q = i + 1
-                            if q in y:
-                                flows_for_node.append(q)
-                                flow_sum += self.flows[od_pair]
-
-                    if flow_sum > 0 and flows_for_node:
-                        covered_flow = pulp.lpSum(
-                            self.flows[list(self.flows.keys())[q - 1]] * y[q]
-                            for q in flows_for_node
-                            if q in y
-                        )
-                        constraint = covered_flow >= self.threshold * flow_sum * c[j]
-                        model += constraint
-                        constraint_refs[f"threshold_node_{j}"] = constraint
-
-                if objective == "vmt":
-                    # VMT-based objective with threshold
-                    vmt_term = pulp.lpSum(
-                        self.flows[list(self.flows.keys())[q - 1]]
-                        * path_distances[list(self.flows.keys())[q - 1]]
-                        * y[q]
-                        for q in y
-                        if q <= len(self.flows)
-                        and list(self.flows.keys())[q - 1] in path_distances
-                    )
-                    model += self.weight * pulp.lpSum(
-                        self.node_weights[j] * c[j] for j in c
-                    ) + (1 - self.weight) * vmt_term / sum(
-                        self.flows[od] * path_distances[od] for od in self.flows.keys()
-                    )
-                else:
-                    # Flow-based objective with threshold
-                    model += self.weight * pulp.lpSum(
-                        self.node_weights[j] * c[j] for j in c
-                    ) + (1 - self.weight) * pulp.lpSum(
-                        list(self.flows.values())[q - 1] * y[q]
-                        for q in y
-                        if q <= len(self.flows)
-                    ) / sum(
-                        self.flows.values()
-                    )
+                )
             else:
-                if objective == "vmt":
-                    model += pulp.lpSum(
-                        self.flows[list(self.flows.keys())[q - 1]]
-                        * path_distances[list(self.flows.keys())[q - 1]]
-                        * y[q]
-                        for q in y
-                        if q <= len(self.flows)
-                        and list(self.flows.keys())[q - 1] in path_distances
-                    )
-                else:
-                    model += pulp.lpSum(
-                        list(self.flows.values())[q - 1] * y[q]
-                        for q in y
-                        if q <= len(self.flows)
-                    )
-
-            for q in y:
-                if q in self.a:
-                    for arc in self.a[q]:
-                        key = (q, arc)
-                        if key in self.K:
-                            refuel_facilities = pulp.lpSum(
-                                z[node] for node in self.K[key] if node in z
-                            )
-                            constraint = refuel_facilities >= y[q]
-                            model += constraint
-                            constraint_refs[f"flow_coverage_{q}_{arc}"] = constraint
-
-            facility_constraint = pulp.lpSum(z.values()) == self.p_facilities
-            model += facility_constraint
-            constraint_refs["facility_count"] = facility_constraint
-
+                model += pulp.lpSum(
+                    self.flows[od_pair] * self.flow_vars[q]
+                    for q, od_pair in enumerate(self.flows.keys())
+                )
+    
         if solver_instance is not None:
             model.solve(solver_instance)
         else:
@@ -1654,49 +1802,13 @@ class FRLM:
                 self.variables[var.name] = var.varValue
 
             if self.capacity is not None:
-                self.constraints = {}
-                for constraint_name, constraint in constraint_refs.items():
-                    slack_val = getattr(constraint, "slack", None)
-                    shadow_val = getattr(constraint, "pi", None)
-
-                    slack_val = slack_val if slack_val is not None else 0.0
-                    shadow_val = shadow_val if shadow_val is not None else 0.0
-
-                    self.constraints[constraint_name] = {
-                        "name": constraint_name,
-                        "type": (
-                            "eq"
-                            if "=" in str(constraint)
-                            else "leq" if "<=" in str(constraint) else "geq"
-                        ),
-                        "rhs": float(self.p_facilities),
-                        "slack": slack_val,
-                        "shadow_price": shadow_val,
-                        "active": abs(slack_val) < 1e-6,
-                    }
-
-            try:
-                for constraint_name, constraint in constraint_refs.items():
-                    if hasattr(constraint, "pi") and constraint.pi is not None:
-                        self.lagrange_multipliers[constraint_name] = constraint.pi
-                        self.shadow_prices[constraint_name] = constraint.pi
-            except AttributeError:
-                print("Warning: Dual values not available with current solver")
-
-            try:
-                for var in model.variables():
-                    if hasattr(var, "dj") and var.dj is not None:
-                        self.reduced_costs[var.name] = var.dj
-            except AttributeError:
-                print("Warning: Reduced costs not available with current solver")
-
-            if self.capacity is not None:
                 self.selected_facilities = {
-                    k: int(x[k].value())
+                    k: int(self.facility_vars[self.candidate_sites.index(k)].value())
                     for k in self.candidate_sites
-                    if x[k].value() > 0
+                    if self.facility_vars[self.candidate_sites.index(k)].value() > 0
                 }
 
+                # Calculate flow coverage
                 self.flow_coverage = {}
                 total_flow = sum(self.flows.values())
                 covered_flow = 0
@@ -1704,9 +1816,9 @@ class FRLM:
                 for q, od_pair in enumerate(self.flows.keys()):
                     flow_volume = self.flows[od_pair]
                     covered_proportion = sum(
-                        y[(q, h)].value()
+                        self.flow_vars[(q, h)].value()
                         for h in range(len(self.path_refueling_combinations[od_pair]))
-                        if y[(q, h)].value() > 0
+                        if self.flow_vars[(q, h)].value() > 0
                     )
 
                     self.flow_coverage[od_pair] = {
@@ -1716,9 +1828,7 @@ class FRLM:
                     }
 
                     if objective == "vmt":
-                        self.flow_coverage[od_pair]["distance"] = path_distances[
-                            od_pair
-                        ]
+                        self.flow_coverage[od_pair]["distance"] = path_distances[od_pair]
                         self.flow_coverage[od_pair]["covered_vmt"] = (
                             flow_volume * path_distances[od_pair] * covered_proportion
                         )
@@ -1726,180 +1836,166 @@ class FRLM:
                     covered_flow += flow_volume * covered_proportion
 
             else:
-                self.selected_facilities = {i: 1 for i in z if pulp.value(z[i]) > 0.5}
+                # For uncapacitated model
+                self.selected_facilities = {
+                    i: 1 
+                    for i, var in enumerate(self.facility_vars) 
+                    if var.value() > 0.5
+                }
 
-                covered_flows = [q for q in y if pulp.value(y[q]) > 0.5]
-                total_flow = sum(self.flows.values())
-                covered_flow = sum(
-                    list(self.flows.values())[q - 1]
-                    for q in covered_flows
-                    if q <= len(self.flows)
-                )
-
+                # Calculate flow coverage
                 self.flow_coverage = {}
-                for i, od_pair in enumerate(self.flows.keys()):
-                    if i + 1 in y and pulp.value(y[i + 1]) > 0.5:
-                        self.flow_coverage[od_pair] = {
-                            "flow_volume": self.flows[od_pair],
-                            "covered_proportion": 1.0,
-                            "covered_volume": self.flows[od_pair],
-                        }
-                    else:
-                        self.flow_coverage[od_pair] = {
-                            "flow_volume": self.flows[od_pair],
-                            "covered_proportion": 0.0,
-                            "covered_volume": 0.0,
-                        }
+                total_flow = sum(self.flows.values())
+                covered_flow = 0
+
+                for q, od_pair in enumerate(self.flows.keys()):
+                    flow_volume = self.flows[od_pair]
+                    covered_proportion = self.flow_vars[q].value() if q in self.flow_vars else 0
+
+                    self.flow_coverage[od_pair] = {
+                        "flow_volume": flow_volume,
+                        "covered_proportion": covered_proportion,
+                        "covered_volume": flow_volume * covered_proportion,
+                    }
+
+                    if objective == "vmt":
+                        self.flow_coverage[od_pair]["distance"] = path_distances[od_pair]
+                        self.flow_coverage[od_pair]["covered_vmt"] = (
+                            flow_volume * path_distances[od_pair] * covered_proportion
+                        )
+
+                    covered_flow += flow_volume * covered_proportion
 
                 if self.threshold > 0:
-                    self.covered_nodes = [j for j in c if pulp.value(c[j]) > 0.5]
+                    self.covered_nodes = [
+                        origin 
+                        for origin, var in self.node_coverage_vars.items() 
+                        if var.value() > 0.5
+                    ]
                 else:
                     self.covered_nodes = []
 
-            coverage_percentage = covered_flow / total_flow if total_flow > 0 else 0
+                coverage_percentage = covered_flow / total_flow if total_flow > 0 else 0
 
-            self.solver_stats = {
-                "solver_name": str(solver_instance),
-                "num_variables": len(model.variables()),
-                "num_constraints": len(
-                    [constraint for constraint in model.constraints.values()]
-                ),
-                "objective_sense": "maximize",
-            }
+                self.solver_stats = {
+                    "solver_name": str(solver_instance),
+                    "num_variables": len(model.variables()),
+                    "num_constraints": len(
+                        [constraint for constraint in model.constraints.values()]
+                    ),
+                    "objective_sense": "maximize",
+                }
+                result = {
+                    "status": self.status,
+                    "objective_value": self.objective_value,
+                    "selected_facilities": self.selected_facilities,
+                    "flow_coverage": self.flow_coverage,
+                    "total_flow": total_flow,
+                    "covered_flow": covered_flow,
+                    "coverage_percentage": coverage_percentage,
+                    "solution_time": self.solution_time,
+                }
 
-            result = {
-                "status": self.status,
-                "objective_value": self.objective_value,
-                "selected_facilities": self.selected_facilities,
-                "flow_coverage": self.flow_coverage,
-                "total_flow": total_flow,
-                "covered_flow": covered_flow,
-                "coverage_percentage": coverage_percentage,
-                "solution_time": self.solution_time,
-            }
+                if self.threshold > 0:
+                    result["covered_nodes"] = self.covered_nodes
 
-            if self.capacity is None and self.threshold > 0:
-                result["covered_nodes"] = self.covered_nodes
+                if objective == "vmt":
+                    total_vmt = sum(
+                        self.flows[od_pair] * path_distances[od_pair]
+                        for od_pair in self.flows
+                    )
+                    covered_vmt = sum(
+                        coverage.get("covered_vmt", 0)
+                        for coverage in self.flow_coverage.values()
+                    )
+                    vmt_coverage_percentage = (
+                        covered_vmt / total_vmt if total_vmt > 0 else 0
+                    )
 
-            if self.capacity is not None and objective == "vmt":
-                total_vmt = sum(
-                    self.flows[od_pair] * path_distances[od_pair]
-                    for od_pair in self.flows
-                )
-                covered_vmt = sum(
-                    coverage.get("covered_vmt", 0)
-                    for coverage in self.flow_coverage.values()
-                )
-                vmt_coverage_percentage = (
-                    covered_vmt / total_vmt if total_vmt > 0 else 0
-                )
-
-                result.update(
-                    {
+                    result.update({
                         "total_vmt": total_vmt,
                         "covered_vmt": covered_vmt,
                         "vmt_coverage_percentage": vmt_coverage_percentage,
                         "objective_type": objective,
-                    }
-                )
+                    })
 
-            return result
+                return result
         else:
             print(f"No optimal solution found. Status: {self.status}")
             return {"status": self.status}
 
     def _evaluate_capacitated_solution(self, facilities: Dict[Any, int]) -> Dict:
-        model = pulp.LpProblem("Evaluate_CFRLM", pulp.LpMaximize)
+        """
+        Evaluate a potential facility configuration for the capacitated model.
 
-        y = {}
-        for q, od_pair in enumerate(self.flows.keys()):
-            valid_combinations = self.path_refueling_combinations[od_pair]
-            for h, combination in enumerate(valid_combinations):
-                if all(facility in facilities for facility in combination):
-                    y[(q, h)] = pulp.LpVariable(
-                        f"y_{q}_{h}", lowBound=0, upBound=1, cat=pulp.LpContinuous
-                    )
+        Parameters
+        ----------
+        facilities : Dict[Any, int]
+            Dictionary of facilities and their potential capacities
 
-        model += pulp.lpSum(
-            self.flows[od_pair] * y[(q, h)]
-            for q, od_pair in enumerate(self.flows.keys())
-            for h, combination in enumerate(self.path_refueling_combinations[od_pair])
-            if (q, h) in y
-        )
-
-        for k in facilities.keys():
-            model += (
-                pulp.lpSum(
-                    self.e_coefficients[od_pair]
-                    * self.compute_facility_usage(
-                        od_pair[0], od_pair[1], k, combination
-                    )
-                    * self.flows[od_pair]
-                    * y[(q, h)]
-                    for q, od_pair in enumerate(self.flows.keys())
-                    for h, combination in enumerate(
-                        self.path_refueling_combinations[od_pair]
-                    )
-                    if (q, h) in y and k in combination
-                )
-                <= self.capacity * facilities[k]
-            )
+        Returns
+        -------
+        Dict
+            Evaluation results of the facility configuration
+        """
+        flow_coverage = {}
+        total_flow = sum(self.flows.values())
+        covered_flow = 0
 
         for q, od_pair in enumerate(self.flows.keys()):
-            model += (
-                pulp.lpSum(
-                    y[(q, h)]
-                    for h in range(len(self.path_refueling_combinations[od_pair]))
-                    if (q, h) in y
-                )
-                <= 1
-            )
+            flow_volume = self.flows[od_pair]
 
-        model.solve(pulp.GUROBI_CMD(msg=False))
+            valid_combinations = [
+                combination 
+                for combination in self.path_refueling_combinations[od_pair]
+                if all(facility in facilities for facility in combination)
+            ]
 
-        if model.status == pulp.LpStatusOptimal:
-            objective_value = pulp.value(model.objective)
+            best_covered_proportion = 0
 
-            flow_coverage = {}
-            total_flow = sum(self.flows.values())
-            covered_flow = 0
+            for combination in valid_combinations:
+                facility_usage_details = [{
+                    'facility': facility,
+                    'usage': self.e_coefficients[od_pair]
+                    * FlowModelBuilder._compute_facility_usage(od_pair[0], od_pair[1], facility, combination)
+                    * flow_volume,
+                        'available_capacity': self.capacity * facilities.get(facility, 0)
+                    }
+                    for facility in combination
+                ]
 
-            for q, od_pair in enumerate(self.flows.keys()):
-                flow_volume = self.flows[od_pair]
+                try:
+                    coverage_proportion = min(
+                        usage_detail['available_capacity'] / usage_detail['usage'] 
+                        for usage_detail in facility_usage_details 
+                        if usage_detail['usage'] > 0
+                    )
 
-                covered_proportion = sum(
-                    y[(q, h)].value()
-                    for h in range(len(self.path_refueling_combinations[od_pair]))
-                    if (q, h) in y and y[(q, h)].value() > 0
-                )
+                    coverage_proportion = min(1.0, max(0.0, coverage_proportion))
 
-                flow_coverage[od_pair] = {
-                    "flow_volume": flow_volume,
-                    "covered_proportion": covered_proportion,
-                    "covered_volume": flow_volume * covered_proportion,
-                }
+                    best_covered_proportion = max(best_covered_proportion, coverage_proportion)
+                
+                except (ValueError, ZeroDivisionError):
+                    continue
 
-                covered_flow += flow_volume * covered_proportion
-
-            coverage_percentage = covered_flow / total_flow if total_flow > 0 else 0
-
-            return {
-                "status": "Optimal",
-                "objective_value": objective_value,
-                "flow_coverage": flow_coverage,
-                "total_flow": total_flow,
-                "covered_flow": covered_flow,
-                "coverage_percentage": coverage_percentage,
+            flow_coverage[od_pair] = {
+                "flow_volume": flow_volume,
+                "covered_proportion": best_covered_proportion,
+                "covered_volume": flow_volume * best_covered_proportion,
             }
-        else:
-            return {
-                "status": pulp.LpStatus[model.status],
-                "objective_value": 0.0,
-                "flow_coverage": {},
-                "total_flow": sum(self.flows.values()),
-                "covered_flow": 0.0,
-                "coverage_percentage": 0.0,
-            }
+
+            covered_flow += flow_volume * best_covered_proportion
+
+        coverage_percentage = covered_flow / total_flow if total_flow > 0 else 0
+
+        return {
+            "status": "Optimal" if covered_flow > 0 else "Infeasible",
+            "objective_value": covered_flow,
+            "flow_coverage": flow_coverage,
+            "total_flow": total_flow,
+            "covered_flow": covered_flow,
+            "coverage_percentage": coverage_percentage,
+        }
 
     def _initialize_greedy_solution(self, method: str) -> set:
 
