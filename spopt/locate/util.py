@@ -1,12 +1,13 @@
 import geopandas
 import numpy
 from shapely import MultiPolygon, Point, Polygon
+from libpysal.graph import Graph
 import networkx as nx
 import libpysal
 import numpy as np
 import scipy.sparse as sp
-from typing import Union,List, Iterable
-import itertools
+from typing import Union
+
 
 def simulated_geo_points(
     in_data: geopandas.GeoDataFrame | geopandas.GeoSeries | Polygon | MultiPolygon,
@@ -106,7 +107,7 @@ def simulated_geo_points(
 
     return sim_pts
 
-def convert_to_scipy_sparse(network: Union[nx.Graph, libpysal.graph.Graph, np.ndarray, sp.csr_matrix]) -> sp.csr_matrix:
+def convert_to_scipy_sparse(network: Union[nx.Graph, Graph, np.ndarray, sp.csr_matrix]) -> sp.csr_matrix:
     """
     Convert various network formats to scipy sparse matrix.
 
@@ -126,7 +127,7 @@ def convert_to_scipy_sparse(network: Union[nx.Graph, libpysal.graph.Graph, np.nd
             format='csr'
         )
 
-    if isinstance(network, libpysal.graph.Graph):
+    if isinstance(network, Graph):
         return network.sparse
 
     if sp.issparse(network):
@@ -137,7 +138,10 @@ def convert_to_scipy_sparse(network: Union[nx.Graph, libpysal.graph.Graph, np.nd
     
     else:
         raise TypeError(f"Unsupported network type: {type(network)}, expected networkx.Graph, libpysal.graph.Graph, numpy.ndarray, or scipy.sparse matrix.")
-        
+
+from typing import List, Iterable
+import itertools
+
 def rising_combination(
     values: List, 
     start: int = 1, 
