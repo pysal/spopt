@@ -32,8 +32,10 @@ class TestSyntheticLocate:
         with pytest.raises(AttributeError):
             result.fac2cli  # noqa: B018
 
-    def test_pcenter_facility_client_array_from_cost_matrix(self, load_test_data):
-        pcenter_objective = load_test_data("pcenter_fac2cli.pkl")
+    def test_pcenter_facility_client_array_from_cost_matrix(
+        self, load_locate_test_data
+    ):
+        pcenter_objective = load_locate_test_data("pcenter_fac2cli.pkl")
 
         pcenter = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -54,8 +56,10 @@ class TestSyntheticLocate:
         result = p_center.solve(pulp.PULP_CBC_CMD(msg=False))
         assert isinstance(result, PCenter)
 
-    def test_pcenter_facility_client_array_from_geodataframe(self, load_test_data):
-        pcenter_objective = load_test_data("pcenter_geodataframe_fac2cli.pkl")
+    def test_pcenter_facility_client_array_from_geodataframe(
+        self, load_locate_test_data
+    ):
+        pcenter_objective = load_locate_test_data("pcenter_geodataframe_fac2cli.pkl")
 
         pcenter = PCenter.from_geodataframe(
             self.clients_snapped,
@@ -71,8 +75,10 @@ class TestSyntheticLocate:
             numpy.array(pcenter_objective, dtype=object),
         )
 
-    def test_pcenter_client_facility_array_from_geodataframe(self, load_test_data):
-        pcenter_objective = load_test_data("pcenter_geodataframe_cli2fac.pkl")
+    def test_pcenter_client_facility_array_from_geodataframe(
+        self, load_locate_test_data
+    ):
+        pcenter_objective = load_locate_test_data("pcenter_geodataframe_cli2fac.pkl")
 
         pcenter = PCenter.from_geodataframe(
             self.clients_snapped,
@@ -117,8 +123,8 @@ class TestSyntheticLocate:
 
 class TestRealWorldLocate:
     @pytest.fixture(autouse=True)
-    def setup_method(self, load_test_data) -> None:
-        network_distance = load_test_data(
+    def setup_method(self, load_locate_test_data) -> None:
+        network_distance = load_locate_test_data(
             "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
         )
 
@@ -128,8 +134,10 @@ class TestRealWorldLocate:
 
         self.cost_matrix = ntw_dist_piv.to_numpy()
 
-        demand_points = load_test_data("SF_demand_205_centroid_uniform_weight.csv")
-        facility_points = load_test_data("SF_store_site_16_longlat.csv")
+        demand_points = load_locate_test_data(
+            "SF_demand_205_centroid_uniform_weight.csv"
+        )
+        facility_points = load_locate_test_data("SF_store_site_16_longlat.csv")
 
         self.facility_points_gdf = (
             geopandas.GeoDataFrame(

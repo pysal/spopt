@@ -69,8 +69,8 @@ class TestSyntheticLocate:
 
 class TestRealWorldLocate:
     @pytest.fixture(autouse=True)
-    def setup_method(self, load_test_data) -> None:
-        network_distance = load_test_data(
+    def setup_method(self, load_locate_test_data) -> None:
+        network_distance = load_locate_test_data(
             "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
         )
 
@@ -80,7 +80,7 @@ class TestRealWorldLocate:
 
         self.cost_matrix = ntw_dist_piv.to_numpy()
 
-        facility_points = load_test_data("SF_store_site_16_longlat.csv")
+        facility_points = load_locate_test_data("SF_store_site_16_longlat.csv")
 
         self.facility_points_gdf = (
             geopandas.GeoDataFrame(
