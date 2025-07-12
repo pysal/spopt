@@ -22,21 +22,21 @@ from packaging.version import Version
 GPD_GE_10 = Version(geopandas.__version__) >= Version("1.0")
 
 
-def dirpath() -> pathlib.Path:
-    """Path to test data directory"""
-    return pathlib.Path(__file__).absolute().parent / "data"
+def locate_dirpath() -> pathlib.Path:
+    """Path to locate test data directory"""
+    return pathlib.Path(__file__).absolute().parent / "test_locate" / "data"
 
 
 @pytest.fixture
-def load_test_data():
+def load_locate_test_data():
     """Load test data for the ``locate`` module."""
 
     def _load_test_data(_file: str) -> dict | pandas.DataFrame:
         if _file.endswith(".pkl"):
-            with open(dirpath() / _file, "rb") as f:
+            with open(locate_dirpath() / _file, "rb") as f:
                 test_data = pickle.load(f)
         elif _file.endswith(".csv"):
-            test_data = pandas.read_csv(dirpath() / _file)
+            test_data = pandas.read_csv(locate_dirpath() / _file)
         else:
             raise FileNotFoundError(f"`{_file}` does not exist.")
 

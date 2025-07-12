@@ -43,8 +43,8 @@ class TestSyntheticLocate:
         with pytest.raises(AttributeError):
             result.backup_perc  # noqa: B018
 
-    def test_lscpb_facility_client_array_from_cost_matrix(self, load_test_data):
-        lscpb_objective = load_test_data("lscpb_fac2cli.pkl")
+    def test_lscpb_facility_client_array_from_cost_matrix(self, load_locate_test_data):
+        lscpb_objective = load_locate_test_data("lscpb_fac2cli.pkl")
 
         lscpb = LSCPB.from_cost_matrix(
             self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False)
@@ -56,8 +56,8 @@ class TestSyntheticLocate:
             numpy.array(lscpb_objective, dtype=object),
         )
 
-    def test_lscpb_client_facility_array_from_cost_matrix(self, load_test_data):
-        lscpb_objective = load_test_data("lscpb_cli2fac.pkl")
+    def test_lscpb_client_facility_array_from_cost_matrix(self, load_locate_test_data):
+        lscpb_objective = load_locate_test_data("lscpb_cli2fac.pkl")
 
         lscpb = LSCPB.from_cost_matrix(
             self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False)
@@ -82,8 +82,8 @@ class TestSyntheticLocate:
 
         assert isinstance(result, LSCPB)
 
-    def test_lscpb_facility_client_array_from_geodataframe(self, load_test_data):
-        lscpb_objective = load_test_data("lscpb_geodataframe_fac2cli.pkl")
+    def test_lscpb_facility_client_array_from_geodataframe(self, load_locate_test_data):
+        lscpb_objective = load_locate_test_data("lscpb_geodataframe_fac2cli.pkl")
 
         lscpb = LSCPB.from_geodataframe(
             self.clients_snapped,
@@ -100,8 +100,8 @@ class TestSyntheticLocate:
             numpy.array(lscpb_objective, dtype=object),
         )
 
-    def test_lscpb_client_facility_array_from_geodataframe(self, load_test_data):
-        lscpb_objective = load_test_data("lscpb_geodataframe_cli2fac.pkl")
+    def test_lscpb_client_facility_array_from_geodataframe(self, load_locate_test_data):
+        lscpb_objective = load_locate_test_data("lscpb_geodataframe_cli2fac.pkl")
 
         lscpb = LSCPB.from_geodataframe(
             self.clients_snapped,
@@ -119,9 +119,9 @@ class TestSyntheticLocate:
         )
 
     def test_lscpb_preselected_facility_client_array_from_geodataframe(
-        self, load_test_data
+        self, load_locate_test_data
     ):
-        lscpb_objective = load_test_data(
+        lscpb_objective = load_locate_test_data(
             "lscpb_preselected_loc_geodataframe_fac2cli.pkl"
         )
 
@@ -147,8 +147,8 @@ class TestSyntheticLocate:
 
 class TestRealWorldLocate:
     @pytest.fixture(autouse=True)
-    def setup_method(self, load_test_data) -> None:
-        network_distance = load_test_data(
+    def setup_method(self, load_locate_test_data) -> None:
+        network_distance = load_locate_test_data(
             "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
         )
 
@@ -158,8 +158,10 @@ class TestRealWorldLocate:
 
         self.cost_matrix = ntw_dist_piv.to_numpy()
 
-        demand_points = load_test_data("SF_demand_205_centroid_uniform_weight.csv")
-        facility_points = load_test_data("SF_store_site_16_longlat.csv")
+        demand_points = load_locate_test_data(
+            "SF_demand_205_centroid_uniform_weight.csv"
+        )
+        facility_points = load_locate_test_data("SF_store_site_16_longlat.csv")
 
         self.facility_points_gdf = (
             geopandas.GeoDataFrame(

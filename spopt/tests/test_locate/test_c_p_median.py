@@ -79,8 +79,10 @@ class TestSyntheticLocate:
 
 class TestRealWorldLocate:
     @pytest.fixture(autouse=True)
-    def setup_method(self, load_test_data) -> None:
-        time_table = load_test_data("example_subject_student_school_journeys.csv")
+    def setup_method(self, load_locate_test_data) -> None:
+        time_table = load_locate_test_data(
+            "example_subject_student_school_journeys.csv"
+        )
 
         self.cost_matrix = (
             time_table.pivot_table(
@@ -94,8 +96,8 @@ class TestRealWorldLocate:
             .values
         )
 
-        self.demand_points = load_test_data("example_subject_students.csv")
-        self.facility_points = load_test_data("example_subject_schools.csv")
+        self.demand_points = load_locate_test_data("example_subject_students.csv")
+        self.facility_points = load_locate_test_data("example_subject_schools.csv")
 
         self.p_facility = 10
         self.demand = numpy.ones(len(self.demand_points))
