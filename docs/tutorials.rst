@@ -7,6 +7,7 @@ Tutorials
 
     notebooks/maxp.ipynb
     notebooks/azp.ipynb
+    notebooks/sa3.ipynb
     notebooks/skater.ipynb
     notebooks/ward.ipynb
     notebooks/reg-k-means.ipynb

@@ -19,6 +19,8 @@ Model based approaches for aggregating a large set of geographic units (with sma
     region.RandomRegion
     region.RandomRegions
     region.RegionKMeansHeuristic
+    region.SA3
+    region.extract_clusters
     region.Skater
     region.Spenc
     region.WardSpatial
