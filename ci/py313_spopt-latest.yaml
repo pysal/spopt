@@ -1,4 +1,4 @@
-name: test
+name: py313_spopt-latest
 channels:
   - conda-forge
 dependencies:
