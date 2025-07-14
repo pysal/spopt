@@ -5,20 +5,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>spopt.region.Skater &#8212; spopt v0.6.1 Manual</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <title>spopt.region.Skater &#8212; spopt v0.7.0rc1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
-    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/documentation_options.js?v=61228ca7"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="spopt.region.Spenc" href="spopt.region.Spenc.html" />
-    <link rel="prev" title="spopt.region.RegionKMeansHeuristic" href="spopt.region.RegionKMeansHeuristic.html" />
+    <link rel="prev" title="spopt.region.extract_clusters" href="spopt.region.extract_clusters.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -41,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0rc1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/maxp.html">Max-P Regionalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/skater.html">SKATER</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/ward.html">Ward</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/reg-k-means.html">Regional-k-means</a></li>
@@ -151,45 +152,51 @@
 <h1>spopt.region.Skater<a class="headerlink" href="#spopt-region-skater" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="spopt.region.Skater">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spopt.region.</span></span><span class="sig-name descname"><span class="pre">Skater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">floor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">islands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'increase'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spanning_forest_kwds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/skater.html#Skater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.region.Skater" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spopt.region.</span></span><span class="sig-name descname"><span class="pre">Skater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">floor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">islands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'increase'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spanning_forest_kwds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/skater.html#Skater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.region.Skater" title="Link to this definition">¶</a></dt>
 <dd><p>Skater is a spatial regionalization algorithm based on spanning tree pruning
 introduced in <span id="id1">[<a class="reference internal" href="../references.html#id2" title="RM Assunção, MC Neves, G Câmara, and C da Costa Freitas. Efficient regionalization techniques for socio-economic geographical units using minimum spanning trees. International Journal of Geographical Information Science, 20(7):797–811, 2006. doi:10.1080/13658810600665111.">ANCdCF06</a>]</span>.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>gdf</strong><span class="classifier"><a class="reference external" href="https://geopandas.org/en/latest/docs/reference/api/geopandas.GeoDataFrame.html#geopandas.GeoDataFrame" title="(in GeoPandas v1.0.0rc1.dev+1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geopandas.GeoDataFrame</span></code></a></span></dt><dd><p>A Geodataframe containing original data. The <code class="docutils literal notranslate"><span class="pre">data</span></code> attribute is
+<dt><strong>gdf</strong><span class="classifier"><a class="reference external" href="https://geopandas.org/en/latest/docs/reference/api/geopandas.GeoDataFrame.html#geopandas.GeoDataFrame" title="(in GeoPandas v1.1.1.dev+7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geopandas.GeoDataFrame</span></code></a></span></dt><dd><p>A Geodataframe containing original data. The <code class="docutils literal notranslate"><span class="pre">data</span></code> attribute is
 derived from <code class="docutils literal notranslate"><span class="pre">gdf</span></code> as the <code class="docutils literal notranslate"><span class="pre">attrs_name</span></code> columns.</p>
 </dd>
-<dt><strong>w</strong><span class="classifier"><a class="reference external" href="https://pysal.org/libpysal/generated/libpysal.weights.W.html#libpysal.weights.W" title="(in libpysal v4.11.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code></a></span></dt><dd><p>A PySAL weights object created from given data expressing the neighbor
+<dt><strong>w</strong><span class="classifier"><a class="reference external" href="https://pysal.org/libpysal/generated/libpysal.weights.W.html#libpysal.weights.W" title="(in libpysal v4.13.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code></a></span></dt><dd><p>A PySAL weights object created from given data expressing the neighbor
 relationships between observations. It must be symmetric and binary, for
 example: Queen/Rook, DistanceBand, or a symmetrized KNN.</p>
 </dd>
-<dt><strong>attrs_name</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Strings for attribute names (columns of <code class="docutils literal notranslate"><span class="pre">geopandas.GeoDataFrame</span></code>).</p>
+<dt><strong>attrs_name</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Strings for attribute names (columns of <code class="docutils literal notranslate"><span class="pre">geopandas.GeoDataFrame</span></code>).</p>
 </dd>
-<dt><strong>n_clusters</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 5)</span></dt><dd><p>The number of clusters to form.</p>
+<dt><strong>n_clusters</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 5)</span></dt><dd><p>The number of clusters to form.</p>
 </dd>
-<dt><strong>floor</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a> (default -numpy.inf)</span></dt><dd><p>The floor on the size of regions.</p>
+<dt><strong>floor</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a> (default -numpy.inf)</span></dt><dd><p>The floor on the size of regions.</p>
 </dd>
-<dt><strong>trace</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.12)"><span class="xref std std-ref">bool</span></a> (default <a class="reference external" href="https://docs.python.org/3.12/library/constants.html#False" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">False</span></code></a>)</span></dt><dd><p>Flag denoting whether to store intermediate labelings as the tree gets pruned.</p>
+<dt><strong>trace</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.13)"><span class="xref std std-ref">bool</span></a> (default <a class="reference external" href="https://docs.python.org/3.13/library/constants.html#False" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">False</span></code></a>)</span></dt><dd><p>Flag denoting whether to store intermediate labelings as the tree gets pruned.</p>
 </dd>
-<dt><strong>islands</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a> (default ‘increase’)</span></dt><dd><p>Description of what to do with islands. If <code class="docutils literal notranslate"><span class="pre">'ignore'</span></code>, the algorithm will
+<dt><strong>islands</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a> (default ‘increase’)</span></dt><dd><p>Description of what to do with islands. If <code class="docutils literal notranslate"><span class="pre">'ignore'</span></code>, the algorithm will
 discover <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> regions, treating islands as their own regions. If
 “increase”, the algorithm will discover <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> regions,
 treating islands as separate from <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code>.</p>
 </dd>
-<dt><strong>spanning_forest_kwds</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a>())</span></dt><dd><p>Keyword arguments to be passed to <code class="docutils literal notranslate"><span class="pre">SpanningForest</span></code> including
+<dt><strong>spanning_forest_kwds</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a>())</span></dt><dd><p>Keyword arguments to be passed to <code class="docutils literal notranslate"><span class="pre">SpanningForest</span></code> including
 <code class="docutils literal notranslate"><span class="pre">dissimilarity</span></code>, <code class="docutils literal notranslate"><span class="pre">affinity</span></code>, <code class="docutils literal notranslate"><span class="pre">reduction</span></code>, and <code class="docutils literal notranslate"><span class="pre">center</span></code>.
 See <code class="docutils literal notranslate"><span class="pre">spopt.region.skater.SpanningForest</span></code> for docstrings.</p>
 </dd>
 </dl>
 </dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>labels_</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a></span></dt><dd><p>Region IDs for observations.</p>
+</dd>
+</dl>
+</dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spopt.region</span> <span class="kn">import</span> <span class="n">Skater</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">geopandas</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">libpysal</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">pairwise</span> <span class="k">as</span> <span class="n">skm</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spopt.region</span><span class="w"> </span><span class="kn">import</span> <span class="n">Skater</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">pairwise</span> <span class="k">as</span> <span class="n">skm</span>
 </pre></div>
 </div>
 <p>Read the data.</p>
@@ -236,14 +243,6 @@ See <code class="docutils literal notranslate"><span class="pre">spopt.region.sk
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="field-list">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl>
-<dt><strong>labels_</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a></span></dt><dd><p>Region IDs for observations.</p>
-</dd>
-</dl>
-</dd>
-</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="spopt.region.Skater.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">floor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">islands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'increase'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spanning_forest_kwds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/skater.html#Skater.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.region.Skater.__init__" title="Link to this definition">¶</a></dt>
@@ -290,7 +289,7 @@ See <code class="docutils literal notranslate"><span class="pre">spopt.region.sk
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
     </p>
   </div>
 </footer>

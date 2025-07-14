@@ -5,13 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>spopt.region.Spenc &#8212; spopt v0.6.1 Manual</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <title>spopt.region.Spenc &#8212; spopt v0.7.0rc1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
-    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/documentation_options.js?v=61228ca7"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -43,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0rc1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -73,6 +73,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/maxp.html">Max-P Regionalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/skater.html">SKATER</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/ward.html">Ward</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/reg-k-means.html">Regional-k-means</a></li>
@@ -153,7 +154,7 @@
 <h1>spopt.region.Spenc<a class="headerlink" href="#spopt-region-spenc" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="spopt.region.Spenc">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spopt.region.</span></span><span class="sig-name descname"><span class="pre">Spenc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigen_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">affinity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rbf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigen_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assign_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discretize'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coef0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/spenc.html#Spenc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.region.Spenc" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spopt.region.</span></span><span class="sig-name descname"><span class="pre">Spenc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigen_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">affinity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rbf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigen_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assign_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discretize'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coef0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/spenc.html#Spenc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.region.Spenc" title="Link to this definition">¶</a></dt>
 <dd><p>Spatially encouraged spectral clustering found in <span id="id1">[<a class="reference internal" href="../references.html#id23" title="LJ Wolf. ljwolf/spenc: GISRUK. 2018. doi:10.5281/zenodo.1219904.">Wol18</a>]</span>.</p>
 <p>Apply clustering to a projection of the normalized laplacian, using
 spatial information to constrain the clustering. In practice Spectral
@@ -180,15 +181,15 @@ Read more in the <code class="docutils literal notranslate"><span class="pre">sc
 <dd><dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>gdf</strong><span class="classifier"><a class="reference external" href="https://geopandas.org/en/latest/docs/reference/api/geopandas.GeoDataFrame.html#geopandas.GeoDataFrame" title="(in GeoPandas v1.0.0rc1.dev+1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geopandas.GeoDataFrame</span></code></a></span></dt><dd><p>Input data.</p>
+<dt><strong>gdf</strong><span class="classifier"><a class="reference external" href="https://geopandas.org/en/latest/docs/reference/api/geopandas.GeoDataFrame.html#geopandas.GeoDataFrame" title="(in GeoPandas v1.1.1.dev+7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geopandas.GeoDataFrame</span></code></a></span></dt><dd><p>Input data.</p>
 </dd>
 <dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpywal.weights.W</span></code></span></dt><dd><p>Spatial weights matrix.</p>
 </dd>
-<dt><strong>attrs_name</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Strings for attribute names from columns in <code class="docutils literal notranslate"><span class="pre">gdf</span></code>.</p>
+<dt><strong>attrs_name</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Strings for attribute names from columns in <code class="docutils literal notranslate"><span class="pre">gdf</span></code>.</p>
 </dd>
-<dt><strong>n_clusters</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 5)</span></dt><dd><p>The number of clusters to form.</p>
+<dt><strong>n_clusters</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 5)</span></dt><dd><p>The number of clusters to form.</p>
 </dd>
-<dt><strong>random_state</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/random/legacy.html#numpy.random.RandomState" title="(in NumPy v2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>A pseudo random number generator used for the initialization of the lobpcg
+<dt><strong>random_state</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/random/legacy.html#numpy.random.RandomState" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>A pseudo random number generator used for the initialization of the lobpcg
 eigen vectors decomposition when <code class="docutils literal notranslate"><span class="pre">eigen_solver='amg'</span></code> and by the
 <span class="math notranslate nohighlight">\(k\)</span>-Means initialization.  If <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">random_state</span></code> is the seed
 used by the random number generator; If <code class="docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code>,
@@ -196,33 +197,33 @@ used by the random number generator; If <code class="docutils literal notranslat
 the random number generator is the numpy.random.RandomState
 instance used by <code class="docutils literal notranslate"><span class="pre">numpy.random</span></code>.</p>
 </dd>
-<dt><strong>gamma</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a> (default 1)</span></dt><dd><p>Kernel coefficient for rbf, poly, sigmoid, laplacian and chi2 kernels.
+<dt><strong>gamma</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a> (default 1)</span></dt><dd><p>Kernel coefficient for rbf, poly, sigmoid, laplacian and chi2 kernels.
 Ignored for <code class="docutils literal notranslate"><span class="pre">affinity='nearest_neighbors'</span></code>.</p>
 </dd>
-<dt><strong>eigen_solver</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>The eigenvalue decomposition strategy to use. Valid values include
+<dt><strong>eigen_solver</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>The eigenvalue decomposition strategy to use. Valid values include
 <code class="docutils literal notranslate"><span class="pre">{'arpack',</span> <span class="pre">'lobpcg',</span> <span class="pre">'amg'}</span></code>. AMG requires <code class="docutils literal notranslate"><span class="pre">pyamg</span></code> to be installed,
 which may be faster on very large, sparse problems, but may also lead to
 instabilities. <em>Note</em> – <code class="docutils literal notranslate"><span class="pre">eigen_solver</span></code> is ignored unless fitting using
 the <code class="docutils literal notranslate"><span class="pre">breakme</span></code> flag in the <code class="docutils literal notranslate"><span class="pre">.fit()</span></code> method (so do not use then).</p>
 </dd>
-<dt><strong>n_init</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 10)</span></dt><dd><p>The number of times the <span class="math notranslate nohighlight">\(k\)</span>-means algorithm will be run with
+<dt><strong>n_init</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 10)</span></dt><dd><p>The number of times the <span class="math notranslate nohighlight">\(k\)</span>-means algorithm will be run with
 different centroid seeds. The final results will be the best output of
 <code class="docutils literal notranslate"><span class="pre">n_init</span></code> consecutive runs in terms of inertia.</p>
 </dd>
-<dt><strong>affinity</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.0)"><span>array_like</span></a>, <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#callable" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">callable()</span></code></a> (default ‘rbf’)</span></dt><dd><p>If a <code class="docutils literal notranslate"><span class="pre">str</span></code>, valid values include
+<dt><strong>affinity</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.3)"><span>array_like</span></a>, <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#callable" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">callable()</span></code></a> (default ‘rbf’)</span></dt><dd><p>If a <code class="docutils literal notranslate"><span class="pre">str</span></code>, valid values include
 <code class="docutils literal notranslate"><span class="pre">{'nearest_neighbors',</span> <span class="pre">'precomputed',</span> <span class="pre">'rbf'}</span></code> or one of the kernels
 supported by <code class="docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise_kernels</span></code>. Only kernels that
 produce similarity scores (non-negative values that increase with
 similarity) should be used. <em>This property is not checked
 by the clustering algorithm</em>.</p>
 </dd>
-<dt><strong>n_neighbors</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 10)</span></dt><dd><p>The number of neighbors to use when constructing the affinity matrix using
+<dt><strong>n_neighbors</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 10)</span></dt><dd><p>The number of neighbors to use when constructing the affinity matrix using
 the nearest neighbors method. Ignored for <code class="docutils literal notranslate"><span class="pre">affinity='rbf'</span></code>.</p>
 </dd>
-<dt><strong>eigen_tol</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a> (default 1e-7)</span></dt><dd><p>Stopping criterion for eigen decomposition of the Laplacian matrix
+<dt><strong>eigen_tol</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a> (default 1e-7)</span></dt><dd><p>Stopping criterion for eigen decomposition of the Laplacian matrix
 when using <code class="docutils literal notranslate"><span class="pre">'arpack'</span></code> as the <code class="docutils literal notranslate"><span class="pre">eigen_solver</span></code>.</p>
 </dd>
-<dt><strong>assign_labels</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a> (default ‘discretize’)</span></dt><dd><p>The strategy to use to assign labels in the embedding
+<dt><strong>assign_labels</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a> (default ‘discretize’)</span></dt><dd><p>The strategy to use to assign labels in the embedding
 space. There are three ways to assign labels after the laplacian
 embedding: <code class="docutils literal notranslate"><span class="pre">{'kmeans',</span> <span class="pre">'discretize',</span> <span class="pre">'hierarchical'}</span></code>:</p>
 <ul class="simple">
@@ -231,17 +232,26 @@ embedding: <code class="docutils literal notranslate"><span class="pre">{'kmeans
 <li><p><code class="docutils literal notranslate"><span class="pre">'hierarchical'</span></code> decomposition repeatedly bi-partitions the graph, instead of finding the decomposition all at once, as suggested in <span id="id2">[<a class="reference internal" href="../references.html#id19" title="Jianbo Shi and J. Malik. Normalized cuts and image segmentation. IEEE Transactions on Pattern Analysis and Machine Intelligence, 22(8):888–905, 2000. doi:10.1109/34.868688.">SM00</a>]</span>.</p></li>
 </ul>
 </dd>
-<dt><strong>degree</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a> (default 3)</span></dt><dd><p>Degree of the polynomial affinity kernel. Ignored by other kernels.</p>
+<dt><strong>degree</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a> (default 3)</span></dt><dd><p>Degree of the polynomial affinity kernel. Ignored by other kernels.</p>
 </dd>
-<dt><strong>coef0</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a> (default 1)</span></dt><dd><p>Zero coefficient for polynomial and sigmoid affinity kernels.
+<dt><strong>coef0</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a> (default 1)</span></dt><dd><p>Zero coefficient for polynomial and sigmoid affinity kernels.
 Ignored by other kernels.</p>
 </dd>
-<dt><strong>kernel_params</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.12/library/constants.html#None" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>Parameters (keyword arguments) and values for affinity kernel passed as
+<dt><strong>kernel_params</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>Parameters (keyword arguments) and values for affinity kernel passed as
 callable object. Ignored by other affinity kernels.</p>
 </dd>
-<dt><strong>n_jobs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 1)</span></dt><dd><p>The number of parallel jobs to run for the nearest-neighbors
+<dt><strong>n_jobs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 1)</span></dt><dd><p>The number of parallel jobs to run for the nearest-neighbors
 affinity kernel, if used. If <code class="docutils literal notranslate"><span class="pre">-1</span></code>, then the number of jobs
 is set to the number of CPU cores.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>affinity_matrix_</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.3)"><span>array_like</span></a></span></dt><dd><p>Affinity matrix used for clustering in the shape of
+<code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_samples)</span></code>. Available only if after calling <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+</dd>
+<dt><strong>labels_</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Cluster labels of each point or area.</p>
 </dd>
 </dl>
 </dd>
@@ -265,28 +275,13 @@ kernel.</p>
 <li><p><span id="id4">[<a class="reference internal" href="../references.html#id21" title="Ulrike von Luxburg. A tutorial on spectral clustering. Statistics and Computing, 17(4):395–416, 2007. doi:10.1007/s11222-007-9033-z.">vonLuxburg07</a>]</span> A Tutorial on Spectral Clustering, 2007 Ulrike von Luxburg – <a class="reference external" href="https://doi.org/10.1007/s11222-007-9033-z">https://doi.org/10.1007/s11222-007-9033-z</a></p></li>
 <li><p><span id="id5">[<a class="reference internal" href="../references.html#id25" title="Stella X. Yu and Jianbo Shi. Multiclass spectral clustering. In Proceedings Ninth IEEE International Conference on Computer Vision, volume 1, 313-319. 2003. doi:10.1109/ICCV.2003.1238361.">YS03</a>]</span> Multiclass spectral clustering, 2003 Stella X. Yu, Jianbo Shi – <a class="reference external" href="https://doi.org/10.1109/ICCV.2003.1238361">https://doi.org/10.1109/ICCV.2003.1238361</a></p></li>
 </ul>
-<dl class="field-list">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl>
-<dt><strong>affinity_matrix_</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.0)"><span>array_like</span></a></span></dt><dd><p>Affinity matrix used for clustering in the shape of
-<code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_samples)</span></code>. Available only if after calling <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
-</dd>
-<dt><strong>labels_</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Cluster labels of each point or area.</p>
-</dd>
-</dl>
-</dd>
-</dl>
 </dd></dl>
 
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#spopt.region.Spenc.__init__" title="spopt.region.Spenc.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(gdf, w, attrs_name[, n_clusters, ...])</p></td>
-<td><p><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
-</p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#spopt.region.Spenc.solve" title="spopt.region.Spenc.solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve</span></code></a>([fit_kwargs])</p></td>
 <td><p>Solve the spenc.</p></td>
@@ -300,7 +295,7 @@ kernel.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>fit_kwargs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a></span></dt><dd><p>Keyword arguments passed into <code class="docutils literal notranslate"><span class="pre">spenclib.abstracts.SPENC.fit()</span></code>.</p>
+<dt><strong>fit_kwargs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a></span></dt><dd><p>Keyword arguments passed into <code class="docutils literal notranslate"><span class="pre">spenclib.abstracts.SPENC.fit()</span></code>.</p>
 </dd>
 </dl>
 </dd>
@@ -331,7 +326,7 @@ kernel.</p>
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
     </p>
   </div>
 </footer>

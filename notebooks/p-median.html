@@ -5,14 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>The P-Median Problem &#8212; spopt v0.6.1 Manual</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <title>The P-Median Problem &#8212; spopt v0.7.0rc1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
-    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=61228ca7"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -44,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0rc1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -74,6 +74,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="maxp.html">Max-P Regionalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="skater.html">SKATER</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ward.html">Ward</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reg-k-means.html">Regional-k-means</a></li>
@@ -172,36 +173,34 @@ Interactive online version:
 <p><em>Authors:</em> <a class="reference external" href="https://github.com/gegen07">Germano Barcelos</a>, <a class="reference external" href="https://github.com/jGaboardi">James Gaboardi</a>, <a class="reference external" href="https://github.com/ljwolf">Levi J. Wolf</a>, <a class="reference external" href="https://github.com/qszhao">Qunshan Zhao</a></p>
 <p>Hakimi (1965) proposed this model thinking about locating telephone switching centers. The objective was to minimize the total length of wire serving all customers while locating <span class="math notranslate nohighlight">\(p\)</span> telephone switching centers, assuming that each customer would be connected to the closest switching center. Here the objective is to <em>locate a fixed number of facilities such that the resulting sum of travel distances is minimized</em>.</p>
 <p><strong>P-Median can be written as:</strong></p>
-<p>:math:<a href="#id2"><span class="problematic" id="id3">`</span></a>begin{array} displaystyle textbf{Minimize} &amp; displaystyle sum_{i in I}sum_{j in J}{a_i d_{ij} X_{ij}} &amp;&amp;&amp; (1) \
-displaystyle textbf{Subject to:} &amp; displaystyle sum_{j in J}{X_{ij} = 1} &amp; forall i in I &amp;&amp; (2) \</p>
-<blockquote>
-<div><p>&amp; displaystyle sum_{j in J}{Y_{j} = p} &amp;&amp;&amp; (3) \
-&amp; X_{ij} leq Y_{j} &amp; forall i in I &amp; forall j in J &amp; (4) \
-&amp; X_{ij} in {0,1} &amp; forall i in I &amp; forall j in J &amp; (5) \
-&amp; Y_{j} in {0,1} &amp; forall j in J &amp;&amp; (6) \ end{array}`</p>
-</div></blockquote>
-<p>:math:<a href="#id4"><span class="problematic" id="id5">`</span></a>begin{array} displaystyle textbf{Where:}\ &amp; &amp; displaystyle i &amp; small = &amp; textrm{index referencing nodes of the network as demand} \
-&amp; &amp; j &amp; small = &amp; textrm{index referencing nodes of the network as potential facility sites} \
-&amp; &amp; d_{ij} &amp; small = &amp; textrm{shortest distance or travel time between nodes } i textrm{ and } j \
-&amp; &amp; p &amp; small = &amp; textrm{number of facilities to be located} \
-&amp; &amp; a_i &amp; small = &amp; textrm{service load or population demand at } i \
-&amp; &amp; X_{ij} &amp; small = &amp; begin{cases}</p>
-<blockquote>
-<div><blockquote>
-<div><p>1, textrm{if demand } i textrm{ is assigned to facility } j \
-0, textrm{otherwise}</p>
-</div></blockquote>
-<p>end{cases} \</p>
-</div></blockquote>
-<dl>
-<dt>&amp; &amp; Y_{j} &amp; small = &amp; begin{cases}</dt><dd><blockquote>
-<div><p>1, textrm{if node } j textrm{ has been selected for a facility} \
-0, textrm{otherwise} \</p>
-</div></blockquote>
-<p>end{cases} \</p>
-</dd>
-</dl>
-<p>end{array}`</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{lllll}
+\textbf{Minimize} &amp; \displaystyle \sum_{i \in I} \sum_{j \in J} a_i d_{ij} X_{ij} &amp;&amp;&amp; (1) \\
+\textbf{Subject to:} &amp; \sum_{j \in J} X_{ij} = 1 &amp; \forall i \in I &amp;&amp; (2) \\
+&amp; \sum_{j \in J} Y_j = p &amp;&amp;&amp; (3) \\
+&amp; X_{ij} \leq Y_j &amp; \forall i \in I, j \in J &amp;&amp; (4) \\
+&amp; X_{ij} \in \{0, 1\} &amp; \forall i \in I, j \in J &amp;&amp; (5) \\
+&amp; Y_j \in \{0, 1\} &amp; \forall j \in J &amp;&amp; (6) \\
+\end{array}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{lllll}
+\textbf{Where:} \\
+&amp; i &amp; = &amp; \text{index referencing demand nodes} \\
+&amp; j &amp; = &amp; \text{index referencing potential facility sites} \\
+&amp; d_{ij} &amp; = &amp; \text{distance or travel time between node } i \text{ and } j \\
+&amp; p &amp; = &amp; \text{number of facilities to locate} \\
+&amp; a_i &amp; = &amp; \text{demand at node } i \\
+&amp; X_{ij} &amp; = &amp;
+  \begin{cases}
+    1, &amp; \text{if demand } i \text{ is assigned to facility } j \\
+    0, &amp; \text{otherwise}
+  \end{cases} \\
+&amp; Y_j &amp; = &amp;
+  \begin{cases}
+    1, &amp; \text{if facility is located at node } j \\
+    0, &amp; \text{otherwise}
+  \end{cases}
+\end{array}\end{split}\]</div>
 <p><em>The formulation above is adapted from Church and Murray (2018)</em></p>
 <p>This tutorial generates synthetic demand (clients) and facility sites near a 10x10 lattice representing a gridded urban core.</p>
 <ul class="simple">
@@ -224,17 +223,17 @@ displaystyle textbf{Subject to:} &amp; displaystyle sum_{j in J}{X_{ij} = 1} &am
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Last updated: 2023-12-10T14:04:33.200767-05:00
+Last updated: 2025-04-07T15:08:04.849791-04:00
 
 Python implementation: CPython
-Python version       : 3.12.0
-IPython version      : 8.18.0
+Python version       : 3.12.9
+IPython version      : 9.0.2
 
-Compiler    : Clang 15.0.7
+Compiler    : Clang 18.1.8
 OS          : Darwin
-Release     : 23.1.0
-Machine     : x86_64
-Processor   : i386
+Release     : 24.4.0
+Machine     : arm64
+Processor   : arm
 CPU cores   : 8
 Architecture: 64bit
 
@@ -244,17 +243,19 @@ Architecture: 64bit
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas
-import matplotlib.pyplot as plt
-from matplotlib.patches import Patch
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import warnings
+
+import geopandas
 import matplotlib.lines as mlines
+import matplotlib.pyplot as plt
 import numpy
 import pulp
 import shapely
+from matplotlib.patches import Patch
+
 import spopt
 from spopt.locate import PMedian, simulated_geo_points
 
-import warnings
 with warnings.catch_warnings():
     warnings.simplefilter(&quot;ignore&quot;)
     # ignore deprecation warning - GH pysal/spaghetti#649
@@ -270,15 +271,15 @@ with warnings.catch_warnings():
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Watermark: 2.4.3
+Watermark: 2.5.0
 
-matplotlib: 3.8.2
-shapely   : 2.0.2
-pulp      : 2.7.0
-spaghetti : 1.7.4
-spopt     : 0.5.1.dev53+g5cadae7
-numpy     : 1.26.2
-geopandas : 0.14.1
+numpy     : 2.2.4
+geopandas : 1.0.1
+shapely   : 2.1.0
+spaghetti : 1.7.6
+matplotlib: 3.10.1
+pulp      : 2.8.0
+spopt     : 0.6.2.dev3+g13ca45e
 
 </pre></div></div>
 </div>
@@ -335,7 +336,7 @@ ntw = spaghetti.Network(in_data=lattice)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>streets_buffered = geopandas.GeoDataFrame(
-    geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.5).unary_union),
+    geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.5).union_all()),
     crs=streets.crs,
     columns=[&quot;geometry&quot;],
 )
@@ -383,7 +384,10 @@ facility_points = simulated_geo_points(
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(6, 6))
 streets.plot(ax=ax, alpha=0.8, zorder=1, label=&quot;streets&quot;)
 facility_points.plot(
-    ax=ax, color=&quot;red&quot;, zorder=2, label=f&quot;facility candidate sites ($n$={FACILITY_COUNT})&quot;
+    ax=ax,
+    color=&quot;red&quot;,
+    zorder=2,
+    label=f&quot;facility candidate sites ($n$={FACILITY_COUNT})&quot;,
 )
 client_points.plot(ax=ax, color=&quot;black&quot;, label=f&quot;clients sites ($n$={CLIENT_COUNT})&quot;)
 plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
@@ -438,7 +442,7 @@ client_points[&quot;weights&quot;].sum()
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-579
+np.int64(579)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -451,7 +455,7 @@ client_points.plot(
     ax=ax,
     color=&quot;black&quot;,
     label=f&quot;clients sized weight\n\t$\\sum$={client_points[&#39;weights&#39;].sum()}&quot;,
-    markersize=ai*2
+    markersize=ai * 2,
 )
 plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 </pre></div>
@@ -497,7 +501,10 @@ facilities_snapped.drop(columns=[&quot;id&quot;, &quot;comp_label&quot;], inplac
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(6, 6))
 streets.plot(ax=ax, alpha=0.8, zorder=1, label=&quot;streets&quot;)
 facilities_snapped.plot(
-    ax=ax, color=&quot;red&quot;, zorder=2, label=f&quot;facility candidate sites ($n$={FACILITY_COUNT})&quot;
+    ax=ax,
+    color=&quot;red&quot;,
+    zorder=2,
+    label=f&quot;facility candidate sites ($n$={FACILITY_COUNT})&quot;,
 )
 clients_snapped.plot(ax=ax, color=&quot;black&quot;, label=f&quot;clients sites ($n$={CLIENT_COUNT})&quot;)
 plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
@@ -541,7 +548,7 @@ cost_matrix.shape
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cost_matrix[:5,:]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cost_matrix[:5, :]
 </pre></div>
 </div>
 </div>
@@ -567,7 +574,7 @@ array([[13.39951703, 15.61157572,  4.39383189,  8.40604635,  3.73034161,
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cost_matrix[-5:,:]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cost_matrix[-5:, :]
 </pre></div>
 </div>
 </div>
@@ -595,10 +602,7 @@ array([[ 4.82677859,  7.03883728,  6.8104596 ,  4.16669209,  4.84239683,
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pmedian_from_cm = PMedian.from_cost_matrix(
-    cost_matrix,
-    ai,
-    p_facilities=P_FACILITIES,
-    name=&quot;p-median-network-distance&quot;
+    cost_matrix, ai, p_facilities=P_FACILITIES, name=&quot;p-median-network-distance&quot;
 )
 </pre></div>
 </div>
@@ -619,7 +623,7 @@ pmedian_from_cm
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;spopt.locate.p_median.PMedian at 0x163c9b650&gt;
+&lt;spopt.locate.p_median.PMedian at 0x174c42480&gt;
 </pre></div></div>
 </div>
 <p>What’s total and mean minimized weighted cost?</p>
@@ -711,12 +715,12 @@ facility_points
     </tr>
     <tr>
       <th>5</th>
-      <td>POINT (4.31956 7.59470)</td>
+      <td>POINT (4.31956 7.5947)</td>
       <td>y5</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>POINT (5.19840 5.86744)</td>
+      <td>POINT (5.1984 5.86744)</td>
       <td>y6</td>
     </tr>
     <tr>
@@ -757,7 +761,7 @@ pmedian_from_gdf = PMedian.from_geodataframe(
     &quot;weights&quot;,
     p_facilities=P_FACILITIES,
     distance_metric=distance_metric,
-    name=f&quot;p-median-{distance_metric}-distance&quot;
+    name=f&quot;p-median-{distance_metric}-distance&quot;,
 )
 </pre></div>
 </div>
@@ -858,13 +862,13 @@ facility_points
     </tr>
     <tr>
       <th>5</th>
-      <td>POINT (4.31956 7.59470)</td>
+      <td>POINT (4.31956 7.5947)</td>
       <td>y5</td>
       <td>0</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>POINT (5.19840 5.86744)</td>
+      <td>POINT (5.1984 5.86744)</td>
       <td>y6</td>
       <td>0</td>
     </tr>
@@ -903,7 +907,7 @@ facility_points
     p_facilities=P_FACILITIES,
     predefined_facility_col=&quot;predefined_loc&quot;,
     distance_metric=distance_metric,
-    name=f&quot;p-median-{distance_metric}-distance-predefined&quot;
+    name=f&quot;p-median-{distance_metric}-distance-predefined&quot;,
 )
 </pre></div>
 </div>
@@ -1018,22 +1022,33 @@ dv_colors
     streets.plot(ax=ax, alpha=1, color=&quot;black&quot;, zorder=1)
     legend_elements = [mlines.Line2D([], [], color=&quot;black&quot;, label=&quot;streets&quot;)]
 
-    if plot_clis:
+    if plot_clis and model.name.startswith(&quot;mclp&quot;):
         # any clients that not asscociated with a facility
-        if model.name.startswith(&quot;mclp&quot;):
-            c = &quot;k&quot;
-            if model.n_cli_uncov:
-                idx = [i for i, v in enumerate(model.cli2fac) if len(v) == 0]
-                pnt_kws = dict(ax=ax, fc=c, ec=c, marker=&quot;s&quot;, markersize=7, zorder=2)
-                clis.iloc[idx].plot(**pnt_kws)
-            _label = f&quot;Demand sites not covered ($n$={model.n_cli_uncov})&quot;
-            _mkws = dict(marker=&quot;s&quot;, markerfacecolor=c, markeredgecolor=c, linewidth=0)
-            legend_elements.append(mlines.Line2D([], [], ms=3, label=_label, **_mkws))
+        c = &quot;k&quot;
+        if model.n_cli_uncov:
+            idx = [i for i, v in enumerate(model.cli2fac) if len(v) == 0]
+            pnt_kws = {
+                &quot;ax&quot;: ax,
+                &quot;fc&quot;: c,
+                &quot;ec&quot;: c,
+                &quot;marker&quot;: &quot;s&quot;,
+                &quot;markersize&quot;: 7,
+                &quot;zorder&quot;: 2,
+            }
+            clis.iloc[idx].plot(**pnt_kws)
+        _label = f&quot;Demand sites not covered ($n$={model.n_cli_uncov})&quot;
+        _mkws = {
+            &quot;marker&quot;: &quot;s&quot;,
+            &quot;markerfacecolor&quot;: c,
+            &quot;markeredgecolor&quot;: c,
+            &quot;linewidth&quot;: 0,
+        }
+        legend_elements.append(mlines.Line2D([], [], ms=3, label=_label, **_mkws))
 
     # all candidate facilities
     facs.plot(ax=ax, fc=&quot;brown&quot;, marker=&quot;*&quot;, markersize=80, zorder=8)
     _label = f&quot;Facility sites ($n$={len(model.fac_vars)})&quot;
-    _mkws = dict(marker=&quot;*&quot;, markerfacecolor=&quot;brown&quot;, markeredgecolor=&quot;brown&quot;)
+    _mkws = {&quot;marker&quot;: &quot;*&quot;, &quot;markerfacecolor&quot;: &quot;brown&quot;, &quot;markeredgecolor&quot;: &quot;brown&quot;}
     legend_elements.append(mlines.Line2D([], [], ms=7, lw=0, label=_label, **_mkws))
 
     # facility-(client) symbology and legend entries
@@ -1046,7 +1061,11 @@ dv_colors
             gdf = geopandas.GeoDataFrame(geoms)
             gdf.plot(ax=ax, zorder=zorder, ec=&quot;k&quot;, fc=cset, markersize=100 * markersize)
             _label = f&quot;Demand sites covered by {fname}&quot;
-            _mkws = dict(markerfacecolor=cset, markeredgecolor=&quot;k&quot;, ms=markersize + 7)
+            _mkws = {
+                &quot;markerfacecolor&quot;: cset,
+                &quot;markeredgecolor&quot;: &quot;k&quot;,
+                &quot;ms&quot;: markersize + 7,
+            }
             legend_elements.append(
                 mlines.Line2D([], [], marker=&quot;o&quot;, lw=0, label=_label, **_mkws)
             )
@@ -1061,7 +1080,7 @@ dv_colors
         facs.iloc[[fac]].plot(
             ax=ax, marker=&quot;*&quot;, markersize=1000, zorder=9, fc=cset, ec=ec, lw=lw
         )
-        _mkws = dict(markerfacecolor=cset, markeredgecolor=ec, markeredgewidth=lw)
+        _mkws = {&quot;markerfacecolor&quot;: cset, &quot;markeredgecolor&quot;: ec, &quot;markeredgewidth&quot;: lw}
         legend_elements.append(
             mlines.Line2D([], [], marker=&quot;*&quot;, ms=20, lw=0, label=fname, **_mkws)
         )
@@ -1072,7 +1091,7 @@ dv_colors
 
     if not multi_plot:
         # legend
-        kws = dict(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 0.7))
+        kws = {&quot;loc&quot;: &quot;upper left&quot;, &quot;bbox_to_anchor&quot;: (1.05, 0.7)}
         plt.legend(handles=legend_elements, **kws)
 </pre></div>
 </div>
@@ -1161,38 +1180,36 @@ for i, m in enumerate([pmedian_from_cm, pmedian_from_gdf, pmedian_from_gdf_pre])
 <h2>Capacitated p-median problem<a class="headerlink" href="#Capacitated-p-median-problem" title="Link to this heading">¶</a></h2>
 <p>Based on the classic p-median problem, we further consider the location allocation problem with the facility’s capacity, and the amount of demand at the demand point. Therefore, we add new functions to <code class="docutils literal notranslate"><span class="pre">p-median</span></code> function of <code class="docutils literal notranslate"><span class="pre">spopt</span></code>, to solve this type of problem.</p>
 <p><strong>Capacitated P-Median can be written as:</strong></p>
-<p>:math:<a href="#id6"><span class="problematic" id="id7">`</span></a>begin{array} displaystyle textbf{Minimize} &amp; displaystyle sum_{i in I}sum_{j in J}{a_i d_{ij} X_{ij}} &amp;&amp;&amp; (1) \
-displaystyle textbf{Subject to:} &amp; displaystyle sum_{j in J}{X_{ij} = 1} &amp; forall i in I &amp;&amp; (2) \</p>
-<blockquote>
-<div><p>&amp; displaystyle sum_{j in J}{Y_{j} = p} &amp;&amp;&amp; (3) \
-&amp; displaystyle sum_{i in I}{a_i X_{ij} leq {c_j Y_{j}}}&amp; forall j in J &amp;&amp; (4) \
-&amp; X_{ij} leq Y_{j} &amp; forall i in I &amp; forall j in J &amp; (5) \
-&amp; X_{ij} in {0,1} &amp; forall i in I &amp; forall j in J &amp; (6) \
-&amp; Y_{j} in {0,1} &amp; forall j in J &amp;&amp; (7) \ end{array}`</p>
-</div></blockquote>
-<p>:math:<a href="#id8"><span class="problematic" id="id9">`</span></a>begin{array} displaystyle textbf{Where:}\ &amp; &amp; displaystyle i &amp; small = &amp; textrm{index referencing nodes of the network as demand} \
-&amp; &amp; j &amp; small = &amp; textrm{index referencing nodes of the network as potential facility sites} \
-&amp; &amp; d_{ij} &amp; small = &amp; textrm{shortest distance or travel time between nodes } i textrm{ and } j \
-&amp; &amp; p &amp; small = &amp; textrm{number of facilities to be located} \
-&amp; &amp; a_i &amp; small = &amp; textrm{service load or population demand at } i \
-&amp; &amp; c_j &amp; small = &amp; textrm{capacity of facility} j \
-&amp; &amp; X_{ij} &amp; small = &amp; begin{cases}</p>
-<blockquote>
-<div><blockquote>
-<div><p>1, textrm{if demand } i textrm{ is assigned to facility } j \
-0, textrm{otherwise}</p>
-</div></blockquote>
-<p>end{cases} \</p>
-</div></blockquote>
-<dl>
-<dt>&amp; &amp; Y_{j} &amp; small = &amp; begin{cases}</dt><dd><blockquote>
-<div><p>1, textrm{if node } j textrm{ has been selected for a facility} \
-0, textrm{otherwise} \</p>
-</div></blockquote>
-<p>end{cases} \</p>
-</dd>
-</dl>
-<p>end{array}`</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{lllll}
+\textbf{Minimize} &amp; \displaystyle \sum_{i \in I} \sum_{j \in J} a_i d_{ij} X_{ij} &amp;&amp;&amp; (1) \\
+\textbf{Subject to:} &amp; \sum_{j \in J} X_{ij} = 1 &amp; \forall i \in I &amp;&amp; (2) \\
+&amp; \sum_{j \in J} Y_j = p &amp;&amp;&amp; (3) \\
+&amp; \sum_{i \in I} a_i X_{ij} \leq c_j Y_j &amp; \forall j \in J &amp;&amp; (4) \\
+&amp; X_{ij} \leq Y_j &amp; \forall i \in I, j \in J &amp;&amp; (5) \\
+&amp; X_{ij} \in \{0, 1\} &amp; \forall i \in I, j \in J &amp;&amp; (6) \\
+&amp; Y_j \in \{0, 1\} &amp; \forall j \in J &amp;&amp; (7) \\
+\end{array}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{lllll}
+\textbf{Where:} \\
+&amp; i &amp; = &amp; \text{index referencing demand nodes} \\
+&amp; j &amp; = &amp; \text{index referencing potential facility sites} \\
+&amp; d_{ij} &amp; = &amp; \text{distance or travel time between nodes } i \text{ and } j \\
+&amp; p &amp; = &amp; \text{number of facilities to locate} \\
+&amp; a_i &amp; = &amp; \text{demand at node } i \\
+&amp; c_j &amp; = &amp; \text{capacity of facility at node } j \\
+&amp; X_{ij} &amp; = &amp;
+  \begin{cases}
+    1, &amp; \text{if demand } i \text{ is assigned to facility } j \\
+    0, &amp; \text{otherwise}
+  \end{cases} \\
+&amp; Y_j &amp; = &amp;
+  \begin{cases}
+    1, &amp; \text{if facility is located at node } j \\
+    0, &amp; \text{otherwise}
+  \end{cases}
+\end{array}\end{split}\]</div>
 <p><em>The formulation above is adapted from Church and Murray (2009)</em></p>
 <p>In the previous p-median problem, we have the demand value of each client point, which is the ‘weight’. And in that condition, we acutally assume that the capacity of each facility is infinite. Now we can make this model more realisitic by considering the capacity.</p>
 <p>Again, we would take the p-median case with network distance as the example, to introduce how to achieve the capacity constraint by using the <code class="docutils literal notranslate"><span class="pre">facility_capacities</span></code> function.</p>
@@ -1231,7 +1248,7 @@ facility_points[&quot;capacity&quot;].sum()
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-756
+np.int64(756)
 </pre></div></div>
 </div>
 <p>The sum of the facility capacity is 756, which is more than the total amount of demand, 579. It means the 10 facilities can accommodate all the demand.</p>
@@ -1243,9 +1260,9 @@ facility_points[&quot;capacity&quot;].sum()
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pmedian_capacity_from_cm = PMedian.from_cost_matrix(
     cost_matrix,
     ai,
-    p_facilities = 8,
+    p_facilities=8,
     facility_capacities=cj,
-    name=&quot;p-median-network-distance&quot;
+    name=&quot;p-median-network-distance&quot;,
 )
 </pre></div>
 </div>
@@ -1265,7 +1282,7 @@ pmedian_capacity_from_cm
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;spopt.locate.p_median.PMedian at 0x16434fe90&gt;
+&lt;spopt.locate.p_median.PMedian at 0x17710a6f0&gt;
 </pre></div></div>
 </div>
 <p>How many facilities are allocated? And how many clients will they serve?</p>
@@ -1303,14 +1320,14 @@ facility 8 serving 11 clients
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>predefine = numpy.array([0,1])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>predefine = numpy.array([0, 1])
 pmedian_capacity_predefined_from_cm = PMedian.from_cost_matrix(
     cost_matrix,
     ai,
     p_facilities=8,
     facility_capacities=cj,
     predefined_facilities_arr=predefine,
-    name=&quot;p-median-predefined-facilities-network-distance&quot;
+    name=&quot;p-median-predefined-facilities-network-distance&quot;,
 )
 pmedian_capacity_predefined_from_cm = pmedian_capacity_predefined_from_cm.solve(solver)
 </pre></div>
@@ -1355,9 +1372,11 @@ facility 7 serving 14 clients
     facility_capacities=cj,
     predefined_facilities_arr=predefine,
     fulfill_predefined_fac=True,
-    name=&quot;p-median-fulfill-predefined-facilities-network-distance&quot;
+    name=&quot;p-median-fulfill-predefined-facilities-network-distance&quot;,
 )
-pmedian_capacity_fulfill_predefined_from_cm = pmedian_capacity_fulfill_predefined_from_cm.solve(solver)
+pmedian_capacity_fulfill_predefined_from_cm = (
+    pmedian_capacity_fulfill_predefined_from_cm.solve(solver)
+)
 </pre></div>
 </div>
 </div>
@@ -1419,7 +1438,7 @@ facility 9 serving 12 clients
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
     </p>
   </div>
 </footer>

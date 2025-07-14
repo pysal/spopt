@@ -4,13 +4,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; spopt v0.6.1 Manual</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <title>Index &#8212; spopt v0.7.0rc1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/pysal-styles.css?v=e5dd7357" />
-    <script src="_static/documentation_options.js?v=2bd037f0"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/documentation_options.js?v=61228ca7"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="_static/pysal_favicon.ico"/>
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0rc1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -68,6 +68,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/maxp.html">Max-P Regionalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/skater.html">SKATER</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/ward.html">Ward</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/reg-k-means.html">Regional-k-means</a></li>
@@ -142,6 +143,7 @@
  | <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#K"><strong>K</strong></a>
@@ -181,6 +183,8 @@
 </li>
         <li><a href="generated/spopt.region.RegionKMeansHeuristic.html#spopt.region.RegionKMeansHeuristic.__init__">(spopt.region.RegionKMeansHeuristic method)</a>
 </li>
+        <li><a href="generated/spopt.region.SA3.html#spopt.region.SA3.__init__">(spopt.region.SA3 method)</a>
+</li>
         <li><a href="generated/spopt.region.Skater.html#spopt.region.Skater.__init__">(spopt.region.Skater method)</a>
 </li>
         <li><a href="generated/spopt.region.Spenc.html#spopt.region.Spenc.__init__">(spopt.region.Spenc method)</a>
@@ -215,6 +219,14 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="generated/spopt.region.RandomRegion.html#spopt.region.RandomRegion.cards2breaks">cards2breaks() (spopt.region.RandomRegion method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/spopt.region.extract_clusters.html#spopt.region.extract_clusters">extract_clusters() (in module spopt.region)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -354,6 +366,8 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/spopt.region.SA3.html#spopt.region.SA3">SA3 (class in spopt.region)</a>
+</li>
       <li><a href="generated/spopt.region.Skater.html#spopt.region.Skater">Skater (class in spopt.region)</a>
 </li>
       <li><a href="generated/spopt.locate.KNearestPMedian.html#spopt.locate.KNearestPMedian.solve">solve() (spopt.locate.KNearestPMedian method)</a>
@@ -376,6 +390,8 @@
         <li><a href="generated/spopt.region.MaxPHeuristic.html#spopt.region.MaxPHeuristic.solve">(spopt.region.MaxPHeuristic method)</a>
 </li>
         <li><a href="generated/spopt.region.RegionKMeansHeuristic.html#spopt.region.RegionKMeansHeuristic.solve">(spopt.region.RegionKMeansHeuristic method)</a>
+</li>
+        <li><a href="generated/spopt.region.SA3.html#spopt.region.SA3.solve">(spopt.region.SA3 method)</a>
 </li>
         <li><a href="generated/spopt.region.Skater.html#spopt.region.Skater.solve">(spopt.region.Skater method)</a>
 </li>
@@ -416,7 +432,7 @@
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
     </p>
   </div>
 </footer>

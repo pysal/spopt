@@ -1,0 +1,6 @@
+﻿spopt.region.extract\_clusters
+==============================
+
+.. currentmodule:: spopt.region
+
+.. autofunction:: extract_clusters

@@ -4,13 +4,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>spopt.region.azp &#8212; spopt v0.6.1 Manual</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <title>spopt.region.azp &#8212; spopt v0.7.0rc1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=e5dd7357" />
-    <script src="../../../_static/documentation_options.js?v=2bd037f0"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/documentation_options.js?v=61228ca7"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0rc1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -68,6 +68,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/maxp.html">Max-P Regionalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/skater.html">SKATER</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/ward.html">Ward</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/reg-k-means.html">Regional-k-means</a></li>
@@ -142,22 +143,22 @@
 
 <span class="c1"># ruff: noqa: B008, N806</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
 
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">spopt.region.azp_util</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spopt.region.azp_util</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">AllowMoveAZP</span><span class="p">,</span>
     <span class="n">AllowMoveAZPSimulatedAnnealing</span><span class="p">,</span>
     <span class="n">AllowMoveStrategy</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">spopt.region.csgraph_utils</span> <span class="kn">import</span> <span class="n">is_connected</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">,</span> <span class="n">sub_adj_matrix</span>
-<span class="kn">from</span> <span class="nn">spopt.region.objective_function</span> <span class="kn">import</span> <span class="n">ObjectiveFunctionPairwise</span>
-<span class="kn">from</span> <span class="nn">spopt.region.util</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spopt.region.csgraph_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_connected</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">,</span> <span class="n">sub_adj_matrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spopt.region.objective_function</span><span class="w"> </span><span class="kn">import</span> <span class="n">ObjectiveFunctionPairwise</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spopt.region.util</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Move</span><span class="p">,</span>
     <span class="n">array_from_df_col</span><span class="p">,</span>
     <span class="n">array_from_dict_values</span><span class="p">,</span>
@@ -176,12 +177,12 @@
     <span class="n">w_from_gdf</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">..BaseClass</span> <span class="kn">import</span> <span class="n">BaseSpOptHeuristicSolver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..BaseClass</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSpOptHeuristicSolver</span>
 
 
 <div class="viewcode-block" id="AZP">
 <a class="viewcode-back" href="../../../generated/spopt.region.AZP.html#spopt.region.AZP">[docs]</a>
-<span class="k">class</span> <span class="nc">AZP</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AZP</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;AZP involves class offering the implementation of</span>
 <span class="sd">    the automatic zoning procedure algorithm.</span>
 
@@ -266,7 +267,7 @@
 
 <div class="viewcode-block" id="AZP.__init__">
 <a class="viewcode-back" href="../../../generated/spopt.region.AZP.html#spopt.region.AZP.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">gdf</span><span class="p">,</span>
         <span class="n">w</span><span class="p">,</span>
@@ -289,7 +290,7 @@
 
 <div class="viewcode-block" id="AZP.solve">
 <a class="viewcode-back" href="../../../generated/spopt.region.AZP.html#spopt.region.AZP.solve">[docs]</a>
-    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Solve the azp&quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
@@ -307,7 +308,7 @@
 
 
 
-<span class="k">class</span> <span class="nc">AZPOrig</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AZPOrig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class offering the implementation of the AZP algorithm.</span>
 
@@ -320,7 +321,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allow_move_strategy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allow_move_strategy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -351,7 +352,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">objective_func</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">adj</span><span class="p">,</span>
         <span class="n">attr</span><span class="p">,</span>
@@ -419,7 +420,7 @@
         <span class="o">+</span> <span class="n">fit_from_scipy_sparse_matrix</span><span class="o">.</span><span class="vm">__doc__</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">fit_from_w</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_from_w</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">w</span><span class="p">,</span>
         <span class="n">attr</span><span class="p">,</span>
@@ -456,7 +457,7 @@
             <span class="n">adj</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">n_regions</span><span class="p">,</span> <span class="n">initial_labels</span><span class="p">,</span> <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">fit_from_networkx</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_from_networkx</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">graph</span><span class="p">,</span>
         <span class="n">attr</span><span class="p">,</span>
@@ -510,7 +511,7 @@
             <span class="n">adj</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">n_regions</span><span class="p">,</span> <span class="n">initial_labels</span><span class="p">,</span> <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">fit_from_geodataframe</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_from_geodataframe</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">gdf</span><span class="p">,</span>
         <span class="n">attr</span><span class="p">,</span>
@@ -558,7 +559,7 @@
             <span class="n">w</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">n_regions</span><span class="p">,</span> <span class="n">initial_labels</span><span class="p">,</span> <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">fit_from_dict</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_from_dict</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">neighbor_dict</span><span class="p">,</span>
         <span class="n">attr</span><span class="p">,</span>
@@ -604,7 +605,7 @@
             <span class="n">adj</span><span class="p">,</span> <span class="n">attr_arr</span><span class="p">,</span> <span class="n">n_regions</span><span class="p">,</span> <span class="n">initial_labels</span><span class="p">,</span> <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_azp_connected_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">initial_clustering</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>  <span class="c1"># noqa: ARG002</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_azp_connected_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">initial_clustering</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>  <span class="c1"># noqa: ARG002</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Implementation of the AZP algorithm for a spatially connected set of</span>
 <span class="sd">        areas (i.e. for every area there is a path to every other area).</span>
@@ -732,7 +733,7 @@
         <span class="k">return</span> <span class="n">labels</span>
 
 
-<span class="k">class</span> <span class="nc">AZPSimulatedAnnealing</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AZPSimulatedAnnealing</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class offering the implementation of the AZP-SA algorithm (see [OR1995]_).</span>
 
@@ -745,7 +746,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">init_temperature</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">max_iterations</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">),</span>
@@ -801,7 +802,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">n_regions</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">fit_from_geodataframe</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_from_geodataframe</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">gdf</span><span class="p">,</span>
         <span class="n">attr</span><span class="p">,</span>
@@ -850,7 +851,7 @@
             <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">fit_from_dict</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_from_dict</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">neighbor_dict</span><span class="p">,</span>
         <span class="n">attr</span><span class="p">,</span>
@@ -900,7 +901,7 @@
             <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">fit_from_networkx</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_from_networkx</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">graph</span><span class="p">,</span>
         <span class="n">attr</span><span class="p">,</span>
@@ -950,7 +951,7 @@
             <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">adj</span><span class="p">,</span>
         <span class="n">attr</span><span class="p">,</span>
@@ -1036,7 +1037,7 @@
                 <span class="n">nonmoving_steps</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="n">initial_labels</span>
 
-    <span class="k">def</span> <span class="nf">fit_from_w</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_from_w</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">w</span><span class="p">,</span>
         <span class="n">attr</span><span class="p">,</span>
@@ -1081,19 +1082,19 @@
             <span class="n">objective_func</span><span class="o">=</span><span class="n">objective_func</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">sa_moves_alert</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sa_moves_alert</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sa_moves_term_reached</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">move_made_alert</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">move_made_alert</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">move_made</span> <span class="o">=</span> <span class="kc">True</span>
 
 
-<span class="k">class</span> <span class="nc">AZPTabu</span><span class="p">(</span><span class="n">AZP</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AZPTabu</span><span class="p">(</span><span class="n">AZP</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Superclass for tabu variants of the AZP.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_make_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">adj</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">adj</span><span class="p">):</span>
         <span class="n">old_region</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">area</span><span class="p">]</span>
         <span class="n">make_move</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">boolean_assert_feasible</span><span class="p">(</span>
@@ -1109,12 +1110,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reverse_move</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">reset_tabu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tabu_len</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset_tabu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tabu_len</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">tabu_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span><span class="o">.</span><span class="n">maxlen</span> <span class="k">if</span> <span class="n">tabu_len</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">tabu_len</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([],</span> <span class="n">tabu_len</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">AZPBasicTabu</span><span class="p">(</span><span class="n">AZPTabu</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AZPBasicTabu</span><span class="p">(</span><span class="n">AZPTabu</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of the AZP with basic tabu (refer to [OR1995]_).</span>
 
@@ -1127,7 +1128,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">tabu_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">repetitions_before_termination</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1150,7 +1151,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">reps_before_termination</span> <span class="o">=</span> <span class="n">repetitions_before_termination</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_azp_connected_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">initial_clustering</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_azp_connected_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">initial_clustering</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Implementation of the basic tabu version of the AZP algorithm (refer</span>
 <span class="sd">        to [OR1995]_) for a spatially connected set of areas (i.e. for every</span>
@@ -1275,7 +1276,7 @@
         <span class="k">return</span> <span class="n">labels</span>
 
 
-<span class="k">class</span> <span class="nc">AZPReactiveTabu</span><span class="p">(</span><span class="n">AZPTabu</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AZPReactiveTabu</span><span class="p">(</span><span class="n">AZPTabu</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of the AZP with reactive tabu (refer to [OR1995]_).</span>
 
@@ -1288,7 +1289,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_iterations</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_iterations</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1322,7 +1323,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">k1</span> <span class="o">=</span> <span class="n">k1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">k2</span> <span class="o">=</span> <span class="n">k2</span>
 
-    <span class="k">def</span> <span class="nf">_azp_connected_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">initial_labels</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_azp_connected_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">initial_labels</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Implementation of the reactive tabu version of the AZP algorithm (refer</span>
 <span class="sd">        to [OR1995]_) for a spatially connected set of areas (i.e. for every</span>
@@ -1491,7 +1492,7 @@
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
     </p>
   </div>
 </footer>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>spopt.region.sa3 &#8212; spopt v0.7.0rc1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=e5dd7357" />
+    <script src="../../../_static/documentation_options.js?v=61228ca7"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0rc1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../installation.html">Installation</a></li>
+                <li><a href="../../../tutorials.html">Tutorials</a></li>
+                <li><a href="../../../api.html">API</a></li>
+                <li><a href="../../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for spopt.region.sa3</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph</span><span class="p">,</span> <span class="n">weights</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgglomerativeClustering</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">spopt.BaseClass</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSpOptHeuristicSolver</span>
+
+
+<div class="viewcode-block" id="extract_clusters">
+<a class="viewcode-back" href="../../../generated/spopt.region.extract_clusters.html#spopt.region.extract_clusters">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_clusters</span><span class="p">(</span><span class="n">linkage_matrix</span><span class="p">,</span> <span class="n">min_cluster_size</span><span class="p">,</span> <span class="n">extraction</span><span class="o">=</span><span class="s2">&quot;eom&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract cluster types from a linkage matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    linkage_matrix : np.ndarray</span>
+<span class="sd">        A hierarchical clustering encoded as an array in</span>
+<span class="sd">        ``scipy.cluster.hierarchy.linkage`` format.</span>
+<span class="sd">    min_cluster_size : int</span>
+<span class="sd">        The minimum number of observations that forms a cluster.</span>
+<span class="sd">    extraction: str (default &quot;eom&quot;)</span>
+<span class="sd">        The cluster extraction scheme. &quot;eom&quot; is Excess of Mass, &quot;leaf&quot; is Leaf</span>
+<span class="sd">        extraction.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.array</span>
+<span class="sd">        Cluster labels for observations.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    This function requires ``fast_hdbscan`` and ``numba``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">n_samples</span> <span class="o">=</span> <span class="n">linkage_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">fast_hdbscan.cluster_trees</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+            <span class="n">cluster_tree_from_condensed_tree</span><span class="p">,</span>
+            <span class="n">condense_tree</span><span class="p">,</span>
+            <span class="n">extract_eom_clusters</span><span class="p">,</span>
+            <span class="n">extract_leaves</span><span class="p">,</span>
+            <span class="n">get_cluster_label_vector</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;The fast_hdbscan and numba libraries are required for this functionality.&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
+    <span class="n">condensed_tree</span> <span class="o">=</span> <span class="n">condense_tree</span><span class="p">(</span><span class="n">linkage_matrix</span><span class="p">,</span> <span class="n">min_cluster_size</span><span class="o">=</span><span class="n">min_cluster_size</span><span class="p">)</span>
+
+    <span class="n">cluster_tree</span> <span class="o">=</span> <span class="n">cluster_tree_from_condensed_tree</span><span class="p">(</span><span class="n">condensed_tree</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">extraction</span> <span class="o">==</span> <span class="s2">&quot;eom&quot;</span><span class="p">:</span>
+        <span class="n">selected_clusters</span> <span class="o">=</span> <span class="n">extract_eom_clusters</span><span class="p">(</span>
+            <span class="n">condensed_tree</span><span class="p">,</span> <span class="n">cluster_tree</span><span class="p">,</span> <span class="n">allow_single_cluster</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">extraction</span> <span class="o">==</span> <span class="s2">&quot;leaf&quot;</span><span class="p">:</span>
+        <span class="n">selected_clusters</span> <span class="o">=</span> <span class="n">extract_leaves</span><span class="p">(</span><span class="n">condensed_tree</span><span class="p">,</span> <span class="n">allow_single_cluster</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported extraction method. Use one of (&#39;eom&#39;, &#39;leaf&#39;).&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">get_cluster_label_vector</span><span class="p">(</span><span class="n">condensed_tree</span><span class="p">,</span> <span class="n">selected_clusters</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SA3">
+<a class="viewcode-back" href="../../../generated/spopt.region.SA3.html#spopt.region.SA3">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SA3</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Spatial Adaptive Agglomerative Aggregation (SA3) clustering.</span>
+
+<span class="sd">    The algorithm carries out ``sklearn.cluster.AgglometariveClustering``</span>
+<span class="sd">    per the specified parameters and extracts clusters from it, using density-clustering</span>
+<span class="sd">    extraction algorithms - Excess of Mass or Leaf. This results in multiscale,</span>
+<span class="sd">    contiguous clusters with noise.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    gdf : geopandas.GeoDataFrame</span>
+<span class="sd">        Geodataframe containing original data.</span>
+<span class="sd">    w : libpysal.weights.W | libpysal.graph.Graph</span>
+<span class="sd">        Weights or Graph object created from given data.</span>
+<span class="sd">    attrs_name : list</span>
+<span class="sd">        Strings for attribute names (cols of ``geopandas.GeoDataFrame``).</span>
+<span class="sd">    min_cluster_size : int</span>
+<span class="sd">        The minimum number of observations to form a cluster.</span>
+<span class="sd">    extraction: str (default &quot;eom&quot;)</span>
+<span class="sd">        The cluster extraction scheme. &quot;eom&quot; is Excess of Mass, &quot;leaf&quot; is Leaf</span>
+<span class="sd">        extraction.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments to be used in</span>
+<span class="sd">        ``sklearn.cluster.AgglometariveClustering.``</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    labels_ : numpy.array</span>
+<span class="sd">        Cluster labels for observations.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SA3.__init__">
+<a class="viewcode-back" href="../../../generated/spopt.region.SA3.html#spopt.region.SA3.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">gdf</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">attrs_name</span><span class="p">,</span> <span class="n">min_cluster_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">extraction</span><span class="o">=</span><span class="s2">&quot;eom&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">weights</span><span class="o">.</span><span class="n">W</span><span class="p">):</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">from_W</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Unkown graph type. Pass either libpysal.graph.Graph &quot;</span>
+                <span class="s2">&quot;or libpysal.weights.W.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span> <span class="o">=</span> <span class="n">attrs_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_cluster_size</span> <span class="o">=</span> <span class="n">min_cluster_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extraction</span> <span class="o">=</span> <span class="n">extraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clustering_kwds</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="k">if</span> <span class="s2">&quot;linkage&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clustering_kwds</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clustering_kwds</span><span class="p">[</span><span class="s2">&quot;linkage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ward&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;metric&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clustering_kwds</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clustering_kwds</span><span class="p">[</span><span class="s2">&quot;metric&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;euclidean&quot;</span></div>
+
+
+<div class="viewcode-block" id="SA3.solve">
+<a class="viewcode-back" href="../../../generated/spopt.region.SA3.html#spopt.region.SA3.solve">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the labels.&quot;&quot;&quot;</span>
+
+        <span class="c1"># label input data, could work with empty tess as well</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">component_labels</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+            <span class="n">component_members</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">labels</span> <span class="o">==</span> <span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span>
+
+            <span class="c1"># there are few component members, label all as noise</span>
+            <span class="k">if</span> <span class="n">component_members</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_cluster_size</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">component_members</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">component_members</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">component_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">component_members</span><span class="p">)</span>
+            <span class="n">component_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">component_members</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span><span class="p">]</span>
+            <span class="n">component_tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_tree</span><span class="p">(</span>
+                <span class="n">component_data</span><span class="p">,</span>
+                <span class="n">component_graph</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sparse</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clustering_kwds</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># # sometimes ward/average linkage breaks the monotonic increase in the MST</span>
+            <span class="c1"># # if that happens shift all distances by the max drop</span>
+            <span class="c1"># # need a loop because several connections might be problematic</span>
+            <span class="n">problem_idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">component_tree</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">component_tree</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">while</span> <span class="n">problem_idxs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">component_tree</span><span class="p">[</span><span class="n">problem_idxs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">component_tree</span><span class="p">[</span><span class="n">problem_idxs</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.01</span>
+                <span class="p">)</span>
+                <span class="n">problem_idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                    <span class="n">component_tree</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">component_tree</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+                <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># check if tree distances are always increasing</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="n">component_tree</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">component_tree</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+            <span class="n">component_clusters</span> <span class="o">=</span> <span class="n">extract_clusters</span><span class="p">(</span>
+                <span class="n">component_tree</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_cluster_size</span><span class="p">,</span> <span class="n">extraction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">extraction</span>
+            <span class="p">)</span>
+
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">component_clusters</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">component_members</span><span class="p">))</span>
+
+        <span class="c1"># relabel local clusters [[0,1,2], [0,1]] to global clusters [0, 1, 2, 3, 4],</span>
+        <span class="c1"># while keeping noise labels as they are</span>
+        <span class="n">new_labels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">next_cluster_val</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">labels_set</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">is_noise</span> <span class="o">=</span> <span class="n">labels_set</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="c1"># if this component is all noise, add it but skip the cluster increment</span>
+            <span class="k">if</span> <span class="n">is_noise</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                <span class="n">new_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels_set</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">highest_cluster_count</span> <span class="o">=</span> <span class="n">labels_set</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">labels_set</span><span class="p">[</span><span class="o">~</span><span class="n">is_noise</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels_set</span><span class="p">[</span><span class="o">~</span><span class="n">is_noise</span><span class="p">]</span> <span class="o">+</span> <span class="n">next_cluster_val</span>
+            <span class="n">new_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels_set</span><span class="p">)</span>
+            <span class="n">next_cluster_val</span> <span class="o">+=</span> <span class="n">highest_cluster_count</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># set the labels in the same order as the input data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">new_labels</span><span class="p">)</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gdf</span><span class="o">.</span><span class="n">index</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">training_data</span><span class="p">,</span> <span class="n">clustering_graph</span><span class="p">,</span> <span class="n">clustering_kwds</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Carry the agglomerative clustering, transform the result</span>
+<span class="sd">        and return the linkage matrix.&quot;&quot;&quot;</span>
+
+        <span class="n">clusterer</span> <span class="o">=</span> <span class="n">AgglomerativeClustering</span><span class="p">(</span>
+            <span class="n">connectivity</span><span class="o">=</span><span class="n">clustering_graph</span><span class="p">,</span>
+            <span class="n">metric</span><span class="o">=</span><span class="n">clustering_kwds</span><span class="p">[</span><span class="s2">&quot;metric&quot;</span><span class="p">],</span>
+            <span class="n">linkage</span><span class="o">=</span><span class="n">clustering_kwds</span><span class="p">[</span><span class="s2">&quot;linkage&quot;</span><span class="p">],</span>
+            <span class="n">compute_full_tree</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">compute_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">clusterer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span>
+
+        <span class="c1"># Create a linkage matrix from a sklearn hierarchical clustering model.</span>
+        <span class="c1"># by getting the counts for every connection</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">children_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">n_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">labels_</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">merge</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">children_</span><span class="p">):</span>
+            <span class="n">current_count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">child_idx</span> <span class="ow">in</span> <span class="n">merge</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">child_idx</span> <span class="o">&lt;</span> <span class="n">n_samples</span><span class="p">:</span>
+                    <span class="n">current_count</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># leaf node</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">current_count</span> <span class="o">+=</span> <span class="n">counts</span><span class="p">[</span><span class="n">child_idx</span> <span class="o">-</span> <span class="n">n_samples</span><span class="p">]</span>
+            <span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_count</span>
+
+        <span class="n">linkage_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">children_</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">distances_</span><span class="p">,</span> <span class="n">counts</span><span class="p">]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">linkage_matrix</span></div>
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

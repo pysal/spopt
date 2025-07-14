@@ -5,14 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Comparing P-Median Variations &#8212; spopt v0.6.1 Manual</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <title>Comparing P-Median Variations &#8212; spopt v0.7.0rc1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
-    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=61228ca7"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -44,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0rc1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -74,6 +74,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="maxp.html">Max-P Regionalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="skater.html">SKATER</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ward.html">Ward</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reg-k-means.html">Regional-k-means</a></li>
@@ -207,17 +208,17 @@ Interactive online version:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Last updated: 2023-12-10T13:16:52.881916-05:00
+Last updated: 2025-04-07T15:16:33.243843-04:00
 
 Python implementation: CPython
-Python version       : 3.12.0
-IPython version      : 8.18.0
+Python version       : 3.12.9
+IPython version      : 9.0.2
 
-Compiler    : Clang 15.0.7
+Compiler    : Clang 18.1.8
 OS          : Darwin
-Release     : 23.1.0
-Machine     : x86_64
-Processor   : i386
+Release     : 24.4.0
+Machine     : arm64
+Processor   : arm
 CPU cores   : 8
 Architecture: 64bit
 
@@ -235,8 +236,9 @@ import numpy
 import pandas
 import pulp
 import shapely
-import spopt
 from matplotlib.patches import Patch
+
+import spopt
 from spopt.locate import KNearestPMedian, PMedian, simulated_geo_points
 
 %watermark -w
@@ -249,15 +251,15 @@ from spopt.locate import KNearestPMedian, PMedian, simulated_geo_points
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Watermark: 2.4.3
+Watermark: 2.5.0
 
-geopandas : 0.14.1
-pandas    : 2.1.3
-shapely   : 2.0.2
-matplotlib: 3.8.2
-spopt     : 0.5.1.dev53+g5cadae7
-numpy     : 1.26.2
-pulp      : 2.7.0
+pandas    : 2.2.3
+geopandas : 1.0.1
+numpy     : 2.2.4
+matplotlib: 3.10.1
+spopt     : 0.6.2.dev3+g13ca45e
+shapely   : 2.1.0
+pulp      : 2.8.0
 
 </pre></div></div>
 </div>
@@ -279,7 +281,7 @@ pulp      : 2.7.0
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>N_CLI = 100
 N_FAC = 100
-P_FAC = 5
+P_FAC = 8
 SEED_CLI = 7
 SEED_FAC = 5
 solver = pulp.COIN_CMD(msg=False, warmStart=True)
@@ -295,7 +297,7 @@ solver = pulp.COIN_CMD(msg=False, warmStart=True)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>study_area = shapely.Polygon(((0,0), (10, 0), (10,10), (0, 10)))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>study_area = shapely.Polygon(((0, 0), (10, 0), (10, 10), (0, 10)))
 clients = simulated_geo_points(study_area, needed=N_CLI, seed=SEED_CLI)
 facilities = simulated_geo_points(study_area, needed=N_FAC, seed=SEED_FAC)
 for df in [clients, facilities]:
@@ -309,9 +311,9 @@ for df in [clients, facilities]:
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(4, 4))
 _label = f&quot;client sites ($n$={N_CLI})&quot;
-clients.plot(ax=ax, label=_label, alpha=.3)
+clients.plot(ax=ax, label=_label, alpha=0.3)
 _label = f&quot;facility candidate sites ($n$={N_FAC})&quot;
-facilities.plot(ax=ax, zorder=2, label=_label, alpha=.3)
+facilities.plot(ax=ax, zorder=2, label=_label, alpha=0.3)
 plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 </pre></div>
 </div>
@@ -385,12 +387,12 @@ The total of client weights: 579
     </tr>
     <tr>
       <th>2</th>
-      <td>POINT (9.77990 5.38496)</td>
+      <td>POINT (9.7799 5.38496)</td>
       <td>4</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>POINT (5.01120 0.72051)</td>
+      <td>POINT (5.0112 0.72051)</td>
       <td>4</td>
     </tr>
     <tr>
@@ -433,12 +435,12 @@ The total of client weights: 579
 <p>100 rows × 2 columns</p>
 </div></div>
 </div>
-<p>For each service facility the <strong>:math:`p`-median capacitated variants</strong> suppose there is a service level available at each site (the capacity). Again, we assign random integer values using <code class="docutils literal notranslate"><span class="pre">numpy</span></code> to simulate these capacities ranging from a minimum of 25 and a maximum of 200.</p>
+<p>For each service facility the <strong>:math:`p`-median capacitated variants</strong> suppose there is a service level available at each site (the capacity). Again, we assign random integer values using <code class="docutils literal notranslate"><span class="pre">numpy</span></code> to simulate these capacities ranging from a minimum of 50 and a maximum of 200.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>min_cap = 25
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>min_cap = 50
 max_cap = 200
 numpy.random.seed(1)
 cj = numpy.random.randint(min_cap, max_cap, N_FAC)
@@ -454,7 +456,7 @@ facilities
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-The total of service capacity: 10654
+The total of service capacity: 12126
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -488,27 +490,27 @@ The total of service capacity: 10654
     <tr>
       <th>0</th>
       <td>POINT (2.21993 8.70732)</td>
-      <td>62</td>
+      <td>87</td>
     </tr>
     <tr>
       <th>1</th>
       <td>POINT (2.06719 9.18611)</td>
-      <td>165</td>
+      <td>190</td>
     </tr>
     <tr>
       <th>2</th>
       <td>POINT (4.88411 6.11744)</td>
-      <td>97</td>
+      <td>122</td>
     </tr>
     <tr>
       <th>3</th>
       <td>POINT (7.65908 5.18418)</td>
-      <td>162</td>
+      <td>187</td>
     </tr>
     <tr>
       <th>4</th>
       <td>POINT (2.96801 1.87721)</td>
-      <td>158</td>
+      <td>183</td>
     </tr>
     <tr>
       <th>...</th>
@@ -518,27 +520,27 @@ The total of service capacity: 10654
     <tr>
       <th>95</th>
       <td>POINT (7.26789 6.15814)</td>
-      <td>102</td>
+      <td>95</td>
     </tr>
     <tr>
       <th>96</th>
-      <td>POINT (5.88500 6.05004)</td>
-      <td>100</td>
+      <td>POINT (5.885 6.05004)</td>
+      <td>107</td>
     </tr>
     <tr>
       <th>97</th>
       <td>POINT (3.54785 7.77382)</td>
-      <td>101</td>
+      <td>146</td>
     </tr>
     <tr>
       <th>98</th>
       <td>POINT (6.04603 3.09231)</td>
-      <td>68</td>
+      <td>63</td>
     </tr>
     <tr>
       <th>99</th>
       <td>POINT (2.45631 0.71266)</td>
-      <td>45</td>
+      <td>60</td>
     </tr>
   </tbody>
 </table>
@@ -551,9 +553,9 @@ The total of service capacity: 10654
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(4, 4))
 _label = f&quot;size-weighted clients\n\t$\\sum$={sum_clients}&quot;
-clients.plot(ax=ax, label=_label, alpha=.3, markersize=ai*4)
+clients.plot(ax=ax, label=_label, alpha=0.3, markersize=ai * 4)
 _label = f&quot;capacity-weighted facilities\n\t$\\sum$={sum_capacity}&quot;
-facilities.plot(ax=ax, label=_label, alpha=.3, markersize=cj)
+facilities.plot(ax=ax, label=_label, alpha=0.3, markersize=cj)
 plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 </pre></div>
 </div>
@@ -668,31 +670,31 @@ facilities
       <th>0</th>
       <td>POINT (2.21993 8.70732)</td>
       <td>y0</td>
-      <td>62</td>
+      <td>87</td>
     </tr>
     <tr>
       <th>1</th>
       <td>POINT (2.06719 9.18611)</td>
       <td>y1</td>
-      <td>165</td>
+      <td>190</td>
     </tr>
     <tr>
       <th>2</th>
       <td>POINT (4.88411 6.11744)</td>
       <td>y2</td>
-      <td>97</td>
+      <td>122</td>
     </tr>
     <tr>
       <th>3</th>
       <td>POINT (7.65908 5.18418)</td>
       <td>y3</td>
-      <td>162</td>
+      <td>187</td>
     </tr>
     <tr>
       <th>4</th>
       <td>POINT (2.96801 1.87721)</td>
       <td>y4</td>
-      <td>158</td>
+      <td>183</td>
     </tr>
     <tr>
       <th>...</th>
@@ -704,31 +706,31 @@ facilities
       <th>95</th>
       <td>POINT (7.26789 6.15814)</td>
       <td>y95</td>
-      <td>102</td>
+      <td>95</td>
     </tr>
     <tr>
       <th>96</th>
-      <td>POINT (5.88500 6.05004)</td>
+      <td>POINT (5.885 6.05004)</td>
       <td>y96</td>
-      <td>100</td>
+      <td>107</td>
     </tr>
     <tr>
       <th>97</th>
       <td>POINT (3.54785 7.77382)</td>
       <td>y97</td>
-      <td>101</td>
+      <td>146</td>
     </tr>
     <tr>
       <th>98</th>
       <td>POINT (6.04603 3.09231)</td>
       <td>y98</td>
-      <td>68</td>
+      <td>63</td>
     </tr>
     <tr>
       <th>99</th>
       <td>POINT (2.45631 0.71266)</td>
       <td>y99</td>
-      <td>45</td>
+      <td>60</td>
     </tr>
   </tbody>
 </table>
@@ -805,10 +807,10 @@ diagnostic
       <td>classic-p-median</td>
       <td>10100</td>
       <td>10101</td>
-      <td>906.299</td>
-      <td>[y25, y32, y34, y68, y86]</td>
-      <td>0.510654</td>
-      <td>0.921897</td>
+      <td>668.88</td>
+      <td>[y25, y34, y45, y68, y70, y88, y89, y91]</td>
+      <td>0.272112</td>
+      <td>0.272112</td>
     </tr>
   </tbody>
 </table>
@@ -822,18 +824,21 @@ diagnostic
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def cli_sum(f2c):
     return clients.loc[f2c, &quot;weights&quot;].sum()
 
+
 def fac_cap(fdv):
-    return facilities.loc[(facilities[&quot;dv&quot;]==fdv), &quot;capacity&quot;].squeeze()
+    return facilities.loc[(facilities[&quot;dv&quot;] == fdv), &quot;capacity&quot;].squeeze()
+
 
 def serv_perc_cap(f2c, fdv):
     return round(cli_sum(f2c) / fac_cap(fdv), 2) * 100.0
+
 
 def service_level(pmp):
     if pmp.name.startswith(&quot;capacitated&quot;):
         zipped_vars = zip(pmp.fac2cli, facilities[&quot;dv&quot;], strict=True)
         serv_lev = [serv_perc_cap(f2c, fdv) for f2c, fdv in zipped_vars]
     else:
-        serv_lev = [100.0 if bool(dv.varValue) else 0. for dv in pmp.fac_vars]
+        serv_lev = [100.0 if bool(dv.varValue) else 0.0 for dv in pmp.fac_vars]
     return serv_lev
 </pre></div>
 </div>
@@ -882,35 +887,56 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
       <th>25</th>
       <td>POINT (7.70854 4.84931)</td>
       <td>y25</td>
-      <td>88</td>
-      <td>100.0</td>
-    </tr>
-    <tr>
-      <th>32</th>
-      <td>POINT (8.24811 0.94203)</td>
-      <td>y32</td>
-      <td>33</td>
+      <td>72</td>
       <td>100.0</td>
     </tr>
     <tr>
       <th>34</th>
       <td>POINT (5.46358 7.96143)</td>
       <td>y34</td>
-      <td>140</td>
+      <td>80</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>POINT (8.59707 1.11111)</td>
+      <td>y45</td>
+      <td>102</td>
       <td>100.0</td>
     </tr>
     <tr>
       <th>68</th>
-      <td>POINT (0.85070 8.07777)</td>
+      <td>POINT (0.8507 8.07777)</td>
       <td>y68</td>
-      <td>82</td>
+      <td>73</td>
       <td>100.0</td>
     </tr>
     <tr>
-      <th>86</th>
-      <td>POINT (2.18498 4.25637)</td>
-      <td>y86</td>
-      <td>102</td>
+      <th>70</th>
+      <td>POINT (8.14642 8.10286)</td>
+      <td>y70</td>
+      <td>137</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>88</th>
+      <td>POINT (3.65333 4.77941)</td>
+      <td>y88</td>
+      <td>126</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>89</th>
+      <td>POINT (5.4209 2.6523)</td>
+      <td>y89</td>
+      <td>93</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>POINT (1.3648 3.177)</td>
+      <td>y91</td>
+      <td>80</td>
       <td>100.0</td>
     </tr>
   </tbody>
@@ -953,7 +979,7 @@ dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_ar
     # all candidate facilities
     facs.plot(ax=ax, fc=&quot;brown&quot;, marker=&quot;*&quot;, markersize=80, zorder=8)
     _label = f&quot;Facility sites ($n$={len(model.fac_vars)})&quot;
-    _mkws = dict(marker=&quot;*&quot;, markerfacecolor=&quot;brown&quot;, markeredgecolor=&quot;brown&quot;)
+    _mkws = {&quot;marker&quot;: &quot;*&quot;, &quot;markerfacecolor&quot;: &quot;brown&quot;, &quot;markeredgecolor&quot;: &quot;brown&quot;}
     legend_elements.append(mlines.Line2D([], [], ms=7, lw=0, label=_label, **_mkws))
 
     # facility-(client) symbology and legend entries
@@ -965,7 +991,7 @@ dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_ar
         gdf = geopandas.GeoDataFrame(geoms)
         gdf.plot(ax=ax, zorder=zorder, ec=&quot;k&quot;, fc=cset, markersize=100 * markersize)
         _label = f&quot;Demand sites covered by {fname}&quot;
-        _mkws = dict(markerfacecolor=cset, markeredgecolor=&quot;k&quot;, ms=markersize + 7)
+        _mkws = {&quot;markerfacecolor&quot;: cset, &quot;markeredgecolor&quot;: &quot;k&quot;, &quot;ms&quot;: markersize + 7}
         legend_elements.append(
             mlines.Line2D([], [], marker=&quot;o&quot;, lw=0, label=_label, **_mkws)
         )
@@ -975,7 +1001,7 @@ dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_ar
         facs.iloc[[fac]].plot(
             ax=ax, marker=&quot;*&quot;, markersize=1000, zorder=9, fc=cset, ec=ec, lw=lw
         )
-        _mkws = dict(markerfacecolor=cset, markeredgecolor=ec, markeredgewidth=lw)
+        _mkws = {&quot;markerfacecolor&quot;: cset, &quot;markeredgecolor&quot;: ec, &quot;markeredgewidth&quot;: lw}
         legend_elements.append(
             mlines.Line2D([], [], marker=&quot;*&quot;, ms=20, lw=0, label=fname, **_mkws)
         )
@@ -984,7 +1010,7 @@ dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_ar
         markersize -= markersize_factor / p
 
     # legend
-    kws = dict(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 0.7))
+    kws = {&quot;loc&quot;: &quot;upper left&quot;, &quot;bbox_to_anchor&quot;: (1.05, 0.7)}
     plt.legend(handles=legend_elements, **kws)
 </pre></div>
 </div>
@@ -1001,7 +1027,7 @@ dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_ar
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-median_variations_29_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_29_0.png" style="width: 797px; height: 529px;" />
+<img alt="../_images/notebooks_p-median_variations_29_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_29_0.png" style="width: 798px; height: 551px;" />
 </div>
 </div>
 </section>
@@ -1094,20 +1120,20 @@ diagnostic
       <td>classic-p-median</td>
       <td>10100</td>
       <td>10101</td>
-      <td>906.299</td>
-      <td>[y25, y32, y34, y68, y86]</td>
-      <td>0.510654</td>
-      <td>0.921897</td>
+      <td>668.880</td>
+      <td>[y25, y34, y45, y68, y70, y88, y89, y91]</td>
+      <td>0.272112</td>
+      <td>0.272112</td>
     </tr>
     <tr>
       <th>1</th>
       <td>capacitated-p-median</td>
       <td>10100</td>
       <td>10201</td>
-      <td>962.151</td>
-      <td>[y20, y30, y45, y73, y86]</td>
-      <td>11.699106</td>
-      <td>12.895250</td>
+      <td>675.964</td>
+      <td>[y25, y45, y46, y68, y70, y88, y89, y91]</td>
+      <td>0.409628</td>
+      <td>0.409629</td>
     </tr>
   </tbody>
 </table>
@@ -1155,42 +1181,18 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
   </thead>
   <tbody>
     <tr>
-      <th>20</th>
-      <td>POINT (2.59098 8.02497)</td>
-      <td>y20</td>
-      <td>121</td>
-      <td>0.0</td>
-      <td>83.0</td>
-    </tr>
-    <tr>
       <th>25</th>
       <td>POINT (7.70854 4.84931)</td>
       <td>y25</td>
-      <td>88</td>
+      <td>72</td>
       <td>100.0</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>30</th>
-      <td>POINT (6.35356 8.11902)</td>
-      <td>y30</td>
-      <td>153</td>
-      <td>0.0</td>
-      <td>100.0</td>
-    </tr>
-    <tr>
-      <th>32</th>
-      <td>POINT (8.24811 0.94203)</td>
-      <td>y32</td>
-      <td>33</td>
-      <td>100.0</td>
-      <td>0.0</td>
+      <td>86.0</td>
     </tr>
     <tr>
       <th>34</th>
       <td>POINT (5.46358 7.96143)</td>
       <td>y34</td>
-      <td>140</td>
+      <td>80</td>
       <td>100.0</td>
       <td>0.0</td>
     </tr>
@@ -1198,33 +1200,57 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
       <th>45</th>
       <td>POINT (8.59707 1.11111)</td>
       <td>y45</td>
-      <td>101</td>
+      <td>102</td>
+      <td>100.0</td>
+      <td>83.0</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>POINT (4.78339 8.4998)</td>
+      <td>y46</td>
+      <td>130</td>
       <td>0.0</td>
-      <td>95.0</td>
+      <td>80.0</td>
     </tr>
     <tr>
       <th>68</th>
-      <td>POINT (0.85070 8.07777)</td>
+      <td>POINT (0.8507 8.07777)</td>
       <td>y68</td>
-      <td>82</td>
+      <td>73</td>
       <td>100.0</td>
-      <td>0.0</td>
+      <td>73.0</td>
     </tr>
     <tr>
-      <th>73</th>
-      <td>POINT (5.70975 3.02518)</td>
-      <td>y73</td>
-      <td>187</td>
-      <td>0.0</td>
-      <td>68.0</td>
+      <th>70</th>
+      <td>POINT (8.14642 8.10286)</td>
+      <td>y70</td>
+      <td>137</td>
+      <td>100.0</td>
+      <td>50.0</td>
     </tr>
     <tr>
-      <th>86</th>
-      <td>POINT (2.18498 4.25637)</td>
-      <td>y86</td>
-      <td>102</td>
+      <th>88</th>
+      <td>POINT (3.65333 4.77941)</td>
+      <td>y88</td>
+      <td>126</td>
       <td>100.0</td>
+      <td>62.0</td>
+    </tr>
+    <tr>
+      <th>89</th>
+      <td>POINT (5.4209 2.6523)</td>
+      <td>y89</td>
+      <td>93</td>
       <td>100.0</td>
+      <td>63.0</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>POINT (1.3648 3.177)</td>
+      <td>y91</td>
+      <td>80</td>
+      <td>100.0</td>
+      <td>86.0</td>
     </tr>
   </tbody>
 </table>
@@ -1242,7 +1268,7 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-median_variations_34_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_34_0.png" style="width: 797px; height: 529px;" />
+<img alt="../_images/notebooks_p-median_variations_34_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_34_0.png" style="width: 798px; height: 551px;" />
 </div>
 </div>
 </section>
@@ -1286,7 +1312,8 @@ contraints in the mathematical formulation. As stated in the introduction above,
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pmedian_k_nearest = KNearestPMedian.from_geodataframe(
-    *model_args, name=&quot;k-nearest-p-median&quot;,
+    *model_args,
+    name=&quot;k-nearest-p-median&quot;,
 )
 pmedian_k_nearest = pmedian_k_nearest.solve(solver)
 </pre></div>
@@ -1339,30 +1366,30 @@ diagnostic
       <td>classic-p-median</td>
       <td>10100</td>
       <td>10101</td>
-      <td>906.299</td>
-      <td>[y25, y32, y34, y68, y86]</td>
-      <td>0.510654</td>
-      <td>0.921897</td>
+      <td>668.880</td>
+      <td>[y25, y34, y45, y68, y70, y88, y89, y91]</td>
+      <td>0.272112</td>
+      <td>0.272112</td>
     </tr>
     <tr>
       <th>1</th>
       <td>capacitated-p-median</td>
       <td>10100</td>
       <td>10201</td>
-      <td>962.151</td>
-      <td>[y20, y30, y45, y73, y86]</td>
-      <td>11.699106</td>
-      <td>12.895250</td>
+      <td>675.964</td>
+      <td>[y25, y45, y46, y68, y70, y88, y89, y91]</td>
+      <td>0.409628</td>
+      <td>0.409629</td>
     </tr>
     <tr>
       <th>2</th>
       <td>k-nearest-p-median</td>
-      <td>1598</td>
-      <td>1499</td>
-      <td>906.299</td>
-      <td>[y25, y32, y34, y68, y86]</td>
-      <td>0.064253</td>
-      <td>0.113859</td>
+      <td>1001</td>
+      <td>902</td>
+      <td>668.880</td>
+      <td>[y25, y34, y45, y68, y70, y88, y89, y91]</td>
+      <td>0.035709</td>
+      <td>0.035709</td>
     </tr>
   </tbody>
 </table>
@@ -1411,46 +1438,19 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
   </thead>
   <tbody>
     <tr>
-      <th>20</th>
-      <td>POINT (2.59098 8.02497)</td>
-      <td>y20</td>
-      <td>121</td>
-      <td>0.0</td>
-      <td>83.0</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
       <th>25</th>
       <td>POINT (7.70854 4.84931)</td>
       <td>y25</td>
-      <td>88</td>
+      <td>72</td>
       <td>100.0</td>
-      <td>0.0</td>
-      <td>100.0</td>
-    </tr>
-    <tr>
-      <th>30</th>
-      <td>POINT (6.35356 8.11902)</td>
-      <td>y30</td>
-      <td>153</td>
-      <td>0.0</td>
-      <td>100.0</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>32</th>
-      <td>POINT (8.24811 0.94203)</td>
-      <td>y32</td>
-      <td>33</td>
-      <td>100.0</td>
-      <td>0.0</td>
+      <td>86.0</td>
       <td>100.0</td>
     </tr>
     <tr>
       <th>34</th>
       <td>POINT (5.46358 7.96143)</td>
       <td>y34</td>
-      <td>140</td>
+      <td>80</td>
       <td>100.0</td>
       <td>0.0</td>
       <td>100.0</td>
@@ -1459,36 +1459,63 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
       <th>45</th>
       <td>POINT (8.59707 1.11111)</td>
       <td>y45</td>
-      <td>101</td>
+      <td>102</td>
+      <td>100.0</td>
+      <td>83.0</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>POINT (4.78339 8.4998)</td>
+      <td>y46</td>
+      <td>130</td>
       <td>0.0</td>
-      <td>95.0</td>
+      <td>80.0</td>
       <td>0.0</td>
     </tr>
     <tr>
       <th>68</th>
-      <td>POINT (0.85070 8.07777)</td>
+      <td>POINT (0.8507 8.07777)</td>
       <td>y68</td>
-      <td>82</td>
+      <td>73</td>
       <td>100.0</td>
-      <td>0.0</td>
+      <td>73.0</td>
       <td>100.0</td>
     </tr>
     <tr>
-      <th>73</th>
-      <td>POINT (5.70975 3.02518)</td>
-      <td>y73</td>
-      <td>187</td>
-      <td>0.0</td>
-      <td>68.0</td>
-      <td>0.0</td>
+      <th>70</th>
+      <td>POINT (8.14642 8.10286)</td>
+      <td>y70</td>
+      <td>137</td>
+      <td>100.0</td>
+      <td>50.0</td>
+      <td>100.0</td>
     </tr>
     <tr>
-      <th>86</th>
-      <td>POINT (2.18498 4.25637)</td>
-      <td>y86</td>
-      <td>102</td>
+      <th>88</th>
+      <td>POINT (3.65333 4.77941)</td>
+      <td>y88</td>
+      <td>126</td>
       <td>100.0</td>
+      <td>62.0</td>
       <td>100.0</td>
+    </tr>
+    <tr>
+      <th>89</th>
+      <td>POINT (5.4209 2.6523)</td>
+      <td>y89</td>
+      <td>93</td>
+      <td>100.0</td>
+      <td>63.0</td>
+      <td>100.0</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>POINT (1.3648 3.177)</td>
+      <td>y91</td>
+      <td>80</td>
+      <td>100.0</td>
+      <td>86.0</td>
       <td>100.0</td>
     </tr>
   </tbody>
@@ -1507,7 +1534,7 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-median_variations_39_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_39_0.png" style="width: 797px; height: 529px;" />
+<img alt="../_images/notebooks_p-median_variations_39_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_39_0.png" style="width: 798px; height: 551px;" />
 </div>
 </div>
 </section>
@@ -1606,40 +1633,40 @@ diagnostic
       <td>classic-p-median</td>
       <td>10100</td>
       <td>10101</td>
-      <td>906.299</td>
-      <td>[y25, y32, y34, y68, y86]</td>
-      <td>0.510654</td>
-      <td>0.921897</td>
+      <td>668.880</td>
+      <td>[y25, y34, y45, y68, y70, y88, y89, y91]</td>
+      <td>0.272112</td>
+      <td>0.272112</td>
     </tr>
     <tr>
       <th>1</th>
       <td>capacitated-p-median</td>
       <td>10100</td>
       <td>10201</td>
-      <td>962.151</td>
-      <td>[y20, y30, y45, y73, y86]</td>
-      <td>11.699106</td>
-      <td>12.895250</td>
+      <td>675.964</td>
+      <td>[y25, y45, y46, y68, y70, y88, y89, y91]</td>
+      <td>0.409628</td>
+      <td>0.409629</td>
     </tr>
     <tr>
       <th>2</th>
       <td>k-nearest-p-median</td>
-      <td>1598</td>
-      <td>1499</td>
-      <td>906.299</td>
-      <td>[y25, y32, y34, y68, y86]</td>
-      <td>0.064253</td>
-      <td>0.113859</td>
+      <td>1001</td>
+      <td>902</td>
+      <td>668.880</td>
+      <td>[y25, y34, y45, y68, y70, y88, y89, y91]</td>
+      <td>0.035709</td>
+      <td>0.035709</td>
     </tr>
     <tr>
       <th>3</th>
       <td>capacitated-k-nearest-p-median</td>
-      <td>2045</td>
-      <td>3791</td>
-      <td>962.151</td>
-      <td>[y20, y30, y45, y73, y86]</td>
-      <td>2.610536</td>
-      <td>2.998628</td>
+      <td>1067</td>
+      <td>1835</td>
+      <td>675.964</td>
+      <td>[y25, y45, y46, y68, y70, y88, y89, y91]</td>
+      <td>0.379421</td>
+      <td>0.379421</td>
     </tr>
   </tbody>
 </table>
@@ -1689,50 +1716,20 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
   </thead>
   <tbody>
     <tr>
-      <th>20</th>
-      <td>POINT (2.59098 8.02497)</td>
-      <td>y20</td>
-      <td>121</td>
-      <td>0.0</td>
-      <td>83.0</td>
-      <td>0.0</td>
-      <td>83.0</td>
-    </tr>
-    <tr>
       <th>25</th>
       <td>POINT (7.70854 4.84931)</td>
       <td>y25</td>
-      <td>88</td>
+      <td>72</td>
       <td>100.0</td>
-      <td>0.0</td>
+      <td>86.0</td>
       <td>100.0</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>30</th>
-      <td>POINT (6.35356 8.11902)</td>
-      <td>y30</td>
-      <td>153</td>
-      <td>0.0</td>
-      <td>100.0</td>
-      <td>0.0</td>
-      <td>100.0</td>
-    </tr>
-    <tr>
-      <th>32</th>
-      <td>POINT (8.24811 0.94203)</td>
-      <td>y32</td>
-      <td>33</td>
-      <td>100.0</td>
-      <td>0.0</td>
-      <td>100.0</td>
-      <td>0.0</td>
+      <td>86.0</td>
     </tr>
     <tr>
       <th>34</th>
       <td>POINT (5.46358 7.96143)</td>
       <td>y34</td>
-      <td>140</td>
+      <td>80</td>
       <td>100.0</td>
       <td>0.0</td>
       <td>100.0</td>
@@ -1742,41 +1739,71 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
       <th>45</th>
       <td>POINT (8.59707 1.11111)</td>
       <td>y45</td>
-      <td>101</td>
+      <td>102</td>
+      <td>100.0</td>
+      <td>83.0</td>
+      <td>100.0</td>
+      <td>83.0</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>POINT (4.78339 8.4998)</td>
+      <td>y46</td>
+      <td>130</td>
       <td>0.0</td>
-      <td>95.0</td>
+      <td>80.0</td>
       <td>0.0</td>
-      <td>95.0</td>
+      <td>80.0</td>
     </tr>
     <tr>
       <th>68</th>
-      <td>POINT (0.85070 8.07777)</td>
+      <td>POINT (0.8507 8.07777)</td>
       <td>y68</td>
-      <td>82</td>
+      <td>73</td>
       <td>100.0</td>
-      <td>0.0</td>
+      <td>73.0</td>
       <td>100.0</td>
-      <td>0.0</td>
+      <td>73.0</td>
     </tr>
     <tr>
-      <th>73</th>
-      <td>POINT (5.70975 3.02518)</td>
-      <td>y73</td>
-      <td>187</td>
-      <td>0.0</td>
-      <td>68.0</td>
-      <td>0.0</td>
-      <td>68.0</td>
+      <th>70</th>
+      <td>POINT (8.14642 8.10286)</td>
+      <td>y70</td>
+      <td>137</td>
+      <td>100.0</td>
+      <td>50.0</td>
+      <td>100.0</td>
+      <td>50.0</td>
     </tr>
     <tr>
-      <th>86</th>
-      <td>POINT (2.18498 4.25637)</td>
-      <td>y86</td>
-      <td>102</td>
+      <th>88</th>
+      <td>POINT (3.65333 4.77941)</td>
+      <td>y88</td>
+      <td>126</td>
       <td>100.0</td>
+      <td>62.0</td>
       <td>100.0</td>
+      <td>62.0</td>
+    </tr>
+    <tr>
+      <th>89</th>
+      <td>POINT (5.4209 2.6523)</td>
+      <td>y89</td>
+      <td>93</td>
       <td>100.0</td>
+      <td>63.0</td>
       <td>100.0</td>
+      <td>63.0</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>POINT (1.3648 3.177)</td>
+      <td>y91</td>
+      <td>80</td>
+      <td>100.0</td>
+      <td>86.0</td>
+      <td>100.0</td>
+      <td>86.0</td>
     </tr>
   </tbody>
 </table>
@@ -1794,7 +1821,7 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-median_variations_44_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_44_0.png" style="width: 797px; height: 529px;" />
+<img alt="../_images/notebooks_p-median_variations_44_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_44_0.png" style="width: 798px; height: 551px;" />
 </div>
 </div>
 </section>
@@ -1855,40 +1882,40 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
       <td>classic-p-median</td>
       <td>10100</td>
       <td>10101</td>
-      <td>906.299</td>
-      <td>[y25, y32, y34, y68, y86]</td>
-      <td>0.510654</td>
-      <td>0.921897</td>
+      <td>668.880</td>
+      <td>[y25, y34, y45, y68, y70, y88, y89, y91]</td>
+      <td>0.272112</td>
+      <td>0.272112</td>
     </tr>
     <tr>
       <th>1</th>
       <td>capacitated-p-median</td>
       <td>10100</td>
       <td>10201</td>
-      <td>962.151</td>
-      <td>[y20, y30, y45, y73, y86]</td>
-      <td>11.699106</td>
-      <td>12.895250</td>
+      <td>675.964</td>
+      <td>[y25, y45, y46, y68, y70, y88, y89, y91]</td>
+      <td>0.409628</td>
+      <td>0.409629</td>
     </tr>
     <tr>
       <th>2</th>
       <td>k-nearest-p-median</td>
-      <td>1598</td>
-      <td>1499</td>
-      <td>906.299</td>
-      <td>[y25, y32, y34, y68, y86]</td>
-      <td>0.064253</td>
-      <td>0.113859</td>
+      <td>1001</td>
+      <td>902</td>
+      <td>668.880</td>
+      <td>[y25, y34, y45, y68, y70, y88, y89, y91]</td>
+      <td>0.035709</td>
+      <td>0.035709</td>
     </tr>
     <tr>
       <th>3</th>
       <td>capacitated-k-nearest-p-median</td>
-      <td>2045</td>
-      <td>3791</td>
-      <td>962.151</td>
-      <td>[y20, y30, y45, y73, y86]</td>
-      <td>2.610536</td>
-      <td>2.998628</td>
+      <td>1067</td>
+      <td>1835</td>
+      <td>675.964</td>
+      <td>[y25, y45, y46, y68, y70, y88, y89, y91]</td>
+      <td>0.379421</td>
+      <td>0.379421</td>
     </tr>
   </tbody>
 </table>
@@ -1936,50 +1963,20 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
   </thead>
   <tbody>
     <tr>
-      <th>20</th>
-      <td>POINT (2.59098 8.02497)</td>
-      <td>y20</td>
-      <td>121</td>
-      <td>0.0</td>
-      <td>83.0</td>
-      <td>0.0</td>
-      <td>83.0</td>
-    </tr>
-    <tr>
       <th>25</th>
       <td>POINT (7.70854 4.84931)</td>
       <td>y25</td>
-      <td>88</td>
+      <td>72</td>
       <td>100.0</td>
-      <td>0.0</td>
+      <td>86.0</td>
       <td>100.0</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>30</th>
-      <td>POINT (6.35356 8.11902)</td>
-      <td>y30</td>
-      <td>153</td>
-      <td>0.0</td>
-      <td>100.0</td>
-      <td>0.0</td>
-      <td>100.0</td>
-    </tr>
-    <tr>
-      <th>32</th>
-      <td>POINT (8.24811 0.94203)</td>
-      <td>y32</td>
-      <td>33</td>
-      <td>100.0</td>
-      <td>0.0</td>
-      <td>100.0</td>
-      <td>0.0</td>
+      <td>86.0</td>
     </tr>
     <tr>
       <th>34</th>
       <td>POINT (5.46358 7.96143)</td>
       <td>y34</td>
-      <td>140</td>
+      <td>80</td>
       <td>100.0</td>
       <td>0.0</td>
       <td>100.0</td>
@@ -1989,41 +1986,71 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
       <th>45</th>
       <td>POINT (8.59707 1.11111)</td>
       <td>y45</td>
-      <td>101</td>
+      <td>102</td>
+      <td>100.0</td>
+      <td>83.0</td>
+      <td>100.0</td>
+      <td>83.0</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>POINT (4.78339 8.4998)</td>
+      <td>y46</td>
+      <td>130</td>
       <td>0.0</td>
-      <td>95.0</td>
+      <td>80.0</td>
       <td>0.0</td>
-      <td>95.0</td>
+      <td>80.0</td>
     </tr>
     <tr>
       <th>68</th>
-      <td>POINT (0.85070 8.07777)</td>
+      <td>POINT (0.8507 8.07777)</td>
       <td>y68</td>
-      <td>82</td>
+      <td>73</td>
       <td>100.0</td>
-      <td>0.0</td>
+      <td>73.0</td>
       <td>100.0</td>
-      <td>0.0</td>
+      <td>73.0</td>
     </tr>
     <tr>
-      <th>73</th>
-      <td>POINT (5.70975 3.02518)</td>
-      <td>y73</td>
-      <td>187</td>
-      <td>0.0</td>
-      <td>68.0</td>
-      <td>0.0</td>
-      <td>68.0</td>
+      <th>70</th>
+      <td>POINT (8.14642 8.10286)</td>
+      <td>y70</td>
+      <td>137</td>
+      <td>100.0</td>
+      <td>50.0</td>
+      <td>100.0</td>
+      <td>50.0</td>
     </tr>
     <tr>
-      <th>86</th>
-      <td>POINT (2.18498 4.25637)</td>
-      <td>y86</td>
-      <td>102</td>
+      <th>88</th>
+      <td>POINT (3.65333 4.77941)</td>
+      <td>y88</td>
+      <td>126</td>
       <td>100.0</td>
+      <td>62.0</td>
       <td>100.0</td>
+      <td>62.0</td>
+    </tr>
+    <tr>
+      <th>89</th>
+      <td>POINT (5.4209 2.6523)</td>
+      <td>y89</td>
+      <td>93</td>
       <td>100.0</td>
+      <td>63.0</td>
       <td>100.0</td>
+      <td>63.0</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>POINT (1.3648 3.177)</td>
+      <td>y91</td>
+      <td>80</td>
+      <td>100.0</td>
+      <td>86.0</td>
+      <td>100.0</td>
+      <td>86.0</td>
     </tr>
   </tbody>
 </table>
@@ -2064,7 +2091,7 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
     </p>
   </div>
 </footer>

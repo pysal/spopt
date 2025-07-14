@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Spatial Adaptive Agglomerative Aggregation (\(SA^3\)) &#8212; spopt v0.7.0rc1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=61228ca7"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="SKATER" href="skater.html" />
+    <link rel="prev" title="Automatic Zoning Procedure (AZP) algorithm" href="azp.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0rc1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a><ul>
+<li><a class="reference internal" href="#Airbnb-Spots-Clustering-in-Chicago">Airbnb Spots Clustering in Chicago</a></li>
+<li><a class="reference internal" href="#SA^3-Regionalization"><span class="math notranslate nohighlight">\(SA^3\)</span> Regionalization</a><ul>
+<li><a class="reference internal" href="#Changing-agglomeration-type.">Changing agglomeration type.</a></li>
+<li><a class="reference internal" href="#Cluster-extraction-from-a-generic-linkage_matrix.">Cluster extraction from a generic linkage_matrix.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/spopt/blob/main/notebooks/sa3.ipynb">notebooks/sa3.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/spopt/main?filepath=notebooks/sa3.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Spatial-Adaptive-Agglomerative-Aggregation-(SA^3)">
+<h1>Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)<a class="headerlink" href="#Spatial-Adaptive-Agglomerative-Aggregation-(SA^3)" title="Link to this heading">¶</a></h1>
+<p>Author: <a class="reference external" href="https://github.com/u3ks">Krasen Samardzhiev</a>, <a class="reference external" href="https://github.com/martinfleis">Martin Fleischmann</a></p>
+<p>Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>) is a regionalisation method that extracts regions at multiple scales. It consists of two parts:</p>
+<ol class="arabic simple">
+<li><p>Computing a full regionalisation tree with any <code class="docutils literal notranslate"><span class="pre">sklearn.hierarchy.AgglomerativeClustering</span></code> algorithm and spatial restrictions imposed by a <code class="docutils literal notranslate"><span class="pre">libpysal.graph.Graph</span></code> or <code class="docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code>.</p></li>
+<li><p>Extraction of spatial regions with noise, i.e. some observations will not belong to any of the extracted regions.</p></li>
+</ol>
+<p>The algorithm does not require to specify the total number of clusters beforehand. Strictly, it requires only one parameter - the minimum number of spatially contigous observations to form a cluster (<code class="docutils literal notranslate"><span class="pre">min_cluster_size</span></code>). It is inspired by density-based clustering approaches and each resulting region can be interpreted as an approximate mode in the data distribution, given the spatial restrictions imposed by the graph <code class="docutils literal notranslate"><span class="pre">G</span></code> or weights <code class="docutils literal notranslate"><span class="pre">W</span></code>. The final delineations are:</p>
+<ol class="arabic simple">
+<li><p><strong>Contiguous</strong> - Observations in the same cluster are spatially contiguous within the restrictions imposed by the graph.</p></li>
+<li><p><strong>Conservative</strong> - Observations are not merged, simply because of spatial restrictions if they are not similar in feature space.</p></li>
+<li><p><strong>Multiscale</strong> - The extraction from the tree is not flat. Sometimes the internal dissimilarity of a specific region is higher than the external dissimilarity of another pair of regions. Even if that is the case, the pair of regions are not merged.</p></li>
+<li><p><strong>Dynamic</strong> - The final number of clusters is inferred from the data based on the <code class="docutils literal notranslate"><span class="pre">min_cluster_size</span></code> parameter and is not predefined.</p></li>
+</ol>
+<p>A drawback of the conservative and dynamic properties of the algorithm, is that it can produce multiple clusters, where only one would be desirable.</p>
+<p>The original application was for the deliniation of morphotopes - contigious areas with identical characteristics and configurations of buildings and streets. These three properties were required since:</p>
+<ol class="arabic simple">
+<li><p>By definition morphotopes are spatially contiguous.</p></li>
+<li><p>There are multiple types of urban fabric interspersed within a city which should be kept seperate - single family houses around apartment blocks, for example.</p></li>
+<li><p>The internal dissimilarity within an industrial area is higher, than the external similarity between a single family housing and a multi-family housing area. Nevertheless, we are interested in getting the three types of coherent units deliniated using one algorithm.</p></li>
+<li><p>We didnt know how many morphotopes to look for.</p></li>
+</ol>
+<p><img alt="alt text" src="../_images/morphotopes.png" /></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+%load_ext watermark
+%watermark
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Last updated: 2025-05-07T11:26:45.560840+02:00
+
+Python implementation: CPython
+Python version       : 3.12.9
+IPython version      : 8.34.0
+
+Compiler    : Clang 18.1.8
+OS          : Darwin
+Release     : 24.4.0
+Machine     : arm64
+Processor   : arm
+CPU cores   : 8
+Architecture: 64bit
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas
+import libpysal
+import matplotlib.pyplot as plt
+import seaborn as sns
+from libpysal.examples import load_example
+
+from spopt.region import SA3
+
+%matplotlib inline
+%watermark -w
+%watermark -iv
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Watermark: 2.5.0
+
+geopandas : 1.0.1
+seaborn   : 0.13.2
+matplotlib: 3.10.1
+libpysal  : 4.13.0
+spopt     : 0.1.dev1095+g22fb0ae.d20250507
+
+</pre></div></div>
+</div>
+<section id="Airbnb-Spots-Clustering-in-Chicago">
+<h2>Airbnb Spots Clustering in Chicago<a class="headerlink" href="#Airbnb-Spots-Clustering-in-Chicago" title="Link to this heading">¶</a></h2>
+<p>To illustrate results and usage the algorihm we use the Airbnb spots data for Chicago from <a class="reference external" href="https://pysal.org/notebooks/lib/libpysal/Example_Datasets.html">libpysal.examples</a>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>load_example(&quot;AirBnB&quot;)
+pth = libpysal.examples.get_path(&quot;airbnb_Chicago 2015.shp&quot;)
+chicago = geopandas.read_file(pth)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="SA^3-Regionalization">
+<h2><span class="math notranslate nohighlight">\(SA^3\)</span> Regionalization<a class="headerlink" href="#SA^3-Regionalization" title="Link to this heading">¶</a></h2>
+<p>To use the algorithm we have to specify three parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gdf</span></code>- the feature data for each observation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">w</span></code> - the spatial restrictions on the observations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">attrs_name</span></code> - which features to use for the clustering</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">min_cluster_size</span></code> the minimum number of observations, that a cluster should have.</p></li>
+</ul>
+<p>There are also two optional parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">extraction</span></code> which specifies if you should extract the final clusters from the tree with the <code class="docutils literal notranslate"><span class="pre">Excess</span> <span class="pre">of</span> <span class="pre">Mass</span></code> or <code class="docutils literal notranslate"><span class="pre">Leaf</span></code> algorithms.</p></li>
+<li><p>additional keyword arguments passed to <code class="docutils literal notranslate"><span class="pre">sklearn.hierarchy.AgglomerativeClustering</span></code> specifying which agglomeration should be used.</p></li>
+</ul>
+<p>We show results based on diffent model configurations below.</p>
+<p>In all runs we use only on a single variable - the number of Airbnb spots in each community. Similar to any clustering algorithm, the method accepts more, but the distribution of one variable is easier to visualise for this demonstration. We also use the same <a class="reference external" href="https://pysal.org/libpysal/tutorial.html">spatial graph object</a> which describes the spatial connectivity of the spatial objects. We change the values for <code class="docutils literal notranslate"><span class="pre">min_cluster_size</span></code>, <code class="docutils literal notranslate"><span class="pre">extraction</span></code> and additional keyword arguments.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = [&quot;num_spots&quot;]
+w = libpysal.graph.Graph.build_contiguity(chicago, rook=False)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>## first run takes a while, since the functions are compiled to numba
+
+model_eom_3 = SA3(chicago, w, attrs_name, min_cluster_size=3, extraction=&quot;eom&quot;)
+model_eom_3.solve()
+chicago[&quot;sa3_eom_3&quot;] = model_eom_3.labels_
+
+model_leaf_3 = SA3(chicago, w, attrs_name, min_cluster_size=3, extraction=&quot;leaf&quot;)
+model_leaf_3.solve()
+chicago[&quot;sa3_leaf_3&quot;] = model_leaf_3.labels_
+
+model_eom_10 = SA3(chicago, w, attrs_name, min_cluster_size=10, extraction=&quot;eom&quot;)
+model_eom_10.solve()
+chicago[&quot;sa3_eom_10&quot;] = model_eom_10.labels_
+
+model_leaf_10 = SA3(chicago, w, attrs_name, min_cluster_size=10, extraction=&quot;leaf&quot;)
+model_leaf_10.solve()
+chicago[&quot;sa3_leaf_10&quot;] = model_leaf_10.labels_
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+OMP: Info #276: omp_set_nested routine deprecated, please use omp_set_max_active_levels instead.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(3, 2, figsize=(10, 20))
+
+sns.kdeplot(chicago[&quot;num_spots&quot;], bw_adjust=0.2, ax=ax[0][0])
+ax[0][0].set_title(&quot;num_spots value distribution&quot;)
+
+chicago.plot(
+    ax=ax[0][1],
+    figsize=(7, 14),
+    column=&quot;num_spots&quot;,
+    scheme=&quot;Quantiles&quot;,
+    cmap=&quot;GnBu&quot;,
+    edgecolor=&quot;grey&quot;,
+    legend_kwds={&quot;loc&quot;: &quot;lower left&quot;},
+    legend=True,
+).axis(&quot;off&quot;)
+ax[0][1].set_title(&quot;num_spots spatial distribution&quot;)
+
+chicago.plot(
+    ax=ax[1][0],
+    column=&quot;sa3_eom_3&quot;,
+    categorical=True,
+    edgecolor=&quot;w&quot;,
+    legend=True,
+    legend_kwds={&quot;loc&quot;: &quot;lower left&quot;},
+    cmap=&quot;tab20&quot;,
+).axis(&quot;off&quot;)
+ax[1][0].set_title(&quot;EOM extraction, min_clusters=3&quot;)
+
+chicago.plot(
+    ax=ax[1][1],
+    figsize=(7, 14),
+    column=&quot;sa3_leaf_3&quot;,
+    categorical=True,
+    edgecolor=&quot;w&quot;,
+    legend=True,
+    legend_kwds={&quot;loc&quot;: &quot;lower left&quot;},
+    cmap=&quot;tab20&quot;,
+).axis(&quot;off&quot;)
+ax[1][1].set_title(&quot;Leaf extraction, min_clusters=3&quot;)
+
+
+chicago.plot(
+    ax=ax[2][0],
+    column=&quot;sa3_eom_10&quot;,
+    categorical=True,
+    edgecolor=&quot;w&quot;,
+    legend=True,
+    legend_kwds={&quot;loc&quot;: &quot;lower left&quot;},
+    cmap=&quot;tab20&quot;,
+).axis(&quot;off&quot;)
+ax[2][0].set_title(&quot;EOM extraction, min_clusters=10&quot;)
+
+chicago.plot(
+    ax=ax[2][1],
+    figsize=(7, 14),
+    column=&quot;sa3_leaf_10&quot;,
+    categorical=True,
+    edgecolor=&quot;w&quot;,
+    legend=True,
+    legend_kwds={&quot;loc&quot;: &quot;lower left&quot;},
+    cmap=&quot;tab20&quot;,
+).axis(&quot;off&quot;)
+ax[2][1].set_title(&quot;Leaf extraction, min_clusters=10&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Leaf extraction, min_clusters=10&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_sa3_8_1.png" class="no-scaled-link" src="../_images/notebooks_sa3_8_1.png" style="width: 872px; height: 1569px;" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[[&quot;sa3_eom_3&quot;, &quot;num_spots&quot;]].groupby(by=&quot;sa3_eom_3&quot;).describe()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="8" halign="left">num_spots</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+    </tr>
+    <tr>
+      <th>sa3_eom_3</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>-1</th>
+      <td>19.0</td>
+      <td>24.578947</td>
+      <td>25.902200</td>
+      <td>0.0</td>
+      <td>6.50</td>
+      <td>21.0</td>
+      <td>35.50</td>
+      <td>109.0</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>5.0</td>
+      <td>541.000000</td>
+      <td>157.786248</td>
+      <td>358.0</td>
+      <td>404.00</td>
+      <td>593.0</td>
+      <td>609.00</td>
+      <td>741.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>3.0</td>
+      <td>220.000000</td>
+      <td>49.789557</td>
+      <td>165.0</td>
+      <td>199.00</td>
+      <td>233.0</td>
+      <td>247.50</td>
+      <td>262.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>7.0</td>
+      <td>132.714286</td>
+      <td>49.818719</td>
+      <td>75.0</td>
+      <td>106.00</td>
+      <td>120.0</td>
+      <td>148.50</td>
+      <td>225.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4.0</td>
+      <td>31.750000</td>
+      <td>8.808140</td>
+      <td>20.0</td>
+      <td>27.50</td>
+      <td>34.0</td>
+      <td>38.25</td>
+      <td>39.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3.0</td>
+      <td>9.333333</td>
+      <td>1.527525</td>
+      <td>8.0</td>
+      <td>8.50</td>
+      <td>9.0</td>
+      <td>10.00</td>
+      <td>11.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>3.0</td>
+      <td>4.000000</td>
+      <td>3.605551</td>
+      <td>0.0</td>
+      <td>2.50</td>
+      <td>5.0</td>
+      <td>6.00</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>5.0</td>
+      <td>4.800000</td>
+      <td>2.167948</td>
+      <td>2.0</td>
+      <td>4.00</td>
+      <td>5.0</td>
+      <td>5.00</td>
+      <td>8.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>4.0</td>
+      <td>6.750000</td>
+      <td>3.403430</td>
+      <td>2.0</td>
+      <td>5.75</td>
+      <td>7.5</td>
+      <td>8.50</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>3.0</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>0.0</td>
+      <td>0.50</td>
+      <td>1.0</td>
+      <td>1.50</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>7.0</td>
+      <td>0.428571</td>
+      <td>0.534522</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>1.00</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>3.0</td>
+      <td>1.333333</td>
+      <td>1.154701</td>
+      <td>0.0</td>
+      <td>1.00</td>
+      <td>2.0</td>
+      <td>2.00</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>6.0</td>
+      <td>2.833333</td>
+      <td>0.752773</td>
+      <td>2.0</td>
+      <td>2.25</td>
+      <td>3.0</td>
+      <td>3.00</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>5.0</td>
+      <td>4.000000</td>
+      <td>1.414214</td>
+      <td>3.0</td>
+      <td>3.00</td>
+      <td>3.0</td>
+      <td>5.00</td>
+      <td>6.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[[&quot;sa3_eom_10&quot;, &quot;num_spots&quot;]].groupby(by=&quot;sa3_eom_10&quot;).describe()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="8" halign="left">num_spots</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+    </tr>
+    <tr>
+      <th>sa3_eom_10</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>-1</th>
+      <td>26.0</td>
+      <td>182.807692</td>
+      <td>200.743821</td>
+      <td>20.0</td>
+      <td>39.25</td>
+      <td>109.5</td>
+      <td>231.0</td>
+      <td>741.0</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>37.0</td>
+      <td>4.405405</td>
+      <td>5.459240</td>
+      <td>0.0</td>
+      <td>1.00</td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>24.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>14.0</td>
+      <td>7.857143</td>
+      <td>8.795603</td>
+      <td>1.0</td>
+      <td>2.50</td>
+      <td>6.0</td>
+      <td>9.5</td>
+      <td>36.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>In general, increasing the <code class="docutils literal notranslate"><span class="pre">min_cluster_size</span></code> value increases the number of outliers, while decreasing the resolution of the final results. Also changing the extraction to leaf by setting <code class="docutils literal notranslate"><span class="pre">extraction=&quot;leaf&quot;</span></code>, sometimes produces more conservative and more numerous clusters.</p>
+<section id="Changing-agglomeration-type.">
+<h3>Changing agglomeration type.<a class="headerlink" href="#Changing-agglomeration-type." title="Link to this heading">¶</a></h3>
+<p>You can use the any valid combination of linkage, metric and other <code class="docutils literal notranslate"><span class="pre">sklearn.hierarchy.AgglomerativeClustering</span></code> parameters. The default clustering is Ward with Euclidean distance.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for linkage in [&quot;single&quot;, &quot;complete&quot;, &quot;average&quot;, &quot;ward&quot;]:
+    model = SA3(
+        chicago,
+        w,
+        attrs_name,
+        min_cluster_size=5,
+        extraction=&quot;leaf&quot;,
+        linkage=linkage,
+    )
+    model.solve()
+    chicago[f&quot;sa3_leaf_5_{linkage}&quot;] = model.labels_
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+
+for linkage, ax in zip(
+    [&quot;single&quot;, &quot;complete&quot;, &quot;average&quot;, &quot;ward&quot;], axes.flatten(), strict=False
+):
+    chicago.plot(
+        ax=ax,
+        column=f&quot;sa3_leaf_5_{linkage}&quot;,
+        categorical=True,
+        edgecolor=&quot;w&quot;,
+        legend=True,
+        legend_kwds={&quot;loc&quot;: &quot;lower left&quot;},
+        cmap=&quot;tab20&quot;,
+    ).axis(&quot;off&quot;)
+    ax.set_title(f&quot;{linkage} linkage, leaf extraction, min_clusters=5&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_sa3_15_0.png" class="no-scaled-link" src="../_images/notebooks_sa3_15_0.png" style="width: 852px; height: 811px;" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[[&quot;sa3_leaf_5_complete&quot;, &quot;num_spots&quot;]].groupby(
+    by=&quot;sa3_leaf_5_complete&quot;
+).describe()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="8" halign="left">num_spots</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+    </tr>
+    <tr>
+      <th>sa3_leaf_5_complete</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>-1</th>
+      <td>29.0</td>
+      <td>71.034483</td>
+      <td>77.103587</td>
+      <td>0.0</td>
+      <td>7.00</td>
+      <td>39.0</td>
+      <td>110.00</td>
+      <td>262.0</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>5.0</td>
+      <td>541.000000</td>
+      <td>157.786248</td>
+      <td>358.0</td>
+      <td>404.00</td>
+      <td>593.0</td>
+      <td>609.00</td>
+      <td>741.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>16.0</td>
+      <td>10.437500</td>
+      <td>11.063265</td>
+      <td>1.0</td>
+      <td>3.50</td>
+      <td>7.5</td>
+      <td>10.25</td>
+      <td>36.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>6.0</td>
+      <td>9.000000</td>
+      <td>2.607681</td>
+      <td>6.0</td>
+      <td>7.25</td>
+      <td>8.5</td>
+      <td>10.50</td>
+      <td>13.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>10.0</td>
+      <td>3.100000</td>
+      <td>0.875595</td>
+      <td>2.0</td>
+      <td>3.00</td>
+      <td>3.0</td>
+      <td>3.00</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>11.0</td>
+      <td>0.818182</td>
+      <td>0.873863</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>1.0</td>
+      <td>1.50</td>
+      <td>2.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[[&quot;sa3_leaf_5_single&quot;, &quot;num_spots&quot;]].groupby(by=&quot;sa3_leaf_5_single&quot;).describe()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="8" halign="left">num_spots</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+    </tr>
+    <tr>
+      <th>sa3_leaf_5_single</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>-1</th>
+      <td>33.0</td>
+      <td>62.090909</td>
+      <td>75.760463</td>
+      <td>0.0</td>
+      <td>7.00</td>
+      <td>24.0</td>
+      <td>109.00</td>
+      <td>262.0</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>5.0</td>
+      <td>541.000000</td>
+      <td>157.786248</td>
+      <td>358.0</td>
+      <td>404.00</td>
+      <td>593.0</td>
+      <td>609.00</td>
+      <td>741.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>18.0</td>
+      <td>13.111111</td>
+      <td>13.118863</td>
+      <td>1.0</td>
+      <td>4.25</td>
+      <td>8.0</td>
+      <td>19.25</td>
+      <td>40.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8.0</td>
+      <td>2.125000</td>
+      <td>1.125992</td>
+      <td>0.0</td>
+      <td>1.75</td>
+      <td>2.5</td>
+      <td>3.00</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>13.0</td>
+      <td>1.461538</td>
+      <td>1.330124</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>1.0</td>
+      <td>2.00</td>
+      <td>4.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="Cluster-extraction-from-a-generic-linkage_matrix.">
+<h3>Cluster extraction from a generic linkage_matrix.<a class="headerlink" href="#Cluster-extraction-from-a-generic-linkage_matrix." title="Link to this heading">¶</a></h3>
+<p>You can also directly use the cluster extraction with any valid <code class="docutils literal notranslate"><span class="pre">scipy.hierarchy.linkage_matrix</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from spopt.region import extract_clusters
+
+model = SA3(chicago[&quot;num_spots&quot;], w, [&quot;num_spots&quot;], linkage=&quot;single&quot;)
+# bypass the spatial restriction and do simple ward clustering and
+# return a scipy.hierarchy.linkage_matrix
+linkage_matrix = model._get_tree(chicago[[&quot;num_spots&quot;]], None, model.clustering_kwds)
+eom_clusters = extract_clusters(
+    linkage_matrix=linkage_matrix, min_cluster_size=2, extraction=&quot;eom&quot;
+)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+
+sns.kdeplot(chicago[&quot;num_spots&quot;], ax=ax[0])
+xs = chicago[&quot;num_spots&quot;].groupby(eom_clusters).median()
+ax[0].scatter(
+    xs[xs.index != -1].values, [0.0001] * (xs.index.shape[0] - 1), marker=&quot;|&quot;, c=&quot;red&quot;
+)
+
+ax[0].set_title(&quot;num_spots value distribution&quot;)
+
+chicago.plot(
+    ax=ax[1], column=eom_clusters, categorical=True, edgecolor=&quot;w&quot;, cmap=&quot;tab20&quot;
+).axis(&quot;off&quot;)
+ax[1].set_title(&quot;unrestricted ward linkage, eom extraction, min_clusters=2&quot;)
+
+
+fig.tight_layout()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_sa3_21_0.png" class="no-scaled-link" src="../_images/notebooks_sa3_21_0.png" style="width: 1008px; height: 491px;" />
+</div>
+</div>
+<p>The first image shows the distribution of the num_spots variable, and the red lines show the medians of the clusters. The second image shows the spatial distribution of the clusters, which are not neccasarily contiguous in this case. The underlying idea of cluster extraction as density approximation is more apparent when using <code class="docutils literal notranslate"><span class="pre">SingleLinkage</span></code> and no spatial restrictions.</p>
+</section>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/sa3.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

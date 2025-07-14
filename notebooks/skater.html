@@ -5,23 +5,21 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>SKATER &#8212; spopt v0.6.1 Manual</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <title>SKATER &#8212; spopt v0.7.0rc1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
-    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=61228ca7"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Ward" href="ward.html" />
-    <link rel="prev" title="Automatic Zoning Procedure (AZP) algorithm" href="azp.html" />
+    <link rel="prev" title="Spatial Adaptive Agglomerative Aggregation (\(SA^3\))" href="sa3.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -44,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0rc1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -74,6 +72,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="maxp.html">Max-P Regionalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">SKATER</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ward.html">Ward</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reg-k-means.html">Regional-k-means</a></li>
@@ -190,17 +189,17 @@ Interactive online version:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Last updated: 2023-12-10T14:11:06.498766-05:00
+Last updated: 2025-04-07T15:10:49.046485-04:00
 
 Python implementation: CPython
-Python version       : 3.12.0
-IPython version      : 8.18.0
+Python version       : 3.12.9
+IPython version      : 9.0.2
 
-Compiler    : Clang 15.0.7
+Compiler    : Clang 18.1.8
 OS          : Darwin
-Release     : 23.1.0
-Machine     : x86_64
-Processor   : i386
+Release     : 24.4.0
+Machine     : arm64
+Processor   : arm
 CPU cores   : 8
 Architecture: 64bit
 
@@ -210,15 +209,17 @@ Architecture: 64bit
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import warnings
+
+import geopandas
 import libpysal
 import matplotlib.pyplot as plt
 import numpy
 import pandas
 import shapely
 from sklearn.metrics import pairwise as skm
+
 import spopt
-import warnings
 
 %matplotlib inline
 %watermark -w
@@ -231,16 +232,16 @@ import warnings
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Watermark: 2.4.3
+Watermark: 2.5.0
 
-matplotlib: 3.8.2
-numpy     : 1.26.2
-pandas    : 2.1.3
-libpysal  : 4.9.2
-geopandas : 0.14.1
-shapely   : 2.0.2
-sklearn   : 1.3.2
-spopt     : 0.5.1.dev53+g5cadae7
+libpysal  : 4.12.1
+shapely   : 2.1.0
+matplotlib: 3.10.1
+sklearn   : 1.6.1
+geopandas : 1.0.1
+pandas    : 2.2.3
+spopt     : 0.6.2.dev3+g13ca45e
+numpy     : 2.2.4
 
 </pre></div></div>
 </div>
@@ -273,7 +274,7 @@ dissimilar regions. The final result is the division of the spatial objects into
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;libpysal.examples.base.Example at 0x15a3d8dd0&gt;
+&lt;libpysal.examples.base.Example at 0x138b5c2c0&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -343,7 +344,7 @@ Name: 0, dtype: object
     scheme=&quot;Quantiles&quot;,
     cmap=&quot;GnBu&quot;,
     edgecolor=&quot;grey&quot;,
-    legend=True
+    legend=True,
 ).axis(&quot;off&quot;);
 </pre></div>
 </div>
@@ -448,13 +449,13 @@ Name: 0, dtype: object
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spanning_forest_kwds = dict(
-    dissimilarity=skm.manhattan_distances,
-    affinity=None,
-    reduction=numpy.sum,
-    center=numpy.mean,
-    verbose=2
-)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spanning_forest_kwds = {
+    &quot;dissimilarity&quot;: skm.manhattan_distances,
+    &quot;affinity&quot;: None,
+    &quot;reduction&quot;: numpy.sum,
+    &quot;center&quot;: numpy.mean,
+    &quot;verbose&quot;: 2,
+}
 </pre></div>
 </div>
 </div>
@@ -474,7 +475,7 @@ Name: 0, dtype: object
     floor=floor,
     trace=trace,
     islands=islands,
-    spanning_forest_kwds=spanning_forest_kwds
+    spanning_forest_kwds=spanning_forest_kwds,
 )
 model.solve()
 </pre></div>
@@ -494,56 +495,56 @@ Computing connected components took 0.00s.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "23e5bae71c6d4f3f9d9adab4a000c0f8", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "2234fc9a267e46f2bf3049151c578782", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-making cut deletion(in_node=45, out_node=67, score=3445.5)...
+making cut deletion(in_node=np.int32(45), out_node=np.int32(67), score=3445.5)...
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "616e4207c1984c9d86e68895253bd20d", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "59dd4ffd5fc5400ca882fd4258904022", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-making cut deletion(in_node=13, out_node=15, score=2574.6813186813188)...
+making cut deletion(in_node=np.int32(13), out_node=np.int32(15), score=2574.6813186813188)...
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "256fa6eec99d4524b1bb0a86e9ae346f", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "64d9b0c8b725402c9a22b5dbdbdb19f1", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-making cut deletion(in_node=2, out_node=34, score=2146.556998556998)...
+making cut deletion(in_node=np.int32(2), out_node=np.int32(34), score=2146.556998556998)...
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "2e8e2ca0e7544844bd9a5b587b4ba05f", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "374bf513373c4735a97455b799b0efa9", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-making cut deletion(in_node=3, out_node=34, score=2025.520634920635)...
+making cut deletion(in_node=np.int32(3), out_node=np.int32(34), score=2025.520634920635)...
 </pre></div></div>
 </div>
 <p>Region labels can then be added to the <code class="docutils literal notranslate"><span class="pre">GeoDataFrame</span></code> from the <code class="docutils literal notranslate"><span class="pre">model</span></code> object and used for plotting.</p>
@@ -674,13 +675,13 @@ n_clusters_range
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>floor, trace, islands = 5, False, &quot;increase&quot;
-spanning_forest_kwds = dict(
-    dissimilarity=skm.manhattan_distances,
-    affinity=None,
-    reduction=numpy.sum,
-    center=numpy.mean,
-    verbose=False
-)
+spanning_forest_kwds = {
+    &quot;dissimilarity&quot;: skm.manhattan_distances,
+    &quot;affinity&quot;: None,
+    &quot;reduction&quot;: numpy.sum,
+    &quot;center&quot;: numpy.mean,
+    &quot;verbose&quot;: False,
+}
 </pre></div>
 </div>
 </div>
@@ -698,7 +699,7 @@ spanning_forest_kwds = dict(
         floor=floor,
         trace=trace,
         islands=islands,
-        spanning_forest_kwds=spanning_forest_kwds
+        spanning_forest_kwds=spanning_forest_kwds,
     )
     model.solve()
     chicago[f&quot;clusters_{ncluster}&quot;] = model.labels_
@@ -738,7 +739,7 @@ df = pandas.DataFrame(
     columns=pandas.MultiIndex.from_product(
         [[f&quot;clusters_{i}&quot; for i in n_clusters_range], [attr1, attr2]]
     ),
-    index=range(10)
+    index=range(10),
 )
 df.index.name = &quot;region_id&quot;
 for i in n_clusters_range:
@@ -972,13 +973,13 @@ floor_range
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>n_clusters, trace, islands = 3, True, &quot;increase&quot;
-spanning_forest_kwds = dict(
-    dissimilarity=None,
-    affinity=skm.euclidean_distances,
-    reduction=numpy.sum,
-    center=numpy.std,
-    verbose=False
-)
+spanning_forest_kwds = {
+    &quot;dissimilarity&quot;: None,
+    &quot;affinity&quot;: skm.euclidean_distances,
+    &quot;reduction&quot;: numpy.sum,
+    &quot;center&quot;: numpy.std,
+    &quot;verbose&quot;: False,
+}
 </pre></div>
 </div>
 </div>
@@ -996,7 +997,7 @@ spanning_forest_kwds = dict(
         floor=floor,
         trace=trace,
         islands=islands,
-        spanning_forest_kwds=spanning_forest_kwds
+        spanning_forest_kwds=spanning_forest_kwds,
     )
     with warnings.catch_warnings():
         # due to `affinity`
@@ -1043,7 +1044,7 @@ df = pandas.DataFrame(
     columns=pandas.MultiIndex.from_product(
         [[f&quot;floor_{i}&quot; for i in floor_range], [attr1, attr2]]
     ),
-    index=range(3)
+    index=range(3),
 )
 df.index.name = &quot;region_id&quot;
 for i in floor_range:
@@ -1173,7 +1174,7 @@ df
     &quot;unemployed&quot;,
     &quot;harship_in&quot;,
     &quot;num_crimes&quot;,
-    &quot;num_theft&quot;
+    &quot;num_theft&quot;,
 ]
 </pre></div>
 </div>
@@ -1213,13 +1214,13 @@ n_clusters_range
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>floor, trace, islands = 8, True, &quot;increase&quot;
-spanning_forest_kwds = dict(
-    dissimilarity=skm.manhattan_distances,
-    affinity=None,
-    reduction=numpy.sum,
-    center=numpy.mean,
-    verbose=False
-)
+spanning_forest_kwds = {
+    &quot;dissimilarity&quot;: skm.manhattan_distances,
+    &quot;affinity&quot;: None,
+    &quot;reduction&quot;: numpy.sum,
+    &quot;center&quot;: numpy.mean,
+    &quot;verbose&quot;: False,
+}
 </pre></div>
 </div>
 </div>
@@ -1237,7 +1238,7 @@ spanning_forest_kwds = dict(
         floor=floor,
         trace=trace,
         islands=islands,
-        spanning_forest_kwds=spanning_forest_kwds
+        spanning_forest_kwds=spanning_forest_kwds,
     )
     model.solve()
     chicago[f&quot;clusters_{ncluster}&quot;] = model.labels_
@@ -1293,7 +1294,7 @@ plt.tight_layout()
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
     </p>
   </div>
 </footer>

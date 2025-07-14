@@ -4,13 +4,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>spopt.region.skater &#8212; spopt v0.6.1 Manual</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <title>spopt.region.skater &#8212; spopt v0.7.0rc1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=e5dd7357" />
-    <script src="../../../_static/documentation_options.js?v=2bd037f0"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/documentation_options.js?v=61228ca7"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0rc1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -68,6 +68,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/maxp.html">Max-P Regionalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/skater.html">SKATER</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/ward.html">Ward</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/reg-k-means.html">Regional-k-means</a></li>
@@ -137,23 +138,23 @@
   <h1>Source code for spopt.region.skater</h1><div class="highlight"><pre>
 <span></span><span class="c1"># ruff: noqa: C408, B006, E731, N803, N806</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">namedtuple</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">OptimizeWarning</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csgraph</span> <span class="k">as</span> <span class="n">cg</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">pairwise</span> <span class="k">as</span> <span class="n">skm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">OptimizeWarning</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">csgraph</span> <span class="k">as</span> <span class="n">cg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">pairwise</span> <span class="k">as</span> <span class="n">skm</span>
 
-<span class="kn">from</span> <span class="nn">..BaseClass</span> <span class="kn">import</span> <span class="n">BaseSpOptHeuristicSolver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..BaseClass</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSpOptHeuristicSolver</span>
 
 <span class="n">deletion</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;deletion&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;in_node&quot;</span><span class="p">,</span> <span class="s2">&quot;out_node&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">))</span>
 
 
-<span class="k">class</span> <span class="nc">SpanningForest</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SpanningForest</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">dissimilarity</span><span class="o">=</span><span class="n">skm</span><span class="o">.</span><span class="n">manhattan_distances</span><span class="p">,</span>
         <span class="n">affinity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -211,13 +212,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Minimum_Spanning_Tree_Pruning(metric=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="si">}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;reduction=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reduction</span><span class="si">}</span><span class="s2">, center=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="s2">)&quot;</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">n_clusters</span><span class="p">,</span>
         <span class="n">W</span><span class="p">,</span>
@@ -368,7 +369,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_elapsed_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">quorum</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">quorum</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This yields a score for the data, given the labels provided.</span>
 <span class="sd">        If no labels are provided, and the object has been fit, then</span>
@@ -404,7 +405,7 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;Labels not provided and ``MSF_Prune object`` &quot;</span>
                     <span class="s2">&quot;has not been fit to data yet.&quot;</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="k">assert</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Length of label array (</span><span class="si">{</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">) &quot;</span>
@@ -426,7 +427,7 @@
         <span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduction</span><span class="p">(</span><span class="n">part_scores</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">find_cut</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_cut</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">MSF</span><span class="p">,</span>
         <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -481,15 +482,15 @@
             <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm.auto</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
             <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
 
-                <span class="k">def</span> <span class="nf">tqdm</span><span class="p">(</span><span class="n">noop</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>  <span class="c1"># noqa: ARG001</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">tqdm</span><span class="p">(</span><span class="n">noop</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>  <span class="c1"># noqa: ARG001</span>
                     <span class="k">return</span> <span class="n">noop</span>
 
         <span class="k">else</span><span class="p">:</span>
 
-            <span class="k">def</span> <span class="nf">tqdm</span><span class="p">(</span><span class="n">noop</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>  <span class="c1"># noqa: ARG001</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">tqdm</span><span class="p">(</span><span class="n">noop</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>  <span class="c1"># noqa: ARG001</span>
                 <span class="k">return</span> <span class="n">noop</span>
 
         <span class="n">zero_in</span> <span class="o">=</span> <span class="p">(</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">target_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
@@ -529,7 +530,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_cut</span><span class="p">(</span><span class="o">*</span><span class="n">best_deletion</span><span class="p">,</span> <span class="n">MSF</span><span class="o">=</span><span class="n">MSF</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">best_deletion</span>
 
-    <span class="k">def</span> <span class="nf">make_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_node</span><span class="p">,</span> <span class="n">out_node</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">MSF</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_node</span><span class="p">,</span> <span class="n">out_node</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">MSF</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Make a cut on the MSF inplace.</span>
 
@@ -561,7 +562,7 @@
 
 <div class="viewcode-block" id="Skater">
 <a class="viewcode-back" href="../../../generated/spopt.region.Skater.html#spopt.region.Skater">[docs]</a>
-<span class="k">class</span> <span class="nc">Skater</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Skater</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Skater is a spatial regionalization algorithm based on spanning tree pruning</span>
 <span class="sd">    introduced in :cite:`assunccao2006efficient`.</span>
 
@@ -656,7 +657,7 @@
 
 <div class="viewcode-block" id="Skater.__init__">
 <a class="viewcode-back" href="../../../generated/spopt.region.Skater.html#spopt.region.Skater.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">gdf</span><span class="p">,</span>
         <span class="n">w</span><span class="p">,</span>
@@ -679,7 +680,7 @@
 
 <div class="viewcode-block" id="Skater.solve">
 <a class="viewcode-back" href="../../../generated/spopt.region.Skater.html#spopt.region.Skater.solve">[docs]</a>
-    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">SpanningForest</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">spanning_forest_kwds</span><span class="p">)</span>
@@ -711,7 +712,7 @@
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
     </p>
   </div>
 </footer>

@@ -4,13 +4,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>spopt.region.random_region &#8212; spopt v0.6.1 Manual</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <title>spopt.region.random_region &#8212; spopt v0.7.0rc1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=e5dd7357" />
-    <script src="../../../_static/documentation_options.js?v=2bd037f0"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/documentation_options.js?v=61228ca7"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0rc1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -68,6 +68,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/maxp.html">Max-P Regionalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/skater.html">SKATER</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/ward.html">Ward</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/reg-k-means.html">Regional-k-means</a></li>
@@ -144,18 +145,18 @@
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;David Folch David.Folch@nau.edu, Serge Rey sergio.rey@ucr.edu&quot;</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.components</span> <span class="kn">import</span> <span class="n">check_contiguity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_contiguity</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;RandomRegions&quot;</span><span class="p">,</span> <span class="s2">&quot;RandomRegion&quot;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="RandomRegions">
 <a class="viewcode-back" href="../../../generated/spopt.region.RandomRegions.html#spopt.region.RandomRegions">[docs]</a>
-<span class="k">class</span> <span class="nc">RandomRegions</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RandomRegions</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a list of RandomRegion instances.</span>
 
 <span class="sd">    Parameters</span>
@@ -271,7 +272,7 @@
 
 <div class="viewcode-block" id="RandomRegions.__init__">
 <a class="viewcode-back" href="../../../generated/spopt.region.RandomRegions.html#spopt.region.RandomRegions.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">area_ids</span><span class="p">,</span>
         <span class="n">num_regions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -306,7 +307,7 @@
 
 <div class="viewcode-block" id="RandomRegion">
 <a class="viewcode-back" href="../../../generated/spopt.region.RandomRegion.html#spopt.region.RandomRegion">[docs]</a>
-<span class="k">class</span> <span class="nc">RandomRegion</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RandomRegion</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Randomly combine a given set of areas into two</span>
 <span class="sd">    or more regions based on various constraints.</span>
 
@@ -416,7 +417,7 @@
 
 <div class="viewcode-block" id="RandomRegion.__init__">
 <a class="viewcode-back" href="../../../generated/spopt.region.RandomRegion.html#spopt.region.RandomRegion.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">area_ids</span><span class="p">,</span>
         <span class="n">num_regions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -500,13 +501,13 @@
 
 <div class="viewcode-block" id="RandomRegion.get_num_regions">
 <a class="viewcode-back" href="../../../generated/spopt.region.RandomRegion.html#spopt.region.RandomRegion.get_num_regions">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_num_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_num_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RandomRegion.get_region_breaks">
 <a class="viewcode-back" href="../../../generated/spopt.region.RandomRegion.html#spopt.region.RandomRegion.get_region_breaks">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_region_breaks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_regions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_region_breaks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_regions</span><span class="p">):</span>
         <span class="n">region_breaks</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">region_breaks</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num_regions</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">region_breaks</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
@@ -517,7 +518,7 @@
 
 <div class="viewcode-block" id="RandomRegion.get_cards">
 <a class="viewcode-back" href="../../../generated/spopt.region.RandomRegion.html#spopt.region.RandomRegion.get_cards">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_cards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_regions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_regions</span><span class="p">):</span>
         <span class="n">region_breaks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_region_breaks</span><span class="p">(</span><span class="n">num_regions</span><span class="p">)</span>
         <span class="n">cards</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
@@ -530,7 +531,7 @@
 
 <div class="viewcode-block" id="RandomRegion.cards2breaks">
 <a class="viewcode-back" href="../../../generated/spopt.region.RandomRegion.html#spopt.region.RandomRegion.cards2breaks">[docs]</a>
-    <span class="k">def</span> <span class="nf">cards2breaks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cards</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cards2breaks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cards</span><span class="p">):</span>
         <span class="n">region_breaks</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">break_point</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
@@ -542,7 +543,7 @@
 
 <div class="viewcode-block" id="RandomRegion.build_noncontig_regions">
 <a class="viewcode-back" href="../../../generated/spopt.region.RandomRegion.html#spopt.region.RandomRegion.build_noncontig_regions">[docs]</a>
-    <span class="k">def</span> <span class="nf">build_noncontig_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_regions</span><span class="p">,</span> <span class="n">region_breaks</span><span class="p">):</span>  <span class="c1"># noqa: ARG002</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_noncontig_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_regions</span><span class="p">,</span> <span class="n">region_breaks</span><span class="p">):</span>  <span class="c1"># noqa: ARG002</span>
         <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">region_breaks</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">i</span><span class="p">])</span>
@@ -552,7 +553,7 @@
 
 <div class="viewcode-block" id="RandomRegion.grow_compact">
 <a class="viewcode-back" href="../../../generated/spopt.region.RandomRegion.html#spopt.region.RandomRegion.grow_compact">[docs]</a>
-    <span class="k">def</span> <span class="nf">grow_compact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">test_card</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">candidates</span><span class="p">,</span> <span class="n">potential</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">grow_compact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">test_card</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">candidates</span><span class="p">,</span> <span class="n">potential</span><span class="p">):</span>
         <span class="c1"># try to build a compact region by exhausting all existing</span>
         <span class="c1"># potential areas before adding new potential areas</span>
         <span class="n">add_areas</span> <span class="o">=</span> <span class="p">[]</span>
@@ -576,7 +577,7 @@
 
 <div class="viewcode-block" id="RandomRegion.grow_free">
 <a class="viewcode-back" href="../../../generated/spopt.region.RandomRegion.html#spopt.region.RandomRegion.grow_free">[docs]</a>
-    <span class="k">def</span> <span class="nf">grow_free</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">test_card</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">candidates</span><span class="p">,</span> <span class="n">potential</span><span class="p">):</span>  <span class="c1"># noqa: ARG002</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">grow_free</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">test_card</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">candidates</span><span class="p">,</span> <span class="n">potential</span><span class="p">):</span>  <span class="c1"># noqa: ARG002</span>
         <span class="c1"># increment potential areas after each new area is</span>
         <span class="c1"># added to the region (faster than the grow_compact)</span>
         <span class="n">pot_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">potential</span><span class="p">))</span>
@@ -596,7 +597,7 @@
 
 <div class="viewcode-block" id="RandomRegion.build_contig_regions">
 <a class="viewcode-back" href="../../../generated/spopt.region.RandomRegion.html#spopt.region.RandomRegion.build_contig_regions">[docs]</a>
-    <span class="k">def</span> <span class="nf">build_contig_regions</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_contig_regions</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">num_regions</span><span class="p">,</span> <span class="n">cardinality</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">,</span> <span class="n">compact</span><span class="p">,</span> <span class="n">max_swaps</span>
     <span class="p">):</span>
         <span class="n">grow_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grow_compact</span> <span class="k">if</span> <span class="n">compact</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">grow_free</span>
@@ -720,7 +721,7 @@
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
     </p>
   </div>
 </footer>

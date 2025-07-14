@@ -4,13 +4,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>spopt.region.maxp &#8212; spopt v0.6.1 Manual</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <title>spopt.region.maxp &#8212; spopt v0.7.0rc1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=e5dd7357" />
-    <script src="../../../_static/documentation_options.js?v=2bd037f0"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/documentation_options.js?v=61228ca7"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0rc1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -68,6 +68,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/maxp.html">Max-P Regionalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/skater.html">SKATER</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/ward.html">Ward</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/reg-k-means.html">Regional-k-means</a></li>
@@ -145,20 +146,20 @@
 <span class="n">__author__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ran Wei&quot;</span><span class="p">,</span> <span class="s2">&quot;Serge Rey&quot;</span><span class="p">,</span> <span class="s2">&quot;Elijah Knaap&quot;</span><span class="p">]</span>
 <span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;sjsrey@gmail.com&quot;</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse.csgraph</span> <span class="kn">import</span> <span class="n">connected_components</span>
-<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">pdist</span><span class="p">,</span> <span class="n">squareform</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse.csgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">connected_components</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial.distance</span><span class="w"> </span><span class="kn">import</span> <span class="n">pdist</span><span class="p">,</span> <span class="n">squareform</span>
 
-<span class="kn">from</span> <span class="nn">..BaseClass</span> <span class="kn">import</span> <span class="n">BaseSpOptHeuristicSolver</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">modify_components</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..BaseClass</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSpOptHeuristicSolver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">modify_components</span>
 
 <span class="n">ITERCONSTRUCT</span> <span class="o">=</span> <span class="mi">999</span>
 <span class="n">ITERSA</span> <span class="o">=</span> <span class="mi">10</span>
 
 
-<span class="k">def</span> <span class="nf">maxp</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">maxp</span><span class="p">(</span>
     <span class="n">gdf</span><span class="p">,</span>
     <span class="n">w</span><span class="p">,</span>
     <span class="n">attrs_name</span><span class="p">,</span>
@@ -289,7 +290,7 @@
     <span class="k">return</span> <span class="n">max_p</span><span class="p">,</span> <span class="n">best_label</span>
 
 
-<span class="k">def</span> <span class="nf">_construction_phase</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_construction_phase</span><span class="p">(</span>
     <span class="n">arr</span><span class="p">,</span>
     <span class="n">attr</span><span class="p">,</span>  <span class="c1"># noqa: ARG001</span>
     <span class="n">threshold_array</span><span class="p">,</span>
@@ -413,7 +414,7 @@
     <span class="k">return</span> <span class="n">real_values</span>
 
 
-<span class="k">def</span> <span class="nf">_grow_cluster_for_poly</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_grow_cluster_for_poly</span><span class="p">(</span>
     <span class="n">labels</span><span class="p">,</span> <span class="n">threshold_array</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">neighbor_polys</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">spatial_thre</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Grow one region until threshold constraint is satisfied.</span>
@@ -475,7 +476,7 @@
     <span class="k">return</span> <span class="n">cluster_info</span>
 
 
-<span class="k">def</span> <span class="nf">_assign_enclave</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_assign_enclave</span><span class="p">(</span>
     <span class="n">enclave</span><span class="p">,</span>
     <span class="n">labels</span><span class="p">,</span>
     <span class="n">region_list</span><span class="p">,</span>
@@ -559,7 +560,7 @@
     <span class="k">return</span> <span class="n">region_info</span>
 
 
-<span class="k">def</span> <span class="nf">_calculate_within_region_distance</span><span class="p">(</span><span class="n">region_list</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_calculate_within_region_distance</span><span class="p">(</span><span class="n">region_list</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate total wthin-region distance/dissimilarity.</span>
 
 <span class="sd">    Parameters</span>
@@ -588,7 +589,7 @@
     <span class="k">return</span> <span class="n">total_within_region_distance</span>
 
 
-<span class="k">def</span> <span class="nf">_pick_move_area</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pick_move_area</span><span class="p">(</span>
     <span class="n">labels</span><span class="p">,</span>  <span class="c1"># noqa: ARG001</span>
     <span class="n">region_lists</span><span class="p">,</span>
     <span class="n">region_spatial_attrs</span><span class="p">,</span>
@@ -649,7 +650,7 @@
     <span class="k">return</span> <span class="n">potential_areas</span>
 
 
-<span class="k">def</span> <span class="nf">_check_move</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_move</span><span class="p">(</span>
     <span class="n">poa</span><span class="p">,</span>
     <span class="n">labels</span><span class="p">,</span>
     <span class="n">region_lists</span><span class="p">,</span>
@@ -714,7 +715,7 @@
     <span class="k">return</span> <span class="n">move_info</span>
 
 
-<span class="k">def</span> <span class="nf">_perform_sa</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_perform_sa</span><span class="p">(</span>
     <span class="n">init_labels</span><span class="p">,</span>
     <span class="n">init_region_list</span><span class="p">,</span>
     <span class="n">init_region_spatial_attr</span><span class="p">,</span>
@@ -851,7 +852,7 @@
 
 <div class="viewcode-block" id="MaxPHeuristic">
 <a class="viewcode-back" href="../../../generated/spopt.region.MaxPHeuristic.html#spopt.region.MaxPHeuristic">[docs]</a>
-<span class="k">class</span> <span class="nc">MaxPHeuristic</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MaxPHeuristic</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The max-p-regions involves the aggregation of n areas into an</span>
 <span class="sd">    unknown maximum number of homogeneous regions, while ensuring that</span>
 <span class="sd">    each region is contiguious and satisfies a minimum threshold value</span>
@@ -948,7 +949,7 @@
 
 <div class="viewcode-block" id="MaxPHeuristic.__init__">
 <a class="viewcode-back" href="../../../generated/spopt.region.MaxPHeuristic.html#spopt.region.MaxPHeuristic.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">gdf</span><span class="p">,</span>
         <span class="n">w</span><span class="p">,</span>
@@ -975,7 +976,7 @@
 
 <div class="viewcode-block" id="MaxPHeuristic.solve">
 <a class="viewcode-back" href="../../../generated/spopt.region.MaxPHeuristic.html#spopt.region.MaxPHeuristic.solve">[docs]</a>
-    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Solve a max-p-regions problem and get back the results.&quot;&quot;&quot;</span>
         <span class="n">max_p</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">maxp</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span><span class="p">,</span>
@@ -1010,7 +1011,7 @@
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
     </p>
   </div>
 </footer>

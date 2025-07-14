@@ -5,18 +5,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Random Regions &#8212; spopt v0.6.1 Manual</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <title>Random Regions &#8212; spopt v0.7.0rc1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
-    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=61228ca7"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -44,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.6.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.7.0rc1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -74,6 +72,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="maxp.html">Max-P Regionalization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="skater.html">SKATER</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ward.html">Ward</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reg-k-means.html">Regional-k-means</a></li>
@@ -190,17 +189,17 @@ parameter takes a spatial weights object and uses that to ensure that each regio
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Last updated: 2023-12-10T14:07:40.178142-05:00
+Last updated: 2025-04-07T15:09:52.404317-04:00
 
 Python implementation: CPython
-Python version       : 3.12.0
-IPython version      : 8.18.0
+Python version       : 3.12.9
+IPython version      : 9.0.2
 
-Compiler    : Clang 15.0.7
+Compiler    : Clang 18.1.8
 OS          : Darwin
-Release     : 23.1.0
-Machine     : x86_64
-Processor   : i386
+Release     : 24.4.0
+Machine     : arm64
+Processor   : arm
 CPU cores   : 8
 Architecture: 64bit
 
@@ -210,7 +209,9 @@ Architecture: 64bit
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import warnings
+
+import geopandas
 import inequality
 import libpysal
 import matplotlib
@@ -218,9 +219,9 @@ import matplotlib.pyplot as plt
 import numpy
 import pandas
 import seaborn
+
 import spopt
 from spopt.region import RandomRegion, RandomRegions
-import warnings
 
 RANDOM_SEED = 12345
 
@@ -234,16 +235,16 @@ RANDOM_SEED = 12345
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Watermark: 2.4.3
+Watermark: 2.5.0
 
-numpy     : 1.26.2
-pandas    : 2.1.3
-spopt     : 0.5.1.dev53+g5cadae7
-geopandas : 0.14.1
-matplotlib: 3.8.2
-inequality: 1.0.1
-libpysal  : 4.9.2
-seaborn   : 0.13.0
+geopandas : 1.0.1
+matplotlib: 3.10.1
+pandas    : 2.2.3
+spopt     : 0.6.2.dev3+g13ca45e
+inequality: 1.1.1
+libpysal  : 4.12.1
+seaborn   : 0.13.2
+numpy     : 2.2.4
 
 </pre></div></div>
 </div>
@@ -435,7 +436,7 @@ Data used in Rey, S.J. and M.L. Sastre Gutierrez. (2010) &#34;Interregional ineq
       <td>4.30</td>
       <td>4.33</td>
       <td>4.0</td>
-      <td>POLYGON ((-101.52490 21.85664, -101.58830 21.7...</td>
+      <td>POLYGON ((-101.5249 21.85664, -101.5883 21.772...</td>
     </tr>
     <tr>
       <th>4</th>
@@ -459,7 +460,7 @@ Data used in Rey, S.J. and M.L. Sastre Gutierrez. (2010) &#34;Interregional ineq
       <td>4.32</td>
       <td>4.44</td>
       <td>5.0</td>
-      <td>POLYGON ((-101.84620 22.01176, -101.96530 21.8...</td>
+      <td>POLYGON ((-101.8462 22.01176, -101.9653 21.883...</td>
     </tr>
   </tbody>
 </table>
@@ -513,7 +514,10 @@ Index([&#39;POLY_ID&#39;, &#39;AREA&#39;, &#39;CODE&#39;, &#39;NAME&#39;, &#39;P
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-(-118.64174423217773, -85.21563186645508, 13.6420334815979, 33.6293231010437)
+(np.float64(-118.64174423217773),
+ np.float64(-85.21563186645508),
+ np.float64(13.6420334815979),
+ np.float64(33.6293231010437))
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -611,22 +615,16 @@ cards
       <td>38672.0</td>
     </tr>
     <tr>
-      <th>23</th>
-      <td>Chihuahua</td>
-      <td>1.0</td>
-      <td>30735.0</td>
-    </tr>
-    <tr>
-      <th>30</th>
-      <td>Tamaulipas</td>
-      <td>1.0</td>
-      <td>23546.0</td>
-    </tr>
-    <tr>
       <th>24</th>
       <td>Coahuila De Zaragoza</td>
       <td>1.0</td>
       <td>28460.0</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>Chihuahua</td>
+      <td>1.0</td>
+      <td>30735.0</td>
     </tr>
     <tr>
       <th>22</th>
@@ -635,16 +633,34 @@ cards
       <td>24068.0</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>Nayarit</td>
-      <td>2.0</td>
-      <td>11478.0</td>
+      <th>30</th>
+      <td>Tamaulipas</td>
+      <td>1.0</td>
+      <td>23546.0</td>
     </tr>
     <tr>
       <th>1</th>
       <td>Baja California Sur</td>
       <td>2.0</td>
       <td>26103.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Nayarit</td>
+      <td>2.0</td>
+      <td>11478.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Aguascalientes</td>
+      <td>2.0</td>
+      <td>27782.0</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>San Luis Potosi</td>
+      <td>2.0</td>
+      <td>15866.0</td>
     </tr>
     <tr>
       <th>27</th>
@@ -665,64 +681,10 @@ cards
       <td>15242.0</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>Aguascalientes</td>
-      <td>2.0</td>
-      <td>27782.0</td>
-    </tr>
-    <tr>
-      <th>28</th>
-      <td>San Luis Potosi</td>
-      <td>2.0</td>
-      <td>15866.0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Jalisco</td>
-      <td>3.0</td>
-      <td>21610.0</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>Queretaro de Arteaga</td>
-      <td>3.0</td>
-      <td>26149.0</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>Guanajuato</td>
-      <td>3.0</td>
-      <td>15585.0</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>Hidalgo</td>
-      <td>3.0</td>
-      <td>12348.0</td>
-    </tr>
-    <tr>
       <th>17</th>
       <td>Tlaxcala</td>
       <td>3.0</td>
       <td>11701.0</td>
-    </tr>
-    <tr>
-      <th>31</th>
-      <td>Veracruz-Llave</td>
-      <td>3.0</td>
-      <td>12191.0</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>Michoacan de Ocampo</td>
-      <td>3.0</td>
-      <td>11838.0</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>Morelos</td>
-      <td>3.0</td>
-      <td>18170.0</td>
     </tr>
     <tr>
       <th>15</th>
@@ -731,22 +693,64 @@ cards
       <td>15685.0</td>
     </tr>
     <tr>
+      <th>31</th>
+      <td>Veracruz-Llave</td>
+      <td>3.0</td>
+      <td>12191.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Jalisco</td>
+      <td>3.0</td>
+      <td>21610.0</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Morelos</td>
+      <td>3.0</td>
+      <td>18170.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Guanajuato</td>
+      <td>3.0</td>
+      <td>15585.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Queretaro de Arteaga</td>
+      <td>3.0</td>
+      <td>26149.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Hidalgo</td>
+      <td>3.0</td>
+      <td>12348.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Michoacan de Ocampo</td>
+      <td>3.0</td>
+      <td>11838.0</td>
+    </tr>
+    <tr>
       <th>11</th>
       <td>Colima</td>
       <td>3.0</td>
       <td>21358.0</td>
     </tr>
     <tr>
-      <th>10</th>
-      <td>Distrito Federal</td>
-      <td>4.0</td>
-      <td>54349.0</td>
-    </tr>
-    <tr>
       <th>9</th>
       <td>Mexico</td>
       <td>4.0</td>
       <td>16322.0</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Distrito Federal</td>
+      <td>4.0</td>
+      <td>54349.0</td>
     </tr>
     <tr>
       <th>21</th>
@@ -767,18 +771,6 @@ cards
       <td>11820.0</td>
     </tr>
     <tr>
-      <th>14</th>
-      <td>Campeche</td>
-      <td>6.0</td>
-      <td>36163.0</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>Yucatan</td>
-      <td>6.0</td>
-      <td>17509.0</td>
-    </tr>
-    <tr>
       <th>20</th>
       <td>Tabasco</td>
       <td>6.0</td>
@@ -789,6 +781,18 @@ cards
       <td>Quintana Roo</td>
       <td>6.0</td>
       <td>33442.0</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Campeche</td>
+      <td>6.0</td>
+      <td>36163.0</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Yucatan</td>
+      <td>6.0</td>
+      <td>17509.0</td>
     </tr>
   </tbody>
 </table>
@@ -833,12 +837,32 @@ rrmx = RandomRegion(ids, num_regions=6, cardinality=cards)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[[27, 12, 18, 3, 15, 8],
- [0, 25, 21, 20, 7, 6, 24],
- [23, 10, 13, 11, 19, 16, 26, 14, 17, 22],
- [28, 31],
- [30, 9, 4],
- [1, 29, 5, 2]]
+[[np.int64(27),
+  np.int64(12),
+  np.int64(18),
+  np.int64(3),
+  np.int64(15),
+  np.int64(8)],
+ [np.int64(0),
+  np.int64(25),
+  np.int64(21),
+  np.int64(20),
+  np.int64(7),
+  np.int64(6),
+  np.int64(24)],
+ [np.int64(23),
+  np.int64(10),
+  np.int64(13),
+  np.int64(11),
+  np.int64(19),
+  np.int64(16),
+  np.int64(26),
+  np.int64(14),
+  np.int64(17),
+  np.int64(22)],
+ [np.int64(28), np.int64(31)],
+ [np.int64(30), np.int64(9), np.int64(4)],
+ [np.int64(1), np.int64(29), np.int64(5), np.int64(2)]]
 </pre></div></div>
 </div>
 <p>This will have the same cardinality as the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition:</p>
@@ -846,7 +870,7 @@ rrmx = RandomRegion(ids, num_regions=6, cardinality=cards)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>set([len(region) for region in rrmx.regions]) == set(cards)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>{len(region) for region in rrmx.regions} == set(cards)
 </pre></div>
 </div>
 </div>
@@ -929,12 +953,12 @@ rrmxc = RandomRegion(ids, num_regions=6, cardinality=cards, contiguity=w)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[[27, 5, 28, 8, 11, 24, 3, 4, 2, 29],
- [18, 19, 9, 21, 10, 12, 20],
- [0, 22, 1, 25, 23, 26],
- [13, 16, 14],
- [15, 17, 7, 6],
- [31, 30]]
+[[np.int64(27), 5, 28, 8, 11, 24, 3, np.int64(4), np.int64(2), np.int64(29)],
+ [18, 19, 9, np.int64(21), np.int64(10), np.int64(12), np.int64(20)],
+ [np.int64(0), 22, 1, 25, 23, np.int64(26)],
+ [np.int64(13), 16, 14],
+ [np.int64(15), 17, 7, np.int64(6)],
+ [np.int64(31), 30]]
 </pre></div></div>
 </div>
 <p>This will also have the same cardinality as the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition:</p>
@@ -942,7 +966,7 @@ rrmxc = RandomRegion(ids, num_regions=6, cardinality=cards, contiguity=w)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>set([len(region) for region in rrmxc.regions]) == set(cards)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>{len(region) for region in rrmxc.regions} == set(cards)
 </pre></div>
 </div>
 </div>
@@ -1050,7 +1074,7 @@ plt.subplots_adjust(wspace=-0.2);
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-0.10660832349588024
+0.10660832349588023
 </pre></div></div>
 </div>
 <p>which is decomposed into the “between-regions” component:</p>
@@ -1113,7 +1137,7 @@ array([0.05287298])
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-0.10660832349588024
+0.10660832349588023
 </pre></div></div>
 </div>
 <p>However, the decomposition is very different now, with the within component being much larger than the between component.</p>
@@ -1175,7 +1199,7 @@ array([0.08564165])
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-0.10660832349588024
+0.10660832349588023
 </pre></div></div>
 </div>
 <p>and the within-region component is even larger than either the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> and <code class="docutils literal notranslate"><span class="pre">rrmx</span></code> partitions:</p>
@@ -1253,7 +1277,7 @@ wg = numpy.array(wg)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-0.08499903576350978
+np.float64(0.08499903576350976)
 </pre></div></div>
 </div>
 <p>which is larger than the observed value for <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code>:</p>
@@ -1332,7 +1356,7 @@ array([0.05287298])
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-0.052392123130697854
+np.float64(0.052392123130697826)
 </pre></div></div>
 </div>
 <p>We could even formalize this statement by developing a pseudo p-value for the observed component:</p>
@@ -1351,7 +1375,7 @@ pvalue
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-0.02
+np.float64(0.02)
 </pre></div></div>
 </div>
 <p>which would lead us to conclude that the observed value is significantly different from what would be expected under a random region null.</p>
@@ -1405,27 +1429,27 @@ gdf.head()
   <tbody>
     <tr>
       <th>0</th>
-      <td>POLYGON ((0.00000 0.00000, 1.00000 0.00000, 1....</td>
+      <td>POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))</td>
       <td>119.606435</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>POLYGON ((0.00000 1.00000, 1.00000 1.00000, 1....</td>
+      <td>POLYGON ((0 1, 1 1, 1 2, 0 2, 0 1))</td>
       <td>95.423219</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>POLYGON ((0.00000 2.00000, 1.00000 2.00000, 1....</td>
+      <td>POLYGON ((0 2, 1 2, 1 3, 0 3, 0 2))</td>
       <td>89.998863</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>POLYGON ((0.00000 3.00000, 1.00000 3.00000, 1....</td>
+      <td>POLYGON ((0 3, 1 3, 1 4, 0 4, 0 3))</td>
       <td>91.062546</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>POLYGON ((0.00000 4.00000, 1.00000 4.00000, 1....</td>
+      <td>POLYGON ((0 4, 1 4, 1 5, 0 5, 0 4))</td>
       <td>101.455462</td>
     </tr>
   </tbody>
@@ -1611,7 +1635,7 @@ plt.tight_layout()
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
     </p>
   </div>
 </footer>
