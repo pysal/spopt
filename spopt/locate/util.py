@@ -1,7 +1,14 @@
 import geopandas
 import numpy
 from shapely import MultiPolygon, Point, Polygon
-
+from libpysal.graph import Graph
+import networkx as nx
+import libpysal
+import numpy as np
+import scipy.sparse as sp
+from typing import Union
+from typing import List, Iterable
+import itertools
 
 def simulated_geo_points(
     in_data: geopandas.GeoDataFrame | geopandas.GeoSeries | Polygon | MultiPolygon,
@@ -100,3 +107,69 @@ def simulated_geo_points(
     sim_pts = geopandas.GeoDataFrame(geometry=simulated_points_list, crs=crs)
 
     return sim_pts
+
+def rising_combination(
+    values: List, 
+    start: int = 1, 
+    stop: int = None
+) -> Iterable[List]:
+    """
+    Generate combinations of increasing sizes from a list of values.
+    
+    Parameters
+    ----------
+    values : list
+        Input list to generate combinations from
+    start : int, optional
+        Minimum size of combinations (default is 1)
+    stop : int or None, optional
+        Maximum size of combinations
+    
+    Yields
+    ------
+    List
+        Combinations of different sizes
+    """
+    if stop is None:
+        stop = len(values)
+    
+    if start < 1:
+        raise ValueError("Start must be at least 1")
+    if stop > len(values):
+        stop = len(values)
+    
+    for size in range(start, min(stop + 1, len(values) + 1)):
+        yield from map(list, itertools.combinations(values, size))
+
+def rising_combination(
+    values: List, 
+    start: int = 1, 
+    stop: int = None
+) -> Iterable[List]:
+    """
+    Generate combinations of increasing sizes from a list of values.
+    
+    Parameters
+    ----------
+    values : list
+        Input list to generate combinations from
+    start : int, optional
+        Minimum size of combinations (default is 1)
+    stop : int or None, optional
+        Maximum size of combinations
+    
+    Yields
+    ------
+    List
+        Combinations of different sizes
+    """
+    if stop is None:
+        stop = len(values)
+    
+    if start < 1:
+        raise ValueError("Start must be at least 1")
+    if stop > len(values):
+        stop = len(values)
+    
+    for size in range(start, min(stop + 1, len(values) + 1)):
+        yield from map(list, itertools.combinations(values, size))
