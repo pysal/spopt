@@ -1,6 +1,8 @@
 import geopandas
 import numpy
 from shapely import MultiPolygon, Point, Polygon
+from typing import List, Iterable, Any
+import itertools
 
 
 def simulated_geo_points(
@@ -100,3 +102,99 @@ def simulated_geo_points(
     sim_pts = geopandas.GeoDataFrame(geometry=simulated_points_list, crs=crs)
 
     return sim_pts
+
+
+def rising_combination(
+    values: List, start: int = 1, stop: int = None
+) -> Iterable[List]:
+    """
+    Generate combinations of increasing sizes from a list of values.
+
+    Parameters
+    ----------
+    values : list
+        Input list to generate combinations from
+    start : int, optional
+        Minimum size of combinations (default is 1)
+    stop : int or None, optional
+        Maximum size of combinations
+
+    Yields
+    ------
+    List
+        Combinations of different sizes
+    """
+    if stop is None:
+        stop = len(values)
+
+    if start < 1:
+        raise ValueError("Start must be at least 1")
+    if stop > len(values):
+        stop = len(values)
+
+    for size in range(start, min(stop + 1, len(values) + 1)):
+        yield from map(list, itertools.combinations(values, size))
+
+
+def rising_combination(
+    values: List, start: int = 1, stop: int = None
+) -> Iterable[List]:
+    """
+    Generate combinations of increasing sizes from a list of values.
+
+    Parameters
+    ----------
+    values : list
+        Input list to generate combinations from
+    start : int, optional
+        Minimum size of combinations (default is 1)
+    stop : int or None, optional
+        Maximum size of combinations
+
+    Yields
+    ------
+    List
+        Combinations of different sizes
+    """
+    if stop is None:
+        stop = len(values)
+
+    if start < 1:
+        raise ValueError("Start must be at least 1")
+    if stop > len(values):
+        stop = len(values)
+
+    for size in range(start, min(stop + 1, len(values) + 1)):
+        yield from map(list, itertools.combinations(values, size))
+
+
+def compute_facility_usage(
+    origin: Any, destination: Any, facility: Any, combination: List
+) -> int:
+    """
+    Compute facility usage coefficient for capacitated model.
+
+    Parameters
+    ----------
+    origin : Any
+        Origin node of the flow
+    destination : Any
+        Destination node of the flow
+    facility : Any
+        Facility being evaluated
+    combination : List
+        List of facilities in the current combination
+
+    Returns
+    -------
+    int
+        Facility usage coefficient (1 if facility is origin/destination, 2 if intermediate, 0 if not in combination)
+    """
+    if facility not in combination:
+        return 0
+
+    if facility == origin or facility == destination:
+        return 1
+
+    # Facility is used as an intermediate refueling point
+    return 2
