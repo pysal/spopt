@@ -409,8 +409,10 @@ class FRLMCoverageMixin:
 
                         self.flow_coverage[od_pair] = {
                             "flow_volume": flow_volume,
-                            "covered_proportion": covered_proportion,
-                            "covered_volume": flow_volume * covered_proportion,
+                            "covered_proportion": round(covered_proportion, 2),
+                            "covered_volume": round(
+                                flow_volume * covered_proportion, 2
+                            ),
                         }
 
         total_covered_volume = sum(
@@ -420,9 +422,9 @@ class FRLMCoverageMixin:
             coverage["flow_volume"] for coverage in self.flow_coverage.values()
         )
         return {
-            "covered_volume": total_covered_volume,
-            "flow_volume": flow_volume,
-            "covered_proportion": total_covered_volume / flow_volume,
+            "covered_volume": round(total_covered_volume, 2),
+            "flow_volume": round(flow_volume, 2),
+            "covered_proportion": round(total_covered_volume / flow_volume, 2),
         }
 
     def get_vmt_coverage(self) -> Dict[str, float]:
@@ -449,9 +451,7 @@ class FRLMCoverageMixin:
 
 
 class FRLMNodeCoverageMixin:
-
     def calculate_covered_nodes(self) -> None:
-
         if self.threshold <= 0:
             self.covered_nodes = []
             return
@@ -493,9 +493,7 @@ class FRLMNodeCoverageMixin:
 
 
 class FRLMSolverStatsMixin:
-
     def extract_solver_statistics(self) -> None:
-
         if not hasattr(self, "model") or self.model is None:
             raise AttributeError("Model must be solved first. Call solve().")
 
@@ -539,19 +537,23 @@ class FRLMSolverStatsMixin:
         if not hasattr(self, "solver_stats"):
             self.extract_solver_statistics()
 
+        model_params = {
+            "vehicle_range": round(self.vehicle_range, 2),
+            "p_facilities": self.p_facilities,
+            "capacity": self.capacity,
+            "threshold": self.threshold,
+            "objective_type": self.objective,
+        }
+
+        if self.threshold > 0:
+            model_params["weight"] = self.weight
+
         results = {
-            "model_parameters": {
-                "vehicle_range": self.vehicle_range,
-                "p_facilities": self.p_facilities,
-                "capacity": self.capacity,
-                "threshold": self.threshold,
-                "weight": self.weight,
-                "objective_type": self.objective,
-            },
+            "model_parameters": model_params,
             "solution": {
                 "status": self.status,
                 "objective_value": self.objective_value,
-                "selected_facilities": self.selected_facilities,
+                "selected_facilities": list(self.selected_facilities.keys()),
                 "solution_time": self.solution_time,
             },
             "solver_statistics": self.solver_stats,
@@ -1206,7 +1208,6 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         total_flow = sum(self.flows.values())
 
         for (origin, destination), volume in self.flows.items():
-
             node_weights[origin] += volume
 
             if include_destination:
@@ -1337,7 +1338,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             Additional solver-specific parameters
         """
         if not self._model_built:
-            raise ValueError("Model must be built first.")
+            self._build_model()
 
         threshold = kwargs.get("threshold", self.threshold)
         weight = kwargs.get("weight", self.weight)
@@ -1378,8 +1379,8 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
         return {
             "status": self.status,
-            "objective_value": self.objective_value,
-            "selected_facilities": self.selected_facilities,
+            "objective_value": round(self.objective_value),
+            "selected_facilities": list(self.selected_facilities.keys()),
         }
 
     def _solve_greedy(
@@ -1514,7 +1515,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
         self.objective_value = current_objective
         # Final evaluation
-        self.solution_time = time.time() - start_time
+        self.solution_time = round(time.time() - start_time, 2)
         self.status = "Heuristic"
         for k, site in enumerate(self.candidate_sites):
             self.facility_vars[k].varValue = current_facilities.get(site, 0)
@@ -1523,8 +1524,8 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         result = {
             "status": self.status,
             "model_type": "use ac_pc" if self.use_ac_pc else " use combination",
-            "objective_value": self.objective_value,
-            "selected_facilities": self.selected_facilities,
+            "objective_value": round(self.objective_value, 2),
+            "selected_facilities": list(self.selected_facilities.keys()),
             "objective_type": objective,
             "flow_coverage": self.flow_coverage,
         }
@@ -1903,7 +1904,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                 "No solver instance provided. Please specify a valid PuLP solver."
             )
 
-        self.solution_time = time.time() - start_time
+        self.solution_time = round(time.time() - start_time, 2)
         self.pulp_status = self.model.status
         self.status = pulp.LpStatus[self.model.status]
 
@@ -1922,9 +1923,9 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             result = {
                 "status": self.status,
                 "model_type": "ac_pc" if self.use_ac_pc else "combination",
-                "objective_value": self.objective_value,
-                "selected_facilities": self.selected_facilities,  # Property will be called
-                "solution_time": self.solution_time,
+                "objective_value": round(self.objective_value, 2),
+                "selected_facilities": list(self.selected_facilities.keys()),
+                "solution_time": round(self.solution_time, 2),
                 "objective_type": objective,
             }
             return result
@@ -2013,7 +2014,6 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         }
 
     def _initialize_greedy_solution(self, method: str) -> set:
-
         supported_methods = ["empty", "random", "central", "high_flow"]
 
         if method not in supported_methods:
@@ -2316,7 +2316,6 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         return best_improvement
 
     def get_shadow_prices(self) -> Dict:
-
         if self.solver_type == "pulp":
             shadow_prices = self.shadow_prices.copy()
         elif self.solver_type == "greedy":
@@ -2504,8 +2503,9 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             f", capacity={self.capacity}" if self.capacity is not None else ""
         )
         threshold_info = f", threshold={self.threshold}" if self.threshold > 0 else ""
+        weight_info = f", weight={self.weight}" if self.threshold > 0 else ""
 
         return (
             f"FRLM({range_str}, p={self.p_facilities}{capacity_info}"
-            f"{threshold_info}, weight={self.weight})"
+            f"{threshold_info}{weight_info})"
         )
