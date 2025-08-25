@@ -2,7 +2,7 @@ import geopandas
 import numpy
 import pandas
 import shapely
-
+from sklearn import metrics
 import pyvrp
 from . import engine
 from . import utils
@@ -54,7 +54,7 @@ class LastMile:
         time_windows=None,
         fixed_cost=None,
         cost_per_meter=None,
-        cost_per_minute=30 / 60,
+        cost_per_minute=None, # needs to change based on the router. silently ignore if none is passed 
         max_duration=pandas.Timedelta(hours=8, minutes=00),
         max_distance=None,
     ):
@@ -324,7 +324,8 @@ class LastMile:
         )
         return self
 
-    def solve(self, stop=pyvrp.stop.NoImprovement(1e6), *args, **kwargs):
+    def solve(self, stop=pyvrp.stop.NoImprovement(1e6), routing=None, routing_kws={}, *args, **kwargs):
+
         """
         Solve a LastMile() instance according to the existing specification. 
 
@@ -334,6 +335,16 @@ class LastMile:
             A stopping rule that governs when the simulation will be ended. 
             Set to terminate solving after one million iterations with no improvement.
 
+        routing   :   routingpy.routers
+            One of several routing API clients provided by the routingpy package. 
+
+        routing_kws   :   dict
+            Keyword arguments that are passed to the provided routingpy service.
+            Example usage is to pass the baseurl where the OSRM backend docker container is running e.g.:
+            `routing={"base_url": "http://localhost:5000"}`.
+            Other services require different keywords - see the routingpy documentation:
+            https://github.com/mthh/routingpy/tree/master
+        
 
         Returns
         -------
@@ -341,23 +352,44 @@ class LastMile:
         as the routes and stops found to routes_ and stops_, respectively
 
         Notes
-        -----
+        
         other arguments and keyword arguments are passed directly to the pyvrp.Model.solve() method
         """
+        self.routing_ = None
+        self.routing_kws_ = {}
+
         if (not hasattr(self, "clients_")) | (not hasattr(self, "trucks_")):
-            raise SpecificationError(
-                "must assign both clients and trucks to" " solve a problem instance."
-            )
-        all_lonlats = numpy.row_stack(
-            (self.depot_location, shapely.get_coordinates(self.clients_.geometry))
+            raise SpecificationError("must assign both clients and trucks to" " solve a problem instance.")
+        
+        all_lonlats = numpy.vstack(
+            [self.depot_location] + list(shapely.get_coordinates(self.clients_.geometry))
         )
-        self._setup_graph(all_lonlats=all_lonlats)
+        
+        # if engine is provided
+        routing_kws = {} if routing_kws is None else dict(routing_kws)
+        if routing is not None:
+            base_url = routing_kws.pop('base_url', None)
+            self.routing_kws_ = routing_kws
+            self.routing_ = routing(base_url=base_url) if base_url else routing(**routing_kws)
+            print(f'routing engine is defined as: {self.routing_}')
+            self._setup_graph(all_lonlats=all_lonlats, routing=self.routing_, routing_kws=self.routing_kws_)
+            
+        # if no engine is provided
+        else:
+            self._setup_graph(all_lonlats=all_lonlats)
+
+
         self.result_ = self.model.solve(stop=stop, *args, **kwargs)
         self.routes_, self.stops_ = utils.routes_and_stops(
-            self.result_.best, self.model, self.clients_, self.depot_location, cost_unit=self.cost_unit
+            self.result_.best,
+            self.model,
+            self.clients_,
+            self.depot_location,
+            cost_unit=self.cost_unit,
+            routing=self.routing_,
+            **self.routing_kws_
         )
-        return self
-
+            
     solve.__doc__ = pyvrp.Model.solve.__doc__
 
     def explore(self):
@@ -370,7 +402,9 @@ class LastMile:
             "route_name", categorical=True, tiles="CartoDB positron"
         )
         stops_for_map = self.stops_.copy()
-        stops_for_map["eta"] = self.stops_.eta.astype(str)
+        for col in stops_for_map.columns:
+            if col != "geometry":
+                stops_for_map[col] = self.stops_[col].astype(str)
         stops_for_map.explore(
             "route_name",
             m=m,
@@ -384,7 +418,7 @@ class LastMile:
         ).explore(m=m, color="black", marker_type="marker")
         return m
 
-    def _setup_graph(self, all_lonlats):
+    def _setup_graph(self, all_lonlats, *args, **kwargs):
         """
         This sets up the graph pertaining to an inputted set of longitude and latitude coordinates. 
 
@@ -394,25 +428,55 @@ class LastMile:
         the restricted and the base profiles, then update the model
         with an edge for each profile. 
         """
-        raw_distances, raw_durations = engine.build_route_table(
-            all_lonlats, all_lonlats, cost="both"
-        )
-        # how many minutes does it take to get from place to place?
-        durations_by_block = numpy.ceil(raw_durations / 60)
-        ##### WARNING!!!!!!! THIS IS A BUG IN OSRM #5855
-        durations = numpy.clip(durations_by_block, 0, durations_by_block.max())
-        distances = numpy.clip(raw_distances, 0, raw_distances.max()).round(0)
+        if hasattr(self, "routing_") and self.routing_:
+            
+            raw_distances, raw_durations = engine.build_route_table(
+                demand_sites=shapely.get_coordinates(self.clients_.geometry),
+                candidate_depots=[self.depot_location],
+                cost="both",
+                routing=self.routing_,
+                routing_kws=self.routing_kws_
+            )
 
-        duration_df = pandas.DataFrame(
-            durations,
-            index=[self.depot_name] + self.clients_.index.tolist(),
-            columns=[self.depot_name] + self.clients_.index.tolist(),
-        )
-        distance_df = pandas.DataFrame(
-            distances,
-            index=[self.depot_name] + self.clients_.index.tolist(),
-            columns=[self.depot_name] + self.clients_.index.tolist(),
-        )
+            # how many minutes does it take to get from place to place?
+            durations_by_block = numpy.ceil(raw_durations / 60)
+            durations = numpy.clip(durations_by_block, 0, durations_by_block.max())
+            distances = numpy.clip(raw_distances, 0, raw_distances.max()).round(0)
+
+            duration_df = pandas.DataFrame(
+                durations,
+                index=[self.depot_name] + self.clients_.index.tolist(),
+                columns=[self.depot_name] + self.clients_.index.tolist(),
+            )
+            distance_df = pandas.DataFrame(
+                distances,
+                index=[self.depot_name] + self.clients_.index.tolist(),
+                columns=[self.depot_name] + self.clients_.index.tolist(),
+            )
+
+        else:
+            raw_distances, raw_durations = engine.build_route_table(
+                demand_sites=shapely.get_coordinates(self.clients_.geometry),
+                candidate_depots=[self.depot_location],
+                cost="both",
+            )
+            
+            # Do I need durations_by_block when using euclidean distances?
+            # durations_by_block = numpy.ceil(raw_durations / 60)
+            durations = numpy.clip(raw_durations, 0, raw_durations.max())
+            distances = numpy.clip(raw_distances, 0, raw_distances.max()).round(0)
+
+            duration_df = pandas.DataFrame(
+                durations,
+                index=[self.depot_name] + self.clients_.index.tolist(),
+                columns=[self.depot_name] + self.clients_.index.tolist(),
+            )
+            distance_df = pandas.DataFrame(
+                distances,
+                index=[self.depot_name] + self.clients_.index.tolist(),
+                columns=[self.depot_name] + self.clients_.index.tolist(),
+            )
+        
         for source_ix, source in enumerate(self.model.locations):
             for sink_ix, sink in enumerate(self.model.locations):
                 self.model.add_edge(
