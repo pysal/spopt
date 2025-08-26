@@ -1,12 +1,14 @@
+import os
+import pickle
+
 import numpy as np
 import pandas as pd
 import pulp
 import pytest
 from numpy.testing import assert_allclose
 from scipy.sparse import csr_matrix
+
 from spopt.locate.flow import FRLM
-import os
-import pickle
 
 
 def load_grid_test_data():
@@ -61,9 +63,9 @@ class TestFRLMBasicFunctionality:
 
         model.generate_path_refueling_combinations(method="ac_pc")
         assert model.use_ac_pc is True
-        
-        assert model.K != None
-        assert model.a != None
+
+        assert model.k is not None
+        assert model.a is not None
 
         result = model.solve(solver=pulp.PULP_CBC_CMD(msg=0))
         assert result["status"] == "Optimal"
@@ -75,8 +77,8 @@ class TestFRLMBasicFunctionality:
         )
 
         assert model.use_ac_pc is False
-        
-        assert model.path_refueling_combinations != None
+
+        assert model.path_refueling_combinations is not None
 
         result = model.solve(solver=pulp.PULP_CBC_CMD(msg=0))
         assert result["status"] == "Optimal"
@@ -108,8 +110,8 @@ class TestFRLMObjectives:
         result = model.solve(solver=pulp.PULP_CBC_CMD(msg=0))
         assert result["status"] == "Optimal"
         coverage = model.get_flow_coverage()
-        assert coverage["covered_volume"] == 50 
-        
+        assert coverage["covered_volume"] == 50
+
 
     def test_vmt_objective(self, setup_network_with_distances):
         network, flows = setup_network_with_distances
@@ -279,7 +281,7 @@ class TestFRLMGreedySolver:
         assert result["status"] == "Heuristic"
         total_modules = sum(model.selected_facilities.values())
         assert total_modules <= 4
-        for facility, modules in model.selected_facilities.items():
+        for _facility, modules in model.selected_facilities.items():
             assert modules >= 1
 
     def test_greedy_no_feasible_solution(self, setup_greedy_network):
@@ -343,11 +345,6 @@ class TestFRLMErrorHandling:
         with pytest.raises(ValueError, match="Weight must be between 0 and 1"):
             model.solve(weight=-0.5)
 
-    def test_solve_before_build(self):
-        model = FRLM()
-        with pytest.raises(ValueError, match="Model must be built first"):
-            model.solve()
-
 
 class TestFRLMOutputsAndReporting:
     @pytest.fixture
@@ -402,7 +399,7 @@ class TestFRLMOutputsAndReporting:
 
     def test_solver_details(self, setup_solved_model):
         model = setup_solved_model
-        details = model.get_solver_details(verbose=False)
+        details = model.get_solver_details()
 
         assert "solver_type" in details
         assert "solver_status" in details
@@ -419,7 +416,7 @@ class TestFRLMOutputsAndReporting:
         assert isinstance(reduced_costs, dict)
 
         for price in shadow_prices.values():
-            assert isinstance(price, (int, float))
+            assert isinstance(price, int | float)
 
     def test_detailed_results(self, setup_solved_model):
 

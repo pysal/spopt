@@ -1,8 +1,10 @@
+import itertools
+from collections.abc import Iterable
+from typing import Any
+
 import geopandas
 import numpy
 from shapely import MultiPolygon, Point, Polygon
-from typing import List, Iterable, Any
-import itertools
 
 
 def simulated_geo_points(
@@ -103,10 +105,9 @@ def simulated_geo_points(
 
     return sim_pts
 
-
 def rising_combination(
-    values: List, start: int = 1, stop: int = None
-) -> Iterable[List]:
+    values: list, start: int = 1, stop: int = None
+) -> Iterable[list]:
     """
     Generate combinations of increasing sizes from a list of values.
 
@@ -137,7 +138,7 @@ def rising_combination(
 
 
 def compute_facility_usage(
-    origin: Any, destination: Any, facility: Any, combination: List
+    origin: Any, destination: Any, facility: Any, combination: list
 ) -> int:
     """
     Compute facility usage coefficient for capacitated model.
@@ -156,12 +157,14 @@ def compute_facility_usage(
     Returns
     -------
     int
-        Facility usage coefficient (1 if facility is origin/destination, 2 if intermediate, 0 if not in combination)
+        Facility usage coefficient:
+        1 if facility is origin/destination,
+        2 if intermediate, 0 if not in combination
     """
     if facility not in combination:
         return 0
 
-    if facility == origin or facility == destination:
+    if facility in (origin, destination):
         return 1
 
     # Facility is used as an intermediate refueling point
