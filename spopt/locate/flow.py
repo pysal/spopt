@@ -1,18 +1,19 @@
-import numpy as np
-import pulp
-import time
-import pandas as pd
-from typing import List, Dict, Tuple, Set, Optional, Union, Any, Iterable, Literal
-from tqdm import tqdm
-import warnings
-import random
-import json
 import logging
+import random
+import time
+import warnings
+from collections import deque
+from typing import Any, Literal
+
+import numpy as np
+import pandas as pd
+import pulp
 import scipy.sparse as sp
 import scipy.sparse.csgraph as csgraph
-from collections import deque
+from tqdm import tqdm
+
 from .base import FacilityModelBuilder
-from .util import rising_combination, compute_facility_usage
+from .util import compute_facility_usage, rising_combination
 
 
 class GreedyVariable:
@@ -39,7 +40,7 @@ class FlowModelBuilder:
     @staticmethod
     def add_facility_variables(
         obj: Any,
-        candidate_sites: List[Any],
+        candidate_sites: list[Any],
     ) -> None:
         """
         Add facility location binary variables.
@@ -48,7 +49,7 @@ class FlowModelBuilder:
         ----------
         obj : Any
             The optimization model object
-        candidate_sites : List[Any]
+        candidate_sites : list[Any]
             List of potential facility locations
         """
 
@@ -57,15 +58,15 @@ class FlowModelBuilder:
             for i in candidate_sites
         ]
 
-        setattr(obj, "facility_vars", fac_vars)
-        setattr(obj, "fac_vars", fac_vars)
+        obj.facility_vars = fac_vars
+        obj.fac_vars = fac_vars
 
     @staticmethod
     def add_ac_pc_constraints(
         obj: Any,
-        a: Dict[int, List[int]],
-        K: Dict[Tuple[int, int], List[Any]],
-        candidate_sites: List[Any],
+        a: dict[int, list[int]],
+        k: dict[tuple[int, int], list[Any]],
+        candidate_sites: list[Any],
     ) -> None:
         """
         The AC-PC approach decomposes each path into arcs and ensures that at least
@@ -76,24 +77,24 @@ class FlowModelBuilder:
         ----------
         obj : Any
             The optimization model object
-        a : Dict[int, List[int]]
+        a : Dict[int, list[int]]
             Arc mapping dictionary where:
             - Key: Path ID (q) - integer identifier for each OD path (1-indexed)
             - Value: List of arc IDs that compose this path
 
-        K : Dict[Tuple[int, int], List[Any]]
+        K : Dict[Tuple[int, int], list[Any]]
             Refueling capability dictionary where:
             - Key: Tuple (path_id, arc_id) identifying a specific arc on a path
             - Value: List of candidate facility nodes that can refuel this arc
             A facility can refuel an arc if it's within vehicle_range/2 of either
             endpoint of the arc.
 
-        candidate_sites : List[Any]
+        candidate_sites : list[Any]
         """
         if hasattr(obj, "facility_vars") and hasattr(obj, "flow_vars"):
-            facility_vars = getattr(obj, "facility_vars")
-            flow_vars = getattr(obj, "flow_vars")
-            model = getattr(obj, "problem")
+            facility_vars = obj.facility_vars
+            flow_vars = obj.flow_vars
+            model = obj.problem
 
             facility_index_map = {site: idx for idx, site in enumerate(candidate_sites)}
 
@@ -101,10 +102,10 @@ class FlowModelBuilder:
                 if q in a:
                     for arc in a[q]:
                         key = (q, arc)
-                        if key in K:
+                        if key in k:
                             refuel_facilities = pulp.lpSum(
                                 facility_vars[facility_index_map[node]]
-                                for node in K[key]
+                                for node in k[key]
                                 if node in facility_index_map
                             )
                             model += refuel_facilities >= flow_vars[q]
@@ -112,10 +113,9 @@ class FlowModelBuilder:
     @staticmethod
     def add_flow_variables(
         obj: Any,
-        flows: Dict[Tuple[Any, Any], float],
-        path_refueling_combinations: Optional[
-            Dict[Tuple[Any, Any], List[List[Any]]]
-        ] = None,
+        flows: dict[tuple[Any, Any], float],
+        path_refueling_combinations: dict[tuple[Any, Any], list[list[Any]]]
+        | None = None,
     ) -> None:
         """
         Add flow coverage continuous variables.
@@ -126,7 +126,7 @@ class FlowModelBuilder:
             The optimization model object
         flows : Dict[Tuple[Any, Any], float]
             Dictionary of flows between origin-destination pairs
-        path_refueling_combinations : Dict[Tuple[Any, Any], List[List[Any]]], optional
+        path_refueling_combinations : Dict[Tuple[Any, Any], list[list[Any]]], optional
             Valid facility combinations for each flow path
         """
         flow_vars = {}
@@ -136,27 +136,26 @@ class FlowModelBuilder:
                 if q in obj.a:
                     flow_vars[q] = pulp.LpVariable(f"y_{q}", cat=pulp.LpBinary)
         elif path_refueling_combinations is None:
-            for q, od_pair in enumerate(flows.keys()):
+            for q, _od_pair in enumerate(flows.keys()):
                 flow_vars[q] = pulp.LpVariable(
                     f"y_{q}", lowBound=0, upBound=1, cat=pulp.LpContinuous
                 )
         else:
             for q, od_pair in enumerate(flows.keys()):
                 valid_combinations = path_refueling_combinations[od_pair]
-                for h, combination in enumerate(valid_combinations):
+                for h, _combination in enumerate(valid_combinations):
                     flow_vars[(q, h)] = pulp.LpVariable(
                         f"y_{q}_{h}", lowBound=0, upBound=1, cat=pulp.LpContinuous
                     )
 
-        setattr(obj, "flow_vars", flow_vars)
+        obj.flow_vars = flow_vars
 
     @staticmethod
     def add_flow_coverage_constraints(
         obj: Any,
-        flows: Dict[Tuple[Any, Any], float],
-        path_refueling_combinations: Optional[
-            Dict[Tuple[Any, Any], List[List[Any]]]
-        ] = None,
+        flows: dict[tuple[Any, Any], float],
+        path_refueling_combinations: dict[tuple[Any, Any], list[list[Any]]]
+        | None = None,
     ) -> None:
         """
         Add flow coverage constraints.
@@ -167,15 +166,15 @@ class FlowModelBuilder:
             The optimization model object
         flows : Dict[Tuple[Any, Any], float]
             Dictionary of flows between origin-destination pairs
-        path_refueling_combinations :Dict[Tuple[Any, Any], List[List[Any]]], optional
+        path_refueling_combinations :Dict[Tuple[Any, Any], list[list[Any]]], optional
             Valid facility combinations for each flow path
         """
         if hasattr(obj, "flow_vars") and hasattr(obj, "facility_vars"):
-            flow_vars = getattr(obj, "flow_vars")
-            model = getattr(obj, "problem")
+            flow_vars = obj.flow_vars
+            model = obj.problem
 
             if path_refueling_combinations is None:
-                for q, od_pair in enumerate(flows.keys()):
+                for q, _od_pair in enumerate(flows.keys()):
                     model += flow_vars[q] <= 1
             else:
                 for q, od_pair in enumerate(flows.keys()):
@@ -188,17 +187,18 @@ class FlowModelBuilder:
                     )
         else:
             raise AttributeError(
-                "Flow and facility variables must be set before adding flow coverage constraints."
+                "Flow and facility variables must be set before adding flow "
+                "coverage constraints."
             )
 
     @staticmethod
     def add_capacity_constraints(
         obj: Any,
-        flows: Dict[Tuple[Any, Any], float],
-        path_refueling_combinations: Dict[Tuple[Any, Any], List[List[Any]]],
-        e_coefficients: Dict[Tuple[Any, Any], float],
+        flows: dict[tuple[Any, Any], float],
+        path_refueling_combinations: dict[tuple[Any, Any], list[list[Any]]],
+        e_coefficients: dict[tuple[Any, Any], float],
         capacity: float,
-        candidate_sites: List[Any],
+        candidate_sites: list[Any],
     ) -> None:
         """
         Add facility capacity constraints.
@@ -209,19 +209,19 @@ class FlowModelBuilder:
             The optimization model object
         flows : Dict[Tuple[Any, Any], float]
             Dictionary of flows between origin-destination pairs
-        path_refueling_combinations : Dict[Tuple[Any, Any], List[List[Any]]]
+        path_refueling_combinations : Dict[Tuple[Any, Any], list[list[Any]]]
             Valid facility combinations for each flow path
         e_coefficients : Dict[Tuple[Any, Any], float]
             Refueling frequency coefficients
         capacity : float
             Facility module capacity
-        candidate_sites : List[Any]
+        candidate_sites : list[Any]
             List of potential facility locations
         """
         if hasattr(obj, "facility_vars") and hasattr(obj, "flow_vars"):
-            facility_vars = getattr(obj, "facility_vars")
-            flow_vars = getattr(obj, "flow_vars")
-            model = getattr(obj, "problem")
+            facility_vars = obj.facility_vars
+            flow_vars = obj.flow_vars
+            model = obj.problem
 
             for k in candidate_sites:
                 model += (
@@ -240,13 +240,14 @@ class FlowModelBuilder:
                 )
         else:
             raise AttributeError(
-                "Facility and flow variables must be set before adding capacity constraints."
+                "Facility and flow variables must be set before adding capacity "
+                "constraints."
             )
 
     @staticmethod
     def add_threshold_constraints(
         obj: Any,
-        flows: Dict[Tuple[Any, Any], float],
+        flows: dict[tuple[Any, Any], float],
         node_weights: np.ndarray,
         threshold: float,
         weight: float,
@@ -268,11 +269,11 @@ class FlowModelBuilder:
             Weight parameter for combining node and flow coverage
         """
         if hasattr(obj, "facility_vars") and hasattr(obj, "flow_vars"):
-            model = getattr(obj, "problem")
-            flow_vars = getattr(obj, "flow_vars")
+            model = obj.problem
+            flow_vars = obj.flow_vars
 
             node_coverage_vars = {}
-            for origin in set(od[0] for od in flows.keys()):
+            for origin in {od[0] for od in flows}:
                 node_coverage_vars[origin] = pulp.LpVariable(
                     f"node_coverage_{origin}", lowBound=0, upBound=1, cat=pulp.LpBinary
                 )
@@ -296,7 +297,7 @@ class FlowModelBuilder:
                 )
 
             if hasattr(obj, "original_objective"):
-                original_objective = getattr(obj, "original_objective")
+                original_objective = obj.original_objective
 
                 node_coverage_term = pulp.lpSum(
                     node_weights[origin] * node_coverage_vars[origin]
@@ -307,10 +308,11 @@ class FlowModelBuilder:
 
                 model += weight * node_coverage_term + (1 - weight) * flow_coverage_term
 
-            setattr(obj, "node_coverage_vars", node_coverage_vars)
+            obj.node_coverage_vars = node_coverage_vars
         else:
             raise AttributeError(
-                "Facility and flow variables must be set before adding threshold constraints."
+                "Facility and flow variables must be set before adding threshold "
+                "constraints."
             )
 
     @staticmethod
@@ -326,7 +328,7 @@ class FlowModelBuilder:
         h = 0
         combination_mapping = {}
 
-        for od_pair, combinations in obj.path_refueling_combinations.items():
+        for _od_pair, combinations in obj.path_refueling_combinations.items():
             for combo in combinations:
                 # Convert list to tuple for hashing
                 combo_tuple = tuple(sorted(combo))
@@ -337,21 +339,21 @@ class FlowModelBuilder:
                     )
                     h += 1
 
-        setattr(obj, "combination_vars", combination_vars)
-        setattr(obj, "combination_mapping", combination_mapping)
+        obj.combination_vars = combination_vars
+        obj.combination_mapping = combination_mapping
 
     @staticmethod
     def add_combination_refueling_constraints(
-        obj: Any, flows: Dict[Tuple[Any, Any], float]
+        obj: Any, flows: dict[tuple[Any, Any], float]
     ) -> None:
         """
         Add constraints linking combinations to flow coverage.
         """
-        model = getattr(obj, "problem")
-        flow_vars = getattr(obj, "flow_vars")
-        combination_vars = getattr(obj, "combination_vars")
-        combination_mapping = getattr(obj, "combination_mapping")
-        facility_vars = getattr(obj, "facility_vars")
+        model = obj.problem
+        flow_vars = obj.flow_vars
+        combination_vars = obj.combination_vars
+        combination_mapping = obj.combination_mapping
+        facility_vars = obj.facility_vars
 
         for q, od_pair in enumerate(flows.keys()):
             if od_pair in obj.path_refueling_combinations:
@@ -427,7 +429,7 @@ class FRLMCoverageMixin:
             "covered_proportion": round(total_covered_volume / flow_volume, 2),
         }
 
-    def get_vmt_coverage(self) -> Dict[str, float]:
+    def get_vmt_coverage(self) -> dict[str, float]:
         if not hasattr(self, "_path_distances"):
             self._calculate_path_distances()
 
@@ -488,7 +490,7 @@ class FRLMNodeCoverageMixin:
         if not hasattr(self, "covered_nodes"):
             self.calculate_covered_nodes()
 
-        total_origins = len(set(od[0] for od in self.flows.keys()))
+        total_origins = len({od[0] for od in self.flows})
         return len(self.covered_nodes) / total_origins if total_origins > 0 else 0.0
 
 
@@ -533,7 +535,7 @@ class FRLMSolverStatsMixin:
                 }
             )
 
-    def get_detailed_results(self) -> Dict:
+    def get_detailed_results(self) -> dict:
         if not hasattr(self, "solver_stats"):
             self.extract_solver_statistics()
 
@@ -584,7 +586,8 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
     ----------
     vehicle_range : Union[float, int], default=200000.0
         Defines the maximum travel distance or range for vehicles.
-        - If value is between 0 and 1: Treated as a percentage of the longest path. e.g. 0.5: 50% of the longest path in the network
+        - If value is between 0 and 1: Treated as a percentage of the longest path.
+          e.g. 0.5: 50% of the longest path in the network
         - If value > 1: Treated as an absolute distance in distance units (e.g., meters)
 
     p_facilities : int, default=5
@@ -596,10 +599,12 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         - If provided: Sets a maximum capacity for each facility module
 
     threshold : float, default=0.0
-        Minimum flow coverage percentage for a node to be considered covered, 0 disables threshold extension.
+        Minimum flow coverage percentage for a node to be considered covered,
+        0 disables threshold extension.
 
     weight : float, default=0.99
-        Controls the trade-off between node coverage and flow coverage for threshold extension objective.
+        Controls the trade-off between node coverage and flow coverage for
+        threshold extension objective.
         Range: [0.0, 1.0]
         - 1.0: Prioritises node coverage
         - 0.0: Prioritises flow coverage
@@ -619,9 +624,9 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
     def __init__(
         self,
-        vehicle_range: Union[float, int] = 200000,
+        vehicle_range: float | int = 200000,
         p_facilities: int = 5,
-        capacity: Union[float, None] = None,
+        capacity: float | None = None,
         threshold: float = 0.0,
         weight: float = 0.99,
         objective: str = "flow",
@@ -636,7 +641,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
         self.capacity = capacity
 
-        self.K = {}
+        self.k = {}
         self.a = {}
         self.use_ac_pc = False
 
@@ -692,12 +697,12 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         self.solver_stats = {}
         self.pulp_status = None
 
-    def get_constraint_dual(self, constraint_name: str) -> Optional[float]:
+    def get_constraint_dual(self, constraint_name: str) -> float | None:
         return self.lagrange_multipliers.get(constraint_name)
 
     @classmethod
     def from_flow_dataframe(
-        cls, network: sp.csr_matrix, flows: Union[pd.DataFrame, Dict], **kwargs
+        cls, network: sp.csr_matrix, flows: pd.DataFrame | dict, **kwargs
     ):
         """
         Create FRLM instance from network and flows.
@@ -732,6 +737,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             warnings.warn(
                 "No flows provided. FRLM will not have any flow data to work with.",
                 UserWarning,
+                stacklevel=2,
             )
 
         frlm._build_model()
@@ -761,7 +767,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         self.candidate_sites = list(range(network.shape[0]))
         return self
 
-    def add_flows(self, flows: Union[pd.DataFrame, Dict[Tuple[Any, Any], float]]):
+    def add_flows(self, flows: pd.DataFrame | dict[tuple[Any, Any], float]):
         """
         Add multiple flows to the FRLM instance.
 
@@ -790,14 +796,14 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         return self
 
     def _reconstruct_path(
-        self, predecessors: List[int], origin: int, destination: int
-    ) -> List[int]:
+        self, predecessors: list[int], origin: int, destination: int
+    ) -> list[int]:
         """
         Reconstruct the shortest path between origin and destination.
 
         Parameters
         ----------
-        predecessors : List[int]
+        predecessors : list[int]
             Predecessor array from shortest path algorithm
         origin : int
             Starting node of the path
@@ -806,7 +812,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
         Returns
         -------
-        List[int]
+        list[int]
             Shortest path from origin to destination
         """
         if predecessors[destination] == -9999:
@@ -829,7 +835,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         return list(path)
 
     def add_flow(
-        self, origin: Any, destination: Any, volume: float, path: Optional[List] = None
+        self, origin: Any, destination: Any, volume: float, path: list | None = None
     ) -> None:
         """
         Add flow with path calculation using scipy network.
@@ -886,15 +892,16 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                 print(f"{e}")
                 raise ValueError(
                     f"Error finding path between {origin} and {destination}: {e}"
-                )
+                ) from e
 
             self.flow_paths[(origin, destination)] = path
 
         self._set_adaptive_vehicle_range()
 
-    def _load_flows_from_dict(self, flows: Dict[Tuple[Any, Any], float]) -> None:
+    def _load_flows_from_dict(self, flows: dict[tuple[Any, Any], float]) -> None:
         """
-        Load flows from dictionary by converting to DataFrame and using _load_flows_from_dataframe().
+        Load flows from dictionary by converting to DataFrame and using
+        _load_flows_from_dataframe().
 
         Parameters
         ----------
@@ -923,7 +930,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         origin_col: str = "origin",
         destination_col: str = "destination",
         volume_col: str = "volume",
-        path_col: Optional[str] = None,
+        path_col: str | None = None,
     ) -> None:
         """
         origin_col : str, default='origin'
@@ -952,14 +959,14 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                 path = row[path_col]
 
                 if not isinstance(path, list):
-                    raise TypeError(f"Path must be a list of integer node ids. ")
+                    raise TypeError("Path must be a list of integer node ids. ")
 
-                if path:
-                    if path[0] != origin or path[-1] != destination:
-                        raise ValueError(
-                            f"Path for OD pair ({origin}, {destination}) is inconsistent. "
-                            f"Path should start at {origin} and end at {destination}."
-                        )
+                if path and (path[0] != origin or path[-1] != destination):
+                    raise ValueError(
+                        f"Path for OD pair ({origin}, {destination}) is "
+                        f"inconsistent. Path should start at {origin} and end at "
+                        f"{destination}."
+                    )
 
             self.add_flow(origin, destination, volume, path)
 
@@ -1019,7 +1026,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         self.e_coefficients[od_pair] = e_q
         return e_q
 
-    def check_path_refueling_feasibility(self, path: List, facilities: List) -> bool:
+    def check_path_refueling_feasibility(self, path: list, facilities: list) -> bool:
         """
         Check if a path can be traversed with given facilities using scipy network.
 
@@ -1079,11 +1086,11 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
     def generate_path_refueling_combinations(
         self,
-        facility_combinations: Optional[List[List]] = None,
-        start: Optional[int] = None,
-        stop: Optional[int] = None,
+        facility_combinations: list[list] | None = None,
+        start: int | None = None,
+        stop: int | None = None,
         method: str = "auto",
-    ) -> Dict:
+    ) -> dict:
         """
         Generate dictionary mapping OD pairs to valid facility combinations
 
@@ -1108,11 +1115,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             or sets K and a sets (ac_pc method)
         """
 
-        if method == "auto":
-            if self.capacity is not None:
-                method = "combination"
-            else:
-                method = "ac_pc"
+        method = "combination" if self.capacity is not None else "ac_pc"
 
         if method == "ac_pc":
             if self.scipy_network is None:
@@ -1120,10 +1123,10 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
             distances = csgraph.shortest_path(self.scipy_network, method="auto")
 
-            self.K = {}
+            self.k = {}
             self.a = {}
 
-            for path_id, (od_pair, path) in enumerate(self.flow_paths.items(), 1):
+            for path_id, (_od_pair, path) in enumerate(self.flow_paths.items(), 1):
                 arc_ids = []
 
                 for arc_id, i in enumerate(range(len(path) - 1), 1):
@@ -1141,16 +1144,16 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                         ):
                             refueling_nodes.append(candidate)
 
-                    self.K[(path_id, arc_id)] = refueling_nodes
+                    self.k[(path_id, arc_id)] = refueling_nodes
 
                 self.a[path_id] = arc_ids
 
-            for od_pair in self.flow_paths.keys():
+            for od_pair in self.flow_paths:
                 self.compute_refueling_frequency(od_pair[0], od_pair[1])
 
             self.use_ac_pc = True
 
-            return {"K": self.K, "a": self.a}
+            return {"k": self.k, "a": self.a}
 
         else:
             # combination method for capacitated models
@@ -1193,7 +1196,8 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         ----------
         include_destination : bool, default=False
             If True, include destination nodes in weight calculation.
-            If False, only use origin nodes for weight calculation, as specified in the paper (Hong and Kuby, 2016).
+            If False, only use origin nodes for weight calculation, as specified
+            in the paper (Hong and Kuby, 2016).
 
         Returns
         -------
@@ -1203,7 +1207,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         if not self.flows:
             raise ValueError("Flows must be loaded first")
 
-        max_node = max(max(od[0], od[1]) for od in self.flows.keys())
+        max_node = max(max(od[0], od[1]) for od in self.flows)
         node_weights = np.zeros(max_node + 1)
         total_flow = sum(self.flows.values())
 
@@ -1219,7 +1223,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         return node_weights
 
     def _calculate_objective_value(
-        self, flow_coverage: Dict, objective: str = "flow"
+        self, flow_coverage: dict, objective: str = "flow"
     ) -> float:
         """
         Calculate objective value based on coverage and objective type.
@@ -1245,7 +1249,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                     for i in range(len(path) - 1):
                         try:
                             distance += scipy_network[path[i], path[i + 1]]
-                        except:
+                        except (KeyError, IndexError):
                             distance += 1.0
                     self._path_distances[od_pair] = distance
 
@@ -1261,14 +1265,14 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             return total_vmt
         else:
             total_covered_flow = 0
-            for od_pair, coverage in flow_coverage.items():
+            for _od_pair, coverage in flow_coverage.items():
                 covered_flow = coverage.get("covered_volume", 0.0)
                 total_covered_flow += covered_flow
 
             return total_covered_flow
 
     def _build_model(
-        self, objective: str = None, facility_combinations: Optional[List[List]] = None
+        self, objective: str = None, facility_combinations: list[list] | None = None
     ) -> None:
         """
         Build the optimization model with variables and constraints.
@@ -1277,7 +1281,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         ----------
         objective : str, optional
             Override the instance's objective type
-        facility_combinations : Optional[List[List]], optional
+        facility_combinations : Optional[list[list]], optional
             Pre-computed facility combinations
         """
         if self.scipy_network is None:
@@ -1297,7 +1301,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                     method="combination", facility_combinations=facility_combinations
                 )
         else:
-            if not hasattr(self, "K") or not self.K:
+            if not hasattr(self, "k") or not self.k:
                 self.generate_path_refueling_combinations(method="ac_pc")
 
         self._build_pulp_model(
@@ -1312,13 +1316,12 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
     def solve(
         self,
-        solver: Union[Literal["greedy"], pulp.LpSolver] = None,
-        seed: Optional[int] = None,
+        solver: Literal["greedy"] | pulp.LpSolver = None,
+        seed: int | None = None,
         initialization_method: str = "empty",
         max_iterations: int = 100,
-        facility_combinations: Optional[List[List]] = None,
         **kwargs,
-    ) -> Dict:
+    ) -> dict:
         """
         Solve the FRLM problem.
 
@@ -1386,11 +1389,10 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
     def _solve_greedy(
         self,
         objective: str = "flow",
-        seed: Optional[int] = None,
+        seed: int | None = None,
         initialization_method: str = "empty",
-        max_iterations: int = 100,
-        **kwargs,
-    ) -> Dict:
+        max_iterations: int = 100
+    ) -> dict:
         """
         Solve using greedy heuristic for facility location.
 
@@ -1401,11 +1403,13 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             - Each iteration aims to maximise the objective function
 
         2. Objective Function Evaluation:
-            At each iteration, evaluate each candidate facility by tentatively adding it to the current solution.
+            At each iteration, evaluate each candidate facility by
+                tentatively adding it to the current solution.
             Measure how much it improves the objective:
                 - For flow: sum of flow volumes covered.
                 - For vmt: flow volume × path distance.
-                - If a threshold is set: consider both node coverage and flow coverage using a weighted combination.
+                - If a threshold is set: consider both node coverage and flow coverage
+                using a weighted combination.
 
         3. Selection Criteria:
             - Choose the facility that provides the maximum marginal benefit
@@ -1553,7 +1557,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                     method="combination", facility_combinations=facility_combinations
                 )
         else:
-            if not hasattr(self, "K") or not self.K:
+            if not hasattr(self, "k") or not self.k:
                 self.generate_path_refueling_combinations(method="ac_pc")
 
         model_name = f"FRLM_{objective.upper()}"
@@ -1576,7 +1580,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             # AC-PC approach for basic/threshold models
             FlowModelBuilder.add_flow_variables(self, flows=self.flows)
             FlowModelBuilder.add_ac_pc_constraints(
-                self, a=self.a, K=self.K, candidate_sites=self.candidate_sites
+                self, a=self.a, k=self.k, candidate_sites=self.candidate_sites
             )
 
             flow_list = list(self.flows.items())
@@ -1639,7 +1643,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             self.original_objective = self.model.objective
 
             node_coverage_vars = {}
-            for origin in set(od[0] for od in self.flows.keys()):
+            for origin in {od[0] for od in self.flows}:
                 node_coverage_vars[origin] = pulp.LpVariable(
                     f"node_coverage_{origin}", lowBound=0, upBound=1, cat=pulp.LpBinary
                 )
@@ -1704,7 +1708,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                 weight * node_coverage_term + (1 - weight) * self.original_objective
             )
 
-            setattr(self, "node_coverage_vars", node_coverage_vars)
+            self.node_coverage_vars = node_coverage_vars
 
     def _update_pulp_variables_from_solution(self):
         """
@@ -1747,7 +1751,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                 value = 1.0 if origin in self.covered_nodes else 0.0
                 var.setInitialValue(value)
 
-    def _evaluate_solution_with_combinations(self, facilities: Dict[Any, int]) -> Dict:
+    def _evaluate_solution_with_combinations(self, facilities: dict[Any, int]) -> dict:
         """
         Evaluate how good a facility configuration is using combinations approach.
         Uses AC-PC for basic/threshold, combinations for capacitated.
@@ -1769,8 +1773,8 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                 for arc in self.a[q]:
                     arc_covered = False
                     key = (q, arc)
-                    if key in self.K:
-                        for node in self.K[key]:
+                    if key in self.k:
+                        for node in self.k[key]:
                             if node in facilities and facilities[node] > 0:
                                 arc_covered = True
                                 break
@@ -1888,9 +1892,8 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
     def _solve_pulp(
         self,
         solver_instance: pulp.LpSolver = None,
-        objective: str = "flow",
-        **kwargs,
-    ) -> Dict:
+        objective: str = "flow"
+    ) -> dict:
         """
         solver_instance : pulp.LpSolver, default=None
             Solver instance to use.
@@ -1934,7 +1937,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             print(f"No optimal solution found. Status: {self.status}")
             return {"status": self.status}
 
-    def _evaluate_capacitated_solution(self, facilities: Dict[Any, int]) -> Dict:
+    def _evaluate_capacitated_solution(self, facilities: dict[Any, int]) -> dict:
         """
         Evaluate a potential facility configuration for the capacitated model.
 
@@ -1952,7 +1955,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         total_flow = sum(self.flows.values())
         covered_flow = 0
 
-        for q, od_pair in enumerate(self.flows.keys()):
+        for _q, od_pair in enumerate(self.flows):
             flow_volume = self.flows[od_pair]
 
             valid_combinations = [
@@ -2040,10 +2043,10 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                 init_count = min(2, len(sorted_nodes))
                 return set(sorted_nodes[:init_count])
             else:
-                return set([self.candidate_sites[0]]) if self.candidate_sites else set()
+                return {self.candidate_sites[0]} if self.candidate_sites else set()
 
         elif method == "high_flow":
-            node_importance = {node: 0 for node in self.candidate_sites}
+            node_importance = dict.fromkeys(self.candidate_sites, 0)
 
             for od_pair, volume in self.flows.items():
                 if od_pair in self.flow_paths:
@@ -2068,11 +2071,11 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             for i in range(len(path) - 1):
                 try:
                     distance += scipy_network[path[i], path[i + 1]]
-                except:
+                except (KeyError, IndexError):
                     distance += 1.0
             self._path_distances[od_pair] = distance
 
-    def get_solver_details(self, verbose: bool = True) -> Dict:
+    def get_solver_details(self) -> dict:
         """
         Retrieve detailed solver information.
 
@@ -2139,7 +2142,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                     facilities[site] = 1
         return facilities
 
-    def to_dataframes(self, include_iterations: bool = True) -> Dict[str, pd.DataFrame]:
+    def to_dataframes(self, include_iterations: bool = True) -> dict[str, pd.DataFrame]:
         """
         Export solution to pandas DataFrames.
 
@@ -2214,7 +2217,12 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                     coverage.get("covered_volume", 0)
                     for coverage in self.flow_coverage.values()
                 ),
-                f"{sum(coverage.get('covered_volume', 0) for coverage in self.flow_coverage.values()) / sum(self.flows.values()) * 100:.2f}%",
+                f"Flow Coverage: {(
+                    sum(
+                        coverage.get('coverage', 0)
+                        for coverage in self.flow_coverage.values()
+                    ) / sum(self.flows.values()) * 100
+                ):.2f}%"
             ],
         }
 
@@ -2240,7 +2248,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
         return dataframes
 
-    def get_shadow_prices(self) -> Dict[str, float]:
+    def get_shadow_prices(self) -> dict[str, float]:
         if self.solver_type == "pulp":
             return self.shadow_prices.copy()
         elif self.solver_type == "greedy":
@@ -2257,7 +2265,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         else:
             return {}
 
-    def get_reduced_costs(self) -> Dict[str, float]:
+    def get_reduced_costs(self) -> dict[str, float]:
         if self.solver_type == "pulp":
             return self.reduced_costs.copy()
         elif self.solver_type == "greedy":
@@ -2275,7 +2283,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         else:
             return {}
 
-    def get_variable_values(self) -> Dict[str, float]:
+    def get_variable_values(self) -> dict[str, float]:
         return self.variables.copy()
 
     def get_shadow_price(self, constraint_name: str) -> float:
@@ -2315,26 +2323,6 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
         return best_improvement
 
-    def get_shadow_prices(self) -> Dict:
-        if self.solver_type == "pulp":
-            shadow_prices = self.shadow_prices.copy()
-        elif self.solver_type == "greedy":
-            shadow_prices = {}
-            shadow_prices["facility_count"] = self._estimate_facility_shadow_price()
-
-            for od_pair, coverage in self.flow_coverage.items():
-                if coverage.get("covered_proportion", 0.0) > 0.99:
-                    constraint_name = f"coverage_{od_pair[0]}_{od_pair[1]}"
-                    shadow_prices[constraint_name] = self.flows[od_pair]
-        else:
-            shadow_prices = {}
-
-        filtered_shadow_prices = {
-            name: price for name, price in shadow_prices.items() if abs(price) > 1e-6
-        }
-
-        return filtered_shadow_prices
-
     @property
     def problem(self):
         """Return the PuLP problem instance."""
@@ -2342,7 +2330,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             raise ValueError("No problem instance available. Call solve() first.")
         return self.model
 
-    def _get_flow_details(self) -> Dict:
+    def _get_flow_details(self) -> dict:
         total_flow = sum(self.flows.values())
         covered_flow = sum(
             coverage.get("covered_volume", 0)
@@ -2362,7 +2350,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             ],
         }
 
-    def _get_constraint_details(self) -> Dict:
+    def _get_constraint_details(self) -> dict:
         active_constraints = {
             name: info
             for name, info in self.constraints.items()
@@ -2376,7 +2364,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             "binding_constraints": list(active_constraints.keys()),
         }
 
-    def _get_variable_details(self) -> Dict:
+    def _get_variable_details(self) -> dict:
         facility_vars = {
             name: value
             for name, value in self.variables.items()
@@ -2397,7 +2385,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             ),
         }
 
-    def summary(self) -> Dict:
+    def summary(self) -> dict:
         """
         Generate a summary of the solution.
         """
@@ -2479,7 +2467,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         }
 
         if self.threshold > 0 and hasattr(self, "covered_nodes"):
-            total_origins = len(set(od[0] for od in self.flows.keys()))
+            total_origins = len({od[0] for od in self.flows})
             summary_dict["node_coverage"] = {
                 "covered_nodes": len(self.covered_nodes),
                 "total_origins": total_origins,
