@@ -20,7 +20,6 @@ def load_grid_test_data():
 
 
 class TestFRLMBasicFunctionality:
-
     @pytest.fixture
     def setup_simple_network(self):
         network, flows = load_grid_test_data()
@@ -112,7 +111,6 @@ class TestFRLMObjectives:
         coverage = model.get_flow_coverage()
         assert coverage["covered_volume"] == 50
 
-
     def test_vmt_objective(self, setup_network_with_distances):
         network, flows = setup_network_with_distances
 
@@ -166,7 +164,6 @@ class TestFRLMThresholdExtension:
         assert 0 <= node_coverage_pct <= 1
 
     def test_threshold_weight_impact(self, setup_threshold_network):
-
         network, flows = setup_threshold_network
         model_high_weight = FRLM.from_flow_dataframe(
             network=network,
@@ -224,7 +221,6 @@ class TestFRLMThresholdExtension:
 
 
 class TestFRLMGreedySolver:
-
     @pytest.fixture
     def setup_greedy_network(self):
         network, flows = load_grid_test_data()
@@ -360,7 +356,6 @@ class TestFRLMOutputsAndReporting:
         return model
 
     def test_summary_output(self, setup_solved_model):
-
         model = setup_solved_model
         summary = model.summary()
 
@@ -380,7 +375,6 @@ class TestFRLMOutputsAndReporting:
         assert len(summary["facilities"]["locations"]) == 2
 
     def test_dataframe_export(self, setup_solved_model):
-
         model = setup_solved_model
         dfs = model.to_dataframes(include_iterations=True)
 
@@ -419,7 +413,6 @@ class TestFRLMOutputsAndReporting:
             assert isinstance(price, int | float)
 
     def test_detailed_results(self, setup_solved_model):
-
         model = setup_solved_model
         model.extract_solver_statistics()
         results = model.get_detailed_results()

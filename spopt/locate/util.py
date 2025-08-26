@@ -105,6 +105,7 @@ def simulated_geo_points(
 
     return sim_pts
 
+
 def rising_combination(
     values: list, start: int = 1, stop: int = None
 ) -> Iterable[list]:

@@ -1391,7 +1391,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         objective: str = "flow",
         seed: int | None = None,
         initialization_method: str = "empty",
-        max_iterations: int = 100
+        max_iterations: int = 100,
     ) -> dict:
         """
         Solve using greedy heuristic for facility location.
@@ -1890,9 +1890,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             }
 
     def _solve_pulp(
-        self,
-        solver_instance: pulp.LpSolver = None,
-        objective: str = "flow"
+        self, solver_instance: pulp.LpSolver = None, objective: str = "flow"
     ) -> dict:
         """
         solver_instance : pulp.LpSolver, default=None
@@ -2190,11 +2188,10 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         dataframes["coverage"] = pd.DataFrame(coverage_data)
 
         covered_flow_sum = sum(
-            coverage.get('coverage', 0)
-            for coverage in self.flow_coverage.values()
+            coverage.get("coverage", 0) for coverage in self.flow_coverage.values()
         )
         total_flow = sum(self.flows.values())
-        coverage_pct = (covered_flow_sum / total_flow * 100)
+        coverage_pct = covered_flow_sum / total_flow * 100
 
         summary_data = {
             "Metric": [
@@ -2224,7 +2221,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                     coverage.get("covered_volume", 0)
                     for coverage in self.flow_coverage.values()
                 ),
-                f"Flow Coverage: {coverage_pct:.2f}%"
+                f"Flow Coverage: {coverage_pct:.2f}%",
             ],
         }
 

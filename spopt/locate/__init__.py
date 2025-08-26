@@ -5,4 +5,3 @@ from .p_center import PCenter
 from .p_dispersion import PDispersion
 from .p_median import KNearestPMedian, PMedian
 from .util import simulated_geo_points
-
