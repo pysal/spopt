@@ -68,7 +68,7 @@ jobs:
           pytest spopt \
           -v \
           -r a \
-          -n logical \
+          -n 1 \
           --color yes \
           --cov spopt \
           --cov-append \
