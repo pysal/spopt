@@ -19,12 +19,12 @@ class TestSyntheticLocate:
 
     def test_lscp_from_cost_matrix(self):
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 10)
-        result = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = lscp.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, LSCP)
 
     def test_lscp_from_cost_matrix_no_results(self):
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 10)
-        result = lscp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        result = lscp.solve(pulp.COIN_CMD(msg=False), results=False)
         assert isinstance(result, LSCP)
 
         with pytest.raises(AttributeError):
@@ -36,7 +36,7 @@ class TestSyntheticLocate:
         lscp_objective = load_test_data("lscp_fac2cli.pkl")
 
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 8)
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
+        lscp = lscp.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(lscp.fac2cli, dtype=object),
@@ -47,7 +47,7 @@ class TestSyntheticLocate:
         lscp_objective = load_test_data("lscp_cli2fac.pkl")
 
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 8)
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
+        lscp = lscp.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(lscp.cli2fac, dtype=object),
@@ -58,7 +58,7 @@ class TestSyntheticLocate:
         lscp = LSCP.from_geodataframe(
             self.clients_snapped, self.facilities_snapped, "geometry", "geometry", 10
         )
-        result = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = lscp.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, LSCP)
 
     def test_lscp_facility_client_array_from_geodataframe(self, load_test_data):
@@ -71,7 +71,7 @@ class TestSyntheticLocate:
             "geometry",
             8,
         )
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
+        lscp = lscp.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(lscp.fac2cli, dtype=object),
@@ -88,7 +88,7 @@ class TestSyntheticLocate:
             "geometry",
             8,
         )
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
+        lscp = lscp.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(lscp.cli2fac, dtype=object),
@@ -112,7 +112,7 @@ class TestSyntheticLocate:
             predefined_facility_col="predefined_loc",
             service_radius=8,
         )
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
+        lscp = lscp.solve(pulp.COIN_CMD(msg=False, warmStart=True))
 
         numpy.testing.assert_array_equal(
             numpy.array(lscp.fac2cli, dtype=object),
@@ -164,14 +164,14 @@ class TestRealWorldLSCP:
 
     def test_optimality_lscp_from_cost_matrix(self):
         lscp = LSCP.from_cost_matrix(self.cost_matrix, self.service_dist)
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
+        lscp = lscp.solve(pulp.COIN_CMD(msg=False))
 
         assert lscp.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_lscp_from_cost_matrix(self, loc_raises_infeasible):
         lscp = LSCP.from_cost_matrix(self.cost_matrix, 20)
         with loc_raises_infeasible:
-            lscp.solve(pulp.PULP_CBC_CMD(msg=False))
+            lscp.solve(pulp.COIN_CMD(msg=False))
 
     def test_optimality_lscp_from_geodataframe(self):
         lscp = LSCP.from_geodataframe(
@@ -181,7 +181,7 @@ class TestRealWorldLSCP:
             "geometry",
             self.service_dist,
         )
-        lscp = lscp.solve(pulp.PULP_CBC_CMD(msg=False))
+        lscp = lscp.solve(pulp.COIN_CMD(msg=False))
         assert lscp.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_lscp_from_geodataframe(self, loc_raises_infeasible):
@@ -193,7 +193,7 @@ class TestRealWorldLSCP:
             0,
         )
         with loc_raises_infeasible:
-            lscp.solve(pulp.PULP_CBC_CMD(msg=False))
+            lscp.solve(pulp.COIN_CMD(msg=False))
 
 
 class TestErrorsWarnings:

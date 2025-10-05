@@ -25,7 +25,7 @@ class TestSyntheticLocate:
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix, self.ai, service_radius=7, p_facilities=4
         )
-        result = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=True)
+        result = mclp.solve(pulp.COIN_CMD(msg=False), results=True)
 
         assert isinstance(result, MCLP)
         assert result.n_cli_uncov == 1
@@ -35,7 +35,7 @@ class TestSyntheticLocate:
         mclp = MCLP.from_cost_matrix(
             self.cost_matrix, self.ai, service_radius=7, p_facilities=4
         )
-        result = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        result = mclp.solve(pulp.COIN_CMD(msg=False), results=False)
 
         assert isinstance(result, MCLP)
 
@@ -57,7 +57,7 @@ class TestSyntheticLocate:
             service_radius=7,
             p_facilities=4,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
+        mclp = mclp.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(mclp.fac2cli, dtype=object),
@@ -73,7 +73,7 @@ class TestSyntheticLocate:
             service_radius=7,
             p_facilities=4,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
+        mclp = mclp.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(mclp.cli2fac, dtype=object),
@@ -90,7 +90,7 @@ class TestSyntheticLocate:
             service_radius=7,
             p_facilities=4,
         )
-        result = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = mclp.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, MCLP)
 
     def test_mclp_facility_client_array_from_geodataframe(self, load_test_data):
@@ -105,7 +105,7 @@ class TestSyntheticLocate:
             service_radius=7,
             p_facilities=4,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
+        mclp = mclp.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(mclp.fac2cli, dtype=object),
@@ -131,7 +131,7 @@ class TestSyntheticLocate:
             service_radius=7,
             p_facilities=4,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
+        mclp = mclp.solve(pulp.COIN_CMD(msg=False, warmStart=True))
 
         numpy.testing.assert_array_equal(
             numpy.array(mclp.fac2cli, dtype=object),
@@ -150,7 +150,7 @@ class TestSyntheticLocate:
             service_radius=7,
             p_facilities=4,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
+        mclp = mclp.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(mclp.cli2fac, dtype=object),
@@ -207,7 +207,7 @@ class TestRealWorldLocate:
             self.service_dist,
             self.p_facility,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
+        mclp = mclp.solve(pulp.COIN_CMD(msg=False))
         assert mclp.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_mclp_from_cost_matrix(self, loc_raises_infeasible):
@@ -218,7 +218,7 @@ class TestRealWorldLocate:
             1000,
         )
         with loc_raises_infeasible:
-            mclp.solve(pulp.PULP_CBC_CMD(msg=False))
+            mclp.solve(pulp.COIN_CMD(msg=False))
 
     def test_mixin_mclp_get_uncovered_clients(self):
         uncovered_clients_expected = 21
@@ -228,7 +228,7 @@ class TestRealWorldLocate:
             self.service_dist,
             self.p_facility,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
+        mclp = mclp.solve(pulp.COIN_CMD(msg=False))
 
         assert mclp.n_cli_uncov == uncovered_clients_expected
 
@@ -240,7 +240,7 @@ class TestRealWorldLocate:
             self.service_dist,
             self.p_facility,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
+        mclp = mclp.solve(pulp.COIN_CMD(msg=False))
 
         assert mclp.perc_cov == pytest.approx(percentage_expected)
 
@@ -254,7 +254,7 @@ class TestRealWorldLocate:
             self.service_dist,
             self.p_facility,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False))
+        mclp = mclp.solve(pulp.COIN_CMD(msg=False))
         assert mclp.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_mclp_from_geodataframe(self, loc_raises_infeasible):
@@ -268,7 +268,7 @@ class TestRealWorldLocate:
             1000,
         )
         with loc_raises_infeasible:
-            mclp.solve(pulp.PULP_CBC_CMD(msg=False))
+            mclp.solve(pulp.COIN_CMD(msg=False))
 
     def test_attribute_error_fac2cli_mclp_facility_client_array(self):
         mclp = MCLP.from_geodataframe(
@@ -280,7 +280,7 @@ class TestRealWorldLocate:
             self.service_dist,
             self.p_facility,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        mclp = mclp.solve(pulp.COIN_CMD(msg=False), results=False)
 
         with pytest.raises(
             AttributeError, match="'MCLP' object has no attribute 'fac2cli'"
@@ -297,7 +297,7 @@ class TestRealWorldLocate:
             self.service_dist,
             self.p_facility,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        mclp = mclp.solve(pulp.COIN_CMD(msg=False), results=False)
 
         with pytest.raises(
             AttributeError, match="'MCLP' object has no attribute 'cli2fac'"
@@ -314,7 +314,7 @@ class TestRealWorldLocate:
             self.service_dist,
             self.p_facility,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        mclp = mclp.solve(pulp.COIN_CMD(msg=False), results=False)
 
         with pytest.raises(
             AttributeError, match="'MCLP' object has no attribute 'n_cli_uncov'"
@@ -331,7 +331,7 @@ class TestRealWorldLocate:
             self.service_dist,
             self.p_facility,
         )
-        mclp = mclp.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        mclp = mclp.solve(pulp.COIN_CMD(msg=False), results=False)
 
         with pytest.raises(
             AttributeError, match="The attribute `n_cli_uncov` is not set."

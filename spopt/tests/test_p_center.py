@@ -19,12 +19,12 @@ class TestSyntheticLocate:
 
     def test_p_center_from_cost_matrix(self):
         p_center = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
-        result = p_center.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = p_center.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, PCenter)
 
     def test_p_center_from_cost_matrix_no_results(self):
         p_center = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
-        result = p_center.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        result = p_center.solve(pulp.COIN_CMD(msg=False), results=False)
         assert isinstance(result, PCenter)
 
         with pytest.raises(AttributeError):
@@ -36,7 +36,7 @@ class TestSyntheticLocate:
         pcenter_objective = load_test_data("pcenter_fac2cli.pkl")
 
         pcenter = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
+        pcenter = pcenter.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(pcenter.fac2cli, dtype=object),
@@ -51,7 +51,7 @@ class TestSyntheticLocate:
             "geometry",
             p_facilities=4,
         )
-        result = p_center.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = p_center.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, PCenter)
 
     def test_pcenter_facility_client_array_from_geodataframe(self, load_test_data):
@@ -64,7 +64,7 @@ class TestSyntheticLocate:
             "geometry",
             p_facilities=4,
         )
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
+        pcenter = pcenter.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(pcenter.fac2cli, dtype=object),
@@ -81,7 +81,7 @@ class TestSyntheticLocate:
             "geometry",
             4,
         )
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
+        pcenter = pcenter.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(pcenter.cli2fac, dtype=object),
@@ -103,7 +103,7 @@ class TestSyntheticLocate:
             3,
             predefined_facility_col="predefined_loc",
         )
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
+        pcenter = pcenter.solve(pulp.COIN_CMD(msg=False, warmStart=True))
 
         observed_objval = pcenter.problem.objective.value()
         assert known_objval == pytest.approx(observed_objval)
@@ -159,13 +159,13 @@ class TestRealWorldLocate:
 
     def test_optimality_pcenter_from_cost_matrix(self):
         pcenter = PCenter.from_cost_matrix(self.cost_matrix, self.p_facility)
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
+        pcenter = pcenter.solve(pulp.COIN_CMD(msg=False))
         assert pcenter.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_pcenter_from_cost_matrix(self, loc_raises_infeasible):
         pcenter = PCenter.from_cost_matrix(self.cost_matrix, 0)
         with loc_raises_infeasible:
-            pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
+            pcenter.solve(pulp.COIN_CMD(msg=False))
 
     def test_optimality_pcenter_from_geodataframe(self):
         pcenter = PCenter.from_geodataframe(
@@ -175,7 +175,7 @@ class TestRealWorldLocate:
             "geometry",
             self.p_facility,
         )
-        pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
+        pcenter = pcenter.solve(pulp.COIN_CMD(msg=False))
         assert pcenter.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_pcenter_from_geodataframe(self, loc_raises_infeasible):
@@ -187,7 +187,7 @@ class TestRealWorldLocate:
             0,
         )
         with loc_raises_infeasible:
-            pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
+            pcenter.solve(pulp.COIN_CMD(msg=False))
 
 
 class TestErrorsWarnings:

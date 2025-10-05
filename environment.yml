@@ -3,6 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.13
+  - coin-or-cbc
   - geopandas
   - jupyterlab
   - libpysal
@@ -17,6 +18,7 @@ dependencies:
   - shapely
   - tqdm
   - pointpats
+  - pulp
   - fast_hdbscan
 
   # notebook/binder specific
@@ -35,4 +37,3 @@ dependencies:
     - git+https://github.com/pysal/spopt.git@main
     # (notebook/binder specific) having trouble resolving routingpy via conda-forge
     - routingpy
-    - pulp
