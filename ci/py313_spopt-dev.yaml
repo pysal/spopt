@@ -3,9 +3,11 @@ channels:
   - conda-forge
 dependencies:
   - python=3.13
+  - coin-or-cbc
   - fast_hdbscan # for sa3
   - folium # for geopandas.explore()
   - matplotlib # for geopandas.explore()
+  - pulp
   - numba # for sa3
   - tqdm
 
@@ -26,7 +28,6 @@ dependencies:
     - networkx
     - numpy
     - pandas
-    - pulp
     - scikit-learn
     - scipy
     - shapely
