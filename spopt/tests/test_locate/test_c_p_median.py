@@ -25,7 +25,7 @@ class TestSyntheticLocate:
             p_facilities=2,
             facility_capacities=facility_capacity,
         )
-        result = p_median.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = p_median.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, PMedian)
 
         known = [[1], [2]]
@@ -48,7 +48,7 @@ class TestSyntheticLocate:
             predefined_facilities_arr=predefine,
             fulfill_predefined_fac=True,
         )
-        result = p_median.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = p_median.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, PMedian)
 
         known = [[1], [2]]
@@ -74,7 +74,7 @@ class TestSyntheticLocate:
             fulfill_predefined_fac=True,
         )
         with loc_raises_infeasible:
-            p_median.solve(pulp.PULP_CBC_CMD(msg=False))
+            p_median.solve(pulp.COIN_CMD(msg=False))
 
 
 class TestRealWorldLocate:
@@ -116,7 +116,7 @@ class TestRealWorldLocate:
             facility_capacities=self.capacities_arr,
             fulfill_predefined_fac=True,
         )
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
+        pmedian = pmedian.solve(pulp.COIN_CMD(msg=False))
         assert pmedian.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_capacitated_pmedian(self, loc_raises_infeasible):
@@ -124,7 +124,7 @@ class TestRealWorldLocate:
             self.cost_matrix, self.demand, 0, facility_capacities=self.capacities_arr
         )
         with loc_raises_infeasible:
-            pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
+            pmedian.solve(pulp.COIN_CMD(msg=False))
 
     def test_mixin_mean_time(self):
         mean_time_expected = 87.2
@@ -136,7 +136,7 @@ class TestRealWorldLocate:
             facility_capacities=self.capacities_arr,
             fulfill_predefined_fac=True,
         )
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
+        pmedian = pmedian.solve(pulp.COIN_CMD(msg=False))
         assert pmedian.mean_dist == mean_time_expected
 
     def test_infeasibility_predefined_facilities_fulfillment_error(self):

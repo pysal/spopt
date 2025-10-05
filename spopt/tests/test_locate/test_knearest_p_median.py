@@ -36,7 +36,7 @@ class TestKNearestPMedian:
             facility_capacity_col="capacity",
             k_array=k,
         )
-        self.solver = pulp.PULP_CBC_CMD(msg=False)
+        self.solver = pulp.COIN_CMD(msg=False)
 
     def test_knearest_p_median_from_geodataframe(self):
         result = self.k_nearest_pmedian.solve(self.solver)

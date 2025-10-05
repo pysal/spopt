@@ -17,12 +17,12 @@ class TestSyntheticLocate:
 
     def test_p_dispersion_from_cost_matrix(self):
         pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, 2)
-        result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = pdispersion.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, PDispersion)
 
     def test_p_dispersion_from_cost_matrix_no_results(self):
         pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, 2)
-        result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = pdispersion.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, PDispersion)
 
         with pytest.raises(AttributeError):
@@ -36,7 +36,7 @@ class TestSyntheticLocate:
             "geometry",
             2,
         )
-        result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = pdispersion.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, PDispersion)
 
     def test_p_dispersion_preselected_facility_array_from_geodataframe(self):
@@ -52,7 +52,7 @@ class TestSyntheticLocate:
             3,
             predefined_facility_col="predefined_loc",
         )
-        result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = pdispersion.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, PDispersion)
 
         observed_objval = pdispersion.problem.objective.value()
@@ -98,7 +98,7 @@ class TestRealWorldLocate:
 
     def test_optimality_p_dispersion_from_cost_matrix(self):
         pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, self.p_facility)
-        pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
+        pdispersion = pdispersion.solve(pulp.COIN_CMD(msg=False))
         assert pdispersion.problem.status == pulp.LpStatusOptimal
 
         known_solution_set = ["y_0_", "y_1_", "y_14_", "y_15_"]
@@ -110,7 +110,7 @@ class TestRealWorldLocate:
     def test_infeasibility_p_dispersion_from_cost_matrix(self, loc_raises_infeasible):
         pdispersion = PDispersion.from_cost_matrix(self.cost_matrix, 17)
         with loc_raises_infeasible:
-            pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
+            pdispersion.solve(pulp.COIN_CMD(msg=False))
 
     def test_optimality_p_dispersion_from_geodataframe(self):
         pdispersion = PDispersion.from_geodataframe(
@@ -118,7 +118,7 @@ class TestRealWorldLocate:
             "geometry",
             self.p_facility,
         )
-        pdispersion = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
+        pdispersion = pdispersion.solve(pulp.COIN_CMD(msg=False))
         assert pdispersion.problem.status == pulp.LpStatusOptimal
 
         known_solution_set = ["y_0_", "y_2_", "y_8_", "y_14_"]
@@ -134,7 +134,7 @@ class TestRealWorldLocate:
             17,
         )
         with loc_raises_infeasible:
-            pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
+            pdispersion.solve(pulp.COIN_CMD(msg=False))
 
 
 class TestErrorsWarnings:

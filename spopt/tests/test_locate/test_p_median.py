@@ -23,12 +23,12 @@ class TestSyntheticLocate:
 
     def test_p_median_from_cost_matrix(self):
         p_median = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
-        result = p_median.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = p_median.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, PMedian)
 
     def test_p_median_from_cost_matrix_no_results(self):
         p_median = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
-        result = p_median.solve(pulp.PULP_CBC_CMD(msg=False), results=False)
+        result = p_median.solve(pulp.COIN_CMD(msg=False), results=False)
         assert isinstance(result, PMedian)
 
         with pytest.raises(AttributeError):
@@ -44,7 +44,7 @@ class TestSyntheticLocate:
         pmedian_objective = load_locate_test_data("pmedian_fac2cli.pkl")
 
         pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
+        pmedian = pmedian.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(pmedian.fac2cli, dtype=object),
@@ -57,7 +57,7 @@ class TestSyntheticLocate:
         pmedian_objective = load_locate_test_data("pmedian_cli2fac.pkl")
 
         pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, p_facilities=4)
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
+        pmedian = pmedian.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(pmedian.cli2fac, dtype=object),
@@ -73,7 +73,7 @@ class TestSyntheticLocate:
             "weights",
             p_facilities=4,
         )
-        result = p_median.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = p_median.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, PMedian)
 
     def test_pmedian_facility_client_array_from_geodataframe(
@@ -89,7 +89,7 @@ class TestSyntheticLocate:
             "weights",
             p_facilities=4,
         )
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
+        pmedian = pmedian.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(pmedian.fac2cli, dtype=object),
@@ -109,7 +109,7 @@ class TestSyntheticLocate:
             "weights",
             p_facilities=4,
         )
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
+        pmedian = pmedian.solve(pulp.COIN_CMD(msg=False))
 
         numpy.testing.assert_array_equal(
             numpy.array(pmedian.cli2fac, dtype=object),
@@ -133,7 +133,7 @@ class TestSyntheticLocate:
             predefined_facility_col="predefined_loc",
             p_facilities=3,
         )
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
+        pmedian = pmedian.solve(pulp.COIN_CMD(msg=False, warmStart=True))
 
         observed_objval = pmedian.problem.objective.value()
         assert known_objval == pytest.approx(observed_objval)
@@ -194,18 +194,18 @@ class TestRealWorldLocate:
 
     def test_optimality_pmedian_from_cost_matrix(self):
         pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, self.p_facility)
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
+        pmedian = pmedian.solve(pulp.COIN_CMD(msg=False))
         assert pmedian.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_pmedian_from_cost_matrix(self, loc_raises_infeasible):
         pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, 0)
         with loc_raises_infeasible:
-            pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
+            pmedian.solve(pulp.COIN_CMD(msg=False))
 
     def test_mixin_mean_distance(self):
         mean_distance_expected = 2982.1268579890657
         pmedian = PMedian.from_cost_matrix(self.cost_matrix, self.ai, self.p_facility)
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
+        pmedian = pmedian.solve(pulp.COIN_CMD(msg=False))
 
         assert pmedian.mean_dist == mean_distance_expected
 
@@ -218,7 +218,7 @@ class TestRealWorldLocate:
             "POP2000",
             self.p_facility,
         )
-        pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
+        pmedian = pmedian.solve(pulp.COIN_CMD(msg=False))
         assert pmedian.problem.status == pulp.LpStatusOptimal
 
     def test_infeasibility_pmedian_from_geodataframe(self, loc_raises_infeasible):
@@ -231,7 +231,7 @@ class TestRealWorldLocate:
             0,
         )
         with loc_raises_infeasible:
-            pmedian.solve(pulp.PULP_CBC_CMD(msg=False))
+            pmedian.solve(pulp.COIN_CMD(msg=False))
 
 
 class TestErrorsWarnings:
