@@ -48,7 +48,7 @@ class TestFRLMBasicFunctionality:
         )
 
         assert model.vehicle_range == 30
-        result = model.solve(solver=pulp.PULP_CBC_CMD(msg=0))
+        result = model.solve(solver=pulp.COIN_CMD(msg=0))
         assert result["status"] == "Optimal"
         assert len(model.selected_facilities) == 3
         coverage = model.get_flow_coverage()
@@ -66,7 +66,7 @@ class TestFRLMBasicFunctionality:
         assert model.k is not None
         assert model.a is not None
 
-        result = model.solve(solver=pulp.PULP_CBC_CMD(msg=0))
+        result = model.solve(solver=pulp.COIN_CMD(msg=0))
         assert result["status"] == "Optimal"
 
     def test_combination_approach(self, setup_grid_network):
@@ -79,7 +79,7 @@ class TestFRLMBasicFunctionality:
 
         assert model.path_refueling_combinations is not None
 
-        result = model.solve(solver=pulp.PULP_CBC_CMD(msg=0))
+        result = model.solve(solver=pulp.COIN_CMD(msg=0))
         assert result["status"] == "Optimal"
 
 
@@ -106,7 +106,7 @@ class TestFRLMObjectives:
             vehicle_range=50,
             objective="flow",
         )
-        result = model.solve(solver=pulp.PULP_CBC_CMD(msg=0))
+        result = model.solve(solver=pulp.COIN_CMD(msg=0))
         assert result["status"] == "Optimal"
         coverage = model.get_flow_coverage()
         assert coverage["covered_volume"] == 50
@@ -122,7 +122,7 @@ class TestFRLMObjectives:
             objective="vmt",
         )
 
-        result = model.solve(solver=pulp.PULP_CBC_CMD(msg=0))
+        result = model.solve(solver=pulp.COIN_CMD(msg=0))
         assert result["status"] == "Optimal"
         vmt_coverage = model.get_vmt_coverage()
         assert "total_vmt" in vmt_coverage
@@ -147,7 +147,7 @@ class TestFRLMThresholdExtension:
             threshold=0.8,
             weight=0.5,
         )
-        result = model.solve(solver=pulp.PULP_CBC_CMD(msg=0))
+        result = model.solve(solver=pulp.COIN_CMD(msg=0))
         assert result["status"] == "Optimal"
         model.calculate_covered_nodes()
         for node in model.covered_nodes:
@@ -173,7 +173,7 @@ class TestFRLMThresholdExtension:
             threshold=0.8,
             weight=0.99,
         )
-        result_high = model_high_weight.solve(solver=pulp.PULP_CBC_CMD(msg=0))
+        result_high = model_high_weight.solve(solver=pulp.COIN_CMD(msg=0))
 
         model_low_weight = FRLM.from_flow_dataframe(
             network=network,
@@ -183,7 +183,7 @@ class TestFRLMThresholdExtension:
             threshold=0.8,
             weight=0.01,
         )
-        result_low = model_low_weight.solve(solver=pulp.PULP_CBC_CMD(msg=0))
+        result_low = model_low_weight.solve(solver=pulp.COIN_CMD(msg=0))
 
         assert result_high["status"] == "Optimal"
         assert result_low["status"] == "Optimal"
@@ -352,7 +352,7 @@ class TestFRLMOutputsAndReporting:
             network=network, flows=simple_flows, p_facilities=2, vehicle_range=25
         )
 
-        model.solve(solver=pulp.PULP_CBC_CMD(msg=0))
+        model.solve(solver=pulp.COIN_CMD(msg=0))
         return model
 
     def test_summary_output(self, setup_solved_model):
@@ -458,7 +458,7 @@ class TestFRLMCustomPaths:
 
         assert model.flow_paths[(0, 15)] == [0, 4, 8, 12, 13, 14, 15]
 
-        result = model.solve(solver=pulp.PULP_CBC_CMD(msg=0))
+        result = model.solve(solver=pulp.COIN_CMD(msg=0))
         assert result["status"] == "Optimal"
 
     def test_invalid_custom_paths(self):

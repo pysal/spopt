@@ -22,17 +22,13 @@ class TestSyntheticLocate:
         self.clients_snapped["weights"] = self.ai
 
     def test_lscpb_from_cost_matrix(self):
-        lscpb = LSCPB.from_cost_matrix(
-            self.cost_matrix, 10, pulp.PULP_CBC_CMD(msg=False)
-        )
+        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 10, pulp.COIN_CMD(msg=False))
         result = lscpb.solve()
 
         assert isinstance(result, LSCPB)
 
     def test_lscpb_from_cost_matrix_no_results(self):
-        lscpb = LSCPB.from_cost_matrix(
-            self.cost_matrix, 10, pulp.PULP_CBC_CMD(msg=False)
-        )
+        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 10, pulp.COIN_CMD(msg=False))
         result = lscpb.solve(results=False)
         assert isinstance(result, LSCPB)
 
@@ -46,9 +42,7 @@ class TestSyntheticLocate:
     def test_lscpb_facility_client_array_from_cost_matrix(self, load_locate_test_data):
         lscpb_objective = load_locate_test_data("lscpb_fac2cli.pkl")
 
-        lscpb = LSCPB.from_cost_matrix(
-            self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False)
-        )
+        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 8, pulp.COIN_CMD(msg=False))
         lscpb = lscpb.solve()
 
         numpy.testing.assert_array_equal(
@@ -59,9 +53,7 @@ class TestSyntheticLocate:
     def test_lscpb_client_facility_array_from_cost_matrix(self, load_locate_test_data):
         lscpb_objective = load_locate_test_data("lscpb_cli2fac.pkl")
 
-        lscpb = LSCPB.from_cost_matrix(
-            self.cost_matrix, 8, pulp.PULP_CBC_CMD(msg=False)
-        )
+        lscpb = LSCPB.from_cost_matrix(self.cost_matrix, 8, pulp.COIN_CMD(msg=False))
         lscpb = lscpb.solve()
 
         numpy.testing.assert_array_equal(
@@ -76,7 +68,7 @@ class TestSyntheticLocate:
             "geometry",
             "geometry",
             10,
-            pulp.PULP_CBC_CMD(msg=False),
+            pulp.COIN_CMD(msg=False),
         )
         result = lscpb.solve()
 
@@ -91,7 +83,7 @@ class TestSyntheticLocate:
             "geometry",
             "geometry",
             8,
-            pulp.PULP_CBC_CMD(msg=False),
+            pulp.COIN_CMD(msg=False),
         )
         lscpb = lscpb.solve()
 
@@ -109,7 +101,7 @@ class TestSyntheticLocate:
             "geometry",
             "geometry",
             8,
-            pulp.PULP_CBC_CMD(msg=False),
+            pulp.COIN_CMD(msg=False),
         )
         lscpb = lscpb.solve()
 
@@ -134,7 +126,7 @@ class TestSyntheticLocate:
             "geometry",
             "geometry",
             8,
-            pulp.PULP_CBC_CMD(msg=False, warmStart=True),
+            pulp.COIN_CMD(msg=False, warmStart=True),
             predefined_facility_col="predefined_loc",
         )
         lscpb = lscpb.solve()
@@ -191,7 +183,7 @@ class TestRealWorldLocate:
 
     def test_optimality_lscpb_from_cost_matrix(self):
         lscpb = LSCPB.from_cost_matrix(
-            self.cost_matrix, self.service_dist, pulp.PULP_CBC_CMD(msg=False)
+            self.cost_matrix, self.service_dist, pulp.COIN_CMD(msg=False)
         )
         lscpb = lscpb.solve()
 
@@ -200,14 +192,14 @@ class TestRealWorldLocate:
     def test_infeasibility_lscpb_from_cost_matrix(self, loc_raises_infeasible):
         with loc_raises_infeasible:
             lscpb = LSCPB.from_cost_matrix(
-                self.cost_matrix, 20, pulp.PULP_CBC_CMD(msg=False)
+                self.cost_matrix, 20, pulp.COIN_CMD(msg=False)
             )
             lscpb.solve()
 
     def test_mixin_lscpb_get_percentage(self):
         percentage_expected = 81.46341463414633
         lscpb = LSCPB.from_cost_matrix(
-            self.cost_matrix, self.service_dist, pulp.PULP_CBC_CMD(msg=False)
+            self.cost_matrix, self.service_dist, pulp.COIN_CMD(msg=False)
         )
         lscpb = lscpb.solve()
 
@@ -220,7 +212,7 @@ class TestRealWorldLocate:
             "geometry",
             "geometry",
             self.service_dist,
-            pulp.PULP_CBC_CMD(msg=False),
+            pulp.COIN_CMD(msg=False),
         )
         lscpb = lscpb.solve()
 
@@ -234,7 +226,7 @@ class TestRealWorldLocate:
                 "geometry",
                 "geometry",
                 0,
-                pulp.PULP_CBC_CMD(msg=False),
+                pulp.COIN_CMD(msg=False),
             )
             lscpb.solve()
 
@@ -259,7 +251,7 @@ class TestErrorsWarnings:
                 "geometry",
                 "geometry",
                 10,
-                pulp.PULP_CBC_CMD(msg=False),
+                pulp.COIN_CMD(msg=False),
             )
 
     def test_warning_lscpb_demand_geodataframe(
@@ -272,13 +264,13 @@ class TestErrorsWarnings:
                 "geometry",
                 "geometry",
                 100,
-                pulp.PULP_CBC_CMD(msg=False),
+                pulp.COIN_CMD(msg=False),
             )
 
     def test_attribute_error_add_backup_covering_constraint(self):
         with pytest.raises(AttributeError, match="Before setting backup coverage"):
             dummy_class = LSCPB(
-                "dummy", pulp.LpProblem("name"), pulp.PULP_CBC_CMD(msg=False)
+                "dummy", pulp.LpProblem("name"), pulp.COIN_CMD(msg=False)
             )
             dummy_fac_r = 0
             dummy_cli_r = 0

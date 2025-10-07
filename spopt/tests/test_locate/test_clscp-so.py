@@ -26,7 +26,7 @@ class TestSyntheticLocate:
             facility_capacity_arr=facility_capacity,
             demand_quantity_arr=demand_quantity,
         )
-        result = clscpso.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = clscpso.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, LSCP)
 
         known = [[1], [1], [1], [1], [1]]
@@ -47,7 +47,7 @@ class TestSyntheticLocate:
             facility_capacity_arr=facility_capacity,
             demand_quantity_arr=demand_quantity,
         )
-        result = clscpso.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = clscpso.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, LSCP)
 
         known = [[1], [1], [0, 1], [0, 1], [0, 1]]
@@ -68,7 +68,7 @@ class TestSyntheticLocate:
             facility_capacity_arr=facility_capacity,
             demand_quantity_arr=demand_quantity,
         )
-        result = clscpso.solve(pulp.PULP_CBC_CMD(msg=False))
+        result = clscpso.solve(pulp.COIN_CMD(msg=False))
         assert isinstance(result, LSCP)
 
         known = [[1], [1], [0, 1], [0], [1]]
@@ -104,4 +104,4 @@ class TestSyntheticLocate:
             demand_quantity_arr=demand_quantity,
         )
         with loc_raises_infeasible:
-            clscpso.solve(pulp.PULP_CBC_CMD(msg=False))
+            clscpso.solve(pulp.COIN_CMD(msg=False))
