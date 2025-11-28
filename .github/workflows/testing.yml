@@ -32,9 +32,9 @@ jobs:
           - ci/py313_spopt-dev.yaml
         include:
           - environment-file: ci/py313_spopt-latest.yaml
-            os: macos-13
+            os: macos-15-intel
           - environment-file: ci/py313_spopt-latest.yaml
-            os: macos-14
+            os: macos-latest
           - environment-file: ci/py313_spopt-latest.yaml
             os: windows-latest
       fail-fast: false
