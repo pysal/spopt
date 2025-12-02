@@ -3,6 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.11
+  - coin-or-cbc
   - fast_hdbscan # for sa3
   - geopandas
   - libpysal
@@ -12,6 +13,7 @@ dependencies:
   - numpy
   - pandas
   - pointpats
+  - pulp
   - scikit-learn
   - scipy
   - shapely
@@ -24,8 +26,3 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
-
-  # with pip
-  - pip
-  - pip:
-    - pulp

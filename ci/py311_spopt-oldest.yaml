@@ -3,6 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.11
+  - coin-or-cbc
   - fast_hdbscan=0.2.2 # for sa3
   - fiona<1.10 # see gh#492
   - geopandas=0.14.0
@@ -13,6 +14,7 @@ dependencies:
   - numpy=1.26.0
   - pandas=2.1.0
   - pointpats=2.4.0
+  - pulp=2.8
   - scikit-learn=1.4.0
   - scipy=1.12.0
   - shapely=2.1.0
@@ -25,8 +27,3 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
-
-  # with pip
-  - pip
-  - pip:
-    - pulp==2.8
