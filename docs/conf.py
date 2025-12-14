@@ -250,7 +250,7 @@ intersphinx_mapping = {
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "pointpats": ("https://pysal.org/pointpats/", None),
     "pulp": ("https://coin-or.github.io/pulp/", None),
-    "python": ("https://docs.python.org/3.13/", None),
+    "python": ("https://docs.python.org/3", None),
     "region": ("https://region.readthedocs.io/en/latest/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "shapely": ("https://shapely.readthedocs.io/en/stable/", None),

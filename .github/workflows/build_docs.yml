@@ -20,7 +20,7 @@ jobs:
         os:
           - ubuntu-latest
         environment-file:
-          - ci/py313_spopt-latest.yaml
+          - ci/314-latest.yaml
         experimental:
           - false
     defaults:
@@ -28,7 +28,7 @@ jobs:
         shell: bash -l {0}
     steps:
       - name: checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: setup micromamba
