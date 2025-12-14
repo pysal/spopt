@@ -1,4 +1,4 @@
-name: py311_spopt-oldest
+name: test
 channels:
   - conda-forge
 dependencies:
