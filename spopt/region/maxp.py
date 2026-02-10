@@ -504,7 +504,7 @@ def _pick_move_area(
                 left_areas = np.delete(rla, pasi)
                 ws = weight.sparse
                 cc = connected_components(ws[left_areas, :][:, left_areas])
-                if cc[0] == 1:
+                if cc[0] == 1 and set(weight.neighbors[rla[pasi]]) - set(left_areas):
                     potential_areas.append(rla[pasi])
         else:
             continue
