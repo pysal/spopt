@@ -54,7 +54,10 @@ tests = [
     "pytest-cov",
     "pytest-xdist",
 ]
-dev = ["pre-commit", "ruff"]
+dev = [
+    "pre-commit",
+    "ruff",
+]
 docs = [
     "nbsphinx",
     "numpydoc",
@@ -78,7 +81,6 @@ sa3 = [
     "fast_hdbscan>=0.2.2",
     "numba",
 ]
-
 
 [tool.setuptools.packages.find]
 include = ["spopt", "spopt.*"]
