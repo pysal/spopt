@@ -31,3 +31,4 @@ Tutorials
     notebooks/facloc-real-world.ipynb
     notebooks/facloc-lscpb-real-world.ipynb
     notebooks/facloc-disperse-real-world.ipynb
+    notebooks/flow.ipynb
