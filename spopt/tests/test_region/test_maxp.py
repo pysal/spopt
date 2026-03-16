@@ -35,13 +35,13 @@ class TestMaxPHeuristic:
 
         # labels for:
         # count=4, threshold=10, top_n=5
-        self.complex_labels = [2, 2, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 3, 3, 3]
-        self.complex_labels += [1, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2]
+        self.complex_labels = [2, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 1, 1, 3, 3]
+        self.complex_labels += [1, 3, 1, 1, 1, 3, 1, 2, 2, 2, 2, 1, 1, 3, 2, 3, 3]
 
         # labels for one variable column:
         # count=1, threshold=5, top_n=5
-        self.var1_labels = [3, 3, 6, 2, 2, 2, 2, 4, 2, 4, 5, 2, 5, 1, 1, 5, 1]
-        self.var1_labels += [4, 5, 5, 1, 1, 3, 3, 6, 3, 6, 4, 4, 6, 6, 4]
+        self.var1_labels = [4, 4, 6, 2, 2, 6, 2, 5, 3, 3, 3, 2, 3, 1, 1, 5, 1]
+        self.var1_labels += [5, 3, 5, 1, 1, 4, 4, 4, 6, 6, 6, 2, 4, 2, 5]
 
         # components
         n_cols = 5
