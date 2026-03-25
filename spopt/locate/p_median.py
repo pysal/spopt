@@ -977,10 +977,8 @@ class KNearestPMedian(PMedian):
                 f"of total facilities, which is {len(fac_data)}."
             )
 
-        # When any k >= p_facilities the k-nearest constraint is non-binding:
-        # only p facilities are ever selected, so a client with k >= p can always
-        # reach every selected facility. The model degenerates to a standard
-        # p-median; warn and set k = n_facilities to make the equivalence explicit.
+        # If any k >= p_facilities, the k-nearest constraint is non-binding and the model reduces to standard p-median (warn and set k = n_facilities).
+
         if (k_array >= p_facilities).any():
             warnings.warn(
                 "Some ``k`` values are >= ``p_facilities`` "
