@@ -53,10 +53,17 @@ class FlowModelBuilder:
             List of potential facility locations
         """
 
-        fac_vars = [
-            pulp.LpVariable(f"x_{i}", lowBound=0, upBound=1, cat=pulp.LpInteger)
-            for i in candidate_sites
-        ]
+        model = obj.model
+        if hasattr(model, "add_variable"):
+            fac_vars = [
+                model.add_variable(f"x_{i}", lowBound=0, upBound=1, cat="Integer")
+                for i in candidate_sites
+            ]
+        else:
+            fac_vars = [
+                pulp.LpVariable(f"x_{i}", lowBound=0, upBound=1, cat=pulp.LpInteger)
+                for i in candidate_sites
+            ]
 
         obj.facility_vars = fac_vars
         obj.fac_vars = fac_vars
@@ -132,23 +139,37 @@ class FlowModelBuilder:
             Valid facility combinations for each flow path
         """
         flow_vars = {}
+        model = obj.model
 
         if hasattr(obj, "use_ac_pc") and obj.use_ac_pc:
             for q in range(1, len(flows) + 1):
                 if q in obj.a:
-                    flow_vars[q] = pulp.LpVariable(f"y_{q}", cat=pulp.LpBinary)
+                    if hasattr(model, "add_variable"):
+                        flow_vars[q] = model.add_variable(f"y_{q}", cat="Binary")
+                    else:
+                        flow_vars[q] = pulp.LpVariable(f"y_{q}", cat=pulp.LpBinary)
         elif path_refueling_combinations is None:
             for q, _od_pair in enumerate(flows.keys()):
-                flow_vars[q] = pulp.LpVariable(
-                    f"y_{q}", lowBound=0, upBound=1, cat=pulp.LpContinuous
-                )
+                if hasattr(model, "add_variable"):
+                    flow_vars[q] = model.add_variable(
+                        f"y_{q}", lowBound=0, upBound=1, cat="Continuous"
+                    )
+                else:
+                    flow_vars[q] = pulp.LpVariable(
+                        f"y_{q}", lowBound=0, upBound=1, cat=pulp.LpContinuous
+                    )
         else:
             for q, od_pair in enumerate(flows.keys()):
                 valid_combinations = path_refueling_combinations[od_pair]
                 for h, _combination in enumerate(valid_combinations):
-                    flow_vars[(q, h)] = pulp.LpVariable(
-                        f"y_{q}_{h}", lowBound=0, upBound=1, cat=pulp.LpContinuous
-                    )
+                    if hasattr(model, "add_variable"):
+                        flow_vars[(q, h)] = model.add_variable(
+                            f"y_{q}_{h}", lowBound=0, upBound=1, cat="Continuous"
+                        )
+                    else:
+                        flow_vars[(q, h)] = pulp.LpVariable(
+                            f"y_{q}_{h}", lowBound=0, upBound=1, cat=pulp.LpContinuous
+                        )
 
         obj.flow_vars = flow_vars
 
@@ -276,9 +297,14 @@ class FlowModelBuilder:
 
             node_coverage_vars = {}
             for origin in {od[0] for od in flows}:
-                node_coverage_vars[origin] = pulp.LpVariable(
-                    f"node_coverage_{origin}", lowBound=0, upBound=1, cat=pulp.LpBinary
-                )
+                if hasattr(obj.model, "add_variable"):
+                    node_coverage_vars[origin] = obj.model.add_variable(
+                        f"node_coverage_{origin}", lowBound=0, upBound=1, cat="Binary"
+                    )
+                else:
+                    node_coverage_vars[origin] = pulp.LpVariable(
+                        f"node_coverage_{origin}", lowBound=0, upBound=1, cat=pulp.LpBinary
+                    )
 
             for origin in node_coverage_vars:
                 origin_flows = [
@@ -334,9 +360,14 @@ class FlowModelBuilder:
                 combo_tuple = tuple(sorted(combo))
                 if combo_tuple not in combination_mapping:
                     combination_mapping[combo_tuple] = h
-                    combination_vars[h] = pulp.LpVariable(
-                        f"v_{h}", lowBound=0, upBound=1, cat=pulp.LpContinuous
-                    )
+                    if hasattr(obj.model, "add_variable"):
+                        combination_vars[h] = obj.model.add_variable(
+                            f"v_{h}", lowBound=0, upBound=1, cat="Continuous"
+                        )
+                    else:
+                        combination_vars[h] = pulp.LpVariable(
+                            f"v_{h}", lowBound=0, upBound=1, cat=pulp.LpContinuous
+                        )
                     h += 1
 
         obj.combination_vars = combination_vars
@@ -1640,9 +1671,14 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
             node_coverage_vars = {}
             for origin in {od[0] for od in self.flows}:
-                node_coverage_vars[origin] = pulp.LpVariable(
-                    f"node_coverage_{origin}", lowBound=0, upBound=1, cat=pulp.LpBinary
-                )
+                if hasattr(self.model, "add_variable"):
+                    node_coverage_vars[origin] = self.model.add_variable(
+                        f"node_coverage_{origin}", lowBound=0, upBound=1, cat="Binary"
+                    )
+                else:
+                    node_coverage_vars[origin] = pulp.LpVariable(
+                        f"node_coverage_{origin}", lowBound=0, upBound=1, cat=pulp.LpBinary
+                    )
 
             # Add threshold constraints
             flow_list = list(self.flows.items())
@@ -1908,10 +1944,10 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         if self.model.status == pulp.LpStatusOptimal:
             # Extract selected facilities
             for k, site in enumerate(self.candidate_sites):
-                if self.facility_vars[k].value() > 0.5:
+                if pulp.value(self.facility_vars[k]) > 0.5:
                     if self.capacity is not None:
                         self.selected_facilities[site] = int(
-                            round(self.facility_vars[k].value())
+                            round(pulp.value(self.facility_vars[k]))
                         )
                     else:
                         self.selected_facilities[site] = 1

@@ -507,9 +507,9 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 
         for j in range(len_fac_vars):
             array_cli = []
-            if fac_vars[j].value() > 0:
+            if pulp.value(fac_vars[j]) > 0:
                 for i in range(len(cli_vars)):
-                    if cli_vars[i, j].value() > 0:
+                    if pulp.value(cli_vars[i, j]) > 0:
                         array_cli.append(i)
 
             self.fac2cli.append(array_cli)
@@ -772,7 +772,7 @@ class KNearestPMedian(PMedian):
         new_k_array = self.k_array.copy()
         placeholder_vars = getattr(self, "placeholder_vars")
         for i in range(len(placeholder_vars)):
-            if placeholder_vars[i].value() > 0:
+            if pulp.value(placeholder_vars[i]) > 0:
                 new_k_array[i] = new_k_array[i] + 1
         self.k_array = new_k_array
 
@@ -803,17 +803,31 @@ class KNearestPMedian(PMedian):
         fac_vars = getattr(self, "fac_vars")
 
         # Placeholder facility decision variable
-        placeholder_vars = pulp.LpVariable.dicts(
-            "g", (i for i in r_cli), 0, 1, pulp.LpBinary
-        )
+        if hasattr(self.problem, "add_variable"):
+            placeholder_vars = {
+                i: self.problem.add_variable(f"g_{i}", lowBound=0, upBound=1, cat="Binary")
+                for i in r_cli
+            }
+        else:
+            placeholder_vars = pulp.LpVariable.dicts(
+                "g", (i for i in r_cli), 0, 1, pulp.LpBinary
+            )
         setattr(self, "placeholder_vars", placeholder_vars)
 
         # Client assignment integer decision variables
         row_indices, col_indices, values = find(self.aij)
 
-        cli_assgn_vars = pulp.LpVariable.dicts(
-            "z", list(zip(row_indices, col_indices, strict=True)), 0, 1, pulp.LpBinary
-        )
+        if hasattr(self.problem, "add_variable"):
+            cli_assgn_vars = {
+                (r, c): self.problem.add_variable(
+                    f"z_{r}_{c}", lowBound=0, upBound=1, cat="Binary"
+                )
+                for r, c in zip(row_indices, col_indices, strict=True)
+            }
+        else:
+            cli_assgn_vars = pulp.LpVariable.dicts(
+                "z", list(zip(row_indices, col_indices, strict=True)), 0, 1, pulp.LpBinary
+            )
         setattr(self, "cli_assgn_vars", cli_assgn_vars)
 
         # Add the objective function
@@ -1017,9 +1031,9 @@ class KNearestPMedian(PMedian):
 
         for j in range(len_fac_vars):
             array_cli = []
-            if fac_vars[j].value() > 0:
+            if pulp.value(fac_vars[j]) > 0:
                 for i in range(len(cli_vars)):
-                    if (i, j) in cli_vars and cli_vars[i, j].value() > 0:
+                    if (i, j) in cli_vars and pulp.value(cli_vars[i, j]) > 0:
                         array_cli.append(i)
 
             self.fac2cli.append(array_cli)
@@ -1062,9 +1076,9 @@ class KNearestPMedian(PMedian):
             # check the result
             placeholder_vars = getattr(self, "placeholder_vars")
             sum_gi = sum(
-                placeholder_vars[i].value()
+                pulp.value(placeholder_vars[i])
                 for i in range(len(placeholder_vars))
-                if placeholder_vars[i].value() > 0
+                if pulp.value(placeholder_vars[i]) > 0
             )
             if sum_gi > 0:
                 self._update_k_array()
