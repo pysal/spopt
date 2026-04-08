@@ -623,8 +623,8 @@ class FacilityModelBuilder:
 
             for j in range_facility:
                 model += (
-                    pulp.lpSum([dq_ni[i] * cli_assn_vars[i, j] for i in range_client])
-                    <= cl_ni[j] * fac_vars[j]
+                    pulp.lpSum([float(dq_ni[i]) * cli_assn_vars[i, j] for i in range_client])
+                    <= float(cl_ni[j]) * fac_vars[j]
                 )
         else:
             raise AttributeError(

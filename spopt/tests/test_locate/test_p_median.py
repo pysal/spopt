@@ -135,13 +135,13 @@ class TestSyntheticLocate:
         )
         pmedian = pmedian.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
 
-        observed_objval = pmedian.problem.objective.value()
+        observed_objval = pulp.value(pmedian.problem.objective)
         assert known_objval == pytest.approx(observed_objval)
 
         observed_mean = pmedian.mean_dist
         assert known_mean == pytest.approx(observed_mean)
 
-        observed_solution_set = [dv.name for dv in pmedian.fac_vars if dv.varValue == 1]
+        observed_solution_set = [dv.name for dv in pmedian.fac_vars if pulp.value(dv) > 0.5]
         numpy.testing.assert_array_equal(
             numpy.array(known_solution_set, dtype=object),
             numpy.array(observed_solution_set, dtype=object),

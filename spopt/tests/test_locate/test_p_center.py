@@ -111,10 +111,10 @@ class TestSyntheticLocate:
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False, warmStart=True))
 
-        observed_objval = pcenter.problem.objective.value()
+        observed_objval = pulp.value(pcenter.problem.objective)
         assert known_objval == pytest.approx(observed_objval)
 
-        observed_solution_set = [dv.name for dv in pcenter.fac_vars if dv.varValue == 1]
+        observed_solution_set = [dv.name for dv in pcenter.fac_vars if pulp.value(dv) > 0.5]
         numpy.testing.assert_array_equal(
             numpy.array(known_solution_set, dtype=object),
             numpy.array(observed_solution_set, dtype=object),

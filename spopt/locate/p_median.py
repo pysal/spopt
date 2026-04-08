@@ -848,9 +848,9 @@ class KNearestPMedian(PMedian):
             for j in col_indices:
                 self.problem += (
                     pulp.lpSum(
-                        self.weights[i] * cli_assgn_vars.get((i, j), 0) for i in r_cli
+                        float(self.weights[i]) * cli_assgn_vars.get((i, j), 0) for i in r_cli
                     )
-                    <= fac_vars[j] * self.capacities[j]
+                    <= fac_vars[j] * float(self.capacities[j])
                 )
 
         # Create assignment constraints.
