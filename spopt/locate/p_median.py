@@ -845,12 +845,14 @@ class KNearestPMedian(PMedian):
                     f"{self.p_facilities} sites with the highest capacity, "
                     f"is smaller than the total demand ({self.ai_sum})."
                 )
+            weights_flat = np.asarray(self.weights).ravel()
+            capacities_flat = np.asarray(self.capacities).ravel()
             for j in col_indices:
                 self.problem += (
                     pulp.lpSum(
-                        float(self.weights[i]) * cli_assgn_vars.get((i, j), 0) for i in r_cli
+                        float(weights_flat[i]) * cli_assgn_vars.get((i, j), 0) for i in r_cli
                     )
-                    <= fac_vars[j] * float(self.capacities[j])
+                    <= fac_vars[j] * float(capacities_flat[j])
                 )
 
         # Create assignment constraints.

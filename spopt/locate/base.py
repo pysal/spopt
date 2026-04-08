@@ -171,6 +171,12 @@ class BackupPercentageMixinMixin:
 T_FacModel = TypeVar("T_FacModel", bound=LocateSolver)
 
 
+def _lp_name(name: str) -> str:
+    """Sanitize a variable name the same way PuLP 3 does (replace non-alphanumeric with _)."""
+    import re
+    return re.sub(r"[^a-zA-Z0-9_]", "_", name)
+
+
 class FacilityModelBuilder:
     """Set facility location modeling variables and constraints."""
 
@@ -199,7 +205,7 @@ class FacilityModelBuilder:
         model = getattr(obj, "problem")
         if hasattr(model, "add_variable"):
             fac_vars = [
-                model.add_variable(var_name.format(i=i), lowBound=0, upBound=1, cat="Integer")
+                model.add_variable(_lp_name(var_name.format(i=i)), lowBound=0, upBound=1, cat="Integer")
                 for i in range_facility
             ]
         else:
@@ -237,7 +243,7 @@ class FacilityModelBuilder:
         model = getattr(obj, "problem")
         if hasattr(model, "add_variable"):
             cli_vars = [
-                model.add_variable(var_name.format(i=i), lowBound=0, upBound=1, cat="Integer")
+                model.add_variable(_lp_name(var_name.format(i=i)), lowBound=0, upBound=1, cat="Integer")
                 for i in range_client
             ]
         else:
@@ -294,7 +300,7 @@ class FacilityModelBuilder:
                 [
                     [
                         model.add_variable(
-                            var_name.format(i=i, j=j),
+                            _lp_name(var_name.format(i=i, j=j)),
                             lowBound=low_bound,
                             upBound=up_bound,
                             cat=lp_category,
@@ -340,7 +346,7 @@ class FacilityModelBuilder:
         """
         model = getattr(obj, "problem")
         if hasattr(model, "add_variable"):
-            weight_var = model.add_variable("W", lowBound=0, cat="Continuous")
+            weight_var = model.add_variable(_lp_name("W"), lowBound=0, cat="Continuous")
         else:
             weight_var = pulp.LpVariable("W", lowBound=0, cat=pulp.LpContinuous)
 
@@ -364,7 +370,7 @@ class FacilityModelBuilder:
         """
         model = getattr(obj, "problem")
         if hasattr(model, "add_variable"):
-            big_d = model.add_variable("D", lowBound=0, cat="Continuous")
+            big_d = model.add_variable(_lp_name("D"), lowBound=0, cat="Continuous")
         else:
             big_d = pulp.LpVariable("D", lowBound=0, cat=pulp.LpContinuous)
         setattr(obj, "disperse_var", big_d)
@@ -571,10 +577,12 @@ class FacilityModelBuilder:
             cli_vars = getattr(obj, "cli_assgn_vars")
             model = getattr(obj, "problem")
 
+            demand_flat = np.asarray(demand).ravel()
+            capacity_flat = np.asarray(facility_capacity).ravel()
             for j in predefined_fac:
                 model += (
-                    pulp.lpSum(demand[i] * cli_vars[i, j] for i in range(len(cli_vars)))
-                    == fac_vars[j] * facility_capacity[j]
+                    pulp.lpSum(float(demand_flat[i]) * cli_vars[i, j] for i in range(len(cli_vars)))
+                    == fac_vars[j] * float(capacity_flat[j])
                 )
 
     @staticmethod
@@ -620,11 +628,13 @@ class FacilityModelBuilder:
             fac_vars = getattr(obj, "fac_vars")
             cli_assn_vars = getattr(obj, "cli_assgn_vars")
             model = getattr(obj, "problem")
+            dq = np.asarray(dq_ni).ravel()
+            cl = np.asarray(cl_ni).ravel()
 
             for j in range_facility:
                 model += (
-                    pulp.lpSum([float(dq_ni[i]) * cli_assn_vars[i, j] for i in range_client])
-                    <= float(cl_ni[j]) * fac_vars[j]
+                    pulp.lpSum([float(dq[i]) * cli_assn_vars[i, j] for i in range_client])
+                    <= float(cl[j]) * fac_vars[j]
                 )
         else:
             raise AttributeError(
