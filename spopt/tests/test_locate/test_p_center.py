@@ -40,10 +40,17 @@ class TestSyntheticLocate:
         pcenter = PCenter.from_cost_matrix(self.cost_matrix, p_facilities=4)
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
 
-        numpy.testing.assert_array_equal(
-            numpy.array(pcenter.fac2cli, dtype=object),
-            numpy.array(pcenter_objective, dtype=object),
+        # The solver may find alternative optimal solutions with different client
+        # assignments but the same minimax objective value W. Verify optimality
+        # by checking that the objective value matches the stored optimal solution
+        # rather than requiring identical facility-to-client assignments.
+        expected_w = max(
+            self.cost_matrix[cli_idx, fac_idx]
+            for fac_idx, clients in enumerate(pcenter_objective)
+            for cli_idx in clients
         )
+        assert pcenter.problem.status == pulp.LpStatusOptimal
+        assert pulp.value(pcenter.problem.objective) == pytest.approx(expected_w)
 
     def test_p_center_from_geodataframe(self):
         p_center = PCenter.from_geodataframe(

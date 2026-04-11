@@ -5,8 +5,11 @@ from typing import TypeVar
 
 import numpy as np
 import pulp
+from packaging.version import Version
 
 from ..BaseClass import BaseSpOptExactSolver
+
+PULP_GE_4 = Version(pulp.__version__).major >= 4  # noqa: N806
 
 # https://coin-or.github.io/pulp/technical/constants.html#pulp.constants.LpStatus
 STATUS_CODES = {
@@ -203,7 +206,7 @@ class FacilityModelBuilder:
 
         """
         model = getattr(obj, "problem")
-        if hasattr(model, "add_variable"):
+        if PULP_GE_4:
             fac_vars = [
                 model.add_variable(_lp_name(var_name.format(i=i)), lowBound=0, upBound=1, cat="Integer")
                 for i in range_facility
@@ -241,7 +244,7 @@ class FacilityModelBuilder:
 
         """
         model = getattr(obj, "problem")
-        if hasattr(model, "add_variable"):
+        if PULP_GE_4:
             cli_vars = [
                 model.add_variable(_lp_name(var_name.format(i=i)), lowBound=0, upBound=1, cat="Integer")
                 for i in range_client
@@ -295,7 +298,7 @@ class FacilityModelBuilder:
         """
 
         model = getattr(obj, "problem")
-        if hasattr(model, "add_variable"):
+        if PULP_GE_4:
             cli_assgn_vars = np.array(
                 [
                     [
@@ -345,7 +348,7 @@ class FacilityModelBuilder:
 
         """
         model = getattr(obj, "problem")
-        if hasattr(model, "add_variable"):
+        if PULP_GE_4:
             weight_var = model.add_variable(_lp_name("W"), lowBound=0, cat="Continuous")
         else:
             weight_var = pulp.LpVariable("W", lowBound=0, cat=pulp.LpContinuous)
@@ -369,7 +372,7 @@ class FacilityModelBuilder:
 
         """
         model = getattr(obj, "problem")
-        if hasattr(model, "add_variable"):
+        if PULP_GE_4:
             big_d = model.add_variable(_lp_name("D"), lowBound=0, cat="Continuous")
         else:
             big_d = pulp.LpVariable("D", lowBound=0, cat=pulp.LpContinuous)

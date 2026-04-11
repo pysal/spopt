@@ -10,10 +10,13 @@ import pandas as pd
 import pulp
 import scipy.sparse as sp
 import scipy.sparse.csgraph as csgraph
+from packaging.version import Version
 from tqdm import tqdm
 
 from .base import FacilityModelBuilder
 from .util import compute_facility_usage, rising_combination
+
+PULP_GE_4 = Version(pulp.__version__).major >= 4  # noqa: N806
 
 
 class GreedyVariable:
@@ -54,7 +57,7 @@ class FlowModelBuilder:
         """
 
         model = obj.model
-        if hasattr(model, "add_variable"):
+        if PULP_GE_4:
             fac_vars = [
                 model.add_variable(f"x_{i}", lowBound=0, upBound=1, cat="Integer")
                 for i in candidate_sites
@@ -144,13 +147,13 @@ class FlowModelBuilder:
         if hasattr(obj, "use_ac_pc") and obj.use_ac_pc:
             for q in range(1, len(flows) + 1):
                 if q in obj.a:
-                    if hasattr(model, "add_variable"):
+                    if PULP_GE_4:
                         flow_vars[q] = model.add_variable(f"y_{q}", cat="Binary")
                     else:
                         flow_vars[q] = pulp.LpVariable(f"y_{q}", cat=pulp.LpBinary)
         elif path_refueling_combinations is None:
             for q, _od_pair in enumerate(flows.keys()):
-                if hasattr(model, "add_variable"):
+                if PULP_GE_4:
                     flow_vars[q] = model.add_variable(
                         f"y_{q}", lowBound=0, upBound=1, cat="Continuous"
                     )
@@ -162,7 +165,7 @@ class FlowModelBuilder:
             for q, od_pair in enumerate(flows.keys()):
                 valid_combinations = path_refueling_combinations[od_pair]
                 for h, _combination in enumerate(valid_combinations):
-                    if hasattr(model, "add_variable"):
+                    if PULP_GE_4:
                         flow_vars[(q, h)] = model.add_variable(
                             f"y_{q}_{h}", lowBound=0, upBound=1, cat="Continuous"
                         )
@@ -297,7 +300,7 @@ class FlowModelBuilder:
 
             node_coverage_vars = {}
             for origin in {od[0] for od in flows}:
-                if hasattr(obj.model, "add_variable"):
+                if PULP_GE_4:
                     node_coverage_vars[origin] = obj.model.add_variable(
                         f"node_coverage_{origin}", lowBound=0, upBound=1, cat="Binary"
                     )
@@ -360,7 +363,7 @@ class FlowModelBuilder:
                 combo_tuple = tuple(sorted(combo))
                 if combo_tuple not in combination_mapping:
                     combination_mapping[combo_tuple] = h
-                    if hasattr(obj.model, "add_variable"):
+                    if PULP_GE_4:
                         combination_vars[h] = obj.model.add_variable(
                             f"v_{h}", lowBound=0, upBound=1, cat="Continuous"
                         )
@@ -1671,7 +1674,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
             node_coverage_vars = {}
             for origin in {od[0] for od in self.flows}:
-                if hasattr(self.model, "add_variable"):
+                if PULP_GE_4:
                     node_coverage_vars[origin] = self.model.add_variable(
                         f"node_coverage_{origin}", lowBound=0, upBound=1, cat="Binary"
                     )

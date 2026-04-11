@@ -5,6 +5,7 @@ import warnings
 import numpy as np
 import pulp
 from geopandas import GeoDataFrame
+from packaging.version import Version
 from pointpats.geometry import build_best_tree
 from scipy.sparse import csr_matrix, find
 from scipy.spatial.distance import cdist
@@ -16,6 +17,8 @@ from .base import (
     MeanDistanceMixin,
     SpecificationError,
 )
+
+PULP_GE_4 = Version(pulp.__version__).major >= 4  # noqa: N806
 
 
 class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
@@ -803,7 +806,7 @@ class KNearestPMedian(PMedian):
         fac_vars = getattr(self, "fac_vars")
 
         # Placeholder facility decision variable
-        if hasattr(self.problem, "add_variable"):
+        if PULP_GE_4:
             placeholder_vars = {
                 i: self.problem.add_variable(f"g_{i}", lowBound=0, upBound=1, cat="Binary")
                 for i in r_cli
@@ -817,7 +820,7 @@ class KNearestPMedian(PMedian):
         # Client assignment integer decision variables
         row_indices, col_indices, values = find(self.aij)
 
-        if hasattr(self.problem, "add_variable"):
+        if PULP_GE_4:
             cli_assgn_vars = {
                 (r, c): self.problem.add_variable(
                     f"z_{r}_{c}", lowBound=0, upBound=1, cat="Binary"
