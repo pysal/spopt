@@ -1,8 +1,8 @@
-import geopandas
 import numpy
 import pulp
 import pytest
 
+import geopandas
 from spopt.locate import PMedian
 from spopt.locate.base import FacilityModelBuilder
 
@@ -141,7 +141,9 @@ class TestSyntheticLocate:
         observed_mean = pmedian.mean_dist
         assert known_mean == pytest.approx(observed_mean)
 
-        observed_solution_set = [dv.name for dv in pmedian.fac_vars if pulp.value(dv) > 0.5]
+        observed_solution_set = [
+            dv.name for dv in pmedian.fac_vars if pulp.value(dv) > 0.5
+        ]
         numpy.testing.assert_array_equal(
             numpy.array(known_solution_set, dtype=object),
             numpy.array(observed_solution_set, dtype=object),

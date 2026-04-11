@@ -4,11 +4,12 @@ import warnings
 
 import numpy as np
 import pulp
-from geopandas import GeoDataFrame
 from packaging.version import Version
 from pointpats.geometry import build_best_tree
-from scipy.sparse import csr_matrix, find
 from scipy.spatial.distance import cdist
+
+from geopandas import GeoDataFrame
+from scipy.sparse import csr_matrix, find
 
 from .base import (
     BaseOutputMixin,
@@ -808,7 +809,9 @@ class KNearestPMedian(PMedian):
         # Placeholder facility decision variable
         if PULP_GE_4:
             placeholder_vars = {
-                i: self.problem.add_variable(f"g_{i}", lowBound=0, upBound=1, cat="Binary")
+                i: self.problem.add_variable(
+                    f"g_{i}", lowBound=0, upBound=1, cat="Binary"
+                )
                 for i in r_cli
             }
         else:
@@ -829,7 +832,11 @@ class KNearestPMedian(PMedian):
             }
         else:
             cli_assgn_vars = pulp.LpVariable.dicts(
-                "z", list(zip(row_indices, col_indices, strict=True)), 0, 1, pulp.LpBinary
+                "z",
+                list(zip(row_indices, col_indices, strict=True)),
+                0,
+                1,
+                pulp.LpBinary,
             )
         setattr(self, "cli_assgn_vars", cli_assgn_vars)
 
@@ -851,12 +858,10 @@ class KNearestPMedian(PMedian):
             weights_flat = np.asarray(self.weights).ravel()
             capacities_flat = np.asarray(self.capacities).ravel()
             for j in col_indices:
-                self.problem += (
-                    pulp.lpSum(
-                        float(weights_flat[i]) * cli_assgn_vars.get((i, j), 0) for i in r_cli
-                    )
-                    <= fac_vars[j] * float(capacities_flat[j])
-                )
+                self.problem += pulp.lpSum(
+                    float(weights_flat[i]) * cli_assgn_vars.get((i, j), 0)
+                    for i in r_cli
+                ) <= fac_vars[j] * float(capacities_flat[j])
 
         # Create assignment constraints.
         for i in r_cli:

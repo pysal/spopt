@@ -168,15 +168,21 @@ class BackupPercentageMixinMixin:
 
     def get_percentage(self):
         """Calculate the percentage of clients with backup."""
-        self.backup_perc = (pulp.value(self.problem.objective) / len(self.cli_vars)) * 100.0
+        self.backup_perc = (
+            pulp.value(self.problem.objective) / len(self.cli_vars)
+        ) * 100.0
 
 
 T_FacModel = TypeVar("T_FacModel", bound=LocateSolver)
 
 
 def _lp_name(name: str) -> str:
-    """Sanitize a variable name the same way PuLP 3 does (replace non-alphanumeric with _)."""
+    """Sanitize a variable name the same way PuLP 3 does.
+
+    Replaces non-alphanumeric characters with underscores.
+    """
     import re
+
     return re.sub(r"[^a-zA-Z0-9_]", "_", name)
 
 
@@ -208,7 +214,9 @@ class FacilityModelBuilder:
         model = getattr(obj, "problem")
         if PULP_GE_4:
             fac_vars = [
-                model.add_variable(_lp_name(var_name.format(i=i)), lowBound=0, upBound=1, cat="Integer")
+                model.add_variable(
+                    _lp_name(var_name.format(i=i)), lowBound=0, upBound=1, cat="Integer"
+                )
                 for i in range_facility
             ]
         else:
@@ -246,7 +254,9 @@ class FacilityModelBuilder:
         model = getattr(obj, "problem")
         if PULP_GE_4:
             cli_vars = [
-                model.add_variable(_lp_name(var_name.format(i=i)), lowBound=0, upBound=1, cat="Integer")
+                model.add_variable(
+                    _lp_name(var_name.format(i=i)), lowBound=0, upBound=1, cat="Integer"
+                )
                 for i in range_client
             ]
         else:
@@ -583,10 +593,9 @@ class FacilityModelBuilder:
             demand_flat = np.asarray(demand).ravel()
             capacity_flat = np.asarray(facility_capacity).ravel()
             for j in predefined_fac:
-                model += (
-                    pulp.lpSum(float(demand_flat[i]) * cli_vars[i, j] for i in range(len(cli_vars)))
-                    == fac_vars[j] * float(capacity_flat[j])
-                )
+                model += pulp.lpSum(
+                    float(demand_flat[i]) * cli_vars[i, j] for i in range(len(cli_vars))
+                ) == fac_vars[j] * float(capacity_flat[j])
 
     @staticmethod
     def add_facility_capacity_constraint(
@@ -636,7 +645,9 @@ class FacilityModelBuilder:
 
             for j in range_facility:
                 model += (
-                    pulp.lpSum([float(dq[i]) * cli_assn_vars[i, j] for i in range_client])
+                    pulp.lpSum(
+                        [float(dq[i]) * cli_assn_vars[i, j] for i in range_client]
+                    )
                     <= float(cl[j]) * fac_vars[j]
                 )
         else:

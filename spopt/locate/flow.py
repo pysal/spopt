@@ -6,12 +6,13 @@ from collections import deque
 from typing import Any, Literal
 
 import numpy as np
-import pandas as pd
 import pulp
-import scipy.sparse as sp
-import scipy.sparse.csgraph as csgraph
 from packaging.version import Version
 from tqdm import tqdm
+
+import pandas as pd
+import scipy.sparse as sp
+import scipy.sparse.csgraph as csgraph
 
 from .base import FacilityModelBuilder
 from .util import compute_facility_usage, rising_combination
@@ -306,7 +307,10 @@ class FlowModelBuilder:
                     )
                 else:
                     node_coverage_vars[origin] = pulp.LpVariable(
-                        f"node_coverage_{origin}", lowBound=0, upBound=1, cat=pulp.LpBinary
+                        f"node_coverage_{origin}",
+                        lowBound=0,
+                        upBound=1,
+                        cat=pulp.LpBinary,
                     )
 
             for origin in node_coverage_vars:
@@ -1690,7 +1694,10 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                     )
                 else:
                     node_coverage_vars[origin] = pulp.LpVariable(
-                        f"node_coverage_{origin}", lowBound=0, upBound=1, cat=pulp.LpBinary
+                        f"node_coverage_{origin}",
+                        lowBound=0,
+                        upBound=1,
+                        cat=pulp.LpBinary,
                     )
 
             # Add threshold constraints

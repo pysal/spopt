@@ -1,8 +1,8 @@
-import geopandas
 import numpy
 import pulp
 import pytest
 
+import geopandas
 from spopt.locate import PCenter
 from spopt.locate.base import FacilityModelBuilder
 
@@ -135,7 +135,9 @@ class TestSyntheticLocate:
         observed_objval = pulp.value(pcenter.problem.objective)
         assert known_objval == pytest.approx(observed_objval)
 
-        observed_solution_set = [dv.name for dv in pcenter.fac_vars if pulp.value(dv) > 0.5]
+        observed_solution_set = [
+            dv.name for dv in pcenter.fac_vars if pulp.value(dv) > 0.5
+        ]
         numpy.testing.assert_array_equal(
             numpy.array(known_solution_set, dtype=object),
             numpy.array(observed_solution_set, dtype=object),
