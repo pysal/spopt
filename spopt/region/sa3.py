@@ -32,6 +32,9 @@ def extract_clusters(linkage_matrix, min_cluster_size, extraction="eom"):
 
     """
 
+    if extraction not in ("eom", "leaf"):
+        raise ValueError("Unsupported extraction method. Use one of ('eom', 'leaf').")
+
     n_samples = linkage_matrix.shape[0] + 1
 
     try:
@@ -57,8 +60,6 @@ def extract_clusters(linkage_matrix, min_cluster_size, extraction="eom"):
         )
     elif extraction == "leaf":
         selected_clusters = extract_leaves(condensed_tree, allow_single_cluster=False)
-    else:
-        raise ValueError("Unsupported extraction method. Use one of ('eom', 'leaf').")
 
     return get_cluster_label_vector(condensed_tree, selected_clusters, 0, n_samples)
 
