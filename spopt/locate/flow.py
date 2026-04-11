@@ -554,7 +554,12 @@ class FRLMSolverStatsMixin:
             )
 
             self.shadow_prices = {}
-            for name, constraint in constraints.items():
+            constraints_iter = (
+                constraints.items()
+                if isinstance(constraints, dict)
+                else enumerate(constraints)
+            )
+            for name, constraint in constraints_iter:
                 if hasattr(constraint, "pi") and constraint.pi is not None:
                     self.shadow_prices[name] = constraint.pi
 
