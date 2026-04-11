@@ -539,19 +539,24 @@ class FRLMSolverStatsMixin:
         }
 
         if self.solver_type == "pulp":
+            # pulp>=4 made constraints() a method; older versions expose a dict
+            constraints = (
+                self.model.constraints()
+                if callable(self.model.constraints)
+                else self.model.constraints
+            )
             self.solver_stats.update(
                 {
                     "num_variables": len(self.model.variables()),
-                    "num_constraints": len(self.model.constraints),
+                    "num_constraints": len(constraints),
                     "pulp_status": self.pulp_status,
                 }
             )
 
-            if hasattr(self.model, "constraints"):
-                self.shadow_prices = {}
-                for name, constraint in self.model.constraints.items():
-                    if hasattr(constraint, "pi") and constraint.pi is not None:
-                        self.shadow_prices[name] = constraint.pi
+            self.shadow_prices = {}
+            for name, constraint in constraints.items():
+                if hasattr(constraint, "pi") and constraint.pi is not None:
+                    self.shadow_prices[name] = constraint.pi
 
             if hasattr(self.model, "variables"):
                 self.reduced_costs = {}
