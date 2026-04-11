@@ -3,7 +3,7 @@ import libpysal
 import numpy
 from packaging.version import Version
 
-from spopt.region import AZP
+from spopt.region import AZP, AZPBasicTabu, AZPReactiveTabu, AZPSimulatedAnnealing
 
 # see gh:spopt#437
 LIBPYSAL_GE_48 = Version(libpysal.__version__) >= Version("4.8.0")
@@ -15,6 +15,12 @@ RANDOM_STATE = 123456
 # Mexican states
 pth = libpysal.examples.get_path("mexicojoin.shp")
 MEXICO = geopandas.read_file(pth)
+
+
+def test_azp_variants_exposed_in_region_api():
+    assert AZPBasicTabu is not None
+    assert AZPReactiveTabu is not None
+    assert AZPSimulatedAnnealing is not None
 
 
 class TestAZP:
