@@ -77,10 +77,17 @@ class TestSyntheticLocate:
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
 
-        numpy.testing.assert_array_equal(
-            numpy.array(pcenter.fac2cli, dtype=object),
-            numpy.array(pcenter_objective, dtype=object),
+        # The solver may find alternative optimal solutions with different client
+        # assignments but the same minimax objective value W. Use pcenter.aij
+        # (the internal distance matrix) to compute expected_w from the stored
+        # solution, so we compare like-for-like distances.
+        expected_w = max(
+            pcenter.aij[cli_idx, fac_idx]
+            for fac_idx, clients in enumerate(pcenter_objective)
+            for cli_idx in clients
         )
+        assert pcenter.problem.status == pulp.LpStatusOptimal
+        assert pulp.value(pcenter.problem.objective) == pytest.approx(expected_w)
 
     def test_pcenter_client_facility_array_from_geodataframe(
         self, load_locate_test_data
@@ -96,10 +103,17 @@ class TestSyntheticLocate:
         )
         pcenter = pcenter.solve(pulp.PULP_CBC_CMD(msg=False))
 
-        numpy.testing.assert_array_equal(
-            numpy.array(pcenter.cli2fac, dtype=object),
-            numpy.array(pcenter_objective, dtype=object),
+        # The solver may find alternative optimal solutions where clients are
+        # assigned to different (but equidistant) facilities. Use pcenter.aij
+        # (the internal distance matrix) to compute expected_w from the stored
+        # solution, so we compare like-for-like distances.
+        expected_w = max(
+            pcenter.aij[cli_idx, fac_idx]
+            for cli_idx, facs in enumerate(pcenter_objective)
+            for fac_idx in facs
         )
+        assert pcenter.problem.status == pulp.LpStatusOptimal
+        assert pulp.value(pcenter.problem.objective) == pytest.approx(expected_w)
 
     def test_pcenter_preselected_facility_client_array_from_geodataframe(self):
         known_objval = 6.2520432
