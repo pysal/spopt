@@ -4,12 +4,11 @@ import warnings
 
 import numpy as np
 import pulp
+from geopandas import GeoDataFrame
 from packaging.version import Version
 from pointpats.geometry import build_best_tree
-from scipy.spatial.distance import cdist
-
-from geopandas import GeoDataFrame
 from scipy.sparse import csr_matrix, find
+from scipy.spatial.distance import cdist
 
 from .base import (
     BaseOutputMixin,

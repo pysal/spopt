@@ -6,13 +6,12 @@ from collections import deque
 from typing import Any, Literal
 
 import numpy as np
-import pulp
-from packaging.version import Version
-from tqdm import tqdm
-
 import pandas as pd
+import pulp
 import scipy.sparse as sp
 import scipy.sparse.csgraph as csgraph
+from packaging.version import Version
+from tqdm import tqdm
 
 from .base import FacilityModelBuilder
 from .util import compute_facility_usage, rising_combination

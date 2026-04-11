@@ -1,8 +1,8 @@
+import geopandas
 import numpy
 import pulp
 import pytest
 
-import geopandas
 from spopt.locate import PCenter
 from spopt.locate.base import FacilityModelBuilder
 
