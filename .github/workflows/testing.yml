@@ -24,8 +24,7 @@ jobs:
         os:
           - ubuntu-latest
         environment-file:
-          - ci/311-oldest.yaml
-          - ci/311-latest.yaml
+          - ci/312-oldest.yaml
           - ci/312-latest.yaml
           - ci/313-latest.yaml
           - ci/314-latest.yaml
@@ -47,7 +46,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: setup micromamba
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@v3
         with:
           environment-file: ${{ matrix.environment-file }}
           micromamba-version: latest

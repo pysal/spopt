@@ -16,12 +16,6 @@ with warnings.catch_warnings():
     import spaghetti
 
 
-from packaging.version import Version
-
-# see gh:spopt#437
-GPD_GE_10 = Version(geopandas.__version__) >= Version("1.0")
-
-
 def locate_dirpath() -> pathlib.Path:
     """Path to locate test data directory"""
     return pathlib.Path(__file__).absolute().parent / "test_locate" / "data"
@@ -83,7 +77,7 @@ def network_instance():
             net_buffer = gdf.loc[loc_slice, "geometry"].buffer(0.2)
         else:
             net_buffer = gdf["geometry"].buffer(0.2)
-        net_space = net_buffer.union_all() if GPD_GE_10 else net_buffer.unary_union
+        net_space = net_buffer.union_all()
 
         if not client_count and not facility_count:
             return net_buffer, net_space
