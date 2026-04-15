@@ -1,0 +1,31 @@
+name: py312_spopt-oldest
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - fast_hdbscan=0.2.2 # for sa3
+  - geopandas=1.1.0
+  - libpysal=4.12.0
+  - mapclassify=2.9.0
+  - networkx=3.4
+  - numba # for sa3
+  - numpy=2.0.0
+  - pandas=2.3.0
+  - pointpats=2.5.2
+  - scikit-learn=1.5.0
+  - scipy=1.14.0
+  - shapely=2.1.0
+  - spaghetti=1.7.4
+  - tqdm=4.67.0
+  
+  # testing
+  - codecov
+  - coverage
+  - pytest
+  - pytest-cov
+  - pytest-xdist
+
+  # with pip
+  - pip
+  - pip:
+    - pulp==3.2

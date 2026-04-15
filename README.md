@@ -17,7 +17,6 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4444156.svg)](https://doi.org/10.5281/zenodo.4444156)
 [![Discord](https://img.shields.io/badge/Discord-join%20chat-7289da?style=flat&logo=discord&logoColor=cccccc&link=https://discord.gg/BxFTEPFFZn)](https://discord.gg/BxFTEPFFZn)
 
-
 Spopt is an open-source Python library for solving optimization problems with spatial data. Originating from the `region` module in [PySAL (Python Spatial Analysis Library)](http://pysal.org), it is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions. 
 
 ### Regionalization
@@ -35,11 +34,13 @@ model.solve()
 mexico["maxp_new"] = model.labels_
 mexico.plot(column="maxp_new", categorical=True, figsize=(12,8), ec="w");
 ```
+
 <p align="center">
 <img src="docs/_static/images/maxp.svg" height="350" />
 </p>
 
 ### Locate
+
 ```python
 from spopt.locate import MCLP
 from spopt.locate.util import simulated_geo_points
@@ -73,12 +74,15 @@ ai = numpy.random.randint(1, 12, 100)
 mclp_from_cost_matrix = MCLP.from_cost_matrix(cost_matrix, ai, 4, p_facilities=4)
 mclp_from_cost_matrix = mclp_from_cost_matrix.solve(solver)
 ```
+
 *see [notebook](https://github.com/pysal/spopt/blob/main/notebooks/mclp.ipynb) for plotting code*
+
 <p align="center">
 <img src="docs/_static/images/mclp.png" height="350" />
 </p>
 
 ## Examples
+
 More examples can be found in the [Tutorials](https://pysal.org/spopt/tutorials.html) section of the documentation.
 - [Max-p-regions problem](https://pysal.org/spopt/notebooks/maxp.html)
 - [Skater](https://pysal.org/spopt/notebooks/skater.html)
@@ -100,15 +104,21 @@ All examples can be run interactively by launching this repository as a [![Binde
 - [spaghetti](https://github.com/pysal/spaghetti)
 
 ## Installation
+
 spopt is available on the [Python Package Index](https://pypi.org/). Therefore, you can either install directly with pip from the command line:
+
 ```
 $ pip install -U spopt
 ```
+
 or download the source distribution (.tar.gz) and decompress it to your selected destination. Open a command shell and navigate to the decompressed folder. Type:
+
 ```
 $ pip install .
 ```
+
 You may also install the latest stable spopt via conda-forge channel by running:
+
 ```
 $ conda install --channel conda-forge spopt
 ```
@@ -130,6 +140,7 @@ PySAL-spopt is under active development and contributors are welcome.
 If you have any suggestions, feature requests, or bug reports, please open new [issues](https://github.com/pysal/spopt/issues) on GitHub. To submit patches, please review [PySAL's documentation for developers](https://pysal.org/docs/devs/), the PySAL [development guidelines](https://github.com/pysal/pysal/wiki), the `spopt` [contributing guidelines](https://github.com/pysal/spopt/blob/main/.github/CONTRIBUTING.md) before  opening a [pull request](https://github.com/pysal/spopt/pulls). Once your changes get merged, you’ll automatically be added to the [Contributors List](https://github.com/pysal/spopt/graphs/contributors).
 
 ## Support
+
 If you are having trouble, please [create an issue](https://github.com/pysal/spopt/issues), [start a discussion](https://github.com/pysal/spopt/discussions), or talk to us in [PySAL's Discord channel](https://discord.gg/BxFTEPFFZn).
 
 ## Code of Conduct
