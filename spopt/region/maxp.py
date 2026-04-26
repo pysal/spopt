@@ -495,7 +495,7 @@ def _pick_move_area(
         rla = np.array(region_lists[k])
         rasa = threshold_array[rla]
         lost_sa = v - rasa
-        pas_indices = np.where(lost_sa > threshold)[0]
+        pas_indices = np.where(lost_sa >= threshold)[0]
         if pas_indices.size > 0:
             for pasi in pas_indices:
                 left_areas = np.delete(rla, pasi)
