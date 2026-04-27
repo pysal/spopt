@@ -105,6 +105,22 @@ class TestMaxPHeuristic:
 
         numpy.testing.assert_array_equal(model.labels_, self.var1_labels)
 
+    def test_maxp_mixed_bool_float_attrs(self):
+        self.mexico["high_gdp"] = self.mexico["PCGDP2000"] > self.mexico[
+            "PCGDP2000"
+        ].median()
+        attrs_name = ["high_gdp", "PCGDP2000"]
+        threshold = 4
+        top_n = 2
+        threshold_name = "count"
+        numpy.random.seed(123456)
+        model = MaxPHeuristic(
+            self.mexico, self.w, attrs_name, threshold_name, threshold, top_n
+        )
+        model.solve()
+
+        assert len(model.labels_) == len(self.mexico)
+
     def test_infeasible_components(self):
         ifcs = infeasible_components(self.mexico, self.w, "count", 35)
         numpy.testing.assert_array_equal(ifcs, [0])
