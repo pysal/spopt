@@ -373,7 +373,7 @@ class FlowModelBuilder:
 class FRLMCoverageMixin:
     """Mixin to calculate flow coverage statistics for FRLM."""
 
-    def get_flow_coverage(self) -> None:
+    def get_flow_coverage(self) -> dict[str, float]:
         """Improved and fixed calculation of flow coverage."""
         if not hasattr(self, "facility_vars") or self.facility_vars is None:
             raise AttributeError(
