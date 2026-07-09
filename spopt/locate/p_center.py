@@ -387,9 +387,9 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
         for j in range(len_fac_vars):
             array_cli = []
-            if fac_vars[j].value() > 0:
+            if pulp.value(fac_vars[j]) > 0:
                 for i in range(len(cli_vars)):
-                    if cli_vars[i, j].value() > 0:
+                    if pulp.value(cli_vars[i, j]) > 0:
                         array_cli.append(i)
 
             self.fac2cli.append(array_cli)
