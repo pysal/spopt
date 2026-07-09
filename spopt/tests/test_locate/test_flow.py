@@ -109,6 +109,7 @@ class TestFRLMObjectives:
         result = model.solve(solver=pulp.PULP_CBC_CMD(msg=0))
         assert result["status"] == "Optimal"
         coverage = model.get_flow_coverage()
+        assert isinstance(coverage, dict)
         assert coverage["covered_volume"] == 50
 
     def test_vmt_objective(self, setup_network_with_distances):
