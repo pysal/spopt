@@ -90,7 +90,7 @@ def maxp(
 
     """
     gdf, w = modify_components(gdf, w, threshold_name, threshold, policy=policy)
-    attr = np.atleast_2d(gdf[attrs_name].values)
+    attr = np.atleast_2d(gdf[attrs_name].to_numpy(dtype=float))
     if attr.shape[0] == 1:
         attr = attr.T
     threshold_array = gdf[threshold_name].values
