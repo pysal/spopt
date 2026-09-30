@@ -26,7 +26,7 @@ dependencies:
     - networkx
     - numpy
     - pandas
-    - pulp
+    - pulp<4
     - scikit-learn
     - scipy
     - shapely

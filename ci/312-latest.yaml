@@ -28,4 +28,4 @@ dependencies:
   # with pip
   - pip
   - pip:
-    - pulp
+    - pulp<4
