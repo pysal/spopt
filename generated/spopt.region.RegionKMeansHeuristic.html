@@ -5,14 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>spopt.region.RegionKMeansHeuristic &#8212; spopt v0.7.0 Manual</title>
+    <title>spopt.region.RegionKMeansHeuristic &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -41,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -90,6 +90,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
@@ -152,33 +153,33 @@
 <h1>spopt.region.RegionKMeansHeuristic<a class="headerlink" href="#spopt-region-regionkmeansheuristic" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="spopt.region.RegionKMeansHeuristic">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spopt.region.</span></span><span class="sig-name descname"><span class="pre">RegionKMeansHeuristic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_clusters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_islands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/region_k_means.html#RegionKMeansHeuristic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.region.RegionKMeansHeuristic" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">spopt.region.</span></span><span class="sig-name descname"><span class="pre">RegionKMeansHeuristic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_clusters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_islands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/region_k_means.html#RegionKMeansHeuristic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.region.RegionKMeansHeuristic" title="Link to this definition">¶</a></dt>
 <dd><p>Solve the region-K-means problem with the constraint
 that each cluster forms a spatially connected component.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>data</strong><span class="classifier">{<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a>}, required</span></dt><dd><p>The observations to cluster shaped <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
+<dt><strong>data</strong><span class="classifier">{<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a>}, required</span></dt><dd><p>The observations to cluster shaped <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
 </dd>
-<dt><strong>n_clusters</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>The number of clusters to form.</p>
+<dt><strong>n_clusters</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>The number of clusters to form.</p>
 </dd>
-<dt><strong>w</strong><span class="classifier"><a class="reference external" href="https://pysal.org/libpysal/generated/libpysal.weights.W.html#libpysal.weights.W" title="(in libpysal v4.13.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code></a>, required</span></dt><dd><p>Weights object created from given data.</p>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code>, required</span></dt><dd><p>Weights object created from given data.</p>
 </dd>
-<dt><strong>drop_islands</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.13)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>Drop observations that are islands (<code class="docutils literal notranslate"><span class="pre">True</span></code>) or keep them (<code class="docutils literal notranslate"><span class="pre">False</span></code>).
+<dt><strong>drop_islands</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>Drop observations that are islands (<code class="docutils literal notranslate"><span class="pre">True</span></code>) or keep them (<code class="docutils literal notranslate"><span class="pre">False</span></code>).
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
-<dt><strong>seed</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>Random state to pass into <code class="docutils literal notranslate"><span class="pre">_seeds()</span></code>. Default is <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<dt><strong>seed</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>Random state to pass into <code class="docutils literal notranslate"><span class="pre">_seeds()</span></code>. Default is <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Attributes<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>labels_</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a></span></dt><dd><p>Region IDs for observations.</p>
+<dt><strong>labels_</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a></span></dt><dd><p>Region IDs for observations.</p>
 </dd>
-<dt><strong>centroids_</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>Floating point array of centroids in the shape of <code class="docutils literal notranslate"><span class="pre">(k,</span> <span class="pre">n_features)</span></code>
+<dt><strong>centroids_</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>Floating point array of centroids in the shape of <code class="docutils literal notranslate"><span class="pre">(k,</span> <span class="pre">n_features)</span></code>
 found at the last iteration of <code class="docutils literal notranslate"><span class="pre">region_k_means</span></code>.</p>
 </dd>
-<dt><strong>iters_</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>The number of iterations for the reassignment phase.</p>
+<dt><strong>iters_</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>The number of iterations for the reassignment phase.</p>
 </dd>
 </dl>
 </dd>
@@ -229,7 +230,7 @@ found at the last iteration of <code class="docutils literal notranslate"><span 
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

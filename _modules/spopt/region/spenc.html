@@ -4,14 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>spopt.region.spenc &#8212; spopt v0.7.0 Manual</title>
+    <title>spopt.region.spenc &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=e5dd7357" />
-    <script src="../../../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -87,6 +87,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a><ul>
@@ -146,7 +147,7 @@
 <div class="viewcode-block" id="Spenc">
 <a class="viewcode-back" href="../../../generated/spopt.region.Spenc.html#spopt.region.Spenc">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Spenc</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Spatially encouraged spectral clustering found in :cite:`wolf2018`.</span>
 
 <span class="sd">    Apply clustering to a projection of the normalized laplacian, using</span>
@@ -171,7 +172,7 @@
 <span class="sd">    using ``precomputed``, a user-provided affinity matrix can be used.</span>
 <span class="sd">    Read more in the ``scikit-learn`` user guide on spectral clustering.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="Spenc.__init__">
 <a class="viewcode-back" href="../../../generated/spopt.region.Spenc.html#spopt.region.Spenc.__init__">[docs]</a>
@@ -185,16 +186,16 @@
         <span class="n">gamma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">eigen_solver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">n_init</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-        <span class="n">affinity</span><span class="o">=</span><span class="s2">&quot;rbf&quot;</span><span class="p">,</span>
+        <span class="n">affinity</span><span class="o">=</span><span class="s2">"rbf"</span><span class="p">,</span>
         <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
         <span class="n">eigen_tol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span>
-        <span class="n">assign_labels</span><span class="o">=</span><span class="s2">&quot;discretize&quot;</span><span class="p">,</span>
+        <span class="n">assign_labels</span><span class="o">=</span><span class="s2">"discretize"</span><span class="p">,</span>
         <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
         <span class="n">coef0</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">kernel_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -209,7 +210,7 @@
 <span class="sd">            The number of clusters to form.</span>
 <span class="sd">        random_state : int or numpy.random.RandomState (default None)</span>
 <span class="sd">            A pseudo random number generator used for the initialization of the lobpcg</span>
-<span class="sd">            eigen vectors decomposition when ``eigen_solver=&#39;amg&#39;`` and by the</span>
+<span class="sd">            eigen vectors decomposition when ``eigen_solver='amg'`` and by the</span>
 <span class="sd">            :math:`k`-Means initialization.  If ``int``, ``random_state`` is the seed</span>
 <span class="sd">            used by the random number generator; If ``numpy.random.RandomState``,</span>
 <span class="sd">            ``random_state`` is the random number generator; If ``None``,</span>
@@ -217,10 +218,10 @@
 <span class="sd">            instance used by ``numpy.random``.</span>
 <span class="sd">        gamma : int, float (default 1)</span>
 <span class="sd">            Kernel coefficient for rbf, poly, sigmoid, laplacian and chi2 kernels.</span>
-<span class="sd">            Ignored for ``affinity=&#39;nearest_neighbors&#39;``.</span>
+<span class="sd">            Ignored for ``affinity='nearest_neighbors'``.</span>
 <span class="sd">        eigen_solver : str (default None)</span>
 <span class="sd">            The eigenvalue decomposition strategy to use. Valid values include</span>
-<span class="sd">            ``{&#39;arpack&#39;, &#39;lobpcg&#39;, &#39;amg&#39;}``. AMG requires ``pyamg`` to be installed,</span>
+<span class="sd">            ``{'arpack', 'lobpcg', 'amg'}``. AMG requires ``pyamg`` to be installed,</span>
 <span class="sd">            which may be faster on very large, sparse problems, but may also lead to</span>
 <span class="sd">            instabilities. *Note* – ``eigen_solver`` is ignored unless fitting using</span>
 <span class="sd">            the ``breakme`` flag in the ``.fit()`` method (so do not use then).</span>
@@ -228,27 +229,27 @@
 <span class="sd">            The number of times the :math:`k`-means algorithm will be run with</span>
 <span class="sd">            different centroid seeds. The final results will be the best output of</span>
 <span class="sd">            ``n_init`` consecutive runs in terms of inertia.</span>
-<span class="sd">        affinity : str, array-like, callable (default &#39;rbf&#39;)</span>
+<span class="sd">        affinity : str, array-like, callable (default 'rbf')</span>
 <span class="sd">            If a ``str``, valid values include</span>
-<span class="sd">            ``{&#39;nearest_neighbors&#39;, &#39;precomputed&#39;, &#39;rbf&#39;}`` or one of the kernels</span>
+<span class="sd">            ``{'nearest_neighbors', 'precomputed', 'rbf'}`` or one of the kernels</span>
 <span class="sd">            supported by ``sklearn.metrics.pairwise_kernels``. Only kernels that</span>
 <span class="sd">            produce similarity scores (non-negative values that increase with</span>
 <span class="sd">            similarity) should be used. *This property is not checked</span>
 <span class="sd">            by the clustering algorithm*.</span>
 <span class="sd">        n_neighbors : int (default 10)</span>
 <span class="sd">            The number of neighbors to use when constructing the affinity matrix using</span>
-<span class="sd">            the nearest neighbors method. Ignored for ``affinity=&#39;rbf&#39;``.</span>
+<span class="sd">            the nearest neighbors method. Ignored for ``affinity='rbf'``.</span>
 <span class="sd">        eigen_tol : float (default 1e-7)</span>
 <span class="sd">            Stopping criterion for eigen decomposition of the Laplacian matrix</span>
-<span class="sd">            when using ``&#39;arpack&#39;`` as the ``eigen_solver``.</span>
-<span class="sd">        assign_labels : str (default &#39;discretize&#39;)</span>
+<span class="sd">            when using ``'arpack'`` as the ``eigen_solver``.</span>
+<span class="sd">        assign_labels : str (default 'discretize')</span>
 <span class="sd">            The strategy to use to assign labels in the embedding</span>
 <span class="sd">            space. There are three ways to assign labels after the laplacian</span>
-<span class="sd">            embedding: ``{&#39;kmeans&#39;, &#39;discretize&#39;, &#39;hierarchical&#39;}``:</span>
+<span class="sd">            embedding: ``{'kmeans', 'discretize', 'hierarchical'}``:</span>
 
-<span class="sd">            * ``&#39;kmeans&#39;`` can be applied and is a popular choice. But it can also be sensitive to initialization.</span>
-<span class="sd">            * ``&#39;discretize&#39;`` is another approach which is less sensitive to random initialization, and which usually finds better clusters.</span>
-<span class="sd">            * ``&#39;hierarchical&#39;`` decomposition repeatedly bi-partitions the graph, instead of finding the decomposition all at once, as suggested in :cite:`shi_malik_2000`.</span>
+<span class="sd">            * ``'kmeans'`` can be applied and is a popular choice. But it can also be sensitive to initialization.</span>
+<span class="sd">            * ``'discretize'`` is another approach which is less sensitive to random initialization, and which usually finds better clusters.</span>
+<span class="sd">            * ``'hierarchical'`` decomposition repeatedly bi-partitions the graph, instead of finding the decomposition all at once, as suggested in :cite:`shi_malik_2000`.</span>
 
 <span class="sd">        degree : float (default 3)</span>
 <span class="sd">            Degree of the polynomial affinity kernel. Ignored by other kernels.</span>
@@ -296,7 +297,7 @@
 <span class="sd">        * :cite:`von2007tutorial` A Tutorial on Spectral Clustering, 2007 Ulrike von Luxburg – https://doi.org/10.1007/s11222-007-9033-z</span>
 <span class="sd">        * :cite:`yu_shi_2003` Multiclass spectral clustering, 2003 Stella X. Yu, Jianbo Shi – https://doi.org/10.1109/ICCV.2003.1238361</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">        """</span>  <span class="c1"># noqa: E501</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
@@ -319,7 +320,7 @@
 <div class="viewcode-block" id="Spenc.solve">
 <a class="viewcode-back" href="../../../generated/spopt.region.Spenc.html#spopt.region.Spenc.solve">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">()):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Solve the spenc.</span>
+<span class="w">        </span><span class="sd">"""Solve the spenc.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -327,7 +328,7 @@
 <span class="sd">        fit_kwargs : dict</span>
 <span class="sd">            Keyword arguments passed into ``spenclib.abstracts.SPENC.fit()``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
@@ -367,7 +368,7 @@
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

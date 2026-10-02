@@ -5,16 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Ward &#8212; spopt v0.7.0 Manual</title>
+    <title>Ward &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -91,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -160,7 +163,7 @@ Interactive online version:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -225,7 +228,7 @@ spopt    : 0.6.2.dev3+g13ca45e
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>load_example(&quot;AirBnB&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>load_example("AirBnB")
 </pre></div>
 </div>
 </div>
@@ -242,16 +245,16 @@ spopt    : 0.6.2.dev3+g13ca45e
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pth = libpysal.examples.get_path(&quot;airbnb_Chicago 2015.shp&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pth = libpysal.examples.get_path("airbnb_Chicago 2015.shp")
 chicago = geopandas.read_file(pth)
 chicago.plot(
     figsize=(7, 14),
-    column=&quot;num_spots&quot;,
-    scheme=&quot;Quantiles&quot;,
-    cmap=&quot;GnBu&quot;,
-    edgecolor=&quot;grey&quot;,
+    column="num_spots",
+    scheme="Quantiles",
+    cmap="GnBu",
+    edgecolor="grey",
     legend=True,
-).axis(&quot;off&quot;);
+).axis("off");
 </pre></div>
 </div>
 </div>
@@ -259,7 +262,7 @@ chicago.plot(
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_ward_5_0.png" class="no-scaled-link" src="../_images/notebooks_ward_5_0.png" style="width: 562px; height: 682px;" />
+<img alt="../_images/notebooks_ward_5_0.png" class="no-scaled-link" height="682" src="../_images/notebooks_ward_5_0.png" width="562" />
 </div>
 </div>
 </section>
@@ -271,7 +274,7 @@ chicago.plot(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = [&quot;num_spots&quot;]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = ["num_spots"]
 </pre></div>
 </div>
 </div>
@@ -309,7 +312,7 @@ model.solve()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[&quot;ward_new&quot;] = model.labels_
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago["ward_new"] = model.labels_
 </pre></div>
 </div>
 </div>
@@ -317,8 +320,8 @@ model.solve()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[&quot;number&quot;] = 1
-chicago[[&quot;ward_new&quot;, &quot;number&quot;]].groupby(by=&quot;ward_new&quot;).count()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago["number"] = 1
+chicago[["ward_new", "number"]].groupby(by="ward_new").count()
 </pre></div>
 </div>
 </div>
@@ -381,8 +384,8 @@ chicago[[&quot;ward_new&quot;, &quot;number&quot;]].groupby(by=&quot;ward_new&qu
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago.plot(figsize=(7, 14), column=&quot;ward_new&quot;, categorical=True, edgecolor=&quot;w&quot;).axis(
-    &quot;off&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago.plot(figsize=(7, 14), column="ward_new", categorical=True, edgecolor="w").axis(
+    "off"
 );
 </pre></div>
 </div>
@@ -391,7 +394,7 @@ chicago[[&quot;ward_new&quot;, &quot;number&quot;]].groupby(by=&quot;ward_new&qu
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_ward_19_0.png" class="no-scaled-link" src="../_images/notebooks_ward_19_0.png" style="width: 562px; height: 682px;" />
+<img alt="../_images/notebooks_ward_19_0.png" class="no-scaled-link" height="682" src="../_images/notebooks_ward_19_0.png" width="562" />
 </div>
 </div>
 <p>The model solution results in five clusters, two of which have three communities, one with two, one with seven, and one with sixty-two communities.</p>
@@ -418,7 +421,7 @@ chicago[[&quot;ward_new&quot;, &quot;number&quot;]].groupby(by=&quot;ward_new&qu
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

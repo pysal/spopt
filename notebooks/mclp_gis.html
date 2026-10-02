@@ -5,16 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Siting Restaurants with MCLP in San Francisco &#8212; spopt v0.7.0 Manual</title>
+    <title>Siting Restaurants with MCLP in San Francisco &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -91,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -170,7 +173,7 @@ Interactive online version:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -245,8 +248,8 @@ shapely  : 2.1.0
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>SF_MISSION_BERNAL = {
-    &quot;type&quot;: &quot;Polygon&quot;,
-    &quot;coordinates&quot;: [
+    "type": "Polygon",
+    "coordinates": [
         [
             [-122.405115, 37.764635],
             [-122.405212, 37.763469],
@@ -320,7 +323,7 @@ shapely  : 2.1.0
     ],
 }
 
-SF_MISSION_BERNAL = str(SF_MISSION_BERNAL).replace(&quot;&#39;&quot;, &#39;&quot;&#39;)
+SF_MISSION_BERNAL = str(SF_MISSION_BERNAL).replace("'", '"')
 SF_MISSION_BERNAL
 </pre></div>
 </div>
@@ -430,24 +433,24 @@ households[:5]
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>m = folium.Map(
-    location=[37.748273, -122.410558], tiles=&quot;cartodbpositron&quot;, zoom_start=15
+    location=[37.748273, -122.410558], tiles="cartodbpositron", zoom_start=15
 )
 
 folium.GeoJson(
     data=SF_MISSION_BERNAL,
-    name=&quot;Mission District &amp; Bernal Heights&quot;,
-    style_function=lambda x: {&quot;color&quot;: &quot;darksalmon&quot;, &quot;fillColor&quot;: &quot;darksalmon&quot;},  # noqa: ARG005
+    name="Mission District &amp; Bernal Heights",
+    style_function=lambda x: {"color": "darksalmon", "fillColor": "darksalmon"},  # noqa: ARG005
 ).add_to(m)
 
-households_fg = folium.FeatureGroup(&quot;Households&quot;).add_to(m)
+households_fg = folium.FeatureGroup("Households").add_to(m)
 for coord in households:
     folium.CircleMarker(
         location=[coord[1], coord[0]],
         radius=3,
         fill=True,
         fill_opacity=1,
-        popup=folium.Popup(&quot;Random Household&quot;, show=False),
-        color=&quot;cornflowerblue&quot;,
+        popup=folium.Popup("Random Household", show=False),
+        color="cornflowerblue",
     ).add_to(households_fg)
 m
 </pre></div>
@@ -5210,15 +5213,15 @@ n_rests = len(restaurants)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>restaurants_fg = folium.FeatureGroup(&quot;Restaurants&quot;).add_to(m)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>restaurants_fg = folium.FeatureGroup("Restaurants").add_to(m)
 for i, coord in enumerate(restaurants):
     folium.CircleMarker(
         location=[coord[1], coord[0]],
         radius=5,
         fill=True,
         fill_opacity=1,
-        popup=folium.Popup(f&quot;Potential Restaurant ({i})&quot;, show=False),
-        color=&quot;crimson&quot;,
+        popup=folium.Popup(f"Potential Restaurant ({i})", show=False),
+        color="crimson",
     ).add_to(restaurants_fg)
 m
 </pre></div>
@@ -10221,13 +10224,13 @@ target_indices = list(range(NUM_HOUSEHOLDS, len(all_locations)))
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>client = OSRM(base_url=&quot;https://router.project-osrm.org&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>client = OSRM(base_url="https://router.project-osrm.org")
 osrm_routing_matrix = client.matrix(
     dry_run=False,
     locations=all_locations,
     sources=source_indices,
     destinations=target_indices,
-    profile=&quot;foot&quot;,
+    profile="foot",
 )
 cost_matrix = numpy.array(osrm_routing_matrix.durations)
 </pre></div>
@@ -10273,9 +10276,9 @@ mclp = mclp.solve(solver)
 minutes = int(SERVICE_RADIUS / 60)
 obj_perc = mclp.perc_cov
 print(
-    f&quot;Of the {NUM_HOUSEHOLDS} households, {obj_val} have access to at least 1 &quot;
-    f&quot;restaurant within a {minutes}-minute walk along the street network when &quot;
-    f&quot;siting {P_FACILITIES} restaurants. This accounts for {obj_perc}% coverage.&quot;
+    f"Of the {NUM_HOUSEHOLDS} households, {obj_val} have access to at least 1 "
+    f"restaurant within a {minutes}-minute walk along the street network when "
+    f"siting {P_FACILITIES} restaurants. This accounts for {obj_perc}% coverage."
 )
 </pre></div>
 </div>
@@ -10293,20 +10296,20 @@ Of the 200 households, 155 have access to at least 1 restaurant within a 3-minut
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sited_restaurants_fg = folium.FeatureGroup(&quot;Sited Restaurants&quot;).add_to(m)
-allocated_households_demand_fg = folium.FeatureGroup(&quot;Allocated Households&quot;).add_to(m)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sited_restaurants_fg = folium.FeatureGroup("Sited Restaurants").add_to(m)
+allocated_households_demand_fg = folium.FeatureGroup("Allocated Households").add_to(m)
 solution = {}
 colors = [
-    &quot;darkcyan&quot;,
-    &quot;saddlebrown&quot;,
-    &quot;lavender&quot;,
-    &quot;lightskyblue&quot;,
-    &quot;mediumseagreen&quot;,
-    &quot;coral&quot;,
-    &quot;blueviolet&quot;,
-    &quot;darkgoldenrod&quot;,
-    &quot;mediumvioletred&quot;,
-    &quot;mediumorchid&quot;,
+    "darkcyan",
+    "saddlebrown",
+    "lavender",
+    "lightskyblue",
+    "mediumseagreen",
+    "coral",
+    "blueviolet",
+    "darkgoldenrod",
+    "mediumvioletred",
+    "mediumorchid",
 ]
 for i in range(n_rests):
     if mclp.fac2cli[i]:
@@ -10314,7 +10317,7 @@ for i in range(n_rests):
             location=[restaurants[i][1], restaurants[i][0]],
             radius=30,
             fill=True,
-            popup=folium.Popup(f&quot;Sited Restaurant ({i})&quot;, show=True),
+            popup=folium.Popup(f"Sited Restaurant ({i})", show=True),
             color=colors[i],
         ).add_to(sited_restaurants_fg)
         solution[i] = []
@@ -10324,7 +10327,7 @@ for i in range(n_rests):
                 location=[households[j][1], households[j][0]],
                 radius=10,
                 fill=True,
-                popup=&quot;Household&quot;,
+                popup="Household",
                 color=colors[i],
             ).add_to(allocated_households_demand_fg)
 folium.LayerControl().add_to(m)
@@ -19269,7 +19272,7 @@ m
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

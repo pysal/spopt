@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Backup Coverage Location Problem: An Empirical Example &#8212; spopt v0.7.0 Manual</title>
+    <title>Backup Coverage Location Problem: An Empirical Example &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -44,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -93,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -168,7 +169,7 @@ Interactive online version:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -251,7 +252,7 @@ pandas             : 2.2.3
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>DIRPATH = &quot;../spopt/tests/data/&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>DIRPATH = "../spopt/tests/data/"
 </pre></div>
 </div>
 </div>
@@ -261,7 +262,7 @@ pandas             : 2.2.3
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>network_distance = pandas.read_csv(
-    DIRPATH + &quot;SF_network_distance_candidateStore_16_censusTract_205_new.csv&quot;
+    DIRPATH + "SF_network_distance_candidateStore_16_censusTract_205_new.csv"
 )
 network_distance
 </pre></div>
@@ -385,7 +386,7 @@ network_distance
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>demand_points = pandas.read_csv(
-    DIRPATH + &quot;SF_demand_205_centroid_uniform_weight.csv&quot;, index_col=0
+    DIRPATH + "SF_demand_205_centroid_uniform_weight.csv", index_col=0
 )
 demand_points = demand_points.reset_index(drop=True)
 demand_points
@@ -593,7 +594,7 @@ demand_points
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points = pandas.read_csv(DIRPATH + &quot;SF_store_site_16_longlat.csv&quot;, index_col=0)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points = pandas.read_csv(DIRPATH + "SF_store_site_16_longlat.csv", index_col=0)
 facility_points = facility_points.reset_index(drop=True)
 facility_points
 </pre></div>
@@ -750,7 +751,7 @@ facility_points
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>study_area = geopandas.read_file(DIRPATH + &quot;ServiceAreas_4.shp&quot;).dissolve()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>study_area = geopandas.read_file(DIRPATH + "ServiceAreas_4.shp").dissolve()
 study_area
 </pre></div>
 </div>
@@ -796,7 +797,7 @@ study_area
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>base = study_area.plot()
-base.axis(&quot;off&quot;);
+base.axis("off");
 </pre></div>
 </div>
 </div>
@@ -804,7 +805,7 @@ base.axis(&quot;off&quot;);
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_facloc-lscpb-real-world_14_0.png" class="no-scaled-link" src="../_images/notebooks_facloc-lscpb-real-world_14_0.png" style="width: 318px; height: 389px;" />
+<img alt="../_images/notebooks_facloc-lscpb-real-world_14_0.png" class="no-scaled-link" height="389" src="../_images/notebooks_facloc-lscpb-real-world_14_0.png" width="318" />
 </div>
 </div>
 <p>To start modeling the problem assuming the arguments expected by <code class="docutils literal notranslate"><span class="pre">spopt.locate</span></code>, we should pass a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> 2D array as a cost matrix. So, first we pivot the network_distance dataframe.</p>
@@ -814,7 +815,7 @@ base.axis(&quot;off&quot;);
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ntw_dist_piv = network_distance.pivot_table(
-    values=&quot;distance&quot;, index=&quot;DestinationName&quot;, columns=&quot;name&quot;
+    values="distance", index="DestinationName", columns="name"
 )
 ntw_dist_piv
 </pre></div>
@@ -1147,7 +1148,7 @@ n_fac_pnts = facility_points.shape[0]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>process = lambda df: as_gdf(df).sort_values(by=[&quot;NAME&quot;]).reset_index(drop=True)  # noqa: E731
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>process = lambda df: as_gdf(df).sort_values(by=["NAME"]).reset_index(drop=True)  # noqa: E731
 as_gdf = lambda df: geopandas.GeoDataFrame(df, geometry=pnts(df))  # noqa: E731
 pnts = lambda df: geopandas.points_from_xy(df.long, df.lat)  # noqa: E731
 </pre></div>
@@ -1168,8 +1169,8 @@ demand_points = process(demand_points)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for _df in [facility_points, demand_points, study_area]:
-    _df.set_crs(&quot;EPSG:4326&quot;, inplace=True)
-    _df.to_crs(&quot;EPSG:7131&quot;, inplace=True)
+    _df.set_crs("EPSG:4326", inplace=True)
+    _df.to_crs("EPSG:7131", inplace=True)
 </pre></div>
 </div>
 </div>
@@ -1220,11 +1221,11 @@ lscpb_obj = lscpb.problem.objective.value()
 lscpb_lscp = lscpb.lscp_obj_value
 lscpb_perc = round(lscpb.backup_perc, 3)
 print(
-    &quot;The minimum number of facilites needed to achieve complete &quot;
-    f&quot;coverage within a distance units service radius of {SERVICE_RADIUS} &quot;
-    f&quot;are {lscp_obj} and {lscpb_lscp} for the LSCP and LSCP-B, &quot;
-    &quot;respectively. However, with the LSCP-B we observe coverage by more &quot;
-    f&quot;than one facility at {lscpb_perc}% of client locations.&quot;
+    "The minimum number of facilites needed to achieve complete "
+    f"coverage within a distance units service radius of {SERVICE_RADIUS} "
+    f"are {lscp_obj} and {lscpb_lscp} for the LSCP and LSCP-B, "
+    "respectively. However, with the LSCP-B we observe coverage by more "
+    f"than one facility at {lscpb_perc}% of client locations."
 )
 </pre></div>
 </div>
@@ -1242,9 +1243,9 @@ The minimum number of facilites needed to achieve complete coverage within a dis
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points[&quot;dv&quot;] = lscpb.fac_vars
-facility_points[&quot;dv&quot;] = facility_points[&quot;dv&quot;].map(
-    lambda x: x.name.replace(&quot;_&quot;, &quot;&quot;).replace(&quot;x&quot;, &quot;y&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points["dv"] = lscpb.fac_vars
+facility_points["dv"] = facility_points["dv"].map(
+    lambda x: x.name.replace("_", "").replace("x", "y")
 )
 facility_points
 </pre></div>
@@ -1440,8 +1441,8 @@ facility_points
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points[&quot;predefined_loc&quot;] = 0
-facility_points.loc[(11, 15), &quot;predefined_loc&quot;] = 1
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points["predefined_loc"] = 0
+facility_points.loc[(11, 15), "predefined_loc"] = 1
 facility_points
 </pre></div>
 </div>
@@ -1650,8 +1651,8 @@ facility_points
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lscp_pre = LSCP.from_cost_matrix(
     cost_matrix,
     SERVICE_RADIUS,
-    predefined_facilities_arr=facility_points[&quot;predefined_loc&quot;].values,
-    name=&quot;lscp-predefined&quot;,
+    predefined_facilities_arr=facility_points["predefined_loc"].values,
+    name="lscp-predefined",
 )
 lscp_pre = lscp_pre.solve(solver)
 </pre></div>
@@ -1665,8 +1666,8 @@ lscp_pre = lscp_pre.solve(solver)
     cost_matrix,
     SERVICE_RADIUS,
     solver=solver,
-    predefined_facilities_arr=facility_points[&quot;predefined_loc&quot;].values,
-    name=&quot;lscp-b-predefined&quot;,
+    predefined_facilities_arr=facility_points["predefined_loc"].values,
+    name="lscp-b-predefined",
 )
 lscpb_pre = lscpb_pre.solve()
 </pre></div>
@@ -1681,11 +1682,11 @@ lscpb_obj = lscpb_pre.problem.objective.value()
 lscpb_lscp = lscpb_pre.lscp_obj_value
 lscpb_perc = round(lscpb_pre.backup_perc, 3)
 print(
-    &quot;The minimum number of facilites needed to achieve complete &quot;
-    f&quot;coverage within a distance units service radius of {SERVICE_RADIUS} &quot;
-    f&quot;are {lscp_obj} and {lscpb_lscp} for the LSCP and LSCP-B, &quot;
-    &quot;respectively. However, with the LSCP-B we observe coverage by more &quot;
-    f&quot;than one facility at {lscpb_perc}% of client locations.&quot;
+    "The minimum number of facilites needed to achieve complete "
+    f"coverage within a distance units service radius of {SERVICE_RADIUS} "
+    f"are {lscp_obj} and {lscpb_lscp} for the LSCP and LSCP-B, "
+    "respectively. However, with the LSCP-B we observe coverage by more "
+    f"than one facility at {lscpb_perc}% of client locations."
 )
 </pre></div>
 </div>
@@ -1706,24 +1707,24 @@ The minimum number of facilites needed to achieve complete coverage within a dis
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dv_colors_arr = [
-    &quot;darkcyan&quot;,
-    &quot;mediumseagreen&quot;,
-    &quot;saddlebrown&quot;,
-    &quot;darkslategray&quot;,
-    &quot;lightskyblue&quot;,
-    &quot;thistle&quot;,
-    &quot;lavender&quot;,
-    &quot;darkgoldenrod&quot;,
-    &quot;peachpuff&quot;,
-    &quot;coral&quot;,
-    &quot;mediumvioletred&quot;,
-    &quot;blueviolet&quot;,
-    &quot;fuchsia&quot;,
-    &quot;cyan&quot;,
-    &quot;limegreen&quot;,
-    &quot;mediumorchid&quot;,
+    "darkcyan",
+    "mediumseagreen",
+    "saddlebrown",
+    "darkslategray",
+    "lightskyblue",
+    "thistle",
+    "lavender",
+    "darkgoldenrod",
+    "peachpuff",
+    "coral",
+    "mediumvioletred",
+    "blueviolet",
+    "fuchsia",
+    "cyan",
+    "limegreen",
+    "mediumorchid",
 ]
-dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_arr))}
+dv_colors = {f"y{i}": dv_colors_arr[i] for i in range(len(dv_colors_arr))}
 dv_colors
 </pre></div>
 </div>
@@ -1757,13 +1758,13 @@ dv_colors
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def plot_results(model, p, facs, clis=None, ax=None):
-    &quot;&quot;&quot;Visualize optimal solution sets and context.&quot;&quot;&quot;
+    """Visualize optimal solution sets and context."""
     if not ax:
         multi_plot = False
         fig, ax = plt.subplots(figsize=(6, 9))
         markersize, markersize_factor = 4, 4
     else:
-        ax.axis(&quot;off&quot;)
+        ax.axis("off")
         multi_plot = True
         markersize, markersize_factor = 2, 2
     ax.set_title(model.name, fontsize=15)
@@ -1775,44 +1776,44 @@ dv_colors
     fac_sites = {}
     for i, dv in enumerate(model.fac_vars):
         if dv.varValue:
-            dv, predef = facs.loc[i, [&quot;dv&quot;, &quot;predefined_loc&quot;]]
+            dv, predef = facs.loc[i, ["dv", "predefined_loc"]]
             fac_sites[dv] = [i, predef]
             if plot_clis:
-                geom = clis.iloc[model.fac2cli[i]][&quot;geometry&quot;]
+                geom = clis.iloc[model.fac2cli[i]]["geometry"]
                 cli_points[dv] = geom
 
     # study area and legend entries initialization
-    study_area.plot(ax=ax, alpha=0.5, fc=&quot;tan&quot;, ec=&quot;k&quot;, zorder=1)
-    _patch = Patch(alpha=0.5, fc=&quot;tan&quot;, ec=&quot;k&quot;, label=&quot;Dissolved Service Areas&quot;)
+    study_area.plot(ax=ax, alpha=0.5, fc="tan", ec="k", zorder=1)
+    _patch = Patch(alpha=0.5, fc="tan", ec="k", label="Dissolved Service Areas")
     legend_elements = [_patch]
 
-    if plot_clis and model.name.startswith(&quot;mclp&quot;):
+    if plot_clis and model.name.startswith("mclp"):
         # any clients that not asscociated with a facility
-        c = &quot;k&quot;
+        c = "k"
         if model.n_cli_uncov:
             idx = [i for i, v in enumerate(model.cli2fac) if len(v) == 0]
             pnt_kws = {
-                &quot;ax&quot;: ax,
-                &quot;fc&quot;: c,
-                &quot;ec&quot;: c,
-                &quot;marker&quot;: &quot;s&quot;,
-                &quot;markersize&quot;: 7,
-                &quot;zorder&quot;: 2,
+                "ax": ax,
+                "fc": c,
+                "ec": c,
+                "marker": "s",
+                "markersize": 7,
+                "zorder": 2,
             }
             clis.iloc[idx].plot(**pnt_kws)
-        _label = f&quot;Demand sites not covered ($n$={model.n_cli_uncov})&quot;
+        _label = f"Demand sites not covered ($n$={model.n_cli_uncov})"
         _mkws = {
-            &quot;marker&quot;: &quot;s&quot;,
-            &quot;markerfacecolor&quot;: c,
-            &quot;markeredgecolor&quot;: c,
-            &quot;linewidth&quot;: 0,
+            "marker": "s",
+            "markerfacecolor": c,
+            "markeredgecolor": c,
+            "linewidth": 0,
         }
         legend_elements.append(mlines.Line2D([], [], ms=3, label=_label, **_mkws))
 
     # all candidate facilities
-    facs.plot(ax=ax, fc=&quot;brown&quot;, marker=&quot;*&quot;, markersize=80, zorder=8)
-    _label = f&quot;Facility sites ($n$={len(model.fac_vars)})&quot;
-    _mkws = {&quot;marker&quot;: &quot;*&quot;, &quot;markerfacecolor&quot;: &quot;brown&quot;, &quot;markeredgecolor&quot;: &quot;brown&quot;}
+    facs.plot(ax=ax, fc="brown", marker="*", markersize=80, zorder=8)
+    _label = f"Facility sites ($n$={len(model.fac_vars)})"
+    _mkws = {"marker": "*", "markerfacecolor": "brown", "markeredgecolor": "brown"}
     legend_elements.append(mlines.Line2D([], [], ms=7, lw=0, label=_label, **_mkws))
 
     # facility-(client) symbology and legend entries
@@ -1823,30 +1824,30 @@ dv_colors
             # clients
             geoms = cli_points[fname]
             gdf = geopandas.GeoDataFrame(geoms)
-            gdf.plot(ax=ax, zorder=zorder, ec=&quot;k&quot;, fc=cset, markersize=100 * markersize)
-            _label = f&quot;Demand sites covered by {fname}&quot;
+            gdf.plot(ax=ax, zorder=zorder, ec="k", fc=cset, markersize=100 * markersize)
+            _label = f"Demand sites covered by {fname}"
             _mkws = {
-                &quot;markerfacecolor&quot;: cset,
-                &quot;markeredgecolor&quot;: &quot;k&quot;,
-                &quot;ms&quot;: markersize + 7,
+                "markerfacecolor": cset,
+                "markeredgecolor": "k",
+                "ms": markersize + 7,
             }
             legend_elements.append(
-                mlines.Line2D([], [], marker=&quot;o&quot;, lw=0, label=_label, **_mkws)
+                mlines.Line2D([], [], marker="o", lw=0, label=_label, **_mkws)
             )
         # facilities
-        ec = &quot;k&quot;
+        ec = "k"
         lw = 2
-        predef_label = &quot;predefined&quot;
+        predef_label = "predefined"
         if model.name.endswith(predef_label) and predef:
-            ec = &quot;r&quot;
+            ec = "r"
             lw = 3
-            fname += f&quot; ({predef_label})&quot;
+            fname += f" ({predef_label})"
         facs.iloc[[fac]].plot(
-            ax=ax, marker=&quot;*&quot;, markersize=1000, zorder=9, fc=cset, ec=ec, lw=lw
+            ax=ax, marker="*", markersize=1000, zorder=9, fc=cset, ec=ec, lw=lw
         )
-        _mkws = {&quot;markerfacecolor&quot;: cset, &quot;markeredgecolor&quot;: ec, &quot;markeredgewidth&quot;: lw}
+        _mkws = {"markerfacecolor": cset, "markeredgecolor": ec, "markeredgewidth": lw}
         legend_elements.append(
-            mlines.Line2D([], [], marker=&quot;*&quot;, ms=20, lw=0, label=fname, **_mkws)
+            mlines.Line2D([], [], marker="*", ms=20, lw=0, label=fname, **_mkws)
         )
         # increment zorder up and markersize down for stacked client symbology
         zorder += 1
@@ -1855,7 +1856,7 @@ dv_colors
 
     if not multi_plot:
         # legend
-        kws = {&quot;loc&quot;: &quot;upper left&quot;, &quot;bbox_to_anchor&quot;: (1.05, 0.7)}
+        kws = {"loc": "upper left", "bbox_to_anchor": (1.05, 0.7)}
         plt.legend(handles=legend_elements, **kws)
 </pre></div>
 </div>
@@ -1876,7 +1877,7 @@ dv_colors
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_facloc-lscpb-real-world_45_0.png" class="no-scaled-link" src="../_images/notebooks_facloc-lscpb-real-world_45_0.png" style="width: 804px; height: 760px;" />
+<img alt="../_images/notebooks_facloc-lscpb-real-world_45_0.png" class="no-scaled-link" height="760" src="../_images/notebooks_facloc-lscpb-real-world_45_0.png" width="804" />
 </div>
 </div>
 </section>
@@ -1894,7 +1895,7 @@ dv_colors
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_facloc-lscpb-real-world_47_0.png" class="no-scaled-link" src="../_images/notebooks_facloc-lscpb-real-world_47_0.png" style="width: 795px; height: 760px;" />
+<img alt="../_images/notebooks_facloc-lscpb-real-world_47_0.png" class="no-scaled-link" height="760" src="../_images/notebooks_facloc-lscpb-real-world_47_0.png" width="795" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1905,7 +1906,7 @@ dv_colors
 fig.subplots_adjust(wspace=-0.25)
 for i, m in enumerate([lscp, lscpb]):
     _p = (
-        m.lscp_obj_value if m.name.startswith(&quot;lscp-b&quot;) else m.problem.objective.value()
+        m.lscp_obj_value if m.name.startswith("lscp-b") else m.problem.objective.value()
     )
     plot_results(m, _p, facility_points, clis=demand_points, ax=axarr[i])
 </pre></div>
@@ -1915,7 +1916,7 @@ for i, m in enumerate([lscp, lscpb]):
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_facloc-lscpb-real-world_48_0.png" class="no-scaled-link" src="../_images/notebooks_facloc-lscpb-real-world_48_0.png" style="width: 714px; height: 505px;" />
+<img alt="../_images/notebooks_facloc-lscpb-real-world_48_0.png" class="no-scaled-link" height="505" src="../_images/notebooks_facloc-lscpb-real-world_48_0.png" width="714" />
 </div>
 </div>
 <p>In both the LSCP and LSCP-B solutions facility <span class="math notranslate nohighlight">\(y_1\)</span> is included. However, <span class="math notranslate nohighlight">\(y_4\)</span> and <span class="math notranslate nohighlight">\(y_{10}\)</span> in the LSCP solution are swapped out for <span class="math notranslate nohighlight">\(y_3\)</span> and <span class="math notranslate nohighlight">\(y_5\)</span> in the LSCP-B solution to maximize backup coverage.</p>
@@ -1940,7 +1941,7 @@ for i, m in enumerate([lscp, lscpb]):
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_facloc-lscpb-real-world_50_0.png" class="no-scaled-link" src="../_images/notebooks_facloc-lscpb-real-world_50_0.png" style="width: 804px; height: 760px;" />
+<img alt="../_images/notebooks_facloc-lscpb-real-world_50_0.png" class="no-scaled-link" height="760" src="../_images/notebooks_facloc-lscpb-real-world_50_0.png" width="804" />
 </div>
 </div>
 </section>
@@ -1958,7 +1959,7 @@ for i, m in enumerate([lscp, lscpb]):
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_facloc-lscpb-real-world_52_0.png" class="no-scaled-link" src="../_images/notebooks_facloc-lscpb-real-world_52_0.png" style="width: 804px; height: 760px;" />
+<img alt="../_images/notebooks_facloc-lscpb-real-world_52_0.png" class="no-scaled-link" height="760" src="../_images/notebooks_facloc-lscpb-real-world_52_0.png" width="804" />
 </div>
 </div>
 </section>
@@ -1973,7 +1974,7 @@ for i, m in enumerate([lscp, lscpb]):
 fig.subplots_adjust(wspace=-0.25)
 for i, m in enumerate([lscp_pre, lscpb_pre]):
     _p = (
-        m.lscp_obj_value if m.name.startswith(&quot;lscp-b&quot;) else m.problem.objective.value()
+        m.lscp_obj_value if m.name.startswith("lscp-b") else m.problem.objective.value()
     )
     plot_results(m, _p, facility_points, clis=demand_points, ax=axarr[i])
 </pre></div>
@@ -1983,7 +1984,7 @@ for i, m in enumerate([lscp_pre, lscpb_pre]):
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_facloc-lscpb-real-world_54_0.png" class="no-scaled-link" src="../_images/notebooks_facloc-lscpb-real-world_54_0.png" style="width: 714px; height: 505px;" />
+<img alt="../_images/notebooks_facloc-lscpb-real-world_54_0.png" class="no-scaled-link" height="505" src="../_images/notebooks_facloc-lscpb-real-world_54_0.png" width="714" />
 </div>
 </div>
 <p>When stipulating that <span class="math notranslate nohighlight">\(y_{11}\)</span> and <span class="math notranslate nohighlight">\(y_{15}\)</span> must be included in the solution, the minimum number of facilities increases to 4, but as a result backup coverage also increases. Here we can see that facility <span class="math notranslate nohighlight">\(y_1\)</span> is again present in both solutions, where the LSCP opts for <span class="math notranslate nohighlight">\(y_6\)</span> and the LSCP-B opts for <span class="math notranslate nohighlight">\(y_3\)</span>.</p>
@@ -2019,7 +2020,7 @@ solvers
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>results = pandas.DataFrame(
-    columns=[&quot;Solution Facilities&quot;, &quot;Backup %&quot;, &quot;Solve Time (sec.)&quot;], index=solvers
+    columns=["Solution Facilities", "Backup %", "Solve Time (sec.)"], index=solvers
 )
 for solver in solvers:
     _solver = pulp.getSolver(solver, msg=False)
@@ -2233,7 +2234,7 @@ Solving report
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

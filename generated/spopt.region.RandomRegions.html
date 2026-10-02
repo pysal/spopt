@@ -5,17 +5,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>spopt.region.RandomRegions &#8212; spopt v0.7.0 Manual</title>
+    <title>spopt.region.RandomRegions &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -43,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -92,6 +92,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
@@ -153,42 +154,42 @@
 <h1>spopt.region.RandomRegions<a class="headerlink" href="#spopt-region-randomregions" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="spopt.region.RandomRegions">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spopt.region.</span></span><span class="sig-name descname"><span class="pre">RandomRegions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">area_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_regions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cardinality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contiguity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compact</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_swaps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">99</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/random_region.html#RandomRegions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.region.RandomRegions" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">spopt.region.</span></span><span class="sig-name descname"><span class="pre">RandomRegions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">area_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_regions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cardinality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contiguity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compact</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_swaps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">99</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/region/random_region.html#RandomRegions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.region.RandomRegions" title="Link to this definition">¶</a></dt>
 <dd><p>Generate a list of RandomRegion instances.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>area_ids</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>The IDs indexing the areas to be grouped into regions (must be in
+<dt><strong>area_ids</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>The IDs indexing the areas to be grouped into regions (must be in
 the same order as spatial weights matrix if this is provided).</p>
 </dd>
-<dt><strong>num_regions</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>The number of regions to generate (if <code class="docutils literal notranslate"><span class="pre">None</span></code> then this is chosen
+<dt><strong>num_regions</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>The number of regions to generate (if <code class="docutils literal notranslate"><span class="pre">None</span></code> then this is chosen
 randomly from 2 to <span class="math notranslate nohighlight">\(n\)</span> where <span class="math notranslate nohighlight">\(n\)</span> is the number of areas).</p>
 </dd>
-<dt><strong>cardinality</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>A list containing the number of areas to assign to regions
+<dt><strong>cardinality</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> (default <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>A list containing the number of areas to assign to regions
 (if <code class="docutils literal notranslate"><span class="pre">num_regions</span></code> is also provided then <code class="docutils literal notranslate"><span class="pre">len(cardinality)</span></code>
 must equal <code class="docutils literal notranslate"><span class="pre">num_regions</span></code>; if <code class="docutils literal notranslate"><span class="pre">None</span></code> then a list of length
 <code class="docutils literal notranslate"><span class="pre">num_regions</span></code> will be generated randomly).</p>
 </dd>
-<dt><strong>contiguity</strong><span class="classifier"><a class="reference external" href="https://pysal.org/libpysal/generated/libpysal.weights.W.html#libpysal.weights.W" title="(in libpysal v4.13.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code></a> (default <a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>A spatial weights object (if <code class="docutils literal notranslate"><span class="pre">None</span></code> then contiguity will be ignored).</p>
+<dt><strong>contiguity</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code> (default <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd><p>A spatial weights object (if <code class="docutils literal notranslate"><span class="pre">None</span></code> then contiguity will be ignored).</p>
 </dd>
-<dt><strong>maxiter</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 100)</span></dt><dd><p>The maximum number attempts (for each permutation) at finding
+<dt><strong>maxiter</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 100)</span></dt><dd><p>The maximum number attempts (for each permutation) at finding
 a feasible solution (only affects contiguity constrained regions).</p>
 </dd>
-<dt><strong>compact</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.13)"><span class="xref std std-ref">bool</span></a> (default <a class="reference external" href="https://docs.python.org/3.13/library/constants.html#False" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">False</span></code></a>)</span></dt><dd><p>Attempt to build compact regions (only affects contiguity constrained regions).</p>
+<dt><strong>compact</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a> (default <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#False" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">False</span></code></a>)</span></dt><dd><p>Attempt to build compact regions (only affects contiguity constrained regions).</p>
 </dd>
-<dt><strong>max_swaps</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 1000000)</span></dt><dd><p>The maximum number of swaps to find a feasible solution
+<dt><strong>max_swaps</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 1000000)</span></dt><dd><p>The maximum number of swaps to find a feasible solution
 (only affects contiguity constrained regions).</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 99)</span></dt><dd><p>The number of <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instances to generate.</p>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> (default 99)</span></dt><dd><p>The number of <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instances to generate.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Attributes<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>solutions</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>A list of length <code class="docutils literal notranslate"><span class="pre">permutations</span></code> containing all
+<dt><strong>solutions</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>A list of length <code class="docutils literal notranslate"><span class="pre">permutations</span></code> containing all
 <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instances generated.</p>
 </dd>
-<dt><strong>solutions_feas</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>A list of the <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instances that resulted in feasible solutions.</p>
+<dt><strong>solutions_feas</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>A list of the <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instances that resulted in feasible solutions.</p>
 </dd>
 </dl>
 </dd>
@@ -301,7 +302,7 @@ a feasible solution (only affects contiguity constrained regions).</p>
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

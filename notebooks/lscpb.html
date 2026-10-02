@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>The Backup Coverage Location Problem (LSCP-B) &#8212; spopt v0.7.0 Manual</title>
+    <title>The Backup Coverage Location Problem (LSCP-B) &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -44,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -93,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -195,7 +196,7 @@ U_i \leq 1 \quad \forall i \in I
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -240,7 +241,7 @@ import spopt
 from spopt.locate import LSCP, LSCPB, simulated_geo_points
 
 with warnings.catch_warnings():
-    warnings.simplefilter(&quot;ignore&quot;)
+    warnings.simplefilter("ignore")
     # ignore deprecation warning - GH pysal/spaghetti#649
     import spaghetti
 
@@ -297,7 +298,7 @@ solver = pulp.COIN_CMD(msg=False, warmStart=True)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with warnings.catch_warnings():
-    warnings.simplefilter(&quot;ignore&quot;)
+    warnings.simplefilter("ignore")
     # ignore deprecation warning - GH pysal/libpysal#468
     lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
 ntw = spaghetti.Network(in_data=lattice)
@@ -318,9 +319,9 @@ ntw = spaghetti.Network(in_data=lattice)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>streets_buffered = geopandas.GeoDataFrame(
-    geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.5).union_all()),
+    geopandas.GeoSeries(streets["geometry"].buffer(0.5).union_all()),
     crs=streets.crs,
-    columns=[&quot;geometry&quot;],
+    columns=["geometry"],
 )
 </pre></div>
 </div>
@@ -338,7 +339,7 @@ ntw = spaghetti.Network(in_data=lattice)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_lscpb_11_0.png" class="no-scaled-link" src="../_images/notebooks_lscpb_11_0.png" style="width: 416px; height: 413px;" />
+<img alt="../_images/notebooks_lscpb_11_0.png" class="no-scaled-link" height="413" src="../_images/notebooks_lscpb_11_0.png" width="416" />
 </div>
 </div>
 </section>
@@ -364,15 +365,15 @@ facility_points = simulated_geo_points(
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(6, 6))
-streets.plot(ax=ax, alpha=0.8, zorder=1, label=&quot;streets&quot;)
+streets.plot(ax=ax, alpha=0.8, zorder=1, label="streets")
 facility_points.plot(
     ax=ax,
-    color=&quot;red&quot;,
+    color="red",
     zorder=2,
-    label=f&quot;facility candidate sites ($n$={FACILITY_COUNT})&quot;,
+    label=f"facility candidate sites ($n$={FACILITY_COUNT})",
 )
-client_points.plot(ax=ax, color=&quot;black&quot;, label=f&quot;clients sites ($n$={CLIENT_COUNT})&quot;)
-plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
+client_points.plot(ax=ax, color="black", label=f"clients sites ($n$={CLIENT_COUNT})")
+plt.legend(loc="upper left", bbox_to_anchor=(1.05, 1));
 </pre></div>
 </div>
 </div>
@@ -380,7 +381,7 @@ plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_lscpb_15_0.png" class="no-scaled-link" src="../_images/notebooks_lscpb_15_0.png" style="width: 802px; height: 501px;" />
+<img alt="../_images/notebooks_lscpb_15_0.png" class="no-scaled-link" height="501" src="../_images/notebooks_lscpb_15_0.png" width="802" />
 </div>
 </div>
 </section>
@@ -393,18 +394,18 @@ plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with warnings.catch_warnings():
-    warnings.simplefilter(&quot;ignore&quot;)
+    warnings.simplefilter("ignore")
     # ignore deprecation warning - GH pysal/libpysal#468
-    ntw.snapobservations(client_points, &quot;clients&quot;, attribute=True)
-clients_snapped = spaghetti.element_as_gdf(ntw, pp_name=&quot;clients&quot;, snapped=True)
-clients_snapped.drop(columns=[&quot;id&quot;, &quot;comp_label&quot;], inplace=True)
+    ntw.snapobservations(client_points, "clients", attribute=True)
+clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+clients_snapped.drop(columns=["id", "comp_label"], inplace=True)
 
 with warnings.catch_warnings():
-    warnings.simplefilter(&quot;ignore&quot;)
+    warnings.simplefilter("ignore")
     # ignore deprecation warning - GH pysal/libpysal#468
-    ntw.snapobservations(facility_points, &quot;facilities&quot;, attribute=True)
-facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name=&quot;facilities&quot;, snapped=True)
-facilities_snapped.drop(columns=[&quot;id&quot;, &quot;comp_label&quot;], inplace=True)
+    ntw.snapobservations(facility_points, "facilities", attribute=True)
+facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+facilities_snapped.drop(columns=["id", "comp_label"], inplace=True)
 </pre></div>
 </div>
 </div>
@@ -414,15 +415,15 @@ facilities_snapped.drop(columns=[&quot;id&quot;, &quot;comp_label&quot;], inplac
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(6, 6))
-streets.plot(ax=ax, alpha=0.8, zorder=1, label=&quot;streets&quot;)
+streets.plot(ax=ax, alpha=0.8, zorder=1, label="streets")
 facilities_snapped.plot(
     ax=ax,
-    color=&quot;red&quot;,
+    color="red",
     zorder=2,
-    label=f&quot;facility candidate sites ($n$={FACILITY_COUNT})&quot;,
+    label=f"facility candidate sites ($n$={FACILITY_COUNT})",
 )
-clients_snapped.plot(ax=ax, color=&quot;black&quot;, label=f&quot;clients sites ($n$={CLIENT_COUNT})&quot;)
-plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
+clients_snapped.plot(ax=ax, color="black", label=f"clients sites ($n$={CLIENT_COUNT})")
+plt.legend(loc="upper left", bbox_to_anchor=(1.05, 1));
 </pre></div>
 </div>
 </div>
@@ -430,7 +431,7 @@ plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_lscpb_19_0.png" class="no-scaled-link" src="../_images/notebooks_lscpb_19_0.png" style="width: 798px; height: 505px;" />
+<img alt="../_images/notebooks_lscpb_19_0.png" class="no-scaled-link" height="505" src="../_images/notebooks_lscpb_19_0.png" width="798" />
 </div>
 </div>
 </section>
@@ -442,8 +443,8 @@ plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cost_matrix = ntw.allneighbordistances(
-    sourcepattern=ntw.pointpatterns[&quot;clients&quot;],
-    destpattern=ntw.pointpatterns[&quot;facilities&quot;],
+    sourcepattern=ntw.pointpatterns["clients"],
+    destpattern=ntw.pointpatterns["facilities"],
 )
 cost_matrix.shape
 </pre></div>
@@ -517,7 +518,7 @@ array([[ 4.82677859,  7.03883728,  6.8104596 ,  4.16669209,  4.84239683,
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lscp_from_cm = LSCP.from_cost_matrix(
-    cost_matrix, SERVICE_RADIUS, name=&quot;lscp-network-distance&quot;
+    cost_matrix, SERVICE_RADIUS, name="lscp-network-distance"
 )
 lscp_from_cm = lscp_from_cm.solve(solver)
 lscp_from_cm
@@ -538,7 +539,7 @@ lscp_from_cm
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lscpb_from_cm = LSCPB.from_cost_matrix(
-    cost_matrix, SERVICE_RADIUS, solver, name=&quot;lscp-b-network-distance&quot;
+    cost_matrix, SERVICE_RADIUS, solver, name="lscp-b-network-distance"
 )
 lscpb_from_cm = lscpb_from_cm.solve()
 lscpb_from_cm
@@ -564,11 +565,11 @@ lscpb_obj = lscpb_from_cm.problem.objective.value()
 lscpb_lscp = lscpb_from_cm.lscp_obj_value
 lscpb_perc = lscpb_from_cm.backup_perc
 print(
-    &quot;The minimum number of facilites needed to achieve complete &quot;
-    f&quot;coverage within a distance units service radius of {SERVICE_RADIUS} &quot;
-    f&quot;are {lscp_obj} and {lscpb_lscp} for the LSCP and LSCP-B, &quot;
-    &quot;respectively. However, with the LSCP-B we observe coverage by more &quot;
-    f&quot;than one facility at {lscpb_perc}% of client locations.&quot;
+    "The minimum number of facilites needed to achieve complete "
+    f"coverage within a distance units service radius of {SERVICE_RADIUS} "
+    f"are {lscp_obj} and {lscpb_lscp} for the LSCP and LSCP-B, "
+    "respectively. However, with the LSCP-B we observe coverage by more "
+    f"than one facility at {lscpb_perc}% of client locations."
 )
 </pre></div>
 </div>
@@ -586,9 +587,9 @@ The minimum number of facilites needed to achieve complete coverage within a dis
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points[&quot;dv&quot;] = lscp_from_cm.fac_vars
-facility_points[&quot;dv&quot;] = facility_points[&quot;dv&quot;].map(lambda x: x.name.replace(&quot;_&quot;, &quot;&quot;))
-facilities_snapped[&quot;dv&quot;] = facility_points[&quot;dv&quot;]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points["dv"] = lscp_from_cm.fac_vars
+facility_points["dv"] = facility_points["dv"].map(lambda x: x.name.replace("_", ""))
+facilities_snapped["dv"] = facility_points["dv"]
 facility_points
 </pre></div>
 </div>
@@ -683,15 +684,15 @@ facility_points
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>distance_metric = &quot;euclidean&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>distance_metric = "euclidean"
 lscp_from_gdf = LSCP.from_geodataframe(
     clients_snapped,
     facilities_snapped,
-    &quot;geometry&quot;,
-    &quot;geometry&quot;,
+    "geometry",
+    "geometry",
     SERVICE_RADIUS,
     distance_metric=distance_metric,
-    name=f&quot;lscp-{distance_metric}-distance&quot;,
+    name=f"lscp-{distance_metric}-distance",
 )
 lscp_from_gdf = lscp_from_gdf.solve(solver)
 lscp_from_gdf
@@ -711,16 +712,16 @@ lscp_from_gdf
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>distance_metric = &quot;euclidean&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>distance_metric = "euclidean"
 lscpb_from_gdf = LSCPB.from_geodataframe(
     clients_snapped,
     facilities_snapped,
-    &quot;geometry&quot;,
-    &quot;geometry&quot;,
+    "geometry",
+    "geometry",
     SERVICE_RADIUS,
     solver,
     distance_metric=distance_metric,
-    name=f&quot;lscp-b-{distance_metric}-distance&quot;,
+    name=f"lscp-b-{distance_metric}-distance",
 )
 lscpb_from_gdf = lscpb_from_gdf.solve()
 lscpb_from_gdf
@@ -745,11 +746,11 @@ lscpb_obj = lscpb_from_gdf.problem.objective.value()
 lscpb_lscp = lscpb_from_gdf.lscp_obj_value
 lscpb_perc = lscpb_from_gdf.backup_perc
 print(
-    &quot;The minimum number of facilites needed to achieve complete &quot;
-    f&quot;coverage within a distance units service radius of {SERVICE_RADIUS} &quot;
-    f&quot;are {lscp_obj} and {lscpb_lscp} for the LSCP and LSCP-B, &quot;
-    &quot;respectively. However, with the LSCP-B we observe coverage by more &quot;
-    f&quot;than one facility at {lscpb_perc}% of client locations.&quot;
+    "The minimum number of facilites needed to achieve complete "
+    f"coverage within a distance units service radius of {SERVICE_RADIUS} "
+    f"are {lscp_obj} and {lscpb_lscp} for the LSCP and LSCP-B, "
+    "respectively. However, with the LSCP-B we observe coverage by more "
+    f"than one facility at {lscpb_perc}% of client locations."
 )
 </pre></div>
 </div>
@@ -768,9 +769,9 @@ The minimum number of facilites needed to achieve complete coverage within a dis
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points[&quot;predefined_loc&quot;] = 0
-facility_points.loc[(4, 9), &quot;predefined_loc&quot;] = 1
-facilities_snapped[&quot;predefined_loc&quot;] = facility_points[&quot;predefined_loc&quot;]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points["predefined_loc"] = 0
+facility_points.loc[(4, 9), "predefined_loc"] = 1
+facilities_snapped["predefined_loc"] = facility_points["predefined_loc"]
 facility_points
 </pre></div>
 </div>
@@ -875,12 +876,12 @@ facility_points
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lscp_from_gdf_pre = LSCP.from_geodataframe(
     clients_snapped,
     facilities_snapped,
-    &quot;geometry&quot;,
-    &quot;geometry&quot;,
+    "geometry",
+    "geometry",
     SERVICE_RADIUS,
     distance_metric=distance_metric,
-    predefined_facility_col=&quot;predefined_loc&quot;,
-    name=f&quot;lscp-{distance_metric}-distance-predefined&quot;,
+    predefined_facility_col="predefined_loc",
+    name=f"lscp-{distance_metric}-distance-predefined",
 )
 lscp_from_gdf_pre = lscp_from_gdf_pre.solve(solver)
 </pre></div>
@@ -893,13 +894,13 @@ lscp_from_gdf_pre = lscp_from_gdf_pre.solve(solver)
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lscpb_from_gdf_pre = LSCPB.from_geodataframe(
     clients_snapped,
     facilities_snapped,
-    &quot;geometry&quot;,
-    &quot;geometry&quot;,
+    "geometry",
+    "geometry",
     SERVICE_RADIUS,
     solver,
     distance_metric=distance_metric,
-    predefined_facility_col=&quot;predefined_loc&quot;,
-    name=f&quot;lscp-b-{distance_metric}-distance-predefined&quot;,
+    predefined_facility_col="predefined_loc",
+    name=f"lscp-b-{distance_metric}-distance-predefined",
 )
 lscpb_from_gdf_pre = lscpb_from_gdf_pre.solve()
 </pre></div>
@@ -914,11 +915,11 @@ lscpb_obj = lscpb_from_gdf_pre.problem.objective.value()
 lscpb_lscp = lscpb_from_gdf_pre.lscp_obj_value
 lscpb_perc = lscpb_from_gdf_pre.backup_perc
 print(
-    &quot;The minimum number of facilites needed to achieve complete &quot;
-    f&quot;coverage within a distance units service radius of {SERVICE_RADIUS} &quot;
-    f&quot;are {lscp_obj} and {lscpb_lscp} for the LSCP and LSCP-B, &quot;
-    &quot;respectively. However, with the LSCP-B we observe coverage by more &quot;
-    f&quot;than one facility at {lscpb_perc}% of client locations.&quot;
+    "The minimum number of facilites needed to achieve complete "
+    f"coverage within a distance units service radius of {SERVICE_RADIUS} "
+    f"are {lscp_obj} and {lscpb_lscp} for the LSCP and LSCP-B, "
+    "respectively. However, with the LSCP-B we observe coverage by more "
+    f"than one facility at {lscpb_perc}% of client locations."
 )
 </pre></div>
 </div>
@@ -940,24 +941,24 @@ The minimum number of facilites needed to achieve complete coverage within a dis
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dv_colors_arr = [
-    &quot;darkcyan&quot;,
-    &quot;mediumseagreen&quot;,
-    &quot;saddlebrown&quot;,
-    &quot;darkslategray&quot;,
-    &quot;lightskyblue&quot;,
-    &quot;thistle&quot;,
-    &quot;lavender&quot;,
-    &quot;darkgoldenrod&quot;,
-    &quot;peachpuff&quot;,
-    &quot;coral&quot;,
-    &quot;mediumvioletred&quot;,
-    &quot;blueviolet&quot;,
-    &quot;fuchsia&quot;,
-    &quot;cyan&quot;,
-    &quot;limegreen&quot;,
-    &quot;mediumorchid&quot;,
+    "darkcyan",
+    "mediumseagreen",
+    "saddlebrown",
+    "darkslategray",
+    "lightskyblue",
+    "thistle",
+    "lavender",
+    "darkgoldenrod",
+    "peachpuff",
+    "coral",
+    "mediumvioletred",
+    "blueviolet",
+    "fuchsia",
+    "cyan",
+    "limegreen",
+    "mediumorchid",
 ]
-dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_arr))}
+dv_colors = {f"y{i}": dv_colors_arr[i] for i in range(len(dv_colors_arr))}
 dv_colors
 </pre></div>
 </div>
@@ -991,13 +992,13 @@ dv_colors
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def plot_results(model, p, facs, clis=None, ax=None):
-    &quot;&quot;&quot;Visualize optimal solution sets and context.&quot;&quot;&quot;
+    """Visualize optimal solution sets and context."""
     if not ax:
         multi_plot = False
         fig, ax = plt.subplots(figsize=(6, 6))
         markersize, markersize_factor = 4, 4
     else:
-        ax.axis(&quot;off&quot;)
+        ax.axis("off")
         multi_plot = True
         markersize, markersize_factor = 2, 2
     ax.set_title(model.name, fontsize=15)
@@ -1009,43 +1010,43 @@ dv_colors
     fac_sites = {}
     for i, dv in enumerate(model.fac_vars):
         if dv.varValue:
-            dv, predef = facs.loc[i, [&quot;dv&quot;, &quot;predefined_loc&quot;]]
+            dv, predef = facs.loc[i, ["dv", "predefined_loc"]]
             fac_sites[dv] = [i, predef]
             if plot_clis:
-                geom = clis.iloc[model.fac2cli[i]][&quot;geometry&quot;]
+                geom = clis.iloc[model.fac2cli[i]]["geometry"]
                 cli_points[dv] = geom
 
     # study area and legend entries initialization
-    streets.plot(ax=ax, alpha=1, color=&quot;black&quot;, zorder=1)
-    legend_elements = [mlines.Line2D([], [], color=&quot;black&quot;, label=&quot;streets&quot;)]
+    streets.plot(ax=ax, alpha=1, color="black", zorder=1)
+    legend_elements = [mlines.Line2D([], [], color="black", label="streets")]
 
-    if plot_clis and model.name.startswith(&quot;mclp&quot;):
+    if plot_clis and model.name.startswith("mclp"):
         # any clients that not asscociated with a facility
-        c = &quot;k&quot;
+        c = "k"
         if model.n_cli_uncov:
             idx = [i for i, v in enumerate(model.cli2fac) if len(v) == 0]
             pnt_kws = {
-                &quot;ax&quot;: ax,
-                &quot;fc&quot;: c,
-                &quot;ec&quot;: c,
-                &quot;marker&quot;: &quot;s&quot;,
-                &quot;markersize&quot;: 7,
-                &quot;zorder&quot;: 2,
+                "ax": ax,
+                "fc": c,
+                "ec": c,
+                "marker": "s",
+                "markersize": 7,
+                "zorder": 2,
             }
             clis.iloc[idx].plot(**pnt_kws)
-        _label = f&quot;Demand sites not covered ($n$={model.n_cli_uncov})&quot;
+        _label = f"Demand sites not covered ($n$={model.n_cli_uncov})"
         _mkws = {
-            &quot;marker&quot;: &quot;s&quot;,
-            &quot;markerfacecolor&quot;: c,
-            &quot;markeredgecolor&quot;: c,
-            &quot;linewidth&quot;: 0,
+            "marker": "s",
+            "markerfacecolor": c,
+            "markeredgecolor": c,
+            "linewidth": 0,
         }
         legend_elements.append(mlines.Line2D([], [], ms=3, label=_label, **_mkws))
 
     # all candidate facilities
-    facs.plot(ax=ax, fc=&quot;brown&quot;, marker=&quot;*&quot;, markersize=80, zorder=8)
-    _label = f&quot;Facility sites ($n$={len(model.fac_vars)})&quot;
-    _mkws = {&quot;marker&quot;: &quot;*&quot;, &quot;markerfacecolor&quot;: &quot;brown&quot;, &quot;markeredgecolor&quot;: &quot;brown&quot;}
+    facs.plot(ax=ax, fc="brown", marker="*", markersize=80, zorder=8)
+    _label = f"Facility sites ($n$={len(model.fac_vars)})"
+    _mkws = {"marker": "*", "markerfacecolor": "brown", "markeredgecolor": "brown"}
     legend_elements.append(mlines.Line2D([], [], ms=7, lw=0, label=_label, **_mkws))
 
     # facility-(client) symbology and legend entries
@@ -1056,30 +1057,30 @@ dv_colors
             # clients
             geoms = cli_points[fname]
             gdf = geopandas.GeoDataFrame(geoms)
-            gdf.plot(ax=ax, zorder=zorder, ec=&quot;k&quot;, fc=cset, markersize=100 * markersize)
-            _label = f&quot;Demand sites covered by {fname}&quot;
+            gdf.plot(ax=ax, zorder=zorder, ec="k", fc=cset, markersize=100 * markersize)
+            _label = f"Demand sites covered by {fname}"
             _mkws = {
-                &quot;markerfacecolor&quot;: cset,
-                &quot;markeredgecolor&quot;: &quot;k&quot;,
-                &quot;ms&quot;: markersize + 7,
+                "markerfacecolor": cset,
+                "markeredgecolor": "k",
+                "ms": markersize + 7,
             }
             legend_elements.append(
-                mlines.Line2D([], [], marker=&quot;o&quot;, lw=0, label=_label, **_mkws)
+                mlines.Line2D([], [], marker="o", lw=0, label=_label, **_mkws)
             )
         # facilities
-        ec = &quot;k&quot;
+        ec = "k"
         lw = 2
-        predef_label = &quot;predefined&quot;
+        predef_label = "predefined"
         if model.name.endswith(predef_label) and predef:
-            ec = &quot;r&quot;
+            ec = "r"
             lw = 3
-            fname += f&quot; ({predef_label})&quot;
+            fname += f" ({predef_label})"
         facs.iloc[[fac]].plot(
-            ax=ax, marker=&quot;*&quot;, markersize=1000, zorder=9, fc=cset, ec=ec, lw=lw
+            ax=ax, marker="*", markersize=1000, zorder=9, fc=cset, ec=ec, lw=lw
         )
-        _mkws = {&quot;markerfacecolor&quot;: cset, &quot;markeredgecolor&quot;: ec, &quot;markeredgewidth&quot;: lw}
+        _mkws = {"markerfacecolor": cset, "markeredgecolor": ec, "markeredgewidth": lw}
         legend_elements.append(
-            mlines.Line2D([], [], marker=&quot;*&quot;, ms=20, lw=0, label=fname, **_mkws)
+            mlines.Line2D([], [], marker="*", ms=20, lw=0, label=fname, **_mkws)
         )
         # increment zorder up and markersize down for stacked client symbology
         zorder += 1
@@ -1088,7 +1089,7 @@ dv_colors
 
     if not multi_plot:
         # legend
-        kws = {&quot;loc&quot;: &quot;upper left&quot;, &quot;bbox_to_anchor&quot;: (1.05, 0.7)}
+        kws = {"loc": "upper left", "bbox_to_anchor": (1.05, 0.7)}
         plt.legend(handles=legend_elements, **kws)
 </pre></div>
 </div>
@@ -1112,7 +1113,7 @@ dv_colors
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_lscpb_45_0.png" class="no-scaled-link" src="../_images/notebooks_lscpb_45_0.png" style="width: 791px; height: 525px;" />
+<img alt="../_images/notebooks_lscpb_45_0.png" class="no-scaled-link" height="525" src="../_images/notebooks_lscpb_45_0.png" width="791" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1132,7 +1133,7 @@ dv_colors
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_lscpb_46_0.png" class="no-scaled-link" src="../_images/notebooks_lscpb_46_0.png" style="width: 791px; height: 525px;" />
+<img alt="../_images/notebooks_lscpb_46_0.png" class="no-scaled-link" height="525" src="../_images/notebooks_lscpb_46_0.png" width="791" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1142,7 +1143,7 @@ dv_colors
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, axarr = plt.subplots(1, 2, figsize=(12, 6))
 fig.subplots_adjust(wspace=-0.01)
 for i, m in enumerate([lscp_from_cm, lscpb_from_cm]):
-    _p = m.lscp_obj_value if m.name.startswith(&quot;LSCPB&quot;) else m.problem.objective.value()
+    _p = m.lscp_obj_value if m.name.startswith("LSCPB") else m.problem.objective.value()
     plot_results(m, _p, facility_points, clis=client_points, ax=axarr[i])
 </pre></div>
 </div>
@@ -1151,7 +1152,7 @@ for i, m in enumerate([lscp_from_cm, lscpb_from_cm]):
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_lscpb_47_0.png" class="no-scaled-link" src="../_images/notebooks_lscpb_47_0.png" style="width: 950px; height: 504px;" />
+<img alt="../_images/notebooks_lscpb_47_0.png" class="no-scaled-link" height="504" src="../_images/notebooks_lscpb_47_0.png" width="950" />
 </div>
 </div>
 <p>When comparing the selection sets of the LSCP and LSCP-B (based on network distance), we can clearly see the difference. For both, facilities <span class="math notranslate nohighlight">\(y_2\)</span> is selected, and cover the same clients in both models. However, the LSCP-B improves upon the LSCP selection set where it is determined that facilities <span class="math notranslate nohighlight">\(y_3\)</span> and <span class="math notranslate nohighlight">\(y_8\)</span> provides more backup coverage than facilities <span class="math notranslate nohighlight">\(y_2\)</span> and <span class="math notranslate nohighlight">\(y_7\)</span>.</p>
@@ -1175,7 +1176,7 @@ for i, m in enumerate([lscp_from_cm, lscpb_from_cm]):
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_lscpb_49_0.png" class="no-scaled-link" src="../_images/notebooks_lscpb_49_0.png" style="width: 791px; height: 525px;" />
+<img alt="../_images/notebooks_lscpb_49_0.png" class="no-scaled-link" height="525" src="../_images/notebooks_lscpb_49_0.png" width="791" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1195,7 +1196,7 @@ for i, m in enumerate([lscp_from_cm, lscpb_from_cm]):
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_lscpb_50_0.png" class="no-scaled-link" src="../_images/notebooks_lscpb_50_0.png" style="width: 791px; height: 525px;" />
+<img alt="../_images/notebooks_lscpb_50_0.png" class="no-scaled-link" height="525" src="../_images/notebooks_lscpb_50_0.png" width="791" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1206,7 +1207,7 @@ for i, m in enumerate([lscp_from_cm, lscpb_from_cm]):
 fig.subplots_adjust(wspace=-0.01)
 for i, m in enumerate([lscp_from_gdf, lscpb_from_gdf]):
     _p = (
-        m.lscp_obj_value if m.name.startswith(&quot;lscp-b&quot;) else m.problem.objective.value()
+        m.lscp_obj_value if m.name.startswith("lscp-b") else m.problem.objective.value()
     )
     plot_results(m, _p, facility_points, clis=client_points, ax=axarr[i])
 </pre></div>
@@ -1216,7 +1217,7 @@ for i, m in enumerate([lscp_from_gdf, lscpb_from_gdf]):
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_lscpb_51_0.png" class="no-scaled-link" src="../_images/notebooks_lscpb_51_0.png" style="width: 950px; height: 504px;" />
+<img alt="../_images/notebooks_lscpb_51_0.png" class="no-scaled-link" height="504" src="../_images/notebooks_lscpb_51_0.png" width="950" />
 </div>
 </div>
 <p>But how can just one facility cover all of the demand locations? This can be explained by the nature of the problem. The problem was configured in a synthetic manner, the streets are created as a 10x10 lattice and the <code class="docutils literal notranslate"><span class="pre">SERVICE_RADIUS</span></code> parameter is 8 distance units. Owing to the central location of facility <span class="math notranslate nohighlight">\(y_3\)</span>, all demand points can be reached within 8 euclidean distance units. Therefore, the LSCP-B is not able to improve upon the results from solving the LSCP.</p>
@@ -1241,7 +1242,7 @@ for i, m in enumerate([lscp_from_gdf, lscpb_from_gdf]):
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_lscpb_53_0.png" class="no-scaled-link" src="../_images/notebooks_lscpb_53_0.png" style="width: 791px; height: 525px;" />
+<img alt="../_images/notebooks_lscpb_53_0.png" class="no-scaled-link" height="525" src="../_images/notebooks_lscpb_53_0.png" width="791" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1261,7 +1262,7 @@ for i, m in enumerate([lscp_from_gdf, lscpb_from_gdf]):
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_lscpb_54_0.png" class="no-scaled-link" src="../_images/notebooks_lscpb_54_0.png" style="width: 791px; height: 525px;" />
+<img alt="../_images/notebooks_lscpb_54_0.png" class="no-scaled-link" height="525" src="../_images/notebooks_lscpb_54_0.png" width="791" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1272,7 +1273,7 @@ for i, m in enumerate([lscp_from_gdf, lscpb_from_gdf]):
 fig.subplots_adjust(wspace=-0.01)
 for i, m in enumerate([lscp_from_gdf_pre, lscpb_from_gdf_pre]):
     _p = (
-        m.lscp_obj_value if m.name.startswith(&quot;lscp-b&quot;) else m.problem.objective.value()
+        m.lscp_obj_value if m.name.startswith("lscp-b") else m.problem.objective.value()
     )
     plot_results(m, _p, facility_points, clis=client_points, ax=axarr[i])
 </pre></div>
@@ -1282,7 +1283,7 @@ for i, m in enumerate([lscp_from_gdf_pre, lscpb_from_gdf_pre]):
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_lscpb_55_0.png" class="no-scaled-link" src="../_images/notebooks_lscpb_55_0.png" style="width: 950px; height: 504px;" />
+<img alt="../_images/notebooks_lscpb_55_0.png" class="no-scaled-link" height="504" src="../_images/notebooks_lscpb_55_0.png" width="950" />
 </div>
 </div>
 <p>Here we stipulated that facilities <span class="math notranslate nohighlight">\(y_4\)</span> and <span class="math notranslate nohighlight">\(y_9\)</span> were to be included in the ‘optimal’ solution to the LSCP and LSCP-B based on euclidean distance. Therefore, the solutions diverge wherein the LSCP-B improves upon the LSCP selection set by determining that facility <span class="math notranslate nohighlight">\(y_3\)</span> provides more backup coverage than facility <span class="math notranslate nohighlight">\(y_8\)</span>.</p>
@@ -1318,7 +1319,7 @@ for i, m in enumerate([lscp_from_gdf_pre, lscpb_from_gdf_pre]):
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

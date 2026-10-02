@@ -5,16 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>SKATER &#8212; spopt v0.7.0 Manual</title>
+    <title>SKATER &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -91,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -178,7 +181,7 @@ Interactive online version:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -264,7 +267,7 @@ dissimilar regions. The final result is the division of the spatial objects into
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.load_example(&quot;AirBnB&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.load_example("AirBnB")
 </pre></div>
 </div>
 </div>
@@ -281,7 +284,7 @@ dissimilar regions. The final result is the division of the spatial objects into
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago = geopandas.read_file(libpysal.examples.get_path(&quot;airbnb_Chicago 2015.shp&quot;))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago = geopandas.read_file(libpysal.examples.get_path("airbnb_Chicago 2015.shp"))
 chicago.shape
 </pre></div>
 </div>
@@ -340,12 +343,12 @@ Name: 0, dtype: object
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago.plot(
     figsize=(7, 14),
-    column=&quot;num_spots&quot;,
-    scheme=&quot;Quantiles&quot;,
-    cmap=&quot;GnBu&quot;,
-    edgecolor=&quot;grey&quot;,
+    column="num_spots",
+    scheme="Quantiles",
+    cmap="GnBu",
+    edgecolor="grey",
     legend=True,
-).axis(&quot;off&quot;);
+).axis("off");
 </pre></div>
 </div>
 </div>
@@ -353,7 +356,7 @@ Name: 0, dtype: object
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_skater_8_0.png" class="no-scaled-link" src="../_images/notebooks_skater_8_0.png" style="width: 562px; height: 682px;" />
+<img alt="../_images/notebooks_skater_8_0.png" class="no-scaled-link" height="682" src="../_images/notebooks_skater_8_0.png" width="562" />
 </div>
 </div>
 </section>
@@ -366,7 +369,7 @@ Name: 0, dtype: object
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = [&quot;num_spots&quot;]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = ["num_spots"]
 </pre></div>
 </div>
 </div>
@@ -412,7 +415,7 @@ Name: 0, dtype: object
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>islands = &quot;increase&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>islands = "increase"
 </pre></div>
 </div>
 </div>
@@ -450,11 +453,11 @@ Name: 0, dtype: object
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spanning_forest_kwds = {
-    &quot;dissimilarity&quot;: skm.manhattan_distances,
-    &quot;affinity&quot;: None,
-    &quot;reduction&quot;: numpy.sum,
-    &quot;center&quot;: numpy.mean,
-    &quot;verbose&quot;: 2,
+    "dissimilarity": skm.manhattan_distances,
+    "affinity": None,
+    "reduction": numpy.sum,
+    "center": numpy.mean,
+    "verbose": 2,
 }
 </pre></div>
 </div>
@@ -552,7 +555,7 @@ making cut deletion(in_node=np.int32(3), out_node=np.int32(34), score=2025.52063
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[&quot;demo_regions&quot;] = model.labels_
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago["demo_regions"] = model.labels_
 </pre></div>
 </div>
 </div>
@@ -561,8 +564,8 @@ making cut deletion(in_node=np.int32(3), out_node=np.int32(34), score=2025.52063
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago.plot(
-    figsize=(7, 14), column=&quot;demo_regions&quot;, categorical=True, edgecolor=&quot;w&quot;
-).axis(&quot;off&quot;);
+    figsize=(7, 14), column="demo_regions", categorical=True, edgecolor="w"
+).axis("off");
 </pre></div>
 </div>
 </div>
@@ -570,7 +573,7 @@ making cut deletion(in_node=np.int32(3), out_node=np.int32(34), score=2025.52063
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_skater_27_0.png" class="no-scaled-link" src="../_images/notebooks_skater_27_0.png" style="width: 562px; height: 682px;" />
+<img alt="../_images/notebooks_skater_27_0.png" class="no-scaled-link" height="682" src="../_images/notebooks_skater_27_0.png" width="562" />
 </div>
 </div>
 <p>The model solution results in five regions, two of which have five communities, one with six, one with seven, and one with fifty-four.</p>
@@ -578,8 +581,8 @@ making cut deletion(in_node=np.int32(3), out_node=np.int32(34), score=2025.52063
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[&quot;count&quot;] = 1
-chicago[[&quot;demo_regions&quot;, &quot;count&quot;]].groupby(by=&quot;demo_regions&quot;).count()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago["count"] = 1
+chicago[["demo_regions", "count"]].groupby(by="demo_regions").count()
 </pre></div>
 </div>
 </div>
@@ -674,13 +677,13 @@ n_clusters_range
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>floor, trace, islands = 5, False, &quot;increase&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>floor, trace, islands = 5, False, "increase"
 spanning_forest_kwds = {
-    &quot;dissimilarity&quot;: skm.manhattan_distances,
-    &quot;affinity&quot;: None,
-    &quot;reduction&quot;: numpy.sum,
-    &quot;center&quot;: numpy.mean,
-    &quot;verbose&quot;: False,
+    "dissimilarity": skm.manhattan_distances,
+    "affinity": None,
+    "reduction": numpy.sum,
+    "center": numpy.mean,
+    "verbose": False,
 }
 </pre></div>
 </div>
@@ -702,7 +705,7 @@ spanning_forest_kwds = {
         spanning_forest_kwds=spanning_forest_kwds,
     )
     model.solve()
-    chicago[f&quot;clusters_{ncluster}&quot;] = model.labels_
+    chicago[f"clusters_{ncluster}"] = model.labels_
 </pre></div>
 </div>
 </div>
@@ -713,8 +716,8 @@ spanning_forest_kwds = {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, axarr = plt.subplots(1, len(n_clusters_range), figsize=(9, 7.5))
 for ix, clust in enumerate(n_clusters_range):
-    label = f&quot;clusters_{clust}&quot;
-    chicago.plot(column=label, ax=axarr[ix], cmap=&quot;tab20&quot;)
+    label = f"clusters_{clust}"
+    chicago.plot(column=label, ax=axarr[ix], cmap="tab20")
     axarr[ix].set_title(label)
     axarr[ix].set_axis_off()
 plt.subplots_adjust(wspace=1, hspace=0.5)
@@ -726,7 +729,7 @@ plt.tight_layout()
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_skater_37_0.png" class="no-scaled-link" src="../_images/notebooks_skater_37_0.png" style="width: 889px; height: 239px;" />
+<img alt="../_images/notebooks_skater_37_0.png" class="no-scaled-link" height="239" src="../_images/notebooks_skater_37_0.png" width="889" />
 </div>
 </div>
 <p>Above we can see that regions become more dispersed and boundaries become more consistent as the number of desired clusters increases. Also, we can investigate the count of communities and the number of AirBnB spots per region, as shown below.</p>
@@ -734,19 +737,19 @@ plt.tight_layout()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attr1, attr2 = &quot;count&quot;, &quot;num_spots&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attr1, attr2 = "count", "num_spots"
 df = pandas.DataFrame(
     columns=pandas.MultiIndex.from_product(
-        [[f&quot;clusters_{i}&quot; for i in n_clusters_range], [attr1, attr2]]
+        [[f"clusters_{i}" for i in n_clusters_range], [attr1, attr2]]
     ),
     index=range(10),
 )
-df.index.name = &quot;region_id&quot;
+df.index.name = "region_id"
 for i in n_clusters_range:
-    col = f&quot;clusters_{i}&quot;
+    col = f"clusters_{i}"
     df[col, attr1] = chicago[[col, attr1]].groupby(by=col).count()[attr1]
     df[col, attr2] = chicago[[col, attr2]].groupby(by=col).sum()[attr2]
-df.fillna(0).astype(int).astype(str).replace(&quot;0&quot;, &quot;-&quot;)
+df.fillna(0).astype(int).astype(str).replace("0", "-")
 </pre></div>
 </div>
 </div>
@@ -972,13 +975,13 @@ floor_range
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>n_clusters, trace, islands = 3, True, &quot;increase&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>n_clusters, trace, islands = 3, True, "increase"
 spanning_forest_kwds = {
-    &quot;dissimilarity&quot;: None,
-    &quot;affinity&quot;: skm.euclidean_distances,
-    &quot;reduction&quot;: numpy.sum,
-    &quot;center&quot;: numpy.std,
-    &quot;verbose&quot;: False,
+    "dissimilarity": None,
+    "affinity": skm.euclidean_distances,
+    "reduction": numpy.sum,
+    "center": numpy.std,
+    "verbose": False,
 }
 </pre></div>
 </div>
@@ -1002,12 +1005,12 @@ spanning_forest_kwds = {
     with warnings.catch_warnings():
         # due to `affinity`
         warnings.filterwarnings(
-            &quot;ignore&quot;,
+            "ignore",
             category=RuntimeWarning,
-            message=&quot;divide by zero encountered in log&quot;,
+            message="divide by zero encountered in log",
         )
         model.solve()
-    chicago[f&quot;floor_{floor}&quot;] = model.labels_
+    chicago[f"floor_{floor}"] = model.labels_
 </pre></div>
 </div>
 </div>
@@ -1018,8 +1021,8 @@ spanning_forest_kwds = {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, axarr = plt.subplots(1, len(floor_range), figsize=(9, 7.5))
 for ix, floor in enumerate(floor_range):
-    label = f&quot;floor_{floor}&quot;
-    chicago.plot(column=label, ax=axarr[ix], cmap=&quot;tab20&quot;)
+    label = f"floor_{floor}"
+    chicago.plot(column=label, ax=axarr[ix], cmap="tab20")
     axarr[ix].set_title(label)
     axarr[ix].set_axis_off()
 plt.subplots_adjust(wspace=1, hspace=0.5)
@@ -1031,7 +1034,7 @@ plt.tight_layout()
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_skater_47_0.png" class="no-scaled-link" src="../_images/notebooks_skater_47_0.png" style="width: 889px; height: 239px;" />
+<img alt="../_images/notebooks_skater_47_0.png" class="no-scaled-link" height="239" src="../_images/notebooks_skater_47_0.png" width="889" />
 </div>
 </div>
 <p>Above we can see an interesting pattern. Boundaries are fixed when stipulating a minimum of 3 and 6 communities per region then the smallest region increases by 3 communities when stipulating <code class="docutils literal notranslate"><span class="pre">floor==9</span></code>. However, as the minimum number of communities is increased to 12 and 15 the location, shape, and rank of the 3 desired regions vary greatly. See the count of communities and the number of AirBnB spots per region below.</p>
@@ -1039,16 +1042,16 @@ plt.tight_layout()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attr1, attr2 = &quot;count&quot;, &quot;num_spots&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attr1, attr2 = "count", "num_spots"
 df = pandas.DataFrame(
     columns=pandas.MultiIndex.from_product(
-        [[f&quot;floor_{i}&quot; for i in floor_range], [attr1, attr2]]
+        [[f"floor_{i}" for i in floor_range], [attr1, attr2]]
     ),
     index=range(3),
 )
-df.index.name = &quot;region_id&quot;
+df.index.name = "region_id"
 for i in floor_range:
-    col = f&quot;floor_{i}&quot;
+    col = f"floor_{i}"
     df[col, attr1] = chicago[[col, attr1]].groupby(by=col).count()[attr1]
     df[col, attr2] = chicago[[col, attr2]].groupby(by=col).sum()[attr2]
 df
@@ -1168,13 +1171,13 @@ df
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = [
-    &quot;poverty&quot;,
-    &quot;crowded&quot;,
-    &quot;without_hs&quot;,
-    &quot;unemployed&quot;,
-    &quot;harship_in&quot;,
-    &quot;num_crimes&quot;,
-    &quot;num_theft&quot;,
+    "poverty",
+    "crowded",
+    "without_hs",
+    "unemployed",
+    "harship_in",
+    "num_crimes",
+    "num_theft",
 ]
 </pre></div>
 </div>
@@ -1213,13 +1216,13 @@ n_clusters_range
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>floor, trace, islands = 8, True, &quot;increase&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>floor, trace, islands = 8, True, "increase"
 spanning_forest_kwds = {
-    &quot;dissimilarity&quot;: skm.manhattan_distances,
-    &quot;affinity&quot;: None,
-    &quot;reduction&quot;: numpy.sum,
-    &quot;center&quot;: numpy.mean,
-    &quot;verbose&quot;: False,
+    "dissimilarity": skm.manhattan_distances,
+    "affinity": None,
+    "reduction": numpy.sum,
+    "center": numpy.mean,
+    "verbose": False,
 }
 </pre></div>
 </div>
@@ -1241,7 +1244,7 @@ spanning_forest_kwds = {
         spanning_forest_kwds=spanning_forest_kwds,
     )
     model.solve()
-    chicago[f&quot;clusters_{ncluster}&quot;] = model.labels_
+    chicago[f"clusters_{ncluster}"] = model.labels_
 </pre></div>
 </div>
 </div>
@@ -1252,8 +1255,8 @@ spanning_forest_kwds = {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, axarr = plt.subplots(1, len(n_clusters_range), figsize=(9, 7.5))
 for ix, clust in enumerate(n_clusters_range):
-    label = f&quot;clusters_{clust}&quot;
-    chicago.plot(column=label, ax=axarr[ix], cmap=&quot;tab20&quot;)
+    label = f"clusters_{clust}"
+    chicago.plot(column=label, ax=axarr[ix], cmap="tab20")
     axarr[ix].set_title(label)
     axarr[ix].set_axis_off()
 plt.subplots_adjust(wspace=1, hspace=0.5)
@@ -1265,7 +1268,7 @@ plt.tight_layout()
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_skater_61_0.png" class="no-scaled-link" src="../_images/notebooks_skater_61_0.png" style="width: 889px; height: 239px;" />
+<img alt="../_images/notebooks_skater_61_0.png" class="no-scaled-link" height="239" src="../_images/notebooks_skater_61_0.png" width="889" />
 </div>
 </div>
 <p>When considering multiple related variables certain cores regions are present in all solutions.</p>
@@ -1294,7 +1297,7 @@ plt.tight_layout()
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

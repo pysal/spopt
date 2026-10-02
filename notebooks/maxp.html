@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Max-P Regionalization &#8212; spopt v0.7.0 Manual</title>
+    <title>Max-P Regionalization &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -44,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -93,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -173,7 +174,7 @@ analyst does not require a fixed number of regions a-priori.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -245,7 +246,7 @@ numpy     : 2.2.4
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def subplotter(gdf, incrs, w, threshold=5, top_n=2, seed=RANDOM_SEED):
-    &quot;&quot;&quot;Helper plotting function, also solves MaxP instances if desired.&quot;&quot;&quot;
+    """Helper plotting function, also solves MaxP instances if desired."""
     rows, cols = incrs.shape
     f, axs = plt.subplots(rows, cols, figsize=(9, 14))
     for i in range(rows):
@@ -253,27 +254,27 @@ numpy     : 2.2.4
             year, _ax = incrs[i, j], axs[i, j]
             if not year:
                 # plot country geographies
-                _attr = &quot;Mexico&quot;
-                gdf.plot(ax=_ax, ec=&quot;grey&quot;, fc=&quot;white&quot;)
+                _attr = "Mexico"
+                gdf.plot(ax=_ax, ec="grey", fc="white")
             else:
-                _attr = f&quot;PCGDP{year}&quot;
+                _attr = f"PCGDP{year}"
                 if not w:
                     # plot country geographies by attributes
-                    plt_kws = {&quot;scheme&quot;: &quot;Quantiles&quot;, &quot;cmap&quot;: &quot;GnBu&quot;, &quot;ec&quot;: &quot;grey&quot;}
-                    plt_kws.update({&quot;legend_kwds&quot;: {&quot;fmt&quot;: &quot;{:.0f}&quot;}})
+                    plt_kws = {"scheme": "Quantiles", "cmap": "GnBu", "ec": "grey"}
+                    plt_kws.update({"legend_kwds": {"fmt": "{:.0f}"}})
                     gdf.plot(column=_attr, ax=_ax, legend=True, **plt_kws)
                 else:
                     # solve a MaxP instance and plot regions
                     numpy.random.seed(seed)
-                    maxp_args = gdf, w, _attr, &quot;count&quot;, threshold
+                    maxp_args = gdf, w, _attr, "count", threshold
                     model = MaxP(*maxp_args, top_n=top_n)
                     model.solve()
-                    label = year + &quot;labels_&quot;
+                    label = year + "labels_"
                     gdf[label] = model.labels_
-                    gdf.plot(column=label, ax=_ax, cmap=&quot;tab20&quot;)
+                    gdf.plot(column=label, ax=_ax, cmap="tab20")
             _ax.set_title(_attr)
             _ax.set_axis_off()
-            _ax.set_aspect(&quot;equal&quot;)
+            _ax.set_aspect("equal")
     f.subplots_adjust(wspace=-0.7, hspace=-0.65)
     f.tight_layout()
 </pre></div>
@@ -283,7 +284,7 @@ numpy     : 2.2.4
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pth = libpysal.examples.get_path(&quot;mexicojoin.shp&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pth = libpysal.examples.get_path("mexicojoin.shp")
 mexico = geopandas.read_file(pth)
 mexico.head()
 </pre></div>
@@ -498,7 +499,7 @@ array([[None, &#39;1940&#39;],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_maxp_8_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_8_0.png" style="width: 889px; height: 1197px;" />
+<img alt="../_images/notebooks_maxp_8_0.png" class="no-scaled-link" height="1197" src="../_images/notebooks_maxp_8_0.png" width="889" />
 </div>
 </div>
 <p>In general terms, the north-south divide in incomes is present in each of the 7 decades. There is some variation in states moving across quintiles however, and this is true at both the bottom and top of the state income distribution.</p>
@@ -513,7 +514,7 @@ array([[None, &#39;1940&#39;],
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = [f&quot;PCGDP{year}&quot; for year in mxgdp_years[1:]]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = [f"PCGDP{year}" for year in mxgdp_years[1:]]
 attrs_name
 </pre></div>
 </div>
@@ -567,8 +568,8 @@ attrs_name
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico[&quot;count&quot;] = 1
-threshold_name = &quot;count&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico["count"] = 1
+threshold_name = "count"
 </pre></div>
 </div>
 </div>
@@ -587,7 +588,7 @@ model.solve()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico[&quot;maxp_new&quot;] = model.labels_
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico["maxp_new"] = model.labels_
 </pre></div>
 </div>
 </div>
@@ -595,7 +596,7 @@ model.solve()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico[[&quot;maxp_new&quot;, &quot;AREA&quot;]].groupby(by=&quot;maxp_new&quot;).count()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico[["maxp_new", "AREA"]].groupby(by="maxp_new").count()
 </pre></div>
 </div>
 </div>
@@ -675,7 +676,7 @@ model.solve()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico.plot(figsize=(8, 5), column=&quot;maxp_new&quot;, cmap=&quot;tab20&quot;, edgecolor=&quot;w&quot;).axis(&quot;off&quot;);
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico.plot(figsize=(8, 5), column="maxp_new", cmap="tab20", edgecolor="w").axis("off");
 </pre></div>
 </div>
 </div>
@@ -683,7 +684,7 @@ model.solve()
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_maxp_24_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_24_0.png" style="width: 640px; height: 390px;" />
+<img alt="../_images/notebooks_maxp_24_0.png" class="no-scaled-link" height="390" src="../_images/notebooks_maxp_24_0.png" width="640" />
 </div>
 </div>
 <p>The model solution results in five regions, three of which have six states, and two with seven states each. Each region is a <a class="reference external" href="https://en.wikipedia.org/wiki/Connected_space">spatially connected component</a>, as required by the <code class="docutils literal notranslate"><span class="pre">max-p</span></code> problem.</p>
@@ -705,8 +706,8 @@ model.solve()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico[&quot;maxp_3&quot;] = model.labels_
-mexico[[&quot;maxp_3&quot;, &quot;AREA&quot;]].groupby(by=&quot;maxp_3&quot;).count()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico["maxp_3"] = model.labels_
+mexico[["maxp_3", "AREA"]].groupby(by="maxp_3").count()
 </pre></div>
 </div>
 </div>
@@ -806,7 +807,7 @@ mexico[[&quot;maxp_3&quot;, &quot;AREA&quot;]].groupby(by=&quot;maxp_3&quot;).co
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico.plot(figsize=(8, 5), column=&quot;maxp_3&quot;, cmap=&quot;tab20&quot;, edgecolor=&quot;w&quot;).axis(&quot;off&quot;);
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico.plot(figsize=(8, 5), column="maxp_3", cmap="tab20", edgecolor="w").axis("off");
 </pre></div>
 </div>
 </div>
@@ -814,7 +815,7 @@ mexico[[&quot;maxp_3&quot;, &quot;AREA&quot;]].groupby(by=&quot;maxp_3&quot;).co
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_maxp_29_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_29_0.png" style="width: 640px; height: 390px;" />
+<img alt="../_images/notebooks_maxp_29_0.png" class="no-scaled-link" height="390" src="../_images/notebooks_maxp_29_0.png" width="640" />
 </div>
 </div>
 </section>
@@ -843,7 +844,7 @@ mexico[[&quot;maxp_3&quot;, &quot;AREA&quot;]].groupby(by=&quot;maxp_3&quot;).co
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_maxp_32_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_32_0.png" style="width: 889px; height: 1197px;" />
+<img alt="../_images/notebooks_maxp_32_0.png" class="no-scaled-link" height="1197" src="../_images/notebooks_maxp_32_0.png" width="889" />
 </div>
 </div>
 <p><strong>10 states</strong></p>
@@ -859,7 +860,7 @@ mexico[[&quot;maxp_3&quot;, &quot;AREA&quot;]].groupby(by=&quot;maxp_3&quot;).co
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_maxp_34_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_34_0.png" style="width: 889px; height: 1197px;" />
+<img alt="../_images/notebooks_maxp_34_0.png" class="no-scaled-link" height="1197" src="../_images/notebooks_maxp_34_0.png" width="889" />
 </div>
 </div>
 <p><strong>15 states</strong></p>
@@ -875,7 +876,7 @@ mexico[[&quot;maxp_3&quot;, &quot;AREA&quot;]].groupby(by=&quot;maxp_3&quot;).co
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_maxp_36_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_36_0.png" style="width: 889px; height: 1197px;" />
+<img alt="../_images/notebooks_maxp_36_0.png" class="no-scaled-link" height="1197" src="../_images/notebooks_maxp_36_0.png" width="889" />
 </div>
 </div>
 </section>
@@ -894,7 +895,7 @@ mexico[[&quot;maxp_3&quot;, &quot;AREA&quot;]].groupby(by=&quot;maxp_3&quot;).co
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_maxp_38_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_38_0.png" style="width: 889px; height: 1197px;" />
+<img alt="../_images/notebooks_maxp_38_0.png" class="no-scaled-link" height="1197" src="../_images/notebooks_maxp_38_0.png" width="889" />
 </div>
 </div>
 <p><strong>3 states</strong></p>
@@ -910,7 +911,7 @@ mexico[[&quot;maxp_3&quot;, &quot;AREA&quot;]].groupby(by=&quot;maxp_3&quot;).co
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_maxp_40_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_40_0.png" style="width: 889px; height: 1197px;" />
+<img alt="../_images/notebooks_maxp_40_0.png" class="no-scaled-link" height="1197" src="../_images/notebooks_maxp_40_0.png" width="889" />
 </div>
 </div>
 <p><strong>5 states</strong></p>
@@ -926,7 +927,7 @@ mexico[[&quot;maxp_3&quot;, &quot;AREA&quot;]].groupby(by=&quot;maxp_3&quot;).co
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_maxp_42_0.png" class="no-scaled-link" src="../_images/notebooks_maxp_42_0.png" style="width: 889px; height: 1197px;" />
+<img alt="../_images/notebooks_maxp_42_0.png" class="no-scaled-link" height="1197" src="../_images/notebooks_maxp_42_0.png" width="889" />
 </div>
 </div>
 <p>As shown here, varying the <code class="docutils literal notranslate"><span class="pre">threshold</span></code> and <code class="docutils literal notranslate"><span class="pre">top_n</span></code> parameters both have a demonstrable effect regionalization outcomes.</p>
@@ -955,7 +956,7 @@ mexico[[&quot;maxp_3&quot;, &quot;AREA&quot;]].groupby(by=&quot;maxp_3&quot;).co
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

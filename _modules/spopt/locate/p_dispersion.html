@@ -4,14 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>spopt.locate.p_dispersion &#8212; spopt v0.7.0 Manual</title>
+    <title>spopt.locate.p_dispersion &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=e5dd7357" />
-    <script src="../../../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -87,6 +87,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a><ul>
@@ -151,7 +152,7 @@
 <div class="viewcode-block" id="PDispersion">
 <a class="viewcode-back" href="../../../generated/spopt.locate.PDispersion.html#spopt.locate.PDispersion">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PDispersion</span><span class="p">(</span><span class="n">LocateSolver</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    Implement the :math:`p`-dispersion optimization model and solve it</span>
 <span class="sd">    :cite:`kuby_1987`. The :math:`p`-dispersion problem, as adapted from</span>
 <span class="sd">    :cite:`MALISZEWSKI2012331`, can be formulated as:</span>
@@ -193,7 +194,7 @@
 <span class="sd">        A ``pulp`` instance of an optimization model that contains</span>
 <span class="sd">        constraints, variables, and an objective function.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">    """</span>  <span class="c1"># noqa: E501</span>
 
 <div class="viewcode-block" id="PDispersion.__init__">
 <a class="viewcode-back" href="../../../generated/spopt.locate.PDispersion.html#spopt.locate.PDispersion.__init__">[docs]</a>
@@ -203,7 +204,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__add_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Add the objective function to the model.</span>
 
 <span class="sd">        Maximize D</span>
@@ -213,10 +214,10 @@
 
 <span class="sd">        None</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">disperse</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;disperse_var&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">disperse</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"disperse_var"</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">+=</span> <span class="n">disperse</span><span class="p">,</span> <span class="s2">&quot;objective function&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">+=</span> <span class="n">disperse</span><span class="p">,</span> <span class="s2">"objective function"</span>
 
 <div class="viewcode-block" id="PDispersion.from_cost_matrix">
 <a class="viewcode-back" href="../../../generated/spopt.locate.PDispersion.html#spopt.locate.PDispersion.from_cost_matrix">[docs]</a>
@@ -226,9 +227,9 @@
         <span class="n">cost_matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
         <span class="n">p_facilities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">predefined_facilities_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;p-dispersion&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"p-dispersion"</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create a ``PDispersion`` object based on a cost matrix.</span>
 
 <span class="sd">        Parameters</span>
@@ -240,10 +241,10 @@
 <span class="sd">            The number of facilities to be located.</span>
 <span class="sd">        predefined_facilities_arr : numpy.array (default None)</span>
 <span class="sd">            A binary 1D array of service facilities that must appear in the</span>
-<span class="sd">            solution. For example, consider 3 facilites ``[&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]``.</span>
-<span class="sd">            If facility ``&#39;B&#39;`` must be in the model solution, then the passed</span>
+<span class="sd">            solution. For example, consider 3 facilites ``['A', 'B', 'C']``.</span>
+<span class="sd">            If facility ``'B'`` must be in the model solution, then the passed</span>
 <span class="sd">            in array should be ``[0, 1, 0]``.</span>
-<span class="sd">        name : str (default &#39;p-dispersion&#39;)</span>
+<span class="sd">        name : str (default 'p-dispersion')</span>
 <span class="sd">            The name of the problem.</span>
 
 <span class="sd">        Returns</span>
@@ -266,9 +267,9 @@
 <span class="sd">        &gt;&gt;&gt; ntw = spaghetti.Network(in_data=lattice)</span>
 <span class="sd">        &gt;&gt;&gt; streets = spaghetti.element_as_gdf(ntw, arcs=True)</span>
 <span class="sd">        &gt;&gt;&gt; streets_buffered = geopandas.GeoDataFrame(</span>
-<span class="sd">        ...     geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.2).unary_union),</span>
+<span class="sd">        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),</span>
 <span class="sd">        ...     crs=streets.crs,</span>
-<span class="sd">        ...     columns=[&quot;geometry&quot;]</span>
+<span class="sd">        ...     columns=["geometry"]</span>
 <span class="sd">        ... )</span>
 
 <span class="sd">        Simulate points about the lattice.</span>
@@ -277,17 +278,17 @@
 
 <span class="sd">        Snap the points to the network of lattice edges.</span>
 
-<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(facility_points, &quot;facilities&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(facility_points, "facilities", attribute=True)</span>
 <span class="sd">        &gt;&gt;&gt; facilities_snapped = spaghetti.element_as_gdf(</span>
-<span class="sd">        ...     ntw, pp_name=&quot;facilities&quot;, snapped=True</span>
+<span class="sd">        ...     ntw, pp_name="facilities", snapped=True</span>
 <span class="sd">        ... )</span>
 
 <span class="sd">        Calculate the cost matrix from origins to destinations. Origins</span>
-<span class="sd">        and destinations are both ``&#39;facilities&#39;`` in this case.</span>
+<span class="sd">        and destinations are both ``'facilities'`` in this case.</span>
 
 <span class="sd">        &gt;&gt;&gt; cost_matrix = ntw.allneighbordistances(</span>
-<span class="sd">        ...    sourcepattern=ntw.pointpatterns[&quot;facilities&quot;],</span>
-<span class="sd">        ...    destpattern=ntw.pointpatterns[&quot;facilities&quot;]</span>
+<span class="sd">        ...    sourcepattern=ntw.pointpatterns["facilities"],</span>
+<span class="sd">        ...    destpattern=ntw.pointpatterns["facilities"]</span>
 <span class="sd">        ... )</span>
 
 <span class="sd">        Create and solve a ``PDispersion`` instance from the cost matrix.</span>
@@ -303,11 +304,11 @@
 
 <span class="sd">        &gt;&gt;&gt; for dv in pdispersion_from_cost_matrix.fac_vars:</span>
 <span class="sd">        ...     if dv.varValue:</span>
-<span class="sd">        ...         print(f&quot;facility {dv.name} is selected&quot;)</span>
+<span class="sd">        ...         print(f"facility {dv.name} is selected")</span>
 <span class="sd">        facility y_0_ is selected</span>
 <span class="sd">        facility y_1_ is selected</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">r_fac</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
@@ -318,7 +319,7 @@
         <span class="n">p_dispersion</span><span class="o">.</span><span class="n">__add_obj</span><span class="p">()</span>
 
         <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_facility_integer_variable</span><span class="p">(</span>
-            <span class="n">p_dispersion</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">,</span> <span class="s2">&quot;y[</span><span class="si">{i}</span><span class="s2">]&quot;</span>
+            <span class="n">p_dispersion</span><span class="p">,</span> <span class="n">r_fac</span><span class="p">,</span> <span class="s2">"y[</span><span class="si">{i}</span><span class="s2">]"</span>
         <span class="p">)</span>
 
         <span class="n">FacilityModelBuilder</span><span class="o">.</span><span class="n">add_facility_constraint</span><span class="p">(</span>
@@ -346,10 +347,10 @@
         <span class="n">facility_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">p_facilities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">predefined_facility_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">distance_metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;euclidean&quot;</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;p-dispersion&quot;</span><span class="p">,</span>
+        <span class="n">distance_metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"euclidean"</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"p-dispersion"</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create a ``PDispersion`` object based on a geodataframe. Calculate the</span>
 <span class="sd">        cost matrix between facilities, and then use the from_cost_matrix method.</span>
 
@@ -365,12 +366,12 @@
 <span class="sd">        predefined_facility_col : str (default None)</span>
 <span class="sd">            Column name representing facilities are already defined.</span>
 <span class="sd">            This a binary assignment per facility. For example, consider 3 facilites</span>
-<span class="sd">            ``[&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]``. If facility ``&#39;B&#39;`` must be in the model solution,</span>
+<span class="sd">            ``['A', 'B', 'C']``. If facility ``'B'`` must be in the model solution,</span>
 <span class="sd">            then the column should be ``[0, 1, 0]``.</span>
-<span class="sd">        distance_metric : str (default &#39;euclidean&#39;)</span>
+<span class="sd">        distance_metric : str (default 'euclidean')</span>
 <span class="sd">            A metric used for the distance calculations supported by</span>
 <span class="sd">            `scipy.spatial.distance.cdist &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html&gt;`_.</span>
-<span class="sd">        name : str (default &#39;p-dispersion&#39;)</span>
+<span class="sd">        name : str (default 'p-dispersion')</span>
 <span class="sd">            The name of the problem.</span>
 
 <span class="sd">        Returns</span>
@@ -393,9 +394,9 @@
 <span class="sd">        &gt;&gt;&gt; ntw = spaghetti.Network(in_data=lattice)</span>
 <span class="sd">        &gt;&gt;&gt; streets = spaghetti.element_as_gdf(ntw, arcs=True)</span>
 <span class="sd">        &gt;&gt;&gt; streets_buffered = geopandas.GeoDataFrame(</span>
-<span class="sd">        ...     geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.2).unary_union),</span>
+<span class="sd">        ...     geopandas.GeoSeries(streets["geometry"].buffer(0.2).unary_union),</span>
 <span class="sd">        ...     crs=streets.crs,</span>
-<span class="sd">        ...     columns=[&quot;geometry&quot;]</span>
+<span class="sd">        ...     columns=["geometry"]</span>
 <span class="sd">        ... )</span>
 
 <span class="sd">        Simulate points about the lattice.</span>
@@ -405,18 +406,18 @@
 <span class="sd">        Snap the points to the network of lattice edges</span>
 <span class="sd">        and extract as a ``GeoDataFrame`` object.</span>
 
-<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(facility_points, &quot;facilities&quot;, attribute=True)</span>
+<span class="sd">        &gt;&gt;&gt; ntw.snapobservations(facility_points, "facilities", attribute=True)</span>
 <span class="sd">        &gt;&gt;&gt; facilities_snapped = spaghetti.element_as_gdf(</span>
-<span class="sd">        ...     ntw, pp_name=&quot;facilities&quot;, snapped=True</span>
+<span class="sd">        ...     ntw, pp_name="facilities", snapped=True</span>
 <span class="sd">        ... )</span>
 
 <span class="sd">        Create and solve a ``PDispersion`` instance from the ``GeoDataFrame`` object.</span>
 
 <span class="sd">        &gt;&gt;&gt; pdispersion_from_geodataframe = PDispersion.from_geodataframe(</span>
 <span class="sd">        ...     facilities_snapped,</span>
-<span class="sd">        ...     &quot;geometry&quot;,</span>
+<span class="sd">        ...     "geometry",</span>
 <span class="sd">        ...     p_fac=2,</span>
-<span class="sd">        ...     distance_metric=&quot;euclidean&quot;</span>
+<span class="sd">        ...     distance_metric="euclidean"</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; pdispersion_from_geodataframe = pdispersion_from_geodataframe.solve(</span>
 <span class="sd">        ...     pulp.PULP_CBC_CMD(msg=False)</span>
@@ -426,11 +427,11 @@
 
 <span class="sd">        &gt;&gt;&gt; for dv in pdispersion_from_geodataframe.fac_vars:</span>
 <span class="sd">        ...     if dv.varValue:</span>
-<span class="sd">        ...         print(f&quot;facility {dv.name} is selected&quot;)</span>
+<span class="sd">        ...         print(f"facility {dv.name} is selected")</span>
 <span class="sd">        facility y_0_ is selected</span>
 <span class="sd">        facility y_1_ is selected</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">        """</span>  <span class="c1"># noqa: E501</span>
 
         <span class="n">predefined_facilities_arr</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">predefined_facility_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -440,12 +441,12 @@
 
         <span class="n">fac_type_geom</span> <span class="o">=</span> <span class="n">fac</span><span class="o">.</span><span class="n">geom_type</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fac_type_geom</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="s2">&quot;Point&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fac_type_geom</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fac_type_geom</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="s2">"Point"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fac_type_geom</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="p">(</span>
-                    <span class="s2">&quot;Facility geodataframe contains mixed type geometries &quot;</span>
-                    <span class="s2">&quot;or is not a point. Be sure deriving centroid from &quot;</span>
-                    <span class="s2">&quot;geometries doesn&#39;t affect the results.&quot;</span>
+                    <span class="s2">"Facility geodataframe contains mixed type geometries "</span>
+                    <span class="s2">"or is not a point. Be sure deriving centroid from "</span>
+                    <span class="s2">"geometries doesn't affect the results."</span>
                 <span class="p">),</span>
                 <span class="ne">UserWarning</span><span class="p">,</span>
                 <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -464,7 +465,7 @@
 <div class="viewcode-block" id="PDispersion.solve">
 <a class="viewcode-back" href="../../../generated/spopt.locate.PDispersion.html#spopt.locate.PDispersion.solve">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solver</span><span class="p">:</span> <span class="n">pulp</span><span class="o">.</span><span class="n">LpSolver</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Solve the ``PDispersion`` model.</span>
 
 <span class="sd">        Parameters</span>
@@ -478,7 +479,7 @@
 
 <span class="sd">        spopt.locate.p_dispersion.PDispersion</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span>
 
@@ -502,7 +503,7 @@
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

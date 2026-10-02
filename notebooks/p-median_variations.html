@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Comparing P-Median Variations &#8212; spopt v0.7.0 Manual</title>
+    <title>Comparing P-Median Variations &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -44,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -93,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -197,7 +198,7 @@ Interactive online version:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -301,7 +302,7 @@ solver = pulp.COIN_CMD(msg=False, warmStart=True)
 clients = simulated_geo_points(study_area, needed=N_CLI, seed=SEED_CLI)
 facilities = simulated_geo_points(study_area, needed=N_FAC, seed=SEED_FAC)
 for df in [clients, facilities]:
-    df.set_crs(&quot;EPSG:4326&quot;, inplace=True)
+    df.set_crs("EPSG:4326", inplace=True)
 </pre></div>
 </div>
 </div>
@@ -310,11 +311,11 @@ for df in [clients, facilities]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(4, 4))
-_label = f&quot;client sites ($n$={N_CLI})&quot;
+_label = f"client sites ($n$={N_CLI})"
 clients.plot(ax=ax, label=_label, alpha=0.3)
-_label = f&quot;facility candidate sites ($n$={N_FAC})&quot;
+_label = f"facility candidate sites ($n$={N_FAC})"
 facilities.plot(ax=ax, zorder=2, label=_label, alpha=0.3)
-plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
+plt.legend(loc="upper left", bbox_to_anchor=(1.05, 1));
 </pre></div>
 </div>
 </div>
@@ -322,7 +323,7 @@ plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-median_variations_7_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_7_0.png" style="width: 645px; height: 351px;" />
+<img alt="../_images/notebooks_p-median_variations_7_0.png" class="no-scaled-link" height="351" src="../_images/notebooks_p-median_variations_7_0.png" width="645" />
 </div>
 </div>
 <p>For each client location all <span class="math notranslate nohighlight">\(p\)</span>-median model varinates suppose there is a weight. Here we assign random integer values using <code class="docutils literal notranslate"><span class="pre">numpy</span></code> to simulate these weights ranging from a minimum of 1 and a maximum of 12.</p>
@@ -332,9 +333,9 @@ plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>numpy.random.seed(0)
 ai = numpy.random.randint(1, 12, N_CLI)
-clients[&quot;weights&quot;] = ai
-sum_clients = clients[&quot;weights&quot;].sum()
-print(f&quot;The total of client weights: {sum_clients}&quot;)
+clients["weights"] = ai
+sum_clients = clients["weights"].sum()
+print(f"The total of client weights: {sum_clients}")
 clients
 </pre></div>
 </div>
@@ -444,9 +445,9 @@ The total of client weights: 579
 max_cap = 200
 numpy.random.seed(1)
 cj = numpy.random.randint(min_cap, max_cap, N_FAC)
-facilities[&quot;capacity&quot;] = cj
-sum_capacity = facilities[&quot;capacity&quot;].sum()
-print(f&quot;The total of service capacity: {sum_capacity}&quot;)
+facilities["capacity"] = cj
+sum_capacity = facilities["capacity"].sum()
+print(f"The total of service capacity: {sum_capacity}")
 facilities
 </pre></div>
 </div>
@@ -552,11 +553,11 @@ The total of service capacity: 12126
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(4, 4))
-_label = f&quot;size-weighted clients\n\t$\\sum$={sum_clients}&quot;
+_label = f"size-weighted clients\n\t$\\sum$={sum_clients}"
 clients.plot(ax=ax, label=_label, alpha=0.3, markersize=ai * 4)
-_label = f&quot;capacity-weighted facilities\n\t$\\sum$={sum_capacity}&quot;
+_label = f"capacity-weighted facilities\n\t$\\sum$={sum_capacity}"
 facilities.plot(ax=ax, label=_label, alpha=0.3, markersize=cj)
-plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
+plt.legend(loc="upper left", bbox_to_anchor=(1.05, 1));
 </pre></div>
 </div>
 </div>
@@ -564,7 +565,7 @@ plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-median_variations_12_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_12_0.png" style="width: 617px; height: 351px;" />
+<img alt="../_images/notebooks_p-median_variations_12_0.png" class="no-scaled-link" height="351" src="../_images/notebooks_p-median_variations_12_0.png" width="617" />
 </div>
 </div>
 </section>
@@ -603,7 +604,7 @@ plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model_args = clients, facilities, &quot;geometry&quot;, &quot;geometry&quot;, &quot;weights&quot;, P_FAC
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model_args = clients, facilities, "geometry", "geometry", "weights", P_FAC
 </pre></div>
 </div>
 </div>
@@ -612,7 +613,7 @@ plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pmedian_classic = PMedian.from_geodataframe(*model_args, name=&quot;classic-p-median&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pmedian_classic = PMedian.from_geodataframe(*model_args, name="classic-p-median")
 pmedian_classic = pmedian_classic.solve(solver)
 </pre></div>
 </div>
@@ -623,7 +624,7 @@ pmedian_classic = pmedian_classic.solve(solver)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def fac_vars(pmp):
-    return [f.name.replace(&quot;_&quot;, &quot;&quot;) for f in pmp.fac_vars]
+    return [f.name.replace("_", "") for f in pmp.fac_vars]
 </pre></div>
 </div>
 </div>
@@ -631,8 +632,8 @@ pmedian_classic = pmedian_classic.solve(solver)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities[&quot;dv&quot;] = fac_vars(pmedian_classic)
-facilities = facilities[[&quot;geometry&quot;, &quot;dv&quot;, &quot;capacity&quot;]].copy()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities["dv"] = fac_vars(pmedian_classic)
+facilities = facilities[["geometry", "dv", "capacity"]].copy()
 facilities
 </pre></div>
 </div>
@@ -743,15 +744,15 @@ facilities
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def pmp_diagnostic(pmp, add_to=None):
-    &quot;&quot;&quot;Helper for displaying model diagnostics.&quot;&quot;&quot;
+    """Helper for displaying model diagnostics."""
     _diags = {
-        &quot;model&quot;: pmp.name,
-        &quot;variables&quot;: len(pmp.problem.variables()),
-        &quot;constraints&quot;: len(pmp.problem.constraints),
-        &quot;obj_val&quot;: round(pmp.problem.objective.value(), 3),
-        &quot;selected&quot;: [f.name.replace(&quot;_&quot;, &quot;&quot;) for f in pmp.fac_vars if f.varValue],
-        &quot;cpu_time&quot;: pmp.problem.solutionCpuTime,
-        &quot;wall_time&quot;: pmp.problem.solutionTime,
+        "model": pmp.name,
+        "variables": len(pmp.problem.variables()),
+        "constraints": len(pmp.problem.constraints),
+        "obj_val": round(pmp.problem.objective.value(), 3),
+        "selected": [f.name.replace("_", "") for f in pmp.fac_vars if f.varValue],
+        "cpu_time": pmp.problem.solutionCpuTime,
+        "wall_time": pmp.problem.solutionTime,
     }
     _diags = pandas.DataFrame([_diags.values()], columns=_diags.keys())
     if isinstance(add_to, pandas.DataFrame):
@@ -822,11 +823,11 @@ diagnostic
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def cli_sum(f2c):
-    return clients.loc[f2c, &quot;weights&quot;].sum()
+    return clients.loc[f2c, "weights"].sum()
 
 
 def fac_cap(fdv):
-    return facilities.loc[(facilities[&quot;dv&quot;] == fdv), &quot;capacity&quot;].squeeze()
+    return facilities.loc[(facilities["dv"] == fdv), "capacity"].squeeze()
 
 
 def serv_perc_cap(f2c, fdv):
@@ -834,8 +835,8 @@ def serv_perc_cap(f2c, fdv):
 
 
 def service_level(pmp):
-    if pmp.name.startswith(&quot;capacitated&quot;):
-        zipped_vars = zip(pmp.fac2cli, facilities[&quot;dv&quot;], strict=True)
+    if pmp.name.startswith("capacitated"):
+        zipped_vars = zip(pmp.fac2cli, facilities["dv"], strict=True)
         serv_lev = [serv_perc_cap(f2c, fdv) for f2c, fdv in zipped_vars]
     else:
         serv_lev = [100.0 if bool(dv.varValue) else 0.0 for dv in pmp.fac_vars]
@@ -847,8 +848,8 @@ def service_level(pmp):
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities[&quot;pmp_classic&quot;] = service_level(pmedian_classic)
-perc_cols = [c for c in facilities.columns if c.startswith(&quot;pmp&quot;)]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities["pmp_classic"] = service_level(pmedian_classic)
+perc_cols = [c for c in facilities.columns if c.startswith("pmp")]
 facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
 </pre></div>
 </div>
@@ -949,7 +950,7 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dv_colors_arr = list(mcolors.CSS4_COLORS.keys())
-dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_arr))}
+dv_colors = {f"y{i}": dv_colors_arr[i] for i in range(len(dv_colors_arr))}
 </pre></div>
 </div>
 </div>
@@ -958,7 +959,7 @@ dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_ar
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def plot_results(model, p, facs, clis=None):
-    &quot;&quot;&quot;Visualize optimal solution sets and context.&quot;&quot;&quot;
+    """Visualize optimal solution sets and context."""
     fig, ax = plt.subplots(figsize=(6, 6))
     markersize, markersize_factor = 4, 4
     ax.set_title(model.name, fontsize=15)
@@ -968,18 +969,18 @@ dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_ar
     fac_sites = {}
     for i, dv in enumerate(model.fac_vars):
         if dv.varValue:
-            dv = facs.loc[i, &quot;dv&quot;]
+            dv = facs.loc[i, "dv"]
             fac_sites[dv] = i
-            geom = clis.iloc[model.fac2cli[i]][&quot;geometry&quot;]
+            geom = clis.iloc[model.fac2cli[i]]["geometry"]
             cli_points[dv] = geom
 
     # study area and legend entries initialization
     legend_elements = []
 
     # all candidate facilities
-    facs.plot(ax=ax, fc=&quot;brown&quot;, marker=&quot;*&quot;, markersize=80, zorder=8)
-    _label = f&quot;Facility sites ($n$={len(model.fac_vars)})&quot;
-    _mkws = {&quot;marker&quot;: &quot;*&quot;, &quot;markerfacecolor&quot;: &quot;brown&quot;, &quot;markeredgecolor&quot;: &quot;brown&quot;}
+    facs.plot(ax=ax, fc="brown", marker="*", markersize=80, zorder=8)
+    _label = f"Facility sites ($n$={len(model.fac_vars)})"
+    _mkws = {"marker": "*", "markerfacecolor": "brown", "markeredgecolor": "brown"}
     legend_elements.append(mlines.Line2D([], [], ms=7, lw=0, label=_label, **_mkws))
 
     # facility-(client) symbology and legend entries
@@ -989,28 +990,28 @@ dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_ar
         # clients
         geoms = cli_points[fname]
         gdf = geopandas.GeoDataFrame(geoms)
-        gdf.plot(ax=ax, zorder=zorder, ec=&quot;k&quot;, fc=cset, markersize=100 * markersize)
-        _label = f&quot;Demand sites covered by {fname}&quot;
-        _mkws = {&quot;markerfacecolor&quot;: cset, &quot;markeredgecolor&quot;: &quot;k&quot;, &quot;ms&quot;: markersize + 7}
+        gdf.plot(ax=ax, zorder=zorder, ec="k", fc=cset, markersize=100 * markersize)
+        _label = f"Demand sites covered by {fname}"
+        _mkws = {"markerfacecolor": cset, "markeredgecolor": "k", "ms": markersize + 7}
         legend_elements.append(
-            mlines.Line2D([], [], marker=&quot;o&quot;, lw=0, label=_label, **_mkws)
+            mlines.Line2D([], [], marker="o", lw=0, label=_label, **_mkws)
         )
         # facilities
-        ec = &quot;k&quot;
+        ec = "k"
         lw = 2
         facs.iloc[[fac]].plot(
-            ax=ax, marker=&quot;*&quot;, markersize=1000, zorder=9, fc=cset, ec=ec, lw=lw
+            ax=ax, marker="*", markersize=1000, zorder=9, fc=cset, ec=ec, lw=lw
         )
-        _mkws = {&quot;markerfacecolor&quot;: cset, &quot;markeredgecolor&quot;: ec, &quot;markeredgewidth&quot;: lw}
+        _mkws = {"markerfacecolor": cset, "markeredgecolor": ec, "markeredgewidth": lw}
         legend_elements.append(
-            mlines.Line2D([], [], marker=&quot;*&quot;, ms=20, lw=0, label=fname, **_mkws)
+            mlines.Line2D([], [], marker="*", ms=20, lw=0, label=fname, **_mkws)
         )
         # increment zorder up and markersize down for stacked client symbology
         zorder += 1
         markersize -= markersize_factor / p
 
     # legend
-    kws = {&quot;loc&quot;: &quot;upper left&quot;, &quot;bbox_to_anchor&quot;: (1.05, 0.7)}
+    kws = {"loc": "upper left", "bbox_to_anchor": (1.05, 0.7)}
     plt.legend(handles=legend_elements, **kws)
 </pre></div>
 </div>
@@ -1027,7 +1028,7 @@ dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_ar
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-median_variations_29_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_29_0.png" style="width: 798px; height: 551px;" />
+<img alt="../_images/notebooks_p-median_variations_29_0.png" class="no-scaled-link" height="551" src="../_images/notebooks_p-median_variations_29_0.png" width="798" />
 </div>
 </div>
 </section>
@@ -1067,7 +1068,7 @@ dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_ar
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pmedian_capacity = PMedian.from_geodataframe(
-    *model_args, name=&quot;p-median&quot;, facility_capacity_col=&quot;capacity&quot;
+    *model_args, name="p-median", facility_capacity_col="capacity"
 )
 pmedian_capacity = pmedian_capacity.solve(solver)
 </pre></div>
@@ -1143,8 +1144,8 @@ diagnostic
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities[&quot;pmp_capacitated&quot;] = service_level(pmedian_capacity)
-perc_cols = [c for c in facilities.columns if c.startswith(&quot;pmp&quot;)]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities["pmp_capacitated"] = service_level(pmedian_capacity)
+perc_cols = [c for c in facilities.columns if c.startswith("pmp")]
 facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
 </pre></div>
 </div>
@@ -1268,7 +1269,7 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-median_variations_34_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_34_0.png" style="width: 798px; height: 551px;" />
+<img alt="../_images/notebooks_p-median_variations_34_0.png" class="no-scaled-link" height="551" src="../_images/notebooks_p-median_variations_34_0.png" width="798" />
 </div>
 </div>
 </section>
@@ -1313,7 +1314,7 @@ contraints in the mathematical formulation. As stated in the introduction above,
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pmedian_k_nearest = KNearestPMedian.from_geodataframe(
     *model_args,
-    name=&quot;k-nearest-p-median&quot;,
+    name="k-nearest-p-median",
 )
 pmedian_k_nearest = pmedian_k_nearest.solve(solver)
 </pre></div>
@@ -1399,8 +1400,8 @@ diagnostic
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities[&quot;pmp_k-nearest&quot;] = service_level(pmedian_k_nearest)
-perc_cols = [c for c in facilities.columns if c.startswith(&quot;pmp&quot;)]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities["pmp_k-nearest"] = service_level(pmedian_k_nearest)
+perc_cols = [c for c in facilities.columns if c.startswith("pmp")]
 facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
 </pre></div>
 </div>
@@ -1534,7 +1535,7 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-median_variations_39_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_39_0.png" style="width: 798px; height: 551px;" />
+<img alt="../_images/notebooks_p-median_variations_39_0.png" class="no-scaled-link" height="551" src="../_images/notebooks_p-median_variations_39_0.png" width="798" />
 </div>
 </div>
 </section>
@@ -1579,8 +1580,8 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pmedian_k_nearest_capacity = KNearestPMedian.from_geodataframe(
     *model_args,
-    name=&quot;k-nearest-p-median&quot;,
-    facility_capacity_col=&quot;capacity&quot;,
+    name="k-nearest-p-median",
+    facility_capacity_col="capacity",
 )
 pmedian_k_nearest_capacity = pmedian_k_nearest_capacity.solve(solver)
 </pre></div>
@@ -1676,8 +1677,8 @@ diagnostic
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities[&quot;pmp_k-nearest_capacitated&quot;] = service_level(pmedian_k_nearest_capacity)
-perc_cols = [c for c in facilities.columns if c.startswith(&quot;pmp&quot;)]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facilities["pmp_k-nearest_capacitated"] = service_level(pmedian_k_nearest_capacity)
+perc_cols = [c for c in facilities.columns if c.startswith("pmp")]
 facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
 </pre></div>
 </div>
@@ -1821,7 +1822,7 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-median_variations_44_0.png" class="no-scaled-link" src="../_images/notebooks_p-median_variations_44_0.png" style="width: 798px; height: 551px;" />
+<img alt="../_images/notebooks_p-median_variations_44_0.png" class="no-scaled-link" height="551" src="../_images/notebooks_p-median_variations_44_0.png" width="798" />
 </div>
 </div>
 </section>
@@ -2091,7 +2092,7 @@ facilities.loc[(facilities[perc_cols] &gt; 0).any(axis=1)]
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

@@ -4,14 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>spopt.region.azp &#8212; spopt v0.7.0 Manual</title>
+    <title>spopt.region.azp &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=e5dd7357" />
-    <script src="../../../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -87,6 +87,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a><ul>
@@ -136,10 +137,10 @@
     <div class="body col-md-12 content" role="main">
       
   <h1>Source code for spopt.region.azp</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Openshaw, S. and Rao, L. (1995). Algorithms for reengineering 1991 census geography.</span>
 <span class="sd">Environment and Planning A, 27(3):425-446.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="c1"># ruff: noqa: B008, N806</span>
 
@@ -183,7 +184,7 @@
 <div class="viewcode-block" id="AZP">
 <a class="viewcode-back" href="../../../generated/spopt.region.AZP.html#spopt.region.AZP">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AZP</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;AZP involves class offering the implementation of</span>
+<span class="w">    </span><span class="sd">"""AZP involves class offering the implementation of</span>
 <span class="sd">    the automatic zoning procedure algorithm.</span>
 
 <span class="sd">    Parameters</span>
@@ -235,12 +236,12 @@
 
 <span class="sd">    Read the data.</span>
 
-<span class="sd">    &gt;&gt;&gt; pth = libpysal.examples.get_path(&#39;mexicojoin.shp&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; pth = libpysal.examples.get_path('mexicojoin.shp')</span>
 <span class="sd">    &gt;&gt;&gt; mexico = gpd.read_file(pth)</span>
 
 <span class="sd">    Initialize the parameters.</span>
 
-<span class="sd">    &gt;&gt;&gt; attrs_name = [f&#39;PCGDP{year}&#39; for year in range(1950,2010, 10)]</span>
+<span class="sd">    &gt;&gt;&gt; attrs_name = [f'PCGDP{year}' for year in range(1950,2010, 10)]</span>
 <span class="sd">    &gt;&gt;&gt; w = libpysal.weights.Queen.from_dataframe(mexico)</span>
 <span class="sd">    &gt;&gt;&gt; n_clusters = 8</span>
 <span class="sd">    &gt;&gt;&gt; floor = 3</span>
@@ -260,10 +261,10 @@
 
 <span class="sd">    Show the clustering results.</span>
 
-<span class="sd">    &gt;&gt;&gt; mexico[&#39;azp_new&#39;] = model.labels_</span>
-<span class="sd">    &gt;&gt;&gt; mexico.plot(column=&#39;azp_new&#39;, categorical=True, figsize=(12,8), edgecolor=&#39;w&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; mexico['azp_new'] = model.labels_</span>
+<span class="sd">    &gt;&gt;&gt; mexico.plot(column='azp_new', categorical=True, figsize=(12,8), edgecolor='w')</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="AZP.__init__">
 <a class="viewcode-back" href="../../../generated/spopt.region.AZP.html#spopt.region.AZP.__init__">[docs]</a>
@@ -291,7 +292,7 @@
 <div class="viewcode-block" id="AZP.solve">
 <a class="viewcode-back" href="../../../generated/spopt.region.AZP.html#spopt.region.AZP.solve">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Solve the azp&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Solve the azp"""</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
@@ -309,7 +310,7 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">AZPOrig</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Class offering the implementation of the AZP algorithm.</span>
 
 <span class="sd">    Attributes</span>
@@ -319,10 +320,10 @@
 <span class="sd">        Each element is a region label specifying to which region the</span>
 <span class="sd">        corresponding area was assigned to by the last run of a fit-method.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allow_move_strategy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
@@ -333,7 +334,7 @@
 <span class="sd">        random_state : None, int, str, bytes, or bytearray</span>
 <span class="sd">            Random seed. Default is ``None``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">n_regions</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="kc">None</span>
@@ -346,8 +347,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span> <span class="o">=</span> <span class="n">AllowMoveAZP</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;The allow_move_strategy argument must be either &quot;</span>
-                <span class="s2">&quot;None, or an instance of AllowMoveStrategy.&quot;</span>
+                <span class="s2">"The allow_move_strategy argument must be either "</span>
+                <span class="s2">"None, or an instance of AllowMoveStrategy."</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">objective_func</span> <span class="o">=</span> <span class="kc">None</span>
@@ -360,10 +361,10 @@
         <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">(),</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Perform the AZP algorithm as described in [OR1995]_.</span>
 
-<span class="sd">        The resulting region labels are assigned to the instance&#39;s</span>
+<span class="sd">        The resulting region labels are assigned to the instance's</span>
 <span class="sd">        :attr:`labels_` attribute.</span>
 
 <span class="sd">        Parameters</span>
@@ -372,7 +373,7 @@
 <span class="sd">        adj : scipy.sparse.csr_matrix</span>
 <span class="sd">            Adjacency matrix representing the contiguity relation.</span>
 <span class="sd">        attr : numpy.ndarray</span>
-<span class="sd">            Array (number of areas x number of attributes) of areas&#39; attributes</span>
+<span class="sd">            Array (number of areas x number of attributes) of areas' attributes</span>
 <span class="sd">            relevant to clustering.</span>
 <span class="sd">        n_regions : int</span>
 <span class="sd">            Number of desired regions.</span>
@@ -384,7 +385,7 @@
 <span class="sd">            The objective function to use. Default is</span>
 <span class="sd">            ``ObjectiveFunctionPairwise()``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">        """</span>  <span class="c1"># noqa: E501</span>
 
         <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">attr</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -416,7 +417,7 @@
 
     <span class="n">fit</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">fit_from_scipy_sparse_matrix</span><span class="p">)</span>
     <span class="n">fit</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;Alias for :meth:`fit_from_scipy_sparse_matrix`.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="s2">"Alias for :meth:`fit_from_scipy_sparse_matrix`.</span><span class="se">\n\n</span><span class="s2">"</span>
         <span class="o">+</span> <span class="n">fit_from_scipy_sparse_matrix</span><span class="o">.</span><span class="vm">__doc__</span>
     <span class="p">)</span>
 
@@ -428,7 +429,7 @@
         <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">(),</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Alternative API for ``fit_from_scipy_sparse_matrix``.</span>
 
 <span class="sd">        Parameters</span>
@@ -450,7 +451,7 @@
 <span class="sd">            ``fit_from_scipy_sparse_matrix``.</span>
 <span class="sd">            Default is ``ObjectiveFunctionPairwise()``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">        """</span>  <span class="c1"># noqa: E501</span>
 
         <span class="n">adj</span> <span class="o">=</span> <span class="n">scipy_sparse_matrix_from_w</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
@@ -465,7 +466,7 @@
         <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">(),</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Alternative API for ``fit_from_scipy_sparse_matrix``.</span>
 
 <span class="sd">        Parameters</span>
@@ -490,7 +491,7 @@
 <span class="sd">            Refer to the corresponding argument in</span>
 <span class="sd">            ``fit_from_scipy_sparse_matrix``.</span>
 <span class="sd">        initial_labels : str, dict, or None</span>
-<span class="sd">            If str, then the string names the graph&#39;s attribute holding the</span>
+<span class="sd">            If str, then the string names the graph's attribute holding the</span>
 <span class="sd">            information about the initial clustering.</span>
 <span class="sd">            If ``dict``, then each key is a node and each value is the region the</span>
 <span class="sd">            key area is assigned to at the beginning of the algorithm.</span>
@@ -501,7 +502,7 @@
 <span class="sd">            ``fit_from_scipy_sparse_matrix``.</span>
 <span class="sd">            Default is ``ObjectiveFunctionPairwise()``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">        """</span>  <span class="c1"># noqa: E501</span>
 
         <span class="n">adj</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">to_scipy_sparse_matrix</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">array_from_graph_or_dict</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
@@ -516,11 +517,11 @@
         <span class="n">gdf</span><span class="p">,</span>
         <span class="n">attr</span><span class="p">,</span>
         <span class="n">n_regions</span><span class="p">,</span>
-        <span class="n">contiguity</span><span class="o">=</span><span class="s2">&quot;rook&quot;</span><span class="p">,</span>
+        <span class="n">contiguity</span><span class="o">=</span><span class="s2">"rook"</span><span class="p">,</span>
         <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">(),</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Alternative API for ``fit_from_scipy_sparse_matrix``.</span>
 
 <span class="sd">        Parameters</span>
@@ -538,10 +539,10 @@
 <span class="sd">            ``fit_from_scipy_sparse_matrix``.</span>
 <span class="sd">        contiguity : str</span>
 <span class="sd">            Defines the contiguity relationship between areas.</span>
-<span class="sd">            Default is ``&#39;rook&#39;``. Possible contiguity definitions are:</span>
+<span class="sd">            Default is ``'rook'``. Possible contiguity definitions are:</span>
 
-<span class="sd">            * &quot;rook&quot; - Rook contiguity.</span>
-<span class="sd">            * &quot;queen&quot; - Queen contiguity.</span>
+<span class="sd">            * "rook" - Rook contiguity.</span>
+<span class="sd">            * "queen" - Queen contiguity.</span>
 
 <span class="sd">        initial_labels : numpy.ndarray or None</span>
 <span class="sd">            Refer to the corresponding argument in</span>
@@ -552,7 +553,7 @@
 <span class="sd">            ``fit_from_scipy_sparse_matrix``.</span>
 <span class="sd">            Default is ``ObjectiveFunctionPairwise()``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">        """</span>  <span class="c1"># noqa: E501</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">w_from_gdf</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">contiguity</span><span class="p">)</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">array_from_df_col</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_from_w</span><span class="p">(</span>
@@ -567,14 +568,14 @@
         <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">(),</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Alternative API for :meth:`fit_from_scipy_sparse_matrix`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
 <span class="sd">        neighbor_dict : `dict`</span>
-<span class="sd">            Each key is an area and each value is an iterable of the key area&#39;s</span>
+<span class="sd">            Each key is an area and each value is an iterable of the key area's</span>
 <span class="sd">            neighbors.</span>
 <span class="sd">        attr : `dict`</span>
 <span class="sd">            Each key is an area and each value is the corresponding</span>
@@ -591,7 +592,7 @@
 <span class="sd">            Refer to the corresponding argument in</span>
 <span class="sd">            :meth:`fit_from_scipy_sparse_matrix`.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">        """</span>  <span class="c1"># noqa: E501</span>
         <span class="n">sorted_areas</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">neighbor_dict</span><span class="p">)</span>
 
         <span class="n">adj</span> <span class="o">=</span> <span class="n">scipy_sparse_matrix_from_dict</span><span class="p">(</span><span class="n">neighbor_dict</span><span class="p">)</span>
@@ -606,7 +607,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_azp_connected_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">initial_clustering</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>  <span class="c1"># noqa: ARG002</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Implementation of the AZP algorithm for a spatially connected set of</span>
 <span class="sd">        areas (i.e. for every area there is a path to every other area).</span>
 
@@ -614,7 +615,7 @@
 <span class="sd">        ----------</span>
 
 <span class="sd">        adj : scipy.sparse.csr_matrix</span>
-<span class="sd">            Adjacency matrix representing the contiguity relation. The matrix&#39;</span>
+<span class="sd">            Adjacency matrix representing the contiguity relation. The matrix'</span>
 <span class="sd">            shape is `(N, N)` where `N` denotes the number of areas in the</span>
 <span class="sd">            currently considered connected component.</span>
 <span class="sd">        initial_clustering : numpy.ndarray</span>
@@ -633,7 +634,7 @@
 <span class="sd">            been performed. Only region labels of the currently considered</span>
 <span class="sd">            connected component are returned.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># if there is only one region in the initial solution, just return it.</span>
         <span class="n">distinct_regions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">initial_clustering</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">distinct_regions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -643,7 +644,7 @@
         <span class="c1">#  step 2: make a list of the M regions</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="n">initial_clustering</span>
 
-        <span class="n">obj_val_start</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+        <span class="n">obj_val_start</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">"inf"</span><span class="p">)</span>
         <span class="n">obj_val_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span><span class="o">.</span><span class="n">objective_val</span>
 
         <span class="n">region_neighbors</span> <span class="o">=</span> <span class="p">{}</span>
@@ -734,7 +735,7 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">AZPSimulatedAnnealing</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Class offering the implementation of the AZP-SA algorithm (see [OR1995]_).</span>
 
 <span class="sd">    Attributes</span>
@@ -744,26 +745,26 @@
 <span class="sd">        Each element is a region label specifying to which region the</span>
 <span class="sd">        corresponding area was assigned to by the last run of a fit-method.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">init_temperature</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">max_iterations</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">),</span>
+        <span class="n">max_iterations</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s2">"inf"</span><span class="p">),</span>
         <span class="n">sa_moves_term</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
         <span class="n">nonmoving_steps_before_stop</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
         <span class="n">repetitions_before_termination</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
         <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
 <span class="sd">        init_temperature : float</span>
 <span class="sd">            The initial temperature used in the simulated annealing algorithm.</span>
-<span class="sd">        max_iterations : int or float(&quot;inf&quot;)</span>
+<span class="sd">        max_iterations : int or float("inf")</span>
 <span class="sd">            Termination condition for step b: Terminate if the AZP algorithm</span>
-<span class="sd">            has run for `max_iterations` times. Default is ``float(&#39;inf&#39;)``.</span>
+<span class="sd">            has run for `max_iterations` times. Default is ``float('inf')``.</span>
 <span class="sd">        sa_moves_term : int</span>
 <span class="sd">            Termination condition for step b: Count the SA-moves made by the</span>
 <span class="sd">            repeated runs of the AZP (modified in step 5) and terminate after</span>
@@ -779,14 +780,14 @@
 <span class="sd">        random_state : None, int, str, bytes, or bytearray</span>
 <span class="sd">            Random seed. Default is ``None``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">allow_move_strategy</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">azp</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">init_temperature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">init_temperature</span> <span class="o">=</span> <span class="n">init_temperature</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;TODO&quot;</span><span class="p">)</span>  <span class="c1"># todo</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"TODO"</span><span class="p">)</span>  <span class="c1"># todo</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">maxit</span> <span class="o">=</span> <span class="n">max_iterations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sa_moves_term</span> <span class="o">=</span> <span class="n">sa_moves_term</span>
@@ -807,12 +808,12 @@
         <span class="n">gdf</span><span class="p">,</span>
         <span class="n">attr</span><span class="p">,</span>
         <span class="n">n_regions</span><span class="p">,</span>
-        <span class="n">contiguity</span><span class="o">=</span><span class="s2">&quot;rook&quot;</span><span class="p">,</span>
+        <span class="n">contiguity</span><span class="o">=</span><span class="s2">"rook"</span><span class="p">,</span>
         <span class="n">initial_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">cooling_factor</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
         <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">(),</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
@@ -827,7 +828,7 @@
 <span class="sd">            ``AZP.fit_from_geodataframe``.</span>
 <span class="sd">        contiguity : str</span>
 <span class="sd">            Refer to the corresponding argument in</span>
-<span class="sd">            ``AZP.fit_from_geodataframe``. Default is ``&#39;rook&#39;``.</span>
+<span class="sd">            ``AZP.fit_from_geodataframe``. Default is ``'rook'``.</span>
 <span class="sd">        initial_labels : numpy.ndarray</span>
 <span class="sd">            Refer to the corresponding argument in</span>
 <span class="sd">            ``AZP.fit_from_geodataframe``. Default is ``None``.</span>
@@ -839,7 +840,7 @@
 <span class="sd">            ``fit_from_scipy_sparse_matrix``.</span>
 <span class="sd">            Default is ``ObjectiveFunctionPairwise()``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">        """</span>  <span class="c1"># noqa: E501</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">w_from_gdf</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">contiguity</span><span class="p">)</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">array_from_df_col</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_from_w</span><span class="p">(</span>
@@ -860,7 +861,7 @@
         <span class="n">cooling_factor</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
         <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">(),</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
@@ -883,7 +884,7 @@
 <span class="sd">            ``fit_from_scipy_sparse_matrix``.</span>
 <span class="sd">            Default is ``ObjectiveFunctionPairwise()``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">        """</span>  <span class="c1"># noqa: E501</span>
         <span class="n">sorted_areas</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">neighbor_dict</span><span class="p">)</span>
         <span class="n">adj</span> <span class="o">=</span> <span class="n">scipy_sparse_matrix_from_dict</span><span class="p">(</span><span class="n">neighbor_dict</span><span class="p">)</span>
         <span class="n">attr_arr</span> <span class="o">=</span> <span class="n">array_from_dict_values</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">sorted_areas</span><span class="p">)</span>
@@ -910,7 +911,7 @@
         <span class="n">cooling_factor</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
         <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">(),</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
@@ -936,7 +937,7 @@
 <span class="sd">            ``AZP.fit_from_networkx``.</span>
 <span class="sd">            Default is ``ObjectiveFunctionPairwise()``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">        """</span>  <span class="c1"># noqa: E501</span>
 
         <span class="n">adj</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">to_scipy_sparse_matrix</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">array_from_graph_or_dict</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
@@ -960,7 +961,7 @@
         <span class="n">cooling_factor</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
         <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">(),</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
@@ -985,10 +986,10 @@
 <span class="sd">            Refer to the corresponding argument in</span>
 <span class="sd">            ``AZP.fit_from_scipy_sparse_matrix``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">        """</span>  <span class="c1"># noqa: E501</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">cooling_factor</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;The cooling_factor argument must be greater than 0 and less than 1&quot;</span>
+                <span class="s2">"The cooling_factor argument must be greater than 0 and less than 1"</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">attr</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -1046,7 +1047,7 @@
         <span class="n">cooling_factor</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
         <span class="n">objective_func</span><span class="o">=</span><span class="n">ObjectiveFunctionPairwise</span><span class="p">(),</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
@@ -1071,7 +1072,7 @@
 <span class="sd">            ``fit_from_scipy_sparse_matrix``.</span>
 <span class="sd">            Default is ``ObjectiveFunctionPairwise()``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">        """</span>  <span class="c1"># noqa: E501</span>
         <span class="n">adj</span> <span class="o">=</span> <span class="n">scipy_sparse_matrix_from_w</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_from_scipy_sparse_matrix</span><span class="p">(</span>
             <span class="n">adj</span><span class="p">,</span>
@@ -1090,9 +1091,9 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">AZPTabu</span><span class="p">(</span><span class="n">AZP</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Superclass for tabu variants of the AZP.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_make_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">adj</span><span class="p">):</span>
         <span class="n">old_region</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">area</span><span class="p">]</span>
@@ -1116,7 +1117,7 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">AZPBasicTabu</span><span class="p">(</span><span class="n">AZPTabu</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Implementation of the AZP with basic tabu (refer to [OR1995]_).</span>
 
 <span class="sd">    Attributes</span>
@@ -1126,12 +1127,12 @@
 <span class="sd">        Each element is a region label specifying to which region the</span>
 <span class="sd">        corresponding area was assigned to by the last run of a fit-method.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">tabu_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">repetitions_before_termination</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
@@ -1145,14 +1146,14 @@
 <span class="sd">            Refer to the corresponding argument in</span>
 <span class="sd">            ``AZP.__init__``. Default is ``None``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([],</span> <span class="n">tabu_length</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">visited</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reps_before_termination</span> <span class="o">=</span> <span class="n">repetitions_before_termination</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_azp_connected_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">initial_clustering</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Implementation of the basic tabu version of the AZP algorithm (refer</span>
 <span class="sd">        to [OR1995]_) for a spatially connected set of areas (i.e. for every</span>
 <span class="sd">        area there is a path to every other area).</span>
@@ -1176,7 +1177,7 @@
 <span class="sd">        labels : numpy.ndarray</span>
 <span class="sd">            Refer to the return value in ``AZP._azp_connected_component``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_tabu</span><span class="p">()</span>
         <span class="c1"># if there is only one region in the initial solution, just return it.</span>
         <span class="n">distinct_regions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">initial_clustering</span><span class="p">))</span>
@@ -1199,7 +1200,7 @@
             <span class="c1"># step 1 Find the global best move that is not prohibited or tabu.</span>
             <span class="c1"># find possible moves (globally)</span>
             <span class="n">best_move</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">best_objval_diff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+            <span class="n">best_objval_diff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">"inf"</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                 <span class="n">old_region</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">area</span><span class="p">]</span>
                 <span class="n">sub_adj</span> <span class="o">=</span> <span class="n">sub_adj_matrix</span><span class="p">(</span>
@@ -1277,7 +1278,7 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">AZPReactiveTabu</span><span class="p">(</span><span class="n">AZPTabu</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Implementation of the AZP with reactive tabu (refer to [OR1995]_).</span>
 
 <span class="sd">    Attributes</span>
@@ -1287,10 +1288,10 @@
 <span class="sd">        Each element is a region label specifying to which region the</span>
 <span class="sd">        corresponding area was assigned to by the last run of a fit-method.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_iterations</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
@@ -1311,20 +1312,20 @@
 <span class="sd">            Refer to the corresponding argument in</span>
 <span class="sd">            ``AZP.__init__``. Default is ``None``.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tabu</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([],</span> <span class="n">maxlen</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">avg_it_until_rep</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rep_counter</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">max_iterations</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The `max_iterations` argument must be &gt; 0.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The `max_iterations` argument must be &gt; 0."</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maxit</span> <span class="o">=</span> <span class="n">max_iterations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">visited</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">k1</span> <span class="o">=</span> <span class="n">k1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">k2</span> <span class="o">=</span> <span class="n">k2</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_azp_connected_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">initial_labels</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Implementation of the reactive tabu version of the AZP algorithm (refer</span>
 <span class="sd">        to [OR1995]_) for a spatially connected set of areas (i.e. for every</span>
 <span class="sd">        area there is a path to every other area).</span>
@@ -1348,7 +1349,7 @@
 <span class="sd">        labels : :class:`numpy.ndarray`</span>
 <span class="sd">            Refer to the return value in :meth:`AZP._azp_connected_component`.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_tabu</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="c1"># if there is only one region in the initial solution, just return it.</span>
         <span class="n">distinct_regions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">initial_labels</span><span class="p">))</span>
@@ -1359,7 +1360,7 @@
         <span class="n">labels</span> <span class="o">=</span> <span class="n">initial_labels</span>
 
         <span class="n">it_since_tabu_len_changed</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">obj_val_start</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+        <span class="n">obj_val_start</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">"inf"</span><span class="p">)</span>
         <span class="c1"># step 12: Repeat steps 3-11 until either no further improvements are</span>
         <span class="c1"># made or a maximum number of iterations are exceeded.</span>
         <span class="k">for</span> <span class="n">_it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maxit</span><span class="p">):</span>
@@ -1389,7 +1390,7 @@
             <span class="c1"># step 4: Find the best nontabu move.</span>
             <span class="n">best_move</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">best_move_index</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">best_objval_diff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+            <span class="n">best_objval_diff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">"inf"</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">move</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">possible_moves</span><span class="p">):</span>
                 <span class="n">obj_val_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_func</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                     <span class="n">move</span><span class="o">.</span><span class="n">area</span><span class="p">,</span> <span class="n">move</span><span class="o">.</span><span class="n">new_region</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">attr</span>
@@ -1403,7 +1404,7 @@
             <span class="c1"># step 6: Look up the current zoning system in a list of all zoning</span>
             <span class="c1"># systems visited so far during the search. If not found then go</span>
             <span class="c1"># to step 10.</span>
-            <span class="c1"># Sets can&#39;t be permuted so we convert our list to a set:</span>
+            <span class="c1"># Sets can't be permuted so we convert our list to a set:</span>
             <span class="n">label_tup</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">label_tup</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visited</span><span class="p">:</span>
                 <span class="c1"># step 7: If it is found and it has been visited more than K1</span>
@@ -1492,7 +1493,7 @@
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

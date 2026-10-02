@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Spatial Adaptive Agglomerative Aggregation (\(SA^3\)) &#8212; spopt v0.7.0 Manual</title>
+    <title>Spatial Adaptive Agglomerative Aggregation (\(SA^3\)) &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -44,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -93,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -185,7 +186,7 @@ Interactive online version:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -252,8 +253,8 @@ spopt     : 0.1.dev1095+g22fb0ae.d20250507
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>load_example(&quot;AirBnB&quot;)
-pth = libpysal.examples.get_path(&quot;airbnb_Chicago 2015.shp&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>load_example("AirBnB")
+pth = libpysal.examples.get_path("airbnb_Chicago 2015.shp")
 chicago = geopandas.read_file(pth)
 </pre></div>
 </div>
@@ -279,7 +280,7 @@ chicago = geopandas.read_file(pth)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = [&quot;num_spots&quot;]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = ["num_spots"]
 w = libpysal.graph.Graph.build_contiguity(chicago, rook=False)
 </pre></div>
 </div>
@@ -290,21 +291,21 @@ w = libpysal.graph.Graph.build_contiguity(chicago, rook=False)
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>## first run takes a while, since the functions are compiled to numba
 
-model_eom_3 = SA3(chicago, w, attrs_name, min_cluster_size=3, extraction=&quot;eom&quot;)
+model_eom_3 = SA3(chicago, w, attrs_name, min_cluster_size=3, extraction="eom")
 model_eom_3.solve()
-chicago[&quot;sa3_eom_3&quot;] = model_eom_3.labels_
+chicago["sa3_eom_3"] = model_eom_3.labels_
 
-model_leaf_3 = SA3(chicago, w, attrs_name, min_cluster_size=3, extraction=&quot;leaf&quot;)
+model_leaf_3 = SA3(chicago, w, attrs_name, min_cluster_size=3, extraction="leaf")
 model_leaf_3.solve()
-chicago[&quot;sa3_leaf_3&quot;] = model_leaf_3.labels_
+chicago["sa3_leaf_3"] = model_leaf_3.labels_
 
-model_eom_10 = SA3(chicago, w, attrs_name, min_cluster_size=10, extraction=&quot;eom&quot;)
+model_eom_10 = SA3(chicago, w, attrs_name, min_cluster_size=10, extraction="eom")
 model_eom_10.solve()
-chicago[&quot;sa3_eom_10&quot;] = model_eom_10.labels_
+chicago["sa3_eom_10"] = model_eom_10.labels_
 
-model_leaf_10 = SA3(chicago, w, attrs_name, min_cluster_size=10, extraction=&quot;leaf&quot;)
+model_leaf_10 = SA3(chicago, w, attrs_name, min_cluster_size=10, extraction="leaf")
 model_leaf_10.solve()
-chicago[&quot;sa3_leaf_10&quot;] = model_leaf_10.labels_
+chicago["sa3_leaf_10"] = model_leaf_10.labels_
 </pre></div>
 </div>
 </div>
@@ -322,67 +323,67 @@ OMP: Info #276: omp_set_nested routine deprecated, please use omp_set_max_active
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(3, 2, figsize=(10, 20))
 
-sns.kdeplot(chicago[&quot;num_spots&quot;], bw_adjust=0.2, ax=ax[0][0])
-ax[0][0].set_title(&quot;num_spots value distribution&quot;)
+sns.kdeplot(chicago["num_spots"], bw_adjust=0.2, ax=ax[0][0])
+ax[0][0].set_title("num_spots value distribution")
 
 chicago.plot(
     ax=ax[0][1],
     figsize=(7, 14),
-    column=&quot;num_spots&quot;,
-    scheme=&quot;Quantiles&quot;,
-    cmap=&quot;GnBu&quot;,
-    edgecolor=&quot;grey&quot;,
-    legend_kwds={&quot;loc&quot;: &quot;lower left&quot;},
+    column="num_spots",
+    scheme="Quantiles",
+    cmap="GnBu",
+    edgecolor="grey",
+    legend_kwds={"loc": "lower left"},
     legend=True,
-).axis(&quot;off&quot;)
-ax[0][1].set_title(&quot;num_spots spatial distribution&quot;)
+).axis("off")
+ax[0][1].set_title("num_spots spatial distribution")
 
 chicago.plot(
     ax=ax[1][0],
-    column=&quot;sa3_eom_3&quot;,
+    column="sa3_eom_3",
     categorical=True,
-    edgecolor=&quot;w&quot;,
+    edgecolor="w",
     legend=True,
-    legend_kwds={&quot;loc&quot;: &quot;lower left&quot;},
-    cmap=&quot;tab20&quot;,
-).axis(&quot;off&quot;)
-ax[1][0].set_title(&quot;EOM extraction, min_clusters=3&quot;)
+    legend_kwds={"loc": "lower left"},
+    cmap="tab20",
+).axis("off")
+ax[1][0].set_title("EOM extraction, min_clusters=3")
 
 chicago.plot(
     ax=ax[1][1],
     figsize=(7, 14),
-    column=&quot;sa3_leaf_3&quot;,
+    column="sa3_leaf_3",
     categorical=True,
-    edgecolor=&quot;w&quot;,
+    edgecolor="w",
     legend=True,
-    legend_kwds={&quot;loc&quot;: &quot;lower left&quot;},
-    cmap=&quot;tab20&quot;,
-).axis(&quot;off&quot;)
-ax[1][1].set_title(&quot;Leaf extraction, min_clusters=3&quot;)
+    legend_kwds={"loc": "lower left"},
+    cmap="tab20",
+).axis("off")
+ax[1][1].set_title("Leaf extraction, min_clusters=3")
 
 
 chicago.plot(
     ax=ax[2][0],
-    column=&quot;sa3_eom_10&quot;,
+    column="sa3_eom_10",
     categorical=True,
-    edgecolor=&quot;w&quot;,
+    edgecolor="w",
     legend=True,
-    legend_kwds={&quot;loc&quot;: &quot;lower left&quot;},
-    cmap=&quot;tab20&quot;,
-).axis(&quot;off&quot;)
-ax[2][0].set_title(&quot;EOM extraction, min_clusters=10&quot;)
+    legend_kwds={"loc": "lower left"},
+    cmap="tab20",
+).axis("off")
+ax[2][0].set_title("EOM extraction, min_clusters=10")
 
 chicago.plot(
     ax=ax[2][1],
     figsize=(7, 14),
-    column=&quot;sa3_leaf_10&quot;,
+    column="sa3_leaf_10",
     categorical=True,
-    edgecolor=&quot;w&quot;,
+    edgecolor="w",
     legend=True,
-    legend_kwds={&quot;loc&quot;: &quot;lower left&quot;},
-    cmap=&quot;tab20&quot;,
-).axis(&quot;off&quot;)
-ax[2][1].set_title(&quot;Leaf extraction, min_clusters=10&quot;)
+    legend_kwds={"loc": "lower left"},
+    cmap="tab20",
+).axis("off")
+ax[2][1].set_title("Leaf extraction, min_clusters=10")
 </pre></div>
 </div>
 </div>
@@ -399,14 +400,14 @@ Text(0.5, 1.0, &#39;Leaf extraction, min_clusters=10&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_sa3_8_1.png" class="no-scaled-link" src="../_images/notebooks_sa3_8_1.png" style="width: 872px; height: 1569px;" />
+<img alt="../_images/notebooks_sa3_8_1.png" class="no-scaled-link" height="1569" src="../_images/notebooks_sa3_8_1.png" width="872" />
 </div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[[&quot;sa3_eom_3&quot;, &quot;num_spots&quot;]].groupby(by=&quot;sa3_eom_3&quot;).describe()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[["sa3_eom_3", "num_spots"]].groupby(by="sa3_eom_3").describe()
 </pre></div>
 </div>
 </div>
@@ -625,7 +626,7 @@ Text(0.5, 1.0, &#39;Leaf extraction, min_clusters=10&#39;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[[&quot;sa3_eom_10&quot;, &quot;num_spots&quot;]].groupby(by=&quot;sa3_eom_10&quot;).describe()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[["sa3_eom_10", "num_spots"]].groupby(by="sa3_eom_10").describe()
 </pre></div>
 </div>
 </div>
@@ -727,17 +728,17 @@ Text(0.5, 1.0, &#39;Leaf extraction, min_clusters=10&#39;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for linkage in [&quot;single&quot;, &quot;complete&quot;, &quot;average&quot;, &quot;ward&quot;]:
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for linkage in ["single", "complete", "average", "ward"]:
     model = SA3(
         chicago,
         w,
         attrs_name,
         min_cluster_size=5,
-        extraction=&quot;leaf&quot;,
+        extraction="leaf",
         linkage=linkage,
     )
     model.solve()
-    chicago[f&quot;sa3_leaf_5_{linkage}&quot;] = model.labels_
+    chicago[f"sa3_leaf_5_{linkage}"] = model.labels_
 </pre></div>
 </div>
 </div>
@@ -748,18 +749,18 @@ Text(0.5, 1.0, &#39;Leaf extraction, min_clusters=10&#39;)
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, axes = plt.subplots(2, 2, figsize=(10, 10))
 
 for linkage, ax in zip(
-    [&quot;single&quot;, &quot;complete&quot;, &quot;average&quot;, &quot;ward&quot;], axes.flatten(), strict=False
+    ["single", "complete", "average", "ward"], axes.flatten(), strict=False
 ):
     chicago.plot(
         ax=ax,
-        column=f&quot;sa3_leaf_5_{linkage}&quot;,
+        column=f"sa3_leaf_5_{linkage}",
         categorical=True,
-        edgecolor=&quot;w&quot;,
+        edgecolor="w",
         legend=True,
-        legend_kwds={&quot;loc&quot;: &quot;lower left&quot;},
-        cmap=&quot;tab20&quot;,
-    ).axis(&quot;off&quot;)
-    ax.set_title(f&quot;{linkage} linkage, leaf extraction, min_clusters=5&quot;)
+        legend_kwds={"loc": "lower left"},
+        cmap="tab20",
+    ).axis("off")
+    ax.set_title(f"{linkage} linkage, leaf extraction, min_clusters=5")
 </pre></div>
 </div>
 </div>
@@ -767,15 +768,15 @@ for linkage, ax in zip(
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_sa3_15_0.png" class="no-scaled-link" src="../_images/notebooks_sa3_15_0.png" style="width: 852px; height: 811px;" />
+<img alt="../_images/notebooks_sa3_15_0.png" class="no-scaled-link" height="811" src="../_images/notebooks_sa3_15_0.png" width="852" />
 </div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[[&quot;sa3_leaf_5_complete&quot;, &quot;num_spots&quot;]].groupby(
-    by=&quot;sa3_leaf_5_complete&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[["sa3_leaf_5_complete", "num_spots"]].groupby(
+    by="sa3_leaf_5_complete"
 ).describe()
 </pre></div>
 </div>
@@ -907,7 +908,7 @@ for linkage, ax in zip(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[[&quot;sa3_leaf_5_single&quot;, &quot;num_spots&quot;]].groupby(by=&quot;sa3_leaf_5_single&quot;).describe()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>chicago[["sa3_leaf_5_single", "num_spots"]].groupby(by="sa3_leaf_5_single").describe()
 </pre></div>
 </div>
 </div>
@@ -1033,12 +1034,12 @@ for linkage, ax in zip(
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from spopt.region import extract_clusters
 
-model = SA3(chicago[&quot;num_spots&quot;], w, [&quot;num_spots&quot;], linkage=&quot;single&quot;)
+model = SA3(chicago["num_spots"], w, ["num_spots"], linkage="single")
 # bypass the spatial restriction and do simple ward clustering and
 # return a scipy.hierarchy.linkage_matrix
-linkage_matrix = model._get_tree(chicago[[&quot;num_spots&quot;]], None, model.clustering_kwds)
+linkage_matrix = model._get_tree(chicago[["num_spots"]], None, model.clustering_kwds)
 eom_clusters = extract_clusters(
-    linkage_matrix=linkage_matrix, min_cluster_size=2, extraction=&quot;eom&quot;
+    linkage_matrix=linkage_matrix, min_cluster_size=2, extraction="eom"
 )
 </pre></div>
 </div>
@@ -1049,18 +1050,18 @@ eom_clusters = extract_clusters(
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(1, 2, figsize=(10, 5))
 
-sns.kdeplot(chicago[&quot;num_spots&quot;], ax=ax[0])
-xs = chicago[&quot;num_spots&quot;].groupby(eom_clusters).median()
+sns.kdeplot(chicago["num_spots"], ax=ax[0])
+xs = chicago["num_spots"].groupby(eom_clusters).median()
 ax[0].scatter(
-    xs[xs.index != -1].values, [0.0001] * (xs.index.shape[0] - 1), marker=&quot;|&quot;, c=&quot;red&quot;
+    xs[xs.index != -1].values, [0.0001] * (xs.index.shape[0] - 1), marker="|", c="red"
 )
 
-ax[0].set_title(&quot;num_spots value distribution&quot;)
+ax[0].set_title("num_spots value distribution")
 
 chicago.plot(
-    ax=ax[1], column=eom_clusters, categorical=True, edgecolor=&quot;w&quot;, cmap=&quot;tab20&quot;
-).axis(&quot;off&quot;)
-ax[1].set_title(&quot;unrestricted ward linkage, eom extraction, min_clusters=2&quot;)
+    ax=ax[1], column=eom_clusters, categorical=True, edgecolor="w", cmap="tab20"
+).axis("off")
+ax[1].set_title("unrestricted ward linkage, eom extraction, min_clusters=2")
 
 
 fig.tight_layout()
@@ -1071,7 +1072,7 @@ fig.tight_layout()
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_sa3_21_0.png" class="no-scaled-link" src="../_images/notebooks_sa3_21_0.png" style="width: 1008px; height: 491px;" />
+<img alt="../_images/notebooks_sa3_21_0.png" class="no-scaled-link" height="491" src="../_images/notebooks_sa3_21_0.png" width="1008" />
 </div>
 </div>
 <p>The first image shows the distribution of the num_spots variable, and the red lines show the medians of the clusters. The second image shows the spatial distribution of the clusters, which are not neccasarily contiguous in this case. The underlying idea of cluster extraction as density approximation is more apparent when using <code class="docutils literal notranslate"><span class="pre">SingleLinkage</span></code> and no spatial restrictions.</p>
@@ -1099,7 +1100,7 @@ fig.tight_layout()
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

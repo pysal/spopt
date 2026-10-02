@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>P-Center Problem &#8212; spopt v0.7.0 Manual</title>
+    <title>P-Center Problem &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -44,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -93,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -204,7 +205,7 @@ end{array}`</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -249,7 +250,7 @@ import spopt
 from spopt.locate import PCenter, simulated_geo_points
 
 with warnings.catch_warnings():
-    warnings.simplefilter(&quot;ignore&quot;)
+    warnings.simplefilter("ignore")
     # ignore deprecation warning - GH pysal/spaghetti#649
     import spaghetti
 
@@ -307,7 +308,7 @@ solver = pulp.COIN_CMD(msg=False, warmStart=True)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with warnings.catch_warnings():
-    warnings.simplefilter(&quot;ignore&quot;)
+    warnings.simplefilter("ignore")
     # ignore deprecation warning - GH pysal/libpysal#468
     lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)
 ntw = spaghetti.Network(in_data=lattice)
@@ -328,9 +329,9 @@ ntw = spaghetti.Network(in_data=lattice)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>streets_buffered = geopandas.GeoDataFrame(
-    geopandas.GeoSeries(streets[&quot;geometry&quot;].buffer(0.5).union_all()),
+    geopandas.GeoSeries(streets["geometry"].buffer(0.5).union_all()),
     crs=streets.crs,
-    columns=[&quot;geometry&quot;],
+    columns=["geometry"],
 )
 </pre></div>
 </div>
@@ -348,7 +349,7 @@ ntw = spaghetti.Network(in_data=lattice)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-center_11_0.png" class="no-scaled-link" src="../_images/notebooks_p-center_11_0.png" style="width: 416px; height: 413px;" />
+<img alt="../_images/notebooks_p-center_11_0.png" class="no-scaled-link" height="413" src="../_images/notebooks_p-center_11_0.png" width="416" />
 </div>
 </div>
 </section>
@@ -374,15 +375,15 @@ facility_points = simulated_geo_points(
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(6, 6))
-streets.plot(ax=ax, alpha=0.8, zorder=1, label=&quot;streets&quot;)
+streets.plot(ax=ax, alpha=0.8, zorder=1, label="streets")
 facility_points.plot(
     ax=ax,
-    color=&quot;red&quot;,
+    color="red",
     zorder=2,
-    label=f&quot;facility candidate sites ($n$={FACILITY_COUNT})&quot;,
+    label=f"facility candidate sites ($n$={FACILITY_COUNT})",
 )
-client_points.plot(ax=ax, color=&quot;black&quot;, label=f&quot;clients sites ($n$={CLIENT_COUNT})&quot;)
-plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
+client_points.plot(ax=ax, color="black", label=f"clients sites ($n$={CLIENT_COUNT})")
+plt.legend(loc="upper left", bbox_to_anchor=(1.05, 1));
 </pre></div>
 </div>
 </div>
@@ -390,7 +391,7 @@ plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-center_15_0.png" class="no-scaled-link" src="../_images/notebooks_p-center_15_0.png" style="width: 802px; height: 501px;" />
+<img alt="../_images/notebooks_p-center_15_0.png" class="no-scaled-link" height="501" src="../_images/notebooks_p-center_15_0.png" width="802" />
 </div>
 </div>
 </section>
@@ -403,18 +404,18 @@ plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with warnings.catch_warnings():
-    warnings.simplefilter(&quot;ignore&quot;)
+    warnings.simplefilter("ignore")
     # ignore deprecation warning - GH pysal/libpysal#468
-    ntw.snapobservations(client_points, &quot;clients&quot;, attribute=True)
-clients_snapped = spaghetti.element_as_gdf(ntw, pp_name=&quot;clients&quot;, snapped=True)
-clients_snapped.drop(columns=[&quot;id&quot;, &quot;comp_label&quot;], inplace=True)
+    ntw.snapobservations(client_points, "clients", attribute=True)
+clients_snapped = spaghetti.element_as_gdf(ntw, pp_name="clients", snapped=True)
+clients_snapped.drop(columns=["id", "comp_label"], inplace=True)
 
 with warnings.catch_warnings():
-    warnings.simplefilter(&quot;ignore&quot;)
+    warnings.simplefilter("ignore")
     # ignore deprecation warning - GH pysal/libpysal#468
-    ntw.snapobservations(facility_points, &quot;facilities&quot;, attribute=True)
-facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name=&quot;facilities&quot;, snapped=True)
-facilities_snapped.drop(columns=[&quot;id&quot;, &quot;comp_label&quot;], inplace=True)
+    ntw.snapobservations(facility_points, "facilities", attribute=True)
+facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name="facilities", snapped=True)
+facilities_snapped.drop(columns=["id", "comp_label"], inplace=True)
 </pre></div>
 </div>
 </div>
@@ -424,15 +425,15 @@ facilities_snapped.drop(columns=[&quot;id&quot;, &quot;comp_label&quot;], inplac
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(6, 6))
-streets.plot(ax=ax, alpha=0.8, zorder=1, label=&quot;streets&quot;)
+streets.plot(ax=ax, alpha=0.8, zorder=1, label="streets")
 facilities_snapped.plot(
     ax=ax,
-    color=&quot;red&quot;,
+    color="red",
     zorder=2,
-    label=f&quot;facility candidate sites ($n$={FACILITY_COUNT})&quot;,
+    label=f"facility candidate sites ($n$={FACILITY_COUNT})",
 )
-clients_snapped.plot(ax=ax, color=&quot;black&quot;, label=f&quot;clients sites ($n$={CLIENT_COUNT})&quot;)
-plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
+clients_snapped.plot(ax=ax, color="black", label=f"clients sites ($n$={CLIENT_COUNT})")
+plt.legend(loc="upper left", bbox_to_anchor=(1.05, 1));
 </pre></div>
 </div>
 </div>
@@ -440,7 +441,7 @@ plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-center_19_0.png" class="no-scaled-link" src="../_images/notebooks_p-center_19_0.png" style="width: 798px; height: 505px;" />
+<img alt="../_images/notebooks_p-center_19_0.png" class="no-scaled-link" height="505" src="../_images/notebooks_p-center_19_0.png" width="798" />
 </div>
 </div>
 </section>
@@ -452,8 +453,8 @@ plt.legend(loc=&quot;upper left&quot;, bbox_to_anchor=(1.05, 1));
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cost_matrix = ntw.allneighbordistances(
-    sourcepattern=ntw.pointpatterns[&quot;clients&quot;],
-    destpattern=ntw.pointpatterns[&quot;facilities&quot;],
+    sourcepattern=ntw.pointpatterns["clients"],
+    destpattern=ntw.pointpatterns["facilities"],
 )
 cost_matrix.shape
 </pre></div>
@@ -527,7 +528,7 @@ array([[ 4.82677859,  7.03883728,  6.8104596 ,  4.16669209,  4.84239683,
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pcenter_from_cm = PCenter.from_cost_matrix(
-    cost_matrix, p_facilities=P_FACILITIES, name=&quot;p-center-network-distance&quot;
+    cost_matrix, p_facilities=P_FACILITIES, name="p-center-network-distance"
 )
 </pre></div>
 </div>
@@ -558,8 +559,8 @@ pcenter_from_cm
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pcp_obj = round(pcenter_from_cm.problem.objective.value(), 3)
 print(
-    f&quot;A single largest minimized maximum distance of {pcp_obj} units is &quot;
-    f&quot;observed between a client and selected candidate facility.&quot;
+    f"A single largest minimized maximum distance of {pcp_obj} units is "
+    f"observed between a client and selected candidate facility."
 )
 </pre></div>
 </div>
@@ -577,9 +578,9 @@ A single largest minimized maximum distance of 6.836 units is observed between a
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points[&quot;dv&quot;] = pcenter_from_cm.fac_vars
-facility_points[&quot;dv&quot;] = facility_points[&quot;dv&quot;].map(lambda x: x.name.replace(&quot;_&quot;, &quot;&quot;))
-facilities_snapped[&quot;dv&quot;] = facility_points[&quot;dv&quot;]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points["dv"] = pcenter_from_cm.fac_vars
+facility_points["dv"] = facility_points["dv"].map(lambda x: x.name.replace("_", ""))
+facilities_snapped["dv"] = facility_points["dv"]
 facility_points
 </pre></div>
 </div>
@@ -675,15 +676,15 @@ facility_points
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>distance_metric = &quot;euclidean&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>distance_metric = "euclidean"
 pcenter_from_gdf = PCenter.from_geodataframe(
     clients_snapped,
     facilities_snapped,
-    &quot;geometry&quot;,
-    &quot;geometry&quot;,
+    "geometry",
+    "geometry",
     p_facilities=P_FACILITIES,
     distance_metric=distance_metric,
-    name=f&quot;p-center-{distance_metric}-distance&quot;,
+    name=f"p-center-{distance_metric}-distance",
 )
 </pre></div>
 </div>
@@ -695,8 +696,8 @@ pcenter_from_gdf = PCenter.from_geodataframe(
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pcenter_from_gdf = pcenter_from_gdf.solve(solver)
 pcp_obj = round(pcenter_from_gdf.problem.objective.value(), 3)
 print(
-    f&quot;A single largest minimized maximum distance of {pcp_obj} units is &quot;
-    f&quot;observed between a client and selected candidate facility.&quot;
+    f"A single largest minimized maximum distance of {pcp_obj} units is "
+    f"observed between a client and selected candidate facility."
 )
 </pre></div>
 </div>
@@ -715,9 +716,9 @@ A single largest minimized maximum distance of 5.73 units is observed between a 
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points[&quot;predefined_loc&quot;] = 0
-facility_points.loc[(0, 1), &quot;predefined_loc&quot;] = 1
-facilities_snapped[&quot;predefined_loc&quot;] = facility_points[&quot;predefined_loc&quot;]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_points["predefined_loc"] = 0
+facility_points.loc[(0, 1), "predefined_loc"] = 1
+facilities_snapped["predefined_loc"] = facility_points["predefined_loc"]
 facility_points
 </pre></div>
 </div>
@@ -819,16 +820,16 @@ facility_points
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>distance_metric = &quot;euclidean&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>distance_metric = "euclidean"
 pcenter_from_gdf_pre = PCenter.from_geodataframe(
     clients_snapped,
     facilities_snapped,
-    &quot;geometry&quot;,
-    &quot;geometry&quot;,
+    "geometry",
+    "geometry",
     p_facilities=P_FACILITIES,
-    predefined_facility_col=&quot;predefined_loc&quot;,
+    predefined_facility_col="predefined_loc",
     distance_metric=distance_metric,
-    name=f&quot;p-center-{distance_metric}-distance-predefined&quot;,
+    name=f"p-center-{distance_metric}-distance-predefined",
 )
 </pre></div>
 </div>
@@ -840,8 +841,8 @@ pcenter_from_gdf_pre = PCenter.from_geodataframe(
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pcenter_from_gdf_pre = pcenter_from_gdf_pre.solve(solver)
 pcp_obj = round(pcenter_from_gdf_pre.problem.objective.value(), 3)
 print(
-    f&quot;A single largest minimized maximum distance of {pcp_obj} units is &quot;
-    f&quot;observed between a client and selected candidate facility.&quot;
+    f"A single largest minimized maximum distance of {pcp_obj} units is "
+    f"observed between a client and selected candidate facility."
 )
 </pre></div>
 </div>
@@ -863,24 +864,24 @@ A single largest minimized maximum distance of 7.007 units is observed between a
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dv_colors_arr = [
-    &quot;darkcyan&quot;,
-    &quot;mediumseagreen&quot;,
-    &quot;saddlebrown&quot;,
-    &quot;darkslategray&quot;,
-    &quot;lightskyblue&quot;,
-    &quot;thistle&quot;,
-    &quot;lavender&quot;,
-    &quot;darkgoldenrod&quot;,
-    &quot;peachpuff&quot;,
-    &quot;coral&quot;,
-    &quot;mediumvioletred&quot;,
-    &quot;blueviolet&quot;,
-    &quot;fuchsia&quot;,
-    &quot;cyan&quot;,
-    &quot;limegreen&quot;,
-    &quot;mediumorchid&quot;,
+    "darkcyan",
+    "mediumseagreen",
+    "saddlebrown",
+    "darkslategray",
+    "lightskyblue",
+    "thistle",
+    "lavender",
+    "darkgoldenrod",
+    "peachpuff",
+    "coral",
+    "mediumvioletred",
+    "blueviolet",
+    "fuchsia",
+    "cyan",
+    "limegreen",
+    "mediumorchid",
 ]
-dv_colors = {f&quot;y{i}&quot;: dv_colors_arr[i] for i in range(len(dv_colors_arr))}
+dv_colors = {f"y{i}": dv_colors_arr[i] for i in range(len(dv_colors_arr))}
 dv_colors
 </pre></div>
 </div>
@@ -914,13 +915,13 @@ dv_colors
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def plot_results(model, p, facs, clis=None, ax=None):
-    &quot;&quot;&quot;Visualize optimal solution sets and context.&quot;&quot;&quot;
+    """Visualize optimal solution sets and context."""
     if not ax:
         multi_plot = False
         fig, ax = plt.subplots(figsize=(6, 6))
         markersize, markersize_factor = 4, 4
     else:
-        ax.axis(&quot;off&quot;)
+        ax.axis("off")
         multi_plot = True
         markersize, markersize_factor = 2, 2
     ax.set_title(model.name, fontsize=15)
@@ -932,43 +933,43 @@ dv_colors
     fac_sites = {}
     for i, dv in enumerate(model.fac_vars):
         if dv.varValue:
-            dv, predef = facs.loc[i, [&quot;dv&quot;, &quot;predefined_loc&quot;]]
+            dv, predef = facs.loc[i, ["dv", "predefined_loc"]]
             fac_sites[dv] = [i, predef]
             if plot_clis:
-                geom = clis.iloc[model.fac2cli[i]][&quot;geometry&quot;]
+                geom = clis.iloc[model.fac2cli[i]]["geometry"]
                 cli_points[dv] = geom
 
     # study area and legend entries initialization
-    streets.plot(ax=ax, alpha=1, color=&quot;black&quot;, zorder=1)
-    legend_elements = [mlines.Line2D([], [], color=&quot;black&quot;, label=&quot;streets&quot;)]
+    streets.plot(ax=ax, alpha=1, color="black", zorder=1)
+    legend_elements = [mlines.Line2D([], [], color="black", label="streets")]
 
-    if plot_clis and model.name.startswith(&quot;mclp&quot;):
+    if plot_clis and model.name.startswith("mclp"):
         # any clients that not asscociated with a facility
-        c = &quot;k&quot;
+        c = "k"
         if model.n_cli_uncov:
             idx = [i for i, v in enumerate(model.cli2fac) if len(v) == 0]
             pnt_kws = {
-                &quot;ax&quot;: ax,
-                &quot;fc&quot;: c,
-                &quot;ec&quot;: c,
-                &quot;marker&quot;: &quot;s&quot;,
-                &quot;markersize&quot;: 7,
-                &quot;zorder&quot;: 2,
+                "ax": ax,
+                "fc": c,
+                "ec": c,
+                "marker": "s",
+                "markersize": 7,
+                "zorder": 2,
             }
             clis.iloc[idx].plot(**pnt_kws)
-        _label = f&quot;Demand sites not covered ($n$={model.n_cli_uncov})&quot;
+        _label = f"Demand sites not covered ($n$={model.n_cli_uncov})"
         _mkws = {
-            &quot;marker&quot;: &quot;s&quot;,
-            &quot;markerfacecolor&quot;: c,
-            &quot;markeredgecolor&quot;: c,
-            &quot;linewidth&quot;: 0,
+            "marker": "s",
+            "markerfacecolor": c,
+            "markeredgecolor": c,
+            "linewidth": 0,
         }
         legend_elements.append(mlines.Line2D([], [], ms=3, label=_label, **_mkws))
 
     # all candidate facilities
-    facs.plot(ax=ax, fc=&quot;brown&quot;, marker=&quot;*&quot;, markersize=80, zorder=8)
-    _label = f&quot;Facility sites ($n$={len(model.fac_vars)})&quot;
-    _mkws = {&quot;marker&quot;: &quot;*&quot;, &quot;markerfacecolor&quot;: &quot;brown&quot;, &quot;markeredgecolor&quot;: &quot;brown&quot;}
+    facs.plot(ax=ax, fc="brown", marker="*", markersize=80, zorder=8)
+    _label = f"Facility sites ($n$={len(model.fac_vars)})"
+    _mkws = {"marker": "*", "markerfacecolor": "brown", "markeredgecolor": "brown"}
     legend_elements.append(mlines.Line2D([], [], ms=7, lw=0, label=_label, **_mkws))
 
     # facility-(client) symbology and legend entries
@@ -979,30 +980,30 @@ dv_colors
             # clients
             geoms = cli_points[fname]
             gdf = geopandas.GeoDataFrame(geoms)
-            gdf.plot(ax=ax, zorder=zorder, ec=&quot;k&quot;, fc=cset, markersize=100 * markersize)
-            _label = f&quot;Demand sites covered by {fname}&quot;
+            gdf.plot(ax=ax, zorder=zorder, ec="k", fc=cset, markersize=100 * markersize)
+            _label = f"Demand sites covered by {fname}"
             _mkws = {
-                &quot;markerfacecolor&quot;: cset,
-                &quot;markeredgecolor&quot;: &quot;k&quot;,
-                &quot;ms&quot;: markersize + 7,
+                "markerfacecolor": cset,
+                "markeredgecolor": "k",
+                "ms": markersize + 7,
             }
             legend_elements.append(
-                mlines.Line2D([], [], marker=&quot;o&quot;, lw=0, label=_label, **_mkws)
+                mlines.Line2D([], [], marker="o", lw=0, label=_label, **_mkws)
             )
         # facilities
-        ec = &quot;k&quot;
+        ec = "k"
         lw = 2
-        predef_label = &quot;predefined&quot;
+        predef_label = "predefined"
         if model.name.endswith(predef_label) and predef:
-            ec = &quot;r&quot;
+            ec = "r"
             lw = 3
-            fname += f&quot; ({predef_label})&quot;
+            fname += f" ({predef_label})"
         facs.iloc[[fac]].plot(
-            ax=ax, marker=&quot;*&quot;, markersize=1000, zorder=9, fc=cset, ec=ec, lw=lw
+            ax=ax, marker="*", markersize=1000, zorder=9, fc=cset, ec=ec, lw=lw
         )
-        _mkws = {&quot;markerfacecolor&quot;: cset, &quot;markeredgecolor&quot;: ec, &quot;markeredgewidth&quot;: lw}
+        _mkws = {"markerfacecolor": cset, "markeredgecolor": ec, "markeredgewidth": lw}
         legend_elements.append(
-            mlines.Line2D([], [], marker=&quot;*&quot;, ms=20, lw=0, label=fname, **_mkws)
+            mlines.Line2D([], [], marker="*", ms=20, lw=0, label=fname, **_mkws)
         )
         # increment zorder up and markersize down for stacked client symbology
         zorder += 1
@@ -1011,7 +1012,7 @@ dv_colors
 
     if not multi_plot:
         # legend
-        kws = {&quot;loc&quot;: &quot;upper left&quot;, &quot;bbox_to_anchor&quot;: (1.05, 0.7)}
+        kws = {"loc": "upper left", "bbox_to_anchor": (1.05, 0.7)}
         plt.legend(handles=legend_elements, **kws)
 </pre></div>
 </div>
@@ -1030,7 +1031,7 @@ dv_colors
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-center_44_0.png" class="no-scaled-link" src="../_images/notebooks_p-center_44_0.png" style="width: 791px; height: 525px;" />
+<img alt="../_images/notebooks_p-center_44_0.png" class="no-scaled-link" height="525" src="../_images/notebooks_p-center_44_0.png" width="791" />
 </div>
 </div>
 </section>
@@ -1048,7 +1049,7 @@ dv_colors
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-center_46_0.png" class="no-scaled-link" src="../_images/notebooks_p-center_46_0.png" style="width: 791px; height: 525px;" />
+<img alt="../_images/notebooks_p-center_46_0.png" class="no-scaled-link" height="525" src="../_images/notebooks_p-center_46_0.png" width="791" />
 </div>
 </div>
 <p>You may notice that the model results are similar, yet different. This is expected as the distances between facility and demand points are calculated with different metrics (network vs. euclidean distance).</p>
@@ -1068,7 +1069,7 @@ dv_colors
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-center_48_0.png" class="no-scaled-link" src="../_images/notebooks_p-center_48_0.png" style="width: 791px; height: 525px;" />
+<img alt="../_images/notebooks_p-center_48_0.png" class="no-scaled-link" height="525" src="../_images/notebooks_p-center_48_0.png" width="791" />
 </div>
 </div>
 <p>Here, the differences is explained by the preselected facilities <span class="math notranslate nohighlight">\(y_0\)</span> and <span class="math notranslate nohighlight">\(y_1\)</span>. So, the <span class="math notranslate nohighlight">\(p\)</span>-center model chooses the facility <span class="math notranslate nohighlight">\(y_4\)</span> to minimize maximum single cost to serve all clients.</p>
@@ -1092,7 +1093,7 @@ for i, m in enumerate([pcenter_from_cm, pcenter_from_gdf, pcenter_from_gdf_pre])
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_p-center_50_0.png" class="no-scaled-link" src="../_images/notebooks_p-center_50_0.png" style="width: 1569px; height: 556px;" />
+<img alt="../_images/notebooks_p-center_50_0.png" class="no-scaled-link" height="556" src="../_images/notebooks_p-center_50_0.png" width="1569" />
 </div>
 </div>
 </section>
@@ -1127,7 +1128,7 @@ for i, m in enumerate([pcenter_from_cm, pcenter_from_gdf, pcenter_from_gdf_pre])
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

@@ -1,0 +1,55 @@
+﻿spopt.locate.FRLM
+=================
+
+.. currentmodule:: spopt.locate
+
+.. autoclass:: FRLM
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~FRLM.__init__
+      ~FRLM.add_flow
+      ~FRLM.add_flows
+      ~FRLM.add_network
+      ~FRLM.calculate_covered_nodes
+      ~FRLM.calculate_node_weights
+      ~FRLM.check_path_refueling_feasibility
+      ~FRLM.compute_refueling_frequency
+      ~FRLM.extract_solver_statistics
+      ~FRLM.from_flow_dataframe
+      ~FRLM.generate_path_refueling_combinations
+      ~FRLM.get_constraint_dual
+      ~FRLM.get_detailed_results
+      ~FRLM.get_flow_coverage
+      ~FRLM.get_node_coverage_percentage
+      ~FRLM.get_reduced_costs
+      ~FRLM.get_shadow_price
+      ~FRLM.get_shadow_prices
+      ~FRLM.get_slack
+      ~FRLM.get_solver_details
+      ~FRLM.get_variable_value
+      ~FRLM.get_variable_values
+      ~FRLM.get_vmt_coverage
+      ~FRLM.is_constraint_active
+      ~FRLM.solve
+      ~FRLM.summary
+      ~FRLM.to_dataframes
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~FRLM.problem
+      ~FRLM.selected_facilities
+   
+   

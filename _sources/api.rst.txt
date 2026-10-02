@@ -40,3 +40,4 @@ Exact solution approaches to facility location modeling problems.
     locate.KNearestPMedian
     locate.PCenter
     locate.PDispersion
+    locate.FRLM

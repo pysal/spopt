@@ -5,16 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Siting First Aid Stations with LSCP on Toronto’s University Campus &#8212; spopt v0.7.0 Manual</title>
+    <title>Siting First Aid Stations with LSCP on Toronto’s University Campus &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -91,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -172,7 +175,7 @@ common scenario is finding suitable locations for hospitals in cities where the 
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -256,16 +259,16 @@ overpy   : 0.7
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result = api.query(
-    &quot;&quot;&quot;
+    """
     [out:json];
 
-    area[name=&quot;Toronto&quot;]-&gt;.b;
-    nwr[name=&quot;University of Toronto&quot;];
+    area[name="Toronto"]-&gt;.b;
+    nwr[name="University of Toronto"];
     map_to_area -&gt; .a;
 
-    nwr[building=&quot;university&quot;](area.a);
+    nwr[building="university"](area.a);
     out center;
-    &quot;&quot;&quot;  # noqa: W293
+    """  # noqa: W293
 )
 </pre></div>
 </div>
@@ -276,7 +279,7 @@ overpy   : 0.7
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>m = folium.Map(
-    location=[43.6624674, -79.3988052], tiles=&quot;cartodbpositron&quot;, zoom_start=15
+    location=[43.6624674, -79.3988052], tiles="cartodbpositron", zoom_start=15
 )
 </pre></div>
 </div>
@@ -287,13 +290,13 @@ overpy   : 0.7
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def get_centroid(pnt_info, xy=True):
-    &quot;&quot;&quot;Extract centroid from location information.&quot;&quot;&quot;
+    """Extract centroid from location information."""
     if isinstance(pnt_info, overpy.Way):
         x, y = pnt_info.center_lon, pnt_info.center_lat
         if not xy:
             x, y = y, x
     else:
-        x, y = pnt_info[&quot;center&quot;][1], pnt_info[&quot;center&quot;][0]
+        x, y = pnt_info["center"][1], pnt_info["center"][0]
     return [x, y]
 </pre></div>
 </div>
@@ -302,7 +305,7 @@ overpy   : 0.7
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>get_tag = lambda w: w.tags.get(&quot;name&quot;, &quot;n/a&quot;)  # noqa: E731
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>get_tag = lambda w: w.tags.get("name", "n/a")  # noqa: E731
 </pre></div>
 </div>
 </div>
@@ -312,7 +315,7 @@ overpy   : 0.7
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>university_buildings = []
 university_buildings_locations = []
-university_buildings_fg = folium.FeatureGroup(&quot;University Buildings&quot;).add_to(m)
+university_buildings_fg = folium.FeatureGroup("University Buildings").add_to(m)
 for idx, way in enumerate(result.ways):
     tag = get_tag(way)
     loc_yx = get_centroid(way, xy=False)
@@ -322,10 +325,10 @@ for idx, way in enumerate(result.ways):
         fill=True,
         fill_opacity=0.3,
         popup=folium.Popup(tag, show=False),
-        color=&quot;blue&quot;,
+        color="blue",
     ).add_to(university_buildings_fg)
     # building centroids
-    university_buildings.append({&quot;name&quot;: tag, &quot;center&quot;: get_centroid(way), &quot;idx&quot;: idx})
+    university_buildings.append({"name": tag, "center": get_centroid(way), "idx": idx})
     university_buildings_locations.append(loc_yx)
 n_uni_bld = len(university_buildings)
 m
@@ -3291,17 +3294,17 @@ m
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result_roads = api.query(
-    &quot;&quot;&quot;
+    """
     [out:json];
 
-    area[name=&quot;Toronto&quot;]-&gt;.b;
-    nwr(area.b)[name=&quot;University of Toronto&quot;];
+    area[name="Toronto"]-&gt;.b;
+    nwr(area.b)[name="University of Toronto"];
     map_to_area -&gt; .a;
 
-    nwr[&quot;highway&quot;~&quot;secondary|tertiary|unclassified&quot;](area.a);
+    nwr["highway"~"secondary|tertiary|unclassified"](area.a);
 
     out center;
-    &quot;&quot;&quot;  # noqa: W293
+    """  # noqa: W293
 )
 </pre></div>
 </div>
@@ -3313,7 +3316,7 @@ m
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>first_aid_stations = []
 first_aid_stations_locations = []
-first_aid_stations_fg = folium.FeatureGroup(&quot;First Aid Station Locations&quot;).add_to(m)
+first_aid_stations_fg = folium.FeatureGroup("First Aid Station Locations").add_to(m)
 for idx, way in enumerate(result_roads.ways):
     tag = get_tag(way)
     loc_yx = get_centroid(way, xy=False)
@@ -3323,11 +3326,11 @@ for idx, way in enumerate(result_roads.ways):
         fill=True,
         fill_opacity=1,
         popup=folium.Popup(tag, show=False),
-        color=&quot;black&quot;,
+        color="black",
     ).add_to(first_aid_stations_fg)
     # road midpoints
     first_aid_stations.append(
-        {&quot;name&quot;: tag, &quot;center&quot;: get_centroid(way), &quot;idx&quot;: idx + n_uni_bld}
+        {"name": tag, "center": get_centroid(way), "idx": idx + n_uni_bld}
     )
     first_aid_stations_locations.append(loc_yx)
 m
@@ -7116,7 +7119,7 @@ HERE.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>client = OSRM(base_url=&quot;https://router.project-osrm.org&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>client = OSRM(base_url="https://router.project-osrm.org")
 </pre></div>
 </div>
 </div>
@@ -7149,8 +7152,8 @@ all_locations[:5]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>source_indices = [i[&quot;idx&quot;] for i in university_buildings]
-target_indices = [i[&quot;idx&quot;] for i in first_aid_stations]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>source_indices = [i["idx"] for i in university_buildings]
+target_indices = [i["idx"] for i in first_aid_stations]
 </pre></div>
 </div>
 </div>
@@ -7181,7 +7184,7 @@ target_indices = [i[&quot;idx&quot;] for i in first_aid_stations]
     locations=all_locations,
     sources=source_indices,
     destinations=target_indices,
-    profile=&quot;foot&quot;,
+    profile="foot",
 )
 </pre></div>
 </div>
@@ -7278,19 +7281,19 @@ lscp = lscp.solve(solver)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sited_first_aid_stations_fg = folium.FeatureGroup(&quot;Sited First Aid Stations&quot;).add_to(m)
-allocated_buildings_demand_fg = folium.FeatureGroup(&quot;Allocated Buildings&quot;).add_to(m)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sited_first_aid_stations_fg = folium.FeatureGroup("Sited First Aid Stations").add_to(m)
+allocated_buildings_demand_fg = folium.FeatureGroup("Allocated Buildings").add_to(m)
 solution = {}
 colors = [
-    &quot;darkcyan&quot;,
-    &quot;mediumseagreen&quot;,
-    &quot;saddlebrown&quot;,
-    &quot;lightskyblue&quot;,
-    &quot;darkgoldenrod&quot;,
-    &quot;coral&quot;,
-    &quot;mediumvioletred&quot;,
-    &quot;blueviolet&quot;,
-    &quot;mediumorchid&quot;,
+    "darkcyan",
+    "mediumseagreen",
+    "saddlebrown",
+    "lightskyblue",
+    "darkgoldenrod",
+    "coral",
+    "mediumvioletred",
+    "blueviolet",
+    "mediumorchid",
 ]
 client_marker_size = 20
 numpy.random.seed(0)
@@ -7304,7 +7307,7 @@ for i in range(len(first_aid_stations)):
             location=first_aid_stations_locations[i],
             radius=30,
             fill=True,
-            popup=folium.Popup(f&quot;Sited First Aid Station (index: {i})&quot;, show=True),
+            popup=folium.Popup(f"Sited First Aid Station (index: {i})", show=True),
             color=color,
         ).add_to(sited_first_aid_stations_fg)
 
@@ -7317,7 +7320,7 @@ for i in range(len(first_aid_stations)):
                 location=university_buildings_locations[j],
                 radius=client_marker_size,
                 fill=True,
-                popup=f&quot;Building allocated to First Aid Station with index: {i}&quot;,
+                popup=f"Building allocated to First Aid Station with index: {i}",
                 color=color,
             ).add_to(allocated_buildings_demand_fg)
 folium.LayerControl().add_to(m)
@@ -14437,7 +14440,7 @@ m
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

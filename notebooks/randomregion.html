@@ -5,16 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Random Regions &#8212; spopt v0.7.0 Manual</title>
+    <title>Random Regions &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -91,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -178,7 +181,7 @@ parameter takes a spatial weights object and uses that to ensure that each regio
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -256,7 +259,7 @@ numpy     : 2.2.4
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.explain(&quot;mexico&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.explain("mexico")
 </pre></div>
 </div>
 </div>
@@ -283,7 +286,7 @@ Data used in Rey, S.J. and M.L. Sastre Gutierrez. (2010) &#34;Interregional ineq
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdf = geopandas.read_file(libpysal.examples.get_path(&quot;mexicojoin.shp&quot;))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdf = geopandas.read_file(libpysal.examples.get_path("mexicojoin.shp"))
 </pre></div>
 </div>
 </div>
@@ -498,13 +501,13 @@ Index([&#39;POLY_ID&#39;, &#39;AREA&#39;, &#39;CODE&#39;, &#39;NAME&#39;, &#39;P
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdf.plot(
     figsize=(8, 6),
-    column=&quot;PCGDP2000&quot;,
-    scheme=&quot;quantiles&quot;,
-    cmap=&quot;Blues&quot;,
-    edgecolor=&quot;grey&quot;,
+    column="PCGDP2000",
+    scheme="quantiles",
+    cmap="Blues",
+    edgecolor="grey",
     legend=True,
-    legend_kwds={&quot;fmt&quot;: &quot;{:.0f}&quot;},
-).axis(&quot;off&quot;)
+    legend_kwds={"fmt": "{:.0f}"},
+).axis("off")
 </pre></div>
 </div>
 </div>
@@ -524,7 +527,7 @@ Index([&#39;POLY_ID&#39;, &#39;AREA&#39;, &#39;CODE&#39;, &#39;NAME&#39;, &#39;P
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_randomregion_11_1.png" class="no-scaled-link" src="../_images/notebooks_randomregion_11_1.png" style="width: 640px; height: 390px;" />
+<img alt="../_images/notebooks_randomregion_11_1.png" class="no-scaled-link" height="390" src="../_images/notebooks_randomregion_11_1.png" width="640" />
 </div>
 </div>
 <p>Here we see the north-south divide in the Mexican space economy. This pattern has been the subject of much recent research, and a common methodological strategy in these studies is to <em>partition</em> the states into mutually exclusive and exhaustive regions. The motivation is similar to that in traditional clustering where one attempts to group like objects together. Here the regional sets should be composed of states that are more similar to other members of the same set, and distinct from those
@@ -534,7 +537,7 @@ states in other sets.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdf.plot(figsize=(8, 6), column=&quot;HANSON03&quot;, categorical=True).axis(&quot;off&quot;);
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdf.plot(figsize=(8, 6), column="HANSON03", categorical=True).axis("off");
 </pre></div>
 </div>
 </div>
@@ -542,7 +545,7 @@ states in other sets.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_randomregion_13_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_13_0.png" style="width: 640px; height: 390px;" />
+<img alt="../_images/notebooks_randomregion_13_0.png" class="no-scaled-link" height="390" src="../_images/notebooks_randomregion_13_0.png" width="640" />
 </div>
 </div>
 <p>Here the different colors symbolize membership in a different region. We can examine the cardinality structure of this partition:</p>
@@ -550,7 +553,7 @@ states in other sets.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cards = mdf.groupby(by=&quot;HANSON03&quot;).count().NAME.values.tolist()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cards = mdf.groupby(by="HANSON03").count().NAME.values.tolist()
 cards
 </pre></div>
 </div>
@@ -569,7 +572,7 @@ cards
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdf[[&quot;NAME&quot;, &quot;HANSON03&quot;, &quot;PCGDP2000&quot;]].sort_values(by=&quot;HANSON03&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdf[["NAME", "HANSON03", "PCGDP2000"]].sort_values(by="HANSON03")
 </pre></div>
 </div>
 </div>
@@ -888,7 +891,7 @@ True
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def region_labels(df, solution, name=&quot;labels_&quot;):
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def region_labels(df, solution, name="labels_"):
     n, k = df.shape
     labels_ = numpy.zeros((n,), int)
     for i, region in enumerate(solution.regions):
@@ -902,8 +905,8 @@ True
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>region_labels(mdf, rrmx, name=&quot;rrmx&quot;)
-mdf.plot(figsize=(8, 6), column=&quot;rrmx&quot;, categorical=True).axis(&quot;off&quot;);
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>region_labels(mdf, rrmx, name="rrmx")
+mdf.plot(figsize=(8, 6), column="rrmx", categorical=True).axis("off");
 </pre></div>
 </div>
 </div>
@@ -911,7 +914,7 @@ mdf.plot(figsize=(8, 6), column=&quot;rrmx&quot;, categorical=True).axis(&quot;o
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_randomregion_28_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_28_0.png" style="width: 640px; height: 390px;" />
+<img alt="../_images/notebooks_randomregion_28_0.png" class="no-scaled-link" height="390" src="../_images/notebooks_randomregion_28_0.png" width="640" />
 </div>
 </div>
 <p>While the <code class="docutils literal notranslate"><span class="pre">rrmx</span></code> partition and the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partitions have identical cardinality structures, their spatial distributions are radically different. The <code class="docutils literal notranslate"><span class="pre">rrmx</span></code> map looks nothing like the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> map.</p>
@@ -984,8 +987,8 @@ True
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>region_labels(mdf, rrmxc, name=&quot;rrmxc&quot;)
-mdf.plot(figsize=(8, 6), column=&quot;rrmxc&quot;, categorical=True).axis(&quot;off&quot;);
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>region_labels(mdf, rrmxc, name="rrmxc")
+mdf.plot(figsize=(8, 6), column="rrmxc", categorical=True).axis("off");
 </pre></div>
 </div>
 </div>
@@ -993,7 +996,7 @@ mdf.plot(figsize=(8, 6), column=&quot;rrmxc&quot;, categorical=True).axis(&quot;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_randomregion_37_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_37_0.png" style="width: 640px; height: 390px;" />
+<img alt="../_images/notebooks_randomregion_37_0.png" class="no-scaled-link" height="390" src="../_images/notebooks_randomregion_37_0.png" width="640" />
 </div>
 </div>
 </section>
@@ -1008,20 +1011,20 @@ mdf.plot(figsize=(8, 6), column=&quot;rrmxc&quot;, categorical=True).axis(&quot;
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, axs = plt.subplots(1, 3, figsize=(12, 8))
 ax1, ax2, ax3 = axs
 
-mdf.plot(column=&quot;HANSON03&quot;, categorical=True, ax=ax1)
+mdf.plot(column="HANSON03", categorical=True, ax=ax1)
 ax1.set_axis_off()
-ax1.set_aspect(&quot;equal&quot;)
-ax1.set_title(&quot;HANSON03&quot;)
+ax1.set_aspect("equal")
+ax1.set_title("HANSON03")
 
-mdf.plot(column=&quot;rrmx&quot;, categorical=True, ax=ax2)
+mdf.plot(column="rrmx", categorical=True, ax=ax2)
 ax2.set_axis_off()
-ax2.set_aspect(&quot;equal&quot;)
-ax2.set_title(&quot;Cardinality Constrained&quot;)
+ax2.set_aspect("equal")
+ax2.set_title("Cardinality Constrained")
 
-mdf.plot(column=&quot;rrmxc&quot;, categorical=True, ax=ax3)
+mdf.plot(column="rrmxc", categorical=True, ax=ax3)
 ax3.set_axis_off()
-ax3.set_aspect(&quot;equal&quot;)
-ax3.set_title(&quot;Cardinality and Contiguity Constrained&quot;)
+ax3.set_aspect("equal")
+ax3.set_title("Cardinality and Contiguity Constrained")
 
 plt.subplots_adjust(wspace=-0.2);
 </pre></div>
@@ -1031,7 +1034,7 @@ plt.subplots_adjust(wspace=-0.2);
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_randomregion_39_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_39_0.png" style="width: 950px; height: 255px;" />
+<img alt="../_images/notebooks_randomregion_39_0.png" class="no-scaled-link" height="255" src="../_images/notebooks_randomregion_39_0.png" width="950" />
 </div>
 </div>
 <p>In order to judge the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> regions against those from the two random solutions, we need some objective function to serve as our benchmark. Given the interest in the spatial distribution of incomes, we might ask if a partition has minimized the internal heterogeneity of the incomes for states belonging to each set?</p>
@@ -1252,10 +1255,10 @@ rrmxcs = RandomRegions(
     ids, num_regions=6, cardinality=cards, contiguity=w, permutations=99
 )
 with warnings.catch_warnings():
-    warnings.simplefilter(&quot;ignore&quot;)
+    warnings.simplefilter("ignore")
     wg = []
     for i, solution in enumerate(rrmxcs.solutions_feas):
-        name = f&quot;rrmxc_{i}&quot;
+        name = f"rrmxc_{i}"
         region_labels(mdf, solution, name=name)
         wg.append(inequality.theil.TheilD(y, mdf[name]).wg)
 wg = numpy.array(wg)
@@ -1303,7 +1306,7 @@ array([0.05287298])
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rdf = pandas.DataFrame(data=wg, columns=[&quot;Within-region inequality&quot;])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rdf = pandas.DataFrame(data=wg, columns=["Within-region inequality"])
 </pre></div>
 </div>
 </div>
@@ -1312,7 +1315,7 @@ array([0.05287298])
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>_ = seaborn.displot(
-    rdf, kind=&quot;kde&quot;, legend=False, x=&quot;Within-region inequality&quot;, rug=True
+    rdf, kind="kde", legend=False, x="Within-region inequality", rug=True
 );
 </pre></div>
 </div>
@@ -1321,7 +1324,7 @@ array([0.05287298])
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_randomregion_72_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_72_0.png" style="width: 489px; height: 489px;" />
+<img alt="../_images/notebooks_randomregion_72_0.png" class="no-scaled-link" height="489" src="../_images/notebooks_randomregion_72_0.png" width="489" />
 </div>
 </div>
 <p>provides a more comprehensive benchmark for evaluating the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition. We see that the observed within-region component is extreme relative to what we would expect if the partitions were formed randomly subject to the cardinality and contiguity constraints:</p>
@@ -1394,7 +1397,7 @@ np.float64(0.02)
 n_polys = hori * vert
 gdf = spopt.region.spenclib.utils.lattice(hori, vert)
 numpy.random.seed(RANDOM_SEED)
-gdf[&quot;synth_data&quot;] = numpy.random.laplace(100, 10, n_polys)
+gdf["synth_data"] = numpy.random.laplace(100, 10, n_polys)
 gdf.head()
 </pre></div>
 </div>
@@ -1460,14 +1463,14 @@ gdf.head()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plt.rcParams[&quot;figure.figsize&quot;] = [10, 10]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plt.rcParams["figure.figsize"] = [10, 10]
 gdf.plot(
-    column=&quot;synth_data&quot;,
-    scheme=&quot;quantiles&quot;,
-    cmap=&quot;Blues&quot;,
-    edgecolor=&quot;grey&quot;,
+    column="synth_data",
+    scheme="quantiles",
+    cmap="Blues",
+    edgecolor="grey",
     legend=True,
-    legend_kwds={&quot;fmt&quot;: &quot;{:.2f}&quot;},
+    legend_kwds={"fmt": "{:.2f}"},
 );
 </pre></div>
 </div>
@@ -1476,7 +1479,7 @@ gdf.plot(
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_randomregion_81_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_81_0.png" style="width: 830px; height: 813px;" />
+<img alt="../_images/notebooks_randomregion_81_0.png" class="no-scaled-link" height="813" src="../_images/notebooks_randomregion_81_0.png" width="830" />
 </div>
 </div>
 <p>Set the number of desired regions to 4.</p>
@@ -1522,8 +1525,8 @@ rrlat = RandomRegion(ids, num_regions=n_regions, cardinality=cards)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>region_labels(gdf, rrlat, name=&quot;rrlat&quot;)
-gdf.plot(column=&quot;rrlat&quot;, cmap=&quot;tab20&quot;);
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>region_labels(gdf, rrlat, name="rrlat")
+gdf.plot(column="rrlat", cmap="tab20");
 </pre></div>
 </div>
 </div>
@@ -1531,7 +1534,7 @@ gdf.plot(column=&quot;rrlat&quot;, cmap=&quot;tab20&quot;);
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_randomregion_88_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_88_0.png" style="width: 830px; height: 813px;" />
+<img alt="../_images/notebooks_randomregion_88_0.png" class="no-scaled-link" height="813" src="../_images/notebooks_randomregion_88_0.png" width="830" />
 </div>
 </div>
 <p>Create a <code class="docutils literal notranslate"><span class="pre">Queen</span></code> weights object to define spatial contiguity.</p>
@@ -1550,7 +1553,7 @@ gdf.plot(column=&quot;rrlat&quot;, cmap=&quot;tab20&quot;);
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for swaps in [100, 350, 650, 999]:
-    swap_str = f&quot;rrlatms{swaps}&quot;
+    swap_str = f"rrlatms{swaps}"
     numpy.random.seed(RANDOM_SEED)
     result = RandomRegion(
         ids,
@@ -1570,12 +1573,12 @@ gdf.plot(column=&quot;rrlat&quot;, cmap=&quot;tab20&quot;);
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>labels = [
-    [&quot;synth_data&quot;, &quot;rrlatms100&quot;, &quot;rrlatms650&quot;],
-    [&quot;rrlat&quot;, &quot;rrlatms350&quot;, &quot;rrlatms999&quot;],
+    ["synth_data", "rrlatms100", "rrlatms650"],
+    ["rrlat", "rrlatms350", "rrlatms999"],
 ]
 titles = [
-    [&quot;Data&quot;, &quot;Max 100 Swaps&quot;, &quot;Max 650 Swaps&quot;],
-    [&quot;Unconstrained&quot;, &quot;Max 350 Swaps&quot;, &quot;Max 999 Swaps&quot;],
+    ["Data", "Max 100 Swaps", "Max 650 Swaps"],
+    ["Unconstrained", "Max 350 Swaps", "Max 999 Swaps"],
 ]
 </pre></div>
 </div>
@@ -1591,13 +1594,13 @@ for i in range(rows):
         label, title = labels[i][j], titles[i][j]
         _ax = axs[i, j]
         if i == j and i == 0:
-            kws = {&quot;scheme&quot;: &quot;quantiles&quot;, &quot;cmap&quot;: &quot;Blues&quot;, &quot;ec&quot;: &quot;grey&quot;}
+            kws = {"scheme": "quantiles", "cmap": "Blues", "ec": "grey"}
             gdf.plot(column=label, ax=_ax, **kws)
         else:
-            gdf.plot(column=label, ax=_ax, cmap=&quot;tab20&quot;)
+            gdf.plot(column=label, ax=_ax, cmap="tab20")
         _ax.set_title(title)
         _ax.set_axis_off()
-        _ax.set_aspect(&quot;equal&quot;)
+        _ax.set_aspect("equal")
 plt.subplots_adjust(wspace=1, hspace=0.5)
 plt.tight_layout()
 </pre></div>
@@ -1607,7 +1610,7 @@ plt.tight_layout()
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_randomregion_95_0.png" class="no-scaled-link" src="../_images/notebooks_randomregion_95_0.png" style="width: 889px; height: 653px;" />
+<img alt="../_images/notebooks_randomregion_95_0.png" class="no-scaled-link" height="653" src="../_images/notebooks_randomregion_95_0.png" width="889" />
 </div>
 </div>
 <p>As shown here, the results obtained from setting the maximum number of swaps clearly vary.</p>
@@ -1635,7 +1638,7 @@ plt.tight_layout()
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

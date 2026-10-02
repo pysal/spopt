@@ -5,16 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Automatic Zoning Procedure (AZP) algorithm &#8212; spopt v0.7.0 Manual</title>
+    <title>Automatic Zoning Procedure (AZP) algorithm &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -91,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -161,7 +164,7 @@ Interactive online version:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -227,7 +230,7 @@ libpysal : 4.12.1
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pth = libpysal.examples.get_path(&quot;mexicojoin.shp&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pth = libpysal.examples.get_path("mexicojoin.shp")
 mexico = geopandas.read_file(pth)
 </pre></div>
 </div>
@@ -239,13 +242,13 @@ mexico = geopandas.read_file(pth)
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for year in range(1940, 2010, 10):
     base = mexico.plot(
         figsize=(8, 5),
-        column=f&quot;PCGDP{year}&quot;,
-        scheme=&quot;Quantiles&quot;,
-        cmap=&quot;GnBu&quot;,
-        edgecolor=&quot;b&quot;,
+        column=f"PCGDP{year}",
+        scheme="Quantiles",
+        cmap="GnBu",
+        edgecolor="b",
         legend=True,
     )
-    base.axis(&quot;off&quot;)
+    base.axis("off")
     base.set_title(str(year))
 </pre></div>
 </div>
@@ -254,49 +257,49 @@ mexico = geopandas.read_file(pth)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_5_0.png" class="no-scaled-link" src="../_images/notebooks_azp_5_0.png" style="width: 640px; height: 412px;" />
+<img alt="../_images/notebooks_azp_5_0.png" class="no-scaled-link" height="412" src="../_images/notebooks_azp_5_0.png" width="640" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_5_1.png" class="no-scaled-link" src="../_images/notebooks_azp_5_1.png" style="width: 640px; height: 412px;" />
+<img alt="../_images/notebooks_azp_5_1.png" class="no-scaled-link" height="412" src="../_images/notebooks_azp_5_1.png" width="640" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_5_2.png" class="no-scaled-link" src="../_images/notebooks_azp_5_2.png" style="width: 640px; height: 412px;" />
+<img alt="../_images/notebooks_azp_5_2.png" class="no-scaled-link" height="412" src="../_images/notebooks_azp_5_2.png" width="640" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_5_3.png" class="no-scaled-link" src="../_images/notebooks_azp_5_3.png" style="width: 640px; height: 412px;" />
+<img alt="../_images/notebooks_azp_5_3.png" class="no-scaled-link" height="412" src="../_images/notebooks_azp_5_3.png" width="640" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_5_4.png" class="no-scaled-link" src="../_images/notebooks_azp_5_4.png" style="width: 640px; height: 412px;" />
+<img alt="../_images/notebooks_azp_5_4.png" class="no-scaled-link" height="412" src="../_images/notebooks_azp_5_4.png" width="640" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_5_5.png" class="no-scaled-link" src="../_images/notebooks_azp_5_5.png" style="width: 640px; height: 412px;" />
+<img alt="../_images/notebooks_azp_5_5.png" class="no-scaled-link" height="412" src="../_images/notebooks_azp_5_5.png" width="640" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_5_6.png" class="no-scaled-link" src="../_images/notebooks_azp_5_6.png" style="width: 640px; height: 412px;" />
+<img alt="../_images/notebooks_azp_5_6.png" class="no-scaled-link" height="412" src="../_images/notebooks_azp_5_6.png" width="640" />
 </div>
 </div>
 </section>
@@ -308,7 +311,7 @@ mexico = geopandas.read_file(pth)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = [f&quot;PCGDP{year}&quot; for year in range(1950, 2010, 10)]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>attrs_name = [f"PCGDP{year}" for year in range(1950, 2010, 10)]
 attrs_name
 </pre></div>
 </div>
@@ -373,7 +376,7 @@ model.solve()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico[&quot;azp_new&quot;] = model.labels_
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico["azp_new"] = model.labels_
 </pre></div>
 </div>
 </div>
@@ -381,8 +384,8 @@ model.solve()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico[&quot;number&quot;] = 1
-mexico[[&quot;azp_new&quot;, &quot;number&quot;]].groupby(by=&quot;azp_new&quot;).count()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico["number"] = 1
+mexico[["azp_new", "number"]].groupby(by="azp_new").count()
 </pre></div>
 </div>
 </div>
@@ -445,7 +448,7 @@ mexico[[&quot;azp_new&quot;, &quot;number&quot;]].groupby(by=&quot;azp_new&quot;
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico.plot(figsize=(8, 5), column=&quot;azp_new&quot;, categorical=True, ec=&quot;w&quot;).axis(&quot;off&quot;);
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico.plot(figsize=(8, 5), column="azp_new", categorical=True, ec="w").axis("off");
 </pre></div>
 </div>
 </div>
@@ -453,7 +456,7 @@ mexico[[&quot;azp_new&quot;, &quot;number&quot;]].groupby(by=&quot;azp_new&quot;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_19_0.png" class="no-scaled-link" src="../_images/notebooks_azp_19_0.png" style="width: 640px; height: 390px;" />
+<img alt="../_images/notebooks_azp_19_0.png" class="no-scaled-link" height="390" src="../_images/notebooks_azp_19_0.png" width="640" />
 </div>
 </div>
 <p>The model solution results in five regions, two of which have five states, one with four, one with eight, and one with ten states.</p>
@@ -467,10 +470,10 @@ mexico[[&quot;azp_new&quot;, &quot;number&quot;]].groupby(by=&quot;azp_new&quot;
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for year in attrs_name:
     model = AZP(mexico, w, year, 5)
     model.solve()
-    lab = year + &quot;labels_&quot;
+    lab = year + "labels_"
     mexico[lab] = model.labels_
-    base = mexico.plot(figsize=(8, 5), column=lab, categorical=True, edgecolor=&quot;w&quot;)
-    base.axis(&quot;off&quot;)
+    base = mexico.plot(figsize=(8, 5), column=lab, categorical=True, edgecolor="w")
+    base.axis("off")
     base.set_title(year)
 </pre></div>
 </div>
@@ -479,42 +482,42 @@ mexico[[&quot;azp_new&quot;, &quot;number&quot;]].groupby(by=&quot;azp_new&quot;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_22_0.png" class="no-scaled-link" src="../_images/notebooks_azp_22_0.png" style="width: 640px; height: 412px;" />
+<img alt="../_images/notebooks_azp_22_0.png" class="no-scaled-link" height="412" src="../_images/notebooks_azp_22_0.png" width="640" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_22_1.png" class="no-scaled-link" src="../_images/notebooks_azp_22_1.png" style="width: 640px; height: 412px;" />
+<img alt="../_images/notebooks_azp_22_1.png" class="no-scaled-link" height="412" src="../_images/notebooks_azp_22_1.png" width="640" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_22_2.png" class="no-scaled-link" src="../_images/notebooks_azp_22_2.png" style="width: 640px; height: 412px;" />
+<img alt="../_images/notebooks_azp_22_2.png" class="no-scaled-link" height="412" src="../_images/notebooks_azp_22_2.png" width="640" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_22_3.png" class="no-scaled-link" src="../_images/notebooks_azp_22_3.png" style="width: 640px; height: 412px;" />
+<img alt="../_images/notebooks_azp_22_3.png" class="no-scaled-link" height="412" src="../_images/notebooks_azp_22_3.png" width="640" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_22_4.png" class="no-scaled-link" src="../_images/notebooks_azp_22_4.png" style="width: 640px; height: 412px;" />
+<img alt="../_images/notebooks_azp_22_4.png" class="no-scaled-link" height="412" src="../_images/notebooks_azp_22_4.png" width="640" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_azp_22_5.png" class="no-scaled-link" src="../_images/notebooks_azp_22_5.png" style="width: 640px; height: 412px;" />
+<img alt="../_images/notebooks_azp_22_5.png" class="no-scaled-link" height="412" src="../_images/notebooks_azp_22_5.png" width="640" />
 </div>
 </div>
 </section>
@@ -540,7 +543,7 @@ mexico[[&quot;azp_new&quot;, &quot;number&quot;]].groupby(by=&quot;azp_new&quot;
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

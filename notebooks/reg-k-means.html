@@ -5,16 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Regional-k-means &#8212; spopt v0.7.0 Manual</title>
+    <title>Regional-k-means &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -91,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -173,7 +176,7 @@ Interactive online version:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -441,7 +444,7 @@ array([[ 0.34748881, -1.23017904,  0.57107814],
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.weights.build_lattice_shapefile(dim, dim, &quot;lattice.shp&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.weights.build_lattice_shapefile(dim, dim, "lattice.shp")
 </pre></div>
 </div>
 </div>
@@ -449,8 +452,8 @@ array([[ 0.34748881, -1.23017904,  0.57107814],
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf = geopandas.read_file(&quot;lattice.shp&quot;)
-gdf.plot(column=&quot;ID&quot;);
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf = geopandas.read_file("lattice.shp")
+gdf.plot(column="ID");
 </pre></div>
 </div>
 </div>
@@ -458,7 +461,7 @@ gdf.plot(column=&quot;ID&quot;);
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_reg-k-means_13_0.png" class="no-scaled-link" src="../_images/notebooks_reg-k-means_13_0.png" style="width: 416px; height: 413px;" />
+<img alt="../_images/notebooks_reg-k-means_13_0.png" class="no-scaled-link" height="413" src="../_images/notebooks_reg-k-means_13_0.png" width="416" />
 </div>
 </div>
 </section>
@@ -501,8 +504,8 @@ array([ 2,  2,  2,  2,  2,  6, 14, 14, 19, 19, 15, 13, 13, 13, 13,  6,  6,
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf[&quot;region&quot;] = model.labels_
-gdf.plot(column=&quot;region&quot;);
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf["region"] = model.labels_
+gdf.plot(column="region");
 </pre></div>
 </div>
 </div>
@@ -510,7 +513,7 @@ gdf.plot(column=&quot;region&quot;);
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_reg-k-means_17_0.png" class="no-scaled-link" src="../_images/notebooks_reg-k-means_17_0.png" style="width: 416px; height: 413px;" />
+<img alt="../_images/notebooks_reg-k-means_17_0.png" class="no-scaled-link" height="413" src="../_images/notebooks_reg-k-means_17_0.png" width="416" />
 </div>
 </div>
 <p>The model solution results in 20 spatially connected regions. We can summarize which lattice belongs to which region:</p>
@@ -630,9 +633,9 @@ gdf.head()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>numpy.random.seed(RANDOM_SEED)
-gdf[&quot;data_values_1&quot;] = numpy.random.random(n_polys)
-gdf[&quot;data_values_2&quot;] = numpy.random.random(n_polys)
-vals = [&quot;data_values_1&quot;, &quot;data_values_2&quot;]
+gdf["data_values_1"] = numpy.random.random(n_polys)
+gdf["data_values_2"] = numpy.random.random(n_polys)
+vals = ["data_values_1", "data_values_2"]
 gdf.head()
 </pre></div>
 </div>
@@ -707,13 +710,13 @@ gdf.head()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf = pandas.concat([gdf[:1300], gdf[1500:]], ignore_index=True)
 with warnings.catch_warnings():
-    warnings.filterwarnings(&quot;error&quot;)
+    warnings.filterwarnings("error")
     try:
         w = libpysal.weights.Rook.from_dataframe(gdf, use_index=False)
     except UserWarning as e:
         print(e)
         with warnings.catch_warnings():
-            warnings.filterwarnings(&quot;ignore&quot;)
+            warnings.filterwarnings("ignore")
             w = libpysal.weights.Rook.from_dataframe(gdf, use_index=False)
 </pre></div>
 </div>
@@ -745,9 +748,9 @@ model.solve()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf[&quot;reg_k_mean&quot;] = model.labels_
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf["reg_k_mean"] = model.labels_
 gdf.plot(
-    column=&quot;reg_k_mean&quot;, categorical=True, cmap=&quot;tab20&quot;, figsize=(10, 10), edgecolor=&quot;w&quot;
+    column="reg_k_mean", categorical=True, cmap="tab20", figsize=(10, 10), edgecolor="w"
 );
 </pre></div>
 </div>
@@ -756,7 +759,7 @@ gdf.plot(
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_reg-k-means_28_0.png" class="no-scaled-link" src="../_images/notebooks_reg-k-means_28_0.png" style="width: 817px; height: 813px;" />
+<img alt="../_images/notebooks_reg-k-means_28_0.png" class="no-scaled-link" height="813" src="../_images/notebooks_reg-k-means_28_0.png" width="817" />
 </div>
 </div>
 </section>
@@ -769,7 +772,7 @@ gdf.plot(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.load_example(&quot;Rio Grande do Sul&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.load_example("Rio Grande do Sul")
 </pre></div>
 </div>
 </div>
@@ -786,7 +789,7 @@ gdf.plot(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rsbr = libpysal.examples.get_path(&quot;map_RS_BR.shp&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rsbr = libpysal.examples.get_path("map_RS_BR.shp")
 rsbr_gdf = geopandas.read_file(rsbr)
 rsbr_gdf.head()
 </pre></div>
@@ -862,7 +865,7 @@ rsbr_gdf.head()
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>n_polys = rsbr_gdf.shape[0]
 numpy.random.seed(RANDOM_SEED)
-attr_cols = [&quot;attr_1&quot;, &quot;attr_2&quot;, &quot;attr_3&quot;, &quot;attr_4&quot;]
+attr_cols = ["attr_1", "attr_2", "attr_3", "attr_4"]
 for attr_col in attr_cols:
     rsbr_gdf[attr_col] = numpy.random.random(n_polys)
 rsbr_gdf.head()
@@ -980,10 +983,10 @@ model.solve()
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rsbr_gdf[&quot;reg_k_mean&quot;] = model.labels_
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rsbr_gdf["reg_k_mean"] = model.labels_
 rsbr_gdf.plot(
-    column=&quot;reg_k_mean&quot;, categorical=True, cmap=&quot;tab20&quot;, figsize=(8, 8), edgecolor=&quot;w&quot;
-).axis(&quot;off&quot;);
+    column="reg_k_mean", categorical=True, cmap="tab20", figsize=(8, 8), edgecolor="w"
+).axis("off");
 </pre></div>
 </div>
 </div>
@@ -991,7 +994,7 @@ rsbr_gdf.plot(
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_reg-k-means_38_0.png" class="no-scaled-link" src="../_images/notebooks_reg-k-means_38_0.png" style="width: 640px; height: 622px;" />
+<img alt="../_images/notebooks_reg-k-means_38_0.png" class="no-scaled-link" height="622" src="../_images/notebooks_reg-k-means_38_0.png" width="640" />
 </div>
 </div>
 <hr class="docutils" />
@@ -1018,7 +1021,7 @@ rsbr_gdf.plot(
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

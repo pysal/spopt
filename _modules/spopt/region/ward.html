@@ -4,14 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>spopt.region.ward &#8212; spopt v0.7.0 Manual</title>
+    <title>spopt.region.ward &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=e5dd7357" />
-    <script src="../../../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -87,6 +87,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a><ul>
@@ -146,7 +147,7 @@
 <div class="viewcode-block" id="WardSpatial">
 <a class="viewcode-back" href="../../../generated/spopt.region.WardSpatial.html#spopt.region.WardSpatial">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">WardSpatial</span><span class="p">(</span><span class="n">BaseSpOptHeuristicSolver</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Agglomerative clustering using Ward</span>
+<span class="w">    </span><span class="sd">"""Agglomerative clustering using Ward</span>
 <span class="sd">    linkage with a spatial connectivity constraint.</span>
 
 <span class="sd">    Parameters</span>
@@ -181,14 +182,14 @@
 
 <span class="sd">    Read the data.</span>
 
-<span class="sd">    &gt;&gt;&gt; libpysal.examples.load_example(&#39;AirBnB&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; pth = libpysal.examples.get_path(&#39;airbnb_Chicago 2015.shp&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; libpysal.examples.load_example('AirBnB')</span>
+<span class="sd">    &gt;&gt;&gt; pth = libpysal.examples.get_path('airbnb_Chicago 2015.shp')</span>
 <span class="sd">    &gt;&gt;&gt; chicago = gpd.read_file(pth)</span>
 
 <span class="sd">    Initialize the parameters.</span>
 
 <span class="sd">    &gt;&gt;&gt; w = libpysal.weights.Queen.from_dataframe(chicago)</span>
-<span class="sd">    &gt;&gt;&gt; attrs_name = [&#39;num_spots&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; attrs_name = ['num_spots']</span>
 <span class="sd">    &gt;&gt;&gt; n_clusters = 8</span>
 
 <span class="sd">    Run the ``WardSpatial`` algorithm.</span>
@@ -208,7 +209,7 @@
 <span class="sd">           [ 6,  1],</span>
 <span class="sd">           [ 7,  1]])</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="WardSpatial.__init__">
 <a class="viewcode-back" href="../../../generated/spopt.region.WardSpatial.html#spopt.region.WardSpatial.__init__">[docs]</a>
@@ -223,13 +224,13 @@
 <div class="viewcode-block" id="WardSpatial.solve">
 <a class="viewcode-back" href="../../../generated/spopt.region.WardSpatial.html#spopt.region.WardSpatial.solve">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Solve the Ward&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Solve the Ward"""</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">attrs_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">AgglomerativeClustering</span><span class="p">(</span>
             <span class="n">n_clusters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span>
             <span class="n">connectivity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">sparse</span><span class="p">,</span>
-            <span class="n">linkage</span><span class="o">=</span><span class="s2">&quot;ward&quot;</span><span class="p">,</span>
+            <span class="n">linkage</span><span class="o">=</span><span class="s2">"ward"</span><span class="p">,</span>
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">clustering_kwds</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -253,7 +254,7 @@
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

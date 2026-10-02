@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Flow Refueling Location Model (FRLM) &#8212; spopt v0.8.0 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API reference" href="../api.html" />
+    <link rel="prev" title="The P-Dispersion Problem: An Empirical Example" href="facloc-disperse-real-world.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Flow Refueling Location Model (FRLM)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Flow Refueling Location Model (FRLM)</a><ul>
+<li><a class="reference internal" href="#Create-sample-network">Create sample network</a></li>
+<li><a class="reference internal" href="#Create-sample-flows">Create sample flows</a></li>
+<li><a class="reference internal" href="#Basic-FRLM-model">Basic FRLM model</a></li>
+<li><a class="reference internal" href="#FRLM-threshold-extension">FRLM threshold extension</a></li>
+<li><a class="reference internal" href="#Capacited-FRLM">Capacited FRLM</a></li>
+<li><a class="reference internal" href="#References">References</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/spopt/blob/main/notebooks/flow.ipynb">notebooks/flow.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/spopt/main?filepath=notebooks/flow.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Flow-Refueling-Location-Model-(FRLM)">
+<h1>Flow Refueling Location Model (FRLM)<a class="headerlink" href="#Flow-Refueling-Location-Model-(FRLM)" title="Link to this heading">¶</a></h1>
+<p><em>Authors:</em> <a class="reference external" href="https://github.com/fengzixin0617">Zixin Feng</a>, <a class="reference external" href="https://github.com/gegen07">Germano Barcelos</a>, <a class="reference external" href="https://github.com/ljwolf">Levi John Wolf</a>, <a class="reference external" href="https://github.com/qszhao">Qunshan Zhao</a></p>
+<p>The FRLM is a location-allocation model for optimally locating refueling facilities for range-limited vehicles, such as alt-fuel vehicles. For these vehicles, it may be necessary to stop at more than one facility in order to successfully refuel the entire path length. The model optimally locates <span class="math notranslate nohighlight">\(p\)</span> refueling stations on a network so as to maximize the total flow volume refueled. The model could also work for any new network-based, range limited surface transport mode.</p>
+<p><strong>FRLM can be written as:</strong></p>
+<p><span class="math notranslate nohighlight">\(\begin{array}{ll}
+\textbf{Max} &amp; \sum\limits_{q \in Q} f_q y_q  \\[0.7em]
+\textbf{Subject to:} &amp; \sum\limits_{h \in H} b_{qh} v_h \geq y_q \quad \forall q \in Q  \\[0.7em]
+&amp; a_{hk} x_k \geq v_h \quad \forall h \in H; k| a_{hk} =1  \\[0.7em]
+&amp; \sum\limits_{k \in K} x_k = p  \\[0.7em]
+&amp; x_k, v_h, y_q \in \{0,1\} \quad \forall k, h, q
+\\[0.7em] \end{array}\)</span></p>
+<p><span class="math notranslate nohighlight">\(\begin{array}{ll}
+q &amp; = \text{index of origin–destination (O–D) pairs} \\
+Q &amp; = \text{set of all O–D pairs} \\
+f_q &amp; = \text{flow volume on shortest path for O–D pair } q \\
+y_q &amp; = \text{1 if flow } q \text{ is refueled, 0 otherwise} \\
+k &amp; = \text{potential facility location} \\
+K &amp; = \text{set of all potential facility locations} \\
+x_k &amp; = \text{1 if a facility is located at } k \text{, 0 otherwise} \\
+p &amp; = \text{the number of facilities to be located} \\
+h &amp; = \text{index of facility combinations} \\
+H &amp; = \text{set of all potential facility combinations} \\
+a_{hk} &amp; = \text{a coefficient equal to 1 if facility } k \text{ is in combination } h \text{, 0 otherwise} \\
+b_{qh} &amp; = \text{a coefficient equal to 1 if combination } h \text{ can refuel O-D pair} q \text{, 0 otherwise} \\
+v_h &amp; = \text{1 if all facilities in combination } h \text{ are open, 0 otherwise}
+\end{array}\)</span></p>
+<p><em>The formulation above is adapted from Kuby and Lim (2005).</em></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas as gpd
+import libpysal
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import pulp
+import scipy.sparse as sp
+from libpysal import examples
+from libpysal.examples import get_path
+
+from spopt.locate.flow import FRLM
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%load_ext watermark
+%watermark -iv
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+pandas    : 2.2.1
+numpy     : 1.26.4
+libpysal  : 4.13.0
+matplotlib: 3.8.0
+pulp      : 2.8.0
+geopandas : 1.1.1
+scipy     : 1.16.1
+
+</pre></div></div>
+</div>
+<section id="Create-sample-network">
+<h2>Create sample network<a class="headerlink" href="#Create-sample-network" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf = gpd.read_file(get_path("sids2.shp"))  # Load an example shapfile from libpysal;
+gdf = gdf.set_crs(epsg=4326)
+gdf_proj = gdf.to_crs(epsg=3857)
+H = libpysal.graph.Graph.build_contiguity(gdf_proj, rook=False)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(8, 8))
+gdf_proj.plot(ax=ax, color="#f0f0f0", edgecolor="#444", linewidth=0.5)
+
+H.plot(gdf_proj, ax=ax)
+
+ax.set_axis_off()
+plt.tight_layout()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_flow_5_0.png" src="../_images/notebooks_flow_5_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Change libpysal graph to scipy sparse matrix
+G = H.sparse
+G_csr = sp.csr_matrix(G)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Create-sample-flows">
+<h2>Create sample flows<a class="headerlink" href="#Create-sample-flows" title="Link to this heading">¶</a></h2>
+<p>Create Origin-Destination (OD) pairs to represent travel demand across a spatial network. Each tuple in the dataset follows the format <code class="docutils literal notranslate"><span class="pre">(origin_node,</span> <span class="pre">destination_node,</span> <span class="pre">flow_volume)</span></code>. The flow volumes are the total number of trips between each pair of locations.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>np.random.seed(42)
+
+num_nodes = G.shape[0]
+nodes = list(range(num_nodes))
+
+od_pairs = []
+
+while len(od_pairs) &lt; 50:
+    origin = np.random.choice(nodes)
+    dest = np.random.choice(nodes)
+    if origin != dest:
+        volume = np.random.randint(10, 200)
+        od_pairs.append({"origin": origin, "destination": dest, "volume": volume})
+
+flows_df = pd.DataFrame(od_pairs)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>flows_df.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>origin</th>
+      <th>destination</th>
+      <th>volume</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>51</td>
+      <td>92</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>71</td>
+      <td>60</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>82</td>
+      <td>86</td>
+      <td>84</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>74</td>
+      <td>87</td>
+      <td>126</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>99</td>
+      <td>23</td>
+      <td>140</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="Basic-FRLM-model">
+<h2>Basic FRLM model<a class="headerlink" href="#Basic-FRLM-model" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>frlm_basic = FRLM.from_flow_dataframe(
+    p_facilities=1,  # Locate 1 facility
+    vehicle_range=0.2,
+    # values &gt;=1 are absolute distances in network units;
+    # values between 0 and 1 represent percentage of the longest path
+    # (e.g., 0.2 = 20% of longest path)
+    # uncapacitated model is used by default, set `capacity= ` for capacitated model
+    network=G_csr,
+    flows=flows_df,
+)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>frlm_basic
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+FRLM(vehicle_range=20% of longest path, p=1)
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>frlm_basic.problem.writeLP("frlm_basic.lp")
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>frlm_basic.solve(solver=pulp.GUROBI_CMD())  # use solver='greedy' for greedy solver
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;status&#39;: &#39;Optimal&#39;, &#39;objective_value&#39;: 529, &#39;selected_facilities&#39;: [62]}
+</pre></div></div>
+</div>
+<ul class="simple">
+<li><p>Retrieve flow/vmt coverage details, and get Dict with coverage info for each OD pair</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">flow_coverage</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_flow_coverage</span><span class="p">()</span>
+<span class="n">vmt_coverage</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_vmt_coverage</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Retrieve node coverage percentage</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">node_coverage_pct</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_node_coverage_percentage</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Get all available statistics in one call</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">details</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_detailed_results</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result = frlm_basic.get_flow_coverage()
+result
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;covered_volume&#39;: 529.0, &#39;flow_volume&#39;: 4531, &#39;covered_proportion&#39;: 0.12}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>results_basic = frlm_basic.get_detailed_results()
+results_basic
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;model_parameters&#39;: {&#39;vehicle_range&#39;: 3.4,
+  &#39;p_facilities&#39;: 1,
+  &#39;capacity&#39;: None,
+  &#39;threshold&#39;: 0.0,
+  &#39;objective_type&#39;: &#39;flow&#39;},
+ &#39;solution&#39;: {&#39;status&#39;: &#39;Optimal&#39;,
+  &#39;objective_value&#39;: 529.0,
+  &#39;selected_facilities&#39;: [62],
+  &#39;solution_time&#39;: 0.12},
+ &#39;solver_statistics&#39;: {},
+ &#39;coverage_statistics&#39;: {&#39;flow_breakdown&#39;: {(51, 92): {&#39;flow_volume&#39;: 24,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (71, 60): {&#39;flow_volume&#39;: 30,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (82, 86): {&#39;flow_volume&#39;: 84,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (74, 87): {&#39;flow_volume&#39;: 126,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (99, 23): {&#39;flow_volume&#39;: 140,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (21, 52): {&#39;flow_volume&#39;: 11,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (87, 29): {&#39;flow_volume&#39;: 47,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 47.0},
+   (1, 63): {&#39;flow_volume&#39;: 197,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (20, 32): {&#39;flow_volume&#39;: 67,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (21, 88): {&#39;flow_volume&#39;: 58,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (90, 58): {&#39;flow_volume&#39;: 179,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (91, 59): {&#39;flow_volume&#39;: 181,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 181.0},
+   (46, 61): {&#39;flow_volume&#39;: 60,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 60.0},
+   (54, 63): {&#39;flow_volume&#39;: 140,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (50, 6): {&#39;flow_volume&#39;: 30,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (72, 38): {&#39;flow_volume&#39;: 27,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (3, 88): {&#39;flow_volume&#39;: 69,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (13, 8): {&#39;flow_volume&#39;: 99,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (52, 1): {&#39;flow_volume&#39;: 93,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (7, 46): {&#39;flow_volume&#39;: 44,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (77, 80): {&#39;flow_volume&#39;: 173,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (49, 3): {&#39;flow_volume&#39;: 11,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (5, 53): {&#39;flow_volume&#39;: 115,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (3, 53): {&#39;flow_volume&#39;: 155,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (89, 43): {&#39;flow_volume&#39;: 171,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (73, 61): {&#39;flow_volume&#39;: 23,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (94, 47): {&#39;flow_volume&#39;: 24,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (71, 77): {&#39;flow_volume&#39;: 199,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (39, 84): {&#39;flow_volume&#39;: 91,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (52, 23): {&#39;flow_volume&#39;: 163,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (88, 59): {&#39;flow_volume&#39;: 133,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 133.0},
+   (40, 28): {&#39;flow_volume&#39;: 24,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (44, 64): {&#39;flow_volume&#39;: 98,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (70, 8): {&#39;flow_volume&#39;: 97,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (0, 7): {&#39;flow_volume&#39;: 72,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (10, 80): {&#39;flow_volume&#39;: 145,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (32, 4): {&#39;flow_volume&#39;: 50,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (27, 6): {&#39;flow_volume&#39;: 81,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (11, 33): {&#39;flow_volume&#39;: 42,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (47, 22): {&#39;flow_volume&#39;: 71,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (87, 36): {&#39;flow_volume&#39;: 108,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 108.0},
+   (43, 85): {&#39;flow_volume&#39;: 44,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (64, 98): {&#39;flow_volume&#39;: 110,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (46, 77): {&#39;flow_volume&#39;: 140,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (0, 4): {&#39;flow_volume&#39;: 151,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (26, 8): {&#39;flow_volume&#39;: 24,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (89, 41): {&#39;flow_volume&#39;: 133,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (76, 50): {&#39;flow_volume&#39;: 72,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0},
+   (95, 51): {&#39;flow_volume&#39;: 105,
+    &#39;covered_proportion&#39;: 0.0,
+    &#39;covered_volume&#39;: 0.0}}}}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>coords = np.array([geom.centroid.coords[0] for geom in gdf_proj.geometry])
+fig, ax = plt.subplots(figsize=(10, 10))
+gdf_proj.plot(ax=ax, color="#f0f0f0", edgecolor="#444", linewidth=0.5)
+H.plot(gdf_proj, ax=ax)
+ax.scatter(coords[:, 0], coords[:, 1], color="black", s=10, label="Node Centroids")
+
+covered_nodes = set()
+
+for i, (facility, count) in enumerate(frlm_basic.selected_facilities.items()):
+    ax.scatter(
+        coords[facility][0],
+        coords[facility][1],
+        c="red",
+        s=300 * (count**0.7),
+        alpha=1,
+        edgecolors="black",
+        label="Facility" if i == 0 else None,
+    )
+
+covered_label_added = False
+for od_pair, coverage in frlm_basic.flow_coverage.items():
+    if coverage["covered_proportion"] &gt; 0:
+        path = frlm_basic.flow_paths[od_pair]
+        path_coords = coords[path]
+        ax.plot(
+            path_coords[:, 0],
+            path_coords[:, 1],
+            "g-",
+            linewidth=2 * coverage["covered_proportion"],
+            alpha=0.7,
+            label="Covered Flows" if not covered_label_added else None,
+        )
+        covered_label_added = True
+
+        covered_nodes.add(od_pair[0])
+        covered_nodes.add(od_pair[1])
+
+for node_id in covered_nodes:
+    ax.annotate(
+        str(node_id),
+        xy=(coords[node_id][0], coords[node_id][1]),
+        xytext=(5, 5),
+        textcoords="offset points",
+        fontsize=8,
+        bbox={"boxstyle": "round,pad=0.3", "facecolor": "yellow", "alpha": 0.7},
+        ha="left",
+    )
+
+ax.set_axis_off()
+ax.legend(loc="upper right", fontsize=10, frameon=True, fancybox=True, shadow=True)
+plt.tight_layout()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_flow_18_0.png" src="../_images/notebooks_flow_18_0.png" />
+</div>
+</div>
+<p>The red dot indicates the selected facility location. Green lines show the OD flows that are covered by the selected facility.</p>
+</section>
+<section id="FRLM-threshold-extension">
+<h2>FRLM threshold extension<a class="headerlink" href="#FRLM-threshold-extension" title="Link to this heading">¶</a></h2>
+<p>The FRLM threshold extension is based on the original FRLM. The extended model optimally locates <span class="math notranslate nohighlight">\(p\)</span> refueling stations on a network to maximize the sum of weighted demand of covered origin/destination zones, where ‘covered’ means that the zone exceeds a specified threshold percentage of their total outbound/inbound round trips that are refuelable.</p>
+<p><strong>FRLM threshold extension can be written as:</strong></p>
+<p><span class="math notranslate nohighlight">\(\begin{array}{ll}
+\textbf{Max}  \; W \sum_j w_j c_j + (1 - W) \frac{\sum_q y_q f_q}{\sum_q f_q} \\[0.7em]
+\textbf{Subject to:}  \sum_{i \in K^q_{jk}} z_i \ge y_q \quad \forall q \in Q,\; a_{jk} \in A_q \\[0.7em]
+\sum_i z_i = p \\[0.7em]
+\frac{\sum_{q \in S_j} f_q y_q}{\sum_{q \in S_j} f_q} \ge T c_j \quad \forall j \in M \\[0.7em]
+z_i, y_q, c_j \in \{0, 1\} \quad \forall q \in Q,\; i \in N,\; j \in M \\[0.7em]
+\\ \end{array}\)</span></p>
+<p><span class="math notranslate nohighlight">\(\begin{array}{ll}
+\textbf{N} &amp; \text{: Set of nodes in the transportation network} \\
+\textbf{M} &amp; \text{: Sset of origin-destintaion nodes where (} M \subseteq N \text{)} \\
+i, j, k &amp; \text{: Indices for potnetial facilities/candidate sites/nodes} \\
+q &amp; \text{: Index of OD pairs (and the path between them)} \\
+\textbf{Q} &amp; \text{: Set of OD pairs} \\
+\textbf{S}_j &amp; \text{: Set of OD pairs originating from node } j \\
+a_{jk} &amp; \text{: Directional arc from node } j \text{ to node } k \\
+\textbf{A}_q &amp; \text{: Set of directional arcs on path } q \text{ (round trip: origin → destination → origin)} \\
+K^{q}_{jk} &amp; \text{: Set of candidate sites that can refuel arc } a_{jk} \text{ in } A_q \text{ given range } R \\
+\textbf{R} &amp; \text{: Vehicle driving range} \\
+f_q &amp; \text{: Traffic flow (volume) on path } q \\
+\textbf{p} &amp; \text{: Number of stations to be located} \\
+\textbf{T} &amp; \text{: Threshold (0} \leq \text{T} \leq 1\text{) for  the percentage of total path flow volume attached to a node to all destinations that must be refuelable to consider the node “covered”} \\
+w_j &amp; \text{: Weight of origin node/ origin and destination nodes } j \text{ (share of total system flow):} \\
+&amp; w_j = \frac{\sum_{q \in S_j} f_q}{\sum_{q \in Q} f_q} \\
+z_i &amp; \text{: Binary variable: 1 if a station is built at node } i, \text{ else 0} \\
+y_q &amp; \text{: Binary variable: 1 if flow on path } q \text{ is refuelable, else 0} \\
+c_j &amp; \text{: Binary variable: 1 if zone } j \text{ exceeds threshold } T, \text{ else 0} \\
+\end{array}\)</span></p>
+<p><em>The formulation above is adapted from Hong and Kuby (2016).</em></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>frlm_threshold = FRLM.from_flow_dataframe(
+    network=G_csr,
+    flows=flows_df,
+    p_facilities=3,
+    vehicle_range=0.3,
+    threshold=0.7,
+    objective="flow",
+    include_destination=True,
+)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>frlm_threshold.solve(solver="greedy")
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;status&#39;: &#39;Heuristic&#39;,
+ &#39;objective_value&#39;: 2822,
+ &#39;selected_facilities&#39;: [51, 53, 54]}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>frlm_threshold.get_flow_coverage()
+# flow_volume: total volume of flows;
+# covered_volume: volume of flows that are covered by the located facilities.
+# covered_proportion: proportion of flow volume that is covered.
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;covered_volume&#39;: 2048.0, &#39;flow_volume&#39;: 4531, &#39;covered_proportion&#39;: 0.45}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>coords = np.array([geom.centroid.coords[0] for geom in gdf_proj.geometry])
+fig, ax = plt.subplots(figsize=(10, 10))
+gdf_proj.plot(ax=ax, color="#f0f0f0", edgecolor="#444", linewidth=0.5)
+H.plot(gdf_proj, ax=ax)
+ax.scatter(coords[:, 0], coords[:, 1], color="black", s=10, label="Node Centroids")
+
+covered_nodes = set()
+
+for i, (facility, count) in enumerate(frlm_threshold.selected_facilities.items()):
+    ax.scatter(
+        coords[facility][0],
+        coords[facility][1],
+        c="red",
+        s=300 * (count**0.7),
+        alpha=1,
+        edgecolors="black",
+        label="Facility" if i == 0 else None,
+    )
+
+covered_label_added = False
+for od_pair, coverage in frlm_threshold.flow_coverage.items():
+    if coverage["covered_proportion"] &gt; 0:
+        path = frlm_threshold.flow_paths[od_pair]
+        path_coords = coords[path]
+        ax.plot(
+            path_coords[:, 0],
+            path_coords[:, 1],
+            "g-",
+            linewidth=2 * coverage["covered_proportion"],
+            alpha=0.7,
+            label="Covered Flows" if not covered_label_added else None,
+        )
+        covered_label_added = True
+
+        covered_nodes.add(od_pair[0])
+        covered_nodes.add(od_pair[1])
+
+for node_id in covered_nodes:
+    ax.annotate(
+        str(node_id),
+        xy=(coords[node_id][0], coords[node_id][1]),
+        xytext=(5, 5),
+        textcoords="offset points",
+        fontsize=8,
+        bbox={"boxstyle": "round,pad=0.3", "facecolor": "yellow", "alpha": 0.7},
+        ha="left",
+    )
+
+ax.set_axis_off()
+ax.set_title("Threshold FRLM Results (threshold=0.7)", fontsize=14, pad=20)
+ax.legend(loc="upper right", fontsize=10, frameon=True, fancybox=True, shadow=True)
+plt.tight_layout()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_flow_23_0.png" src="../_images/notebooks_flow_23_0.png" />
+</div>
+</div>
+</section>
+<section id="Capacited-FRLM">
+<h2>Capacited FRLM<a class="headerlink" href="#Capacited-FRLM" title="Link to this heading">¶</a></h2>
+<p>The original FRLM is an uncapacitated model. It assumes that the presence of a refueling station is sufficient to serve all flows passing through a node, regardless of their volume. Although it is applicable for early stages of alternative fuel vehicle adoption, it may not be applicable when the adoption of alternative fuel vehicles increase. The capacitated FRLM thus limits the number of vehicles refueled at each station.</p>
+<p>Compared to the original FRLM, the capacitated FRLM has three changes.</p>
+<p>First, it uses yqh instead of yq. To ensure that no facility refuels more than its capacity, the capacitated model requires precise knowledge of where each flow refuels. The CFRLM uses yqh to indicate exactly which combination of facilities h is refueling the flow. In addition, because the capacity constraint may make it impossible for a single combination of facilities to refuel all of the flow of a particular O–D pair, yqh is redefined from a binary to a continuous variable to indicate the
+fraction of the flow q refueled by facility combination h.</p>
+<p>The second major change is to redefine the facility location variable xk as an integer variable rather than a binary variable.</p>
+<p>The third major change is the addition of the capacity constraint.</p>
+<p><strong>CFRLM can be written as:</strong></p>
+<p><span class="math notranslate nohighlight">\(\begin{array}{ll}
+\textbf{Max } &amp; Z = \sum_{q \in Q} \sum_{\substack{ h| b_{qh} = 1}} f_q y_{qh}   \\[0.5em]
+\textbf{Subject to:}  &amp;  \sum_{q \in Q} \sum_{\substack{h| b_{qh} = 1}} e_q g_{qhk} f_q y_{qh} \leq c x_k \quad \forall k \in K   \\[0.5em]
+&amp;  \sum_{k \in K} x_k = p   \\[0.5em]
+&amp;  \sum_{\substack{h|b_{qh} = 1}} y_{qh} \leq 1 \quad \forall q \in Q  \\[0.5em]
+&amp;  y_{qh} \geq 0 \quad \forall q \in Q, h \in H
+\\[0.5em] \end{array}\)</span></p>
+<p><span class="math notranslate nohighlight">\(\begin{array}{ll}
+q &amp; \text{Index of OD pairs} \\
+Q &amp; \text{Set of all OD pairs} \\
+k &amp; \text{Index of potential facility locations} \\
+K &amp; \text{Set of all potential facility locations} \\
+h &amp; \text{Index of combinations of facilities} \\
+H &amp; \text{Set of all potential facility combinations} \\
+f_q &amp; \text{Flow volume on the shortest path for OD pair } q \\
+y_{qh} &amp; \text{Proportion of flow } f_q \text{ being refueled by } h \\
+x_k &amp; \text{Number of modules placed at location } k \\
+p &amp; \text{Number of modules of capacity to be located} \\
+c &amp; \text{Number of vehicle stops that can be refueled by each module} \\
+b_{qh} &amp; \text{1 if combination } h \text{ can refuel OD pair } q  \text{, 0 otherwise} \\
+e_q &amp; \text{Average fraction of round trips for OD pair } q \text{ that require refueling} \\
+g_{qhk} &amp; \text{Average number of times a vehicle traveling on path } q \text{ and being refueled by combination} h \text{ stops at station } k \text{ on each round trip that requires refueling} \\
+\\ \end{array}\)</span></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mexico = examples.load_example("mexico")
+gdf = gpd.read_file(mexico.get_path("mexicojoin.shp"))
+H = libpysal.graph.Graph.build_contiguity(gdf, rook=False)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(8, 8))
+gdf.plot(ax=ax, color="#f0f0f0", edgecolor="#444", linewidth=0.5)
+
+H.plot(gdf, ax=ax)
+
+ax.set_axis_off()
+plt.tight_layout()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_flow_26_0.png" src="../_images/notebooks_flow_26_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>G = H.sparse
+G_csr = sp.csr_matrix(G)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>np.random.seed(42)
+
+num_nodes = G.shape[0]
+nodes = list(range(num_nodes))
+
+od_pairs = []
+
+while len(od_pairs) &lt; 20:
+    origin = np.random.choice(nodes)
+    dest = np.random.choice(nodes)
+    if origin != dest:
+        volume = np.random.randint(10, 200)
+        od_pairs.append({"origin": origin, "destination": dest, "volume": volume})
+
+flows_df = pd.DataFrame(od_pairs)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>frlm_capacity = FRLM(vehicle_range=200, p_facilities=5, capacity=300)
+frlm_capacity.add_network(G_csr)
+frlm_capacity.add_flows(flows_df)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+FRLM(vehicle_range=200, p=5, capacity=300)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>facility_combinations = frlm_capacity.generate_path_refueling_combinations(
+    start=1, stop=3, method="combination"
+)
+
+# method : str, optional
+#   Specifies the algorithm for generating facility combinations. Options:
+#
+#   - 'auto' (default): Automatically selects the best method based on model type
+#       * For uncapacitated models: uses 'ac_pc'
+#       * For capacitated models: uses 'combination'
+#
+#   - 'combination': Generates all possible facility combinations
+#       * Works with both capacitated and uncapacitated models
+#
+#   - 'ac_pc': Arc Cover Path Cover algorithm
+#       * Only available for uncapacitated models
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Generating combinations:   0%|          | 0/20 [00:00&lt;?, ?it/s]Generating combinations: 100%|██████████| 20/20 [00:14&lt;00:00,  1.34it/s]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>frlm_capacity.solve(solver=pulp.GUROBI_CMD())
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;status&#39;: &#39;Optimal&#39;,
+ &#39;objective_value&#39;: 2542,
+ &#39;selected_facilities&#39;: [1, 3, 8, 10, 31]}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>frlm_capacity.get_detailed_results()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;model_parameters&#39;: {&#39;vehicle_range&#39;: 200,
+  &#39;p_facilities&#39;: 5,
+  &#39;capacity&#39;: 300,
+  &#39;threshold&#39;: 0.0,
+  &#39;objective_type&#39;: &#39;flow&#39;},
+ &#39;solution&#39;: {&#39;status&#39;: &#39;Optimal&#39;,
+  &#39;objective_value&#39;: 2542.0,
+  &#39;selected_facilities&#39;: [1, 3, 8, 10, 31],
+  &#39;solution_time&#39;: 2.56},
+ &#39;solver_statistics&#39;: {},
+ &#39;coverage_statistics&#39;: {&#39;flow_breakdown&#39;: {(6, 19): {&#39;flow_volume&#39;: 102,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 102.0},
+   (14, 10): {&#39;flow_volume&#39;: 81,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 81.0},
+   (28, 20): {&#39;flow_volume&#39;: 112,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 112.0},
+   (25, 18): {&#39;flow_volume&#39;: 84,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 84.0},
+   (10, 23): {&#39;flow_volume&#39;: 126,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 126.0},
+   (3, 7): {&#39;flow_volume&#39;: 161,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 161.0},
+   (2, 21): {&#39;flow_volume&#39;: 62,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 62.0},
+   (1, 23): {&#39;flow_volume&#39;: 167,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 167.0},
+   (5, 1): {&#39;flow_volume&#39;: 197,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 197.0},
+   (20, 0): {&#39;flow_volume&#39;: 67,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 67.0},
+   (21, 28): {&#39;flow_volume&#39;: 98,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 98.0},
+   (16, 26): {&#39;flow_volume&#39;: 68,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 68.0},
+   (30, 9): {&#39;flow_volume&#39;: 197,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 197.0},
+   (15, 14): {&#39;flow_volume&#39;: 199,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 199.0},
+   (29, 14): {&#39;flow_volume&#39;: 199,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 199.0},
+   (18, 11): {&#39;flow_volume&#39;: 64,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 64.0},
+   (19, 31): {&#39;flow_volume&#39;: 140,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 140.0},
+   (4, 18): {&#39;flow_volume&#39;: 144,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 144.0},
+   (20, 8): {&#39;flow_volume&#39;: 176,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 176.0},
+   (17, 3): {&#39;flow_volume&#39;: 98,
+    &#39;covered_proportion&#39;: 1.0,
+    &#39;covered_volume&#39;: 98.0}}}}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>frlm_capacity.get_flow_coverage()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;covered_volume&#39;: 2542.0, &#39;flow_volume&#39;: 2542, &#39;covered_proportion&#39;: 1.0}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>coords = np.array([geom.centroid.coords[0] for geom in gdf.geometry])
+fig, ax = plt.subplots(figsize=(10, 10))
+gdf.plot(ax=ax, color="#f0f0f0", edgecolor="#444", linewidth=0.5)
+H.plot(gdf, ax=ax)
+ax.scatter(coords[:, 0], coords[:, 1], color="black", s=10, label="Node Centroids")
+
+covered_nodes = set()
+
+for i, (facility, count) in enumerate(frlm_capacity.selected_facilities.items()):
+    ax.scatter(
+        coords[facility][0],
+        coords[facility][1],
+        c="red",
+        s=300 * (count**0.7),
+        alpha=1,
+        edgecolors="black",
+        label="Facility" if i == 0 else None,
+    )
+
+covered_label_added = False
+for od_pair, coverage in frlm_capacity.flow_coverage.items():
+    if coverage["covered_proportion"] &gt; 0:
+        path = frlm_capacity.flow_paths[od_pair]
+        path_coords = coords[path]
+        ax.plot(
+            path_coords[:, 0],
+            path_coords[:, 1],
+            "g-",
+            linewidth=2 * coverage["covered_proportion"],
+            alpha=0.7,
+            label="Covered Flows" if not covered_label_added else None,
+        )
+        covered_label_added = True
+
+        covered_nodes.add(od_pair[0])
+        covered_nodes.add(od_pair[1])
+
+for node_id in covered_nodes:
+    ax.annotate(
+        str(node_id),
+        xy=(coords[node_id][0], coords[node_id][1]),
+        xytext=(5, 5),
+        textcoords="offset points",
+        fontsize=8,
+        bbox={"boxstyle": "round,pad=0.3", "facecolor": "yellow", "alpha": 0.7},
+        ha="left",
+    )
+
+ax.set_axis_off()
+ax.set_title("Capacitated FRLM Results (capacity=300)", fontsize=14, pad=20)
+ax.legend(loc="upper right", fontsize=10, frameon=True, fancybox=True, shadow=True)
+plt.tight_layout()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_flow_34_0.png" src="../_images/notebooks_flow_34_0.png" />
+</div>
+</div>
+</section>
+<section id="References">
+<h2>References<a class="headerlink" href="#References" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://doi.org/10.1111/j.1538-4632.2009.00744.x">Upchurch, C., Kuby, M., &amp; Lim, S. (2009). A model for location of capacitated alternative-fuel stations. Geographical Analysis, 41(1), 85-106.</a></p></li>
+<li><p><a class="reference external" href="https://doi.org/10.1016/j.jtrangeo.2016.08.019">Hong, S., &amp; Kuby, M. (2016). A threshold covering flow-based location model to build a critical mass of alternative-fuel stations. Journal of Transport Geography, 56, 128-137.</a></p></li>
+<li><p><a class="reference external" href="https://doi.org/10.1016/j.seps.2004.03.001">Kuby, M., &amp; Lim, S. (2005). The flow-refueling location problem for alternative-fuel vehicles. Socio-Economic Planning Sciences, 39(2), 125-145.</a></p></li>
+</ul>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/flow.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

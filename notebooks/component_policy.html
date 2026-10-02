@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Max-P Regionalization for Multiple Components &#8212; spopt v0.7.0 Manual</title>
+    <title>Max-P Regionalization for Multiple Components &#8212; spopt v0.8.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -44,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           spopt</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -93,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facloc-real-world.html">Empirical examples of facility location problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow.html">Flow Refueling Location Model (FRLM)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -168,7 +169,7 @@ analyst does not require a fixed number of regions a-priori.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = &quot;retina&quot;
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%config InlineBackend.figure_format = "retina"
 %load_ext watermark
 %watermark
 </pre></div>
@@ -213,8 +214,8 @@ from shapely.geometry import Polygon, box
 import spopt
 from spopt.region import MaxPHeuristic as MaxP
 
-plt.rcParams[&quot;figure.figsize&quot;] = [12, 8]
-warnings.filterwarnings(&quot;ignore&quot;)
+plt.rcParams["figure.figsize"] = [12, 8]
+warnings.filterwarnings("ignore")
 
 RANDOM_SEED = 123456
 
@@ -283,9 +284,9 @@ geometries = component_0 + component_1
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf = geopandas.GeoDataFrame(
     geometry=geometries,
     data=numpy.ones((n_cols * n_rows + n_cols, 1), int),
-    columns=[&quot;var&quot;],
+    columns=["var"],
 )
-gdf.plot(edgecolor=&quot;black&quot;);
+gdf.plot(edgecolor="black");
 </pre></div>
 </div>
 </div>
@@ -293,7 +294,7 @@ gdf.plot(edgecolor=&quot;black&quot;);
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_component_policy_5_0.png" class="no-scaled-link" src="../_images/notebooks_component_policy_5_0.png" style="width: 312px; height: 659px;" />
+<img alt="../_images/notebooks_component_policy_5_0.png" class="no-scaled-link" height="659" src="../_images/notebooks_component_policy_5_0.png" width="312" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -403,10 +404,10 @@ rng = numpy.random.default_rng(2021)  # set seed for random numbers
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, &quot;var&quot;, &quot;var&quot;, 5, 2, policy=&quot;keep&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, "var", "var", 5, 2, policy="keep")
 model.solve()
-gdf[&quot;region&quot;] = model.labels_
-gdf.explore(column=&quot;region&quot;, categorical=True)
+gdf["region"] = model.labels_
+gdf.explore(column="region", categorical=True)
 </pre></div>
 </div>
 </div>
@@ -696,11 +697,11 @@ gdf.explore(column=&quot;region&quot;, categorical=True)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>try:
-    model = MaxP(gdf, w, &quot;var&quot;, &quot;var&quot;, 6, 2, policy=&quot;keep&quot;)
+    model = MaxP(gdf, w, "var", "var", 6, 2, policy="keep")
     model.solve()
 except IndexError as e:
-    if str(e).startswith(&quot;list index out of range&quot;):
-        print(&quot;No feasible solution!&quot;)
+    if str(e).startswith("list index out of range"):
+        print("No feasible solution!")
     else:
         raise e
 </pre></div>
@@ -721,10 +722,10 @@ No feasible solution!
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, &quot;var&quot;, &quot;var&quot;, 6, 2, policy=&quot;multiple&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, "var", "var", 6, 2, policy="multiple")
 model.solve()
-gdf[&quot;region&quot;] = model.labels_
-gdf.explore(column=&quot;region&quot;, categorical=True)
+gdf["region"] = model.labels_
+gdf.explore(column="region", categorical=True)
 </pre></div>
 </div>
 </div>
@@ -1011,10 +1012,10 @@ gdf.explore(column=&quot;region&quot;, categorical=True)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, &quot;var&quot;, &quot;var&quot;, 6, 2, policy=&quot;single&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, "var", "var", 6, 2, policy="single")
 model.solve()
-gdf[&quot;region&quot;] = model.labels_
-gdf.explore(column=&quot;region&quot;, categorical=True)
+gdf["region"] = model.labels_
+gdf.explore(column="region", categorical=True)
 </pre></div>
 </div>
 </div>
@@ -1305,9 +1306,9 @@ gdf.explore(column=&quot;region&quot;, categorical=True)
 gdf = geopandas.GeoDataFrame(
     geometry=geometries,
     data=numpy.ones((n_cols * n_rows + n_cols, 1), int),
-    columns=[&quot;var&quot;],
+    columns=["var"],
 )
-gdf.plot(edgecolor=&quot;black&quot;);
+gdf.plot(edgecolor="black");
 </pre></div>
 </div>
 </div>
@@ -1315,20 +1316,20 @@ gdf.plot(edgecolor=&quot;black&quot;);
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_component_policy_21_0.png" class="no-scaled-link" src="../_images/notebooks_component_policy_21_0.png" style="width: 312px; height: 659px;" />
+<img alt="../_images/notebooks_component_policy_21_0.png" class="no-scaled-link" height="659" src="../_images/notebooks_component_policy_21_0.png" width="312" />
 </div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, &quot;var&quot;, &quot;var&quot;, 6, 2, policy=&quot;drop&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, "var", "var", 6, 2, policy="drop")
 model.solve()
-ifcs = infeasible_components(gdf, w, &quot;var&quot;, 6)
+ifcs = infeasible_components(gdf, w, "var", 6)
 keep_ids = numpy.where(~numpy.isin(w.component_labels, ifcs))[0]
-gdf[&quot;region&quot;] = -1
-gdf.loc[keep_ids, &quot;region&quot;] = model.labels_
-gdf.explore(column=&quot;region&quot;, categorical=True)  # areas in region -1 are dropped
+gdf["region"] = -1
+gdf.loc[keep_ids, "region"] = model.labels_
+gdf.explore(column="region", categorical=True)  # areas in region -1 are dropped
 </pre></div>
 </div>
 </div>
@@ -1614,11 +1615,11 @@ gdf.explore(column=&quot;region&quot;, categorical=True)  # areas in region -1 a
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, &quot;var&quot;, &quot;var&quot;, 55, 2, policy=&quot;drop&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>model = MaxP(gdf, w, "var", "var", 55, 2, policy="drop")
 try:
     model.solve()
 except ValueError as e:
-    if str(e).startswith(&quot;No feasible&quot;):
+    if str(e).startswith("No feasible"):
         print(e)
     else:
         raise e
@@ -1657,7 +1658,7 @@ No feasible components found in input.
     </p>
     <p>
         &copy; Copyright 2020-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>
