@@ -55,11 +55,11 @@ class TestSyntheticLocate:
         result = pdispersion.solve(pulp.PULP_CBC_CMD(msg=False))
         assert isinstance(result, PDispersion)
 
-        observed_objval = pdispersion.problem.objective.value()
+        observed_objval = pulp.value(pdispersion.problem.objective)
         assert known_objval == pytest.approx(observed_objval)
 
         observed_solution_set = [
-            dv.name for dv in pdispersion.fac_vars if dv.varValue == 1
+            dv.name for dv in pdispersion.fac_vars if pulp.value(dv) > 0.5
         ]
         numpy.testing.assert_array_equal(
             numpy.array(known_solution_set, dtype=object),
@@ -103,7 +103,7 @@ class TestRealWorldLocate:
 
         known_solution_set = ["y_0_", "y_1_", "y_14_", "y_15_"]
         observed_solution_set = [
-            dv.name for dv in pdispersion.fac_vars if dv.varValue == 1
+            dv.name for dv in pdispersion.fac_vars if pulp.value(dv) > 0.5
         ]
         assert known_solution_set == observed_solution_set
 
@@ -123,7 +123,7 @@ class TestRealWorldLocate:
 
         known_solution_set = ["y_0_", "y_2_", "y_8_", "y_14_"]
         observed_solution_set = [
-            dv.name for dv in pdispersion.fac_vars if dv.varValue == 1
+            dv.name for dv in pdispersion.fac_vars if pulp.value(dv) > 0.5
         ]
         assert known_solution_set == observed_solution_set
 

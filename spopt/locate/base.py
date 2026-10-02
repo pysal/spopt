@@ -5,8 +5,11 @@ from typing import TypeVar
 
 import numpy as np
 import pulp
+from packaging.version import Version
 
 from ..BaseClass import BaseSpOptExactSolver
+
+PULP_GE_4 = Version(pulp.__version__).major >= 4  # noqa: N806
 
 # https://coin-or.github.io/pulp/technical/constants.html#pulp.constants.LpStatus
 STATUS_CODES = {
@@ -154,7 +157,7 @@ class MeanDistanceMixin:
 
     def get_mean_distance(self):
         """Calculate the mean distance."""
-        self.mean_dist = self.problem.objective.value() / self.ai_sum
+        self.mean_dist = pulp.value(self.problem.objective) / self.ai_sum
 
 
 class BackupPercentageMixinMixin:
@@ -165,10 +168,22 @@ class BackupPercentageMixinMixin:
 
     def get_percentage(self):
         """Calculate the percentage of clients with backup."""
-        self.backup_perc = (self.problem.objective.value() / len(self.cli_vars)) * 100.0
+        self.backup_perc = (
+            pulp.value(self.problem.objective) / len(self.cli_vars)
+        ) * 100.0
 
 
 T_FacModel = TypeVar("T_FacModel", bound=LocateSolver)
+
+
+def _lp_name(name: str) -> str:
+    """Sanitize a variable name the same way PuLP 3 does.
+
+    Replaces non-alphanumeric characters with underscores.
+    """
+    import re
+
+    return re.sub(r"[^a-zA-Z0-9_]", "_", name)
 
 
 class FacilityModelBuilder:
@@ -196,12 +211,21 @@ class FacilityModelBuilder:
         None
 
         """
-        fac_vars = [
-            pulp.LpVariable(
-                var_name.format(i=i), lowBound=0, upBound=1, cat=pulp.LpInteger
-            )
-            for i in range_facility
-        ]
+        model = getattr(obj, "problem")
+        if PULP_GE_4:
+            fac_vars = [
+                model.add_variable(
+                    _lp_name(var_name.format(i=i)), lowBound=0, upBound=1, cat="Integer"
+                )
+                for i in range_facility
+            ]
+        else:
+            fac_vars = [
+                pulp.LpVariable(
+                    var_name.format(i=i), lowBound=0, upBound=1, cat=pulp.LpInteger
+                )
+                for i in range_facility
+            ]
 
         setattr(obj, "fac_vars", fac_vars)
 
@@ -227,12 +251,21 @@ class FacilityModelBuilder:
         None
 
         """
-        cli_vars = [
-            pulp.LpVariable(
-                var_name.format(i=i), lowBound=0, upBound=1, cat=pulp.LpInteger
-            )
-            for i in range_client
-        ]
+        model = getattr(obj, "problem")
+        if PULP_GE_4:
+            cli_vars = [
+                model.add_variable(
+                    _lp_name(var_name.format(i=i)), lowBound=0, upBound=1, cat="Integer"
+                )
+                for i in range_client
+            ]
+        else:
+            cli_vars = [
+                pulp.LpVariable(
+                    var_name.format(i=i), lowBound=0, upBound=1, cat=pulp.LpInteger
+                )
+                for i in range_client
+            ]
 
         setattr(obj, "cli_vars", cli_vars)
 
@@ -274,20 +307,37 @@ class FacilityModelBuilder:
 
         """
 
-        cli_assgn_vars = np.array(
-            [
+        model = getattr(obj, "problem")
+        if PULP_GE_4:
+            cli_assgn_vars = np.array(
                 [
-                    pulp.LpVariable(
-                        var_name.format(i=i, j=j),
-                        lowBound=low_bound,
-                        upBound=up_bound,
-                        cat=lp_category,
-                    )
-                    for j in range_facility
+                    [
+                        model.add_variable(
+                            _lp_name(var_name.format(i=i, j=j)),
+                            lowBound=low_bound,
+                            upBound=up_bound,
+                            cat=lp_category,
+                        )
+                        for j in range_facility
+                    ]
+                    for i in range_client
                 ]
-                for i in range_client
-            ]
-        )
+            )
+        else:
+            cli_assgn_vars = np.array(
+                [
+                    [
+                        pulp.LpVariable(
+                            var_name.format(i=i, j=j),
+                            lowBound=low_bound,
+                            upBound=up_bound,
+                            cat=lp_category,
+                        )
+                        for j in range_facility
+                    ]
+                    for i in range_client
+                ]
+            )
 
         setattr(obj, "cli_assgn_vars", cli_assgn_vars)
 
@@ -307,7 +357,11 @@ class FacilityModelBuilder:
         None
 
         """
-        weight_var = pulp.LpVariable("W", lowBound=0, cat=pulp.LpContinuous)
+        model = getattr(obj, "problem")
+        if PULP_GE_4:
+            weight_var = model.add_variable(_lp_name("W"), lowBound=0, cat="Continuous")
+        else:
+            weight_var = pulp.LpVariable("W", lowBound=0, cat=pulp.LpContinuous)
 
         setattr(obj, "weight_var", weight_var)
 
@@ -327,7 +381,11 @@ class FacilityModelBuilder:
         None
 
         """
-        big_d = pulp.LpVariable("D", lowBound=0, cat=pulp.LpContinuous)
+        model = getattr(obj, "problem")
+        if PULP_GE_4:
+            big_d = model.add_variable(_lp_name("D"), lowBound=0, cat="Continuous")
+        else:
+            big_d = pulp.LpVariable("D", lowBound=0, cat=pulp.LpContinuous)
         setattr(obj, "disperse_var", big_d)
 
     @staticmethod
@@ -532,11 +590,12 @@ class FacilityModelBuilder:
             cli_vars = getattr(obj, "cli_assgn_vars")
             model = getattr(obj, "problem")
 
+            demand_flat = np.asarray(demand).ravel()
+            capacity_flat = np.asarray(facility_capacity).ravel()
             for j in predefined_fac:
-                model += (
-                    pulp.lpSum(demand[i] * cli_vars[i, j] for i in range(len(cli_vars)))
-                    == fac_vars[j] * facility_capacity[j]
-                )
+                model += pulp.lpSum(
+                    float(demand_flat[i]) * cli_vars[i, j] for i in range(len(cli_vars))
+                ) == fac_vars[j] * float(capacity_flat[j])
 
     @staticmethod
     def add_facility_capacity_constraint(
@@ -581,11 +640,15 @@ class FacilityModelBuilder:
             fac_vars = getattr(obj, "fac_vars")
             cli_assn_vars = getattr(obj, "cli_assgn_vars")
             model = getattr(obj, "problem")
+            dq = np.asarray(dq_ni).ravel()
+            cl = np.asarray(cl_ni).ravel()
 
             for j in range_facility:
                 model += (
-                    pulp.lpSum([dq_ni[i] * cli_assn_vars[i, j] for i in range_client])
-                    <= cl_ni[j] * fac_vars[j]
+                    pulp.lpSum(
+                        [float(dq[i]) * cli_assn_vars[i, j] for i in range_client]
+                    )
+                    <= float(cl[j]) * fac_vars[j]
                 )
         else:
             raise AttributeError(

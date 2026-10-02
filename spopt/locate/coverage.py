@@ -480,7 +480,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
         for j in range(len_fac_vars):
             array_cli = []
-            if fac_vars[j].value() > 0:
+            if pulp.value(fac_vars[j]) > 0:
                 for i in range(self.aij.shape[0]):
                     if self.aij[i, j] > 0:
                         array_cli.append(i)
@@ -725,7 +725,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
         model = pulp.LpProblem(name, pulp.LpMaximize)
 
         lscpb = LSCPB(name, model, solver)
-        lscpb.lscp_obj_value = lscp.problem.objective.value()
+        lscpb.lscp_obj_value = pulp.value(lscp.problem.objective)
 
         FacilityModelBuilder.add_facility_integer_variable(lscpb, r_fac, "y[{i}]")
         FacilityModelBuilder.add_client_integer_variable(lscpb, r_cli, "x[{i}]")
@@ -924,7 +924,7 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
 
         for j in range(len_fac_vars):
             array_cli = []
-            if fac_vars[j].value() > 0:
+            if pulp.value(fac_vars[j]) > 0:
                 for i in range(self.aij.shape[0]):
                     if self.aij[i, j] > 0:
                         array_cli.append(i)
@@ -1382,9 +1382,9 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
 
         for j in range(len_fac_vars):
             array_cli = []
-            if fac_vars[j].value() > 0:
+            if pulp.value(fac_vars[j]) > 0:
                 for i in range(self.aij.shape[0]):
-                    if cli_vars[i].value() > 0 and self.aij[i, j] > 0:
+                    if pulp.value(cli_vars[i]) > 0 and self.aij[i, j] > 0:
                         array_cli.append(i)
 
             self.fac2cli.append(array_cli)
