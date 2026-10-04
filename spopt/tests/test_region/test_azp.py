@@ -2,13 +2,19 @@ import geopandas
 import libpysal
 import numpy
 
-from spopt.region import AZP
+from spopt.region import AZP, AZPBasicTabu, AZPReactiveTabu, AZPSimulatedAnnealing
 
 RANDOM_STATE = 123456
 
 # Mexican states
 pth = libpysal.examples.get_path("mexicojoin.shp")
 MEXICO = geopandas.read_file(pth)
+
+
+def test_azp_variants_exposed_in_region_api():
+    assert AZPBasicTabu is not None
+    assert AZPReactiveTabu is not None
+    assert AZPSimulatedAnnealing is not None
 
 
 class TestAZP:
