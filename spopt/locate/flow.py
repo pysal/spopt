@@ -2183,7 +2183,8 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         dataframes["coverage"] = pd.DataFrame(coverage_data)
 
         covered_flow_sum = sum(
-            coverage.get("coverage", 0) for coverage in self.flow_coverage.values()
+            coverage.get("covered_volume", 0)
+            for coverage in self.flow_coverage.values()
         )
         total_flow = sum(self.flows.values())
         coverage_pct = covered_flow_sum / total_flow * 100

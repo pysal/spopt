@@ -391,6 +391,18 @@ class TestFRLMOutputsAndReporting:
         assert "destination" in dfs["coverage"].columns
         assert "covered_proportion" in dfs["coverage"].columns
 
+        covered = dfs["coverage"]["covered_volume"].sum()
+        total = dfs["coverage"]["flow_volume"].sum()
+        expected_pct = (covered / total) * 100 if total > 0 else 0
+        summary_pct = float(
+            dfs["summary"]
+            .loc[dfs["summary"]["Metric"] == "Coverage %", "Value"]
+            .iloc[0]
+            .replace("Flow Coverage: ", "")
+            .replace("%", "")
+        )
+        assert summary_pct == pytest.approx(expected_pct, abs=0.01)
+
     def test_solver_details(self, setup_solved_model):
         model = setup_solved_model
         details = model.get_solver_details()
