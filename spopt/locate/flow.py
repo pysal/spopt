@@ -432,7 +432,8 @@ class FRLMCoverageMixin:
             self._calculate_path_distances()
 
         if not hasattr(self, "flow_coverage"):
-            self.calculate_flow_coverage()
+            self.flow_coverage = {}
+            self.get_flow_coverage()
 
         total_vmt = 0
         covered_vmt = 0
