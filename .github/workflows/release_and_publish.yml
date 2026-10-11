@@ -19,11 +19,11 @@ jobs:
       contents: write  # MANDATORY for the Github release action
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: 3.x
       - name: Install Dependencies
@@ -33,7 +33,7 @@ jobs:
           python -m build
           twine check --strict dist/*
       - name: Create Release Notes
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: >
