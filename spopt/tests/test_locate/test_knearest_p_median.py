@@ -155,9 +155,14 @@ class TestKNearestPMedian:
         _gdf_demand = self.gdf_demand.copy()
         _gdf_demand["demand"] = [10, 10]
         k = numpy.array([1, 1])
-        with pytest.raises(
-            SpecificationError,
-            match="Problem is infeasible. The highest possible capacity",
+        # k=1 >= p_facilities=1, so a UserWarning fires before the infeasibility
+        # error is raised on solve().
+        with (
+            pytest.warns(UserWarning, match="degenerates to a standard p-median"),
+            pytest.raises(
+                SpecificationError,
+                match="Problem is infeasible. The highest possible capacity",
+            ),
         ):
             KNearestPMedian.from_geodataframe(
                 _gdf_demand,
@@ -169,3 +174,40 @@ class TestKNearestPMedian:
                 facility_capacity_col="capacity",
                 k_array=k,
             ).solve(self.solver)
+
+    def test_warn_k_gte_p_falls_back_to_pmedian(self):
+        # When k >= p_facilities the k-nearest constraint is non-binding and
+        # the model should warn then solve as a standard p-median (issue #428).
+        k = numpy.array([2, 2])  # k == p_facilities == 2
+        with pytest.warns(UserWarning, match="degenerates to a standard p-median"):
+            model = KNearestPMedian.from_geodataframe(
+                self.gdf_demand,
+                self.gdf_fac,
+                "geometry",
+                "geometry",
+                "demand",
+                p_facilities=2,
+                facility_capacity_col="capacity",
+                k_array=k,
+            )
+        result = model.solve(self.solver)
+        assert isinstance(result, KNearestPMedian)
+        assert result.problem.status == pulp.LpStatusOptimal
+
+    def test_warn_k_gt_p_falls_back_to_pmedian(self):
+        # Same degeneracy check when k > p_facilities (strictly greater).
+        k = numpy.array([3, 3])  # k > p_facilities == 2, k <= n_facilities == 3
+        with pytest.warns(UserWarning, match="degenerates to a standard p-median"):
+            model = KNearestPMedian.from_geodataframe(
+                self.gdf_demand,
+                self.gdf_fac,
+                "geometry",
+                "geometry",
+                "demand",
+                p_facilities=2,
+                facility_capacity_col="capacity",
+                k_array=k,
+            )
+        result = model.solve(self.solver)
+        assert isinstance(result, KNearestPMedian)
+        assert result.problem.status == pulp.LpStatusOptimal

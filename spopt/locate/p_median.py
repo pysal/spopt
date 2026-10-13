@@ -977,6 +977,19 @@ class KNearestPMedian(PMedian):
                 f"of total facilities, which is {len(fac_data)}."
             )
 
+        # If any k >= p_facilities, the k-nearest constraint is non-binding and the model reduces to standard p-median (warn and set k = n_facilities).
+
+        if (k_array >= p_facilities).any():
+            warnings.warn(
+                "Some ``k`` values are >= ``p_facilities`` "
+                f"({p_facilities}); the k-nearest constraint is "
+                "non-binding and the model degenerates to a standard "
+                "p-median. Solving as a standard p-median instead.",
+                UserWarning,
+                stacklevel=2,
+            )
+            k_array = np.full(len(k_array), len(fac_data), dtype=int)
+
         # demand and capacity
         service_load = gdf_demand[weights_cols].to_numpy()
         weights_sum = service_load.sum()
