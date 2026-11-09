@@ -83,7 +83,7 @@ class FlowModelBuilder:
             - Key: Path ID (q) - integer identifier for each OD path (1-indexed)
             - Value: List of arc IDs that compose this path
 
-        K : dict[tuple[int, int], list[Any]]
+        k : dict[tuple[int, int], list[Any]]
             Refueling capability dictionary where:
 
             - Key: Tuple (path_id, arc_id) identifying a specific arc on a path
