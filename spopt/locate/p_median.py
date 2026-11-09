@@ -154,7 +154,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             solution. For example, consider 3 facilites ``['A', 'B', 'C']``.
             If facility ``'B'`` must be in the model solution, then the passed
             in array should be ``[0, 1, 0]``.
-        facility_capacity : numpy.array (default None)
+        facility_capacities : numpy.array (default None)
             The capacity of each facility.
         fulfill_predefined_fac : bool (default False)
             If the predefined facilities need to be fulfilled.
@@ -352,7 +352,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             This a binary assignment per facility. For example, consider 3 facilites
             ``['A', 'B', 'C']``. If facility ``'B'`` must be in the model solution,
             then the column should be ``[0, 1, 0]``.
-        facility_capacities_col: str (default None)
+        facility_capacity_col : str (default None)
             Column name representing the capacities of each facility.
         fulfill_predefined_fac : bool (default False)
             If the predefined facilities need to be fulfilled.
