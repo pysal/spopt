@@ -102,6 +102,17 @@ class LSCP(LocateSolver, BaseOutputMixin):
     """  # noqa: E501
 
     def __init__(self, name: str, problem: pulp.LpProblem):
+        """Initialize LSCP.
+
+        Parameters
+        ----------
+
+        name : str
+            The problem name.
+        problem : pulp.LpProblem
+            A ``pulp`` instance of an optimization model that contains
+            constraints, variables, and an objective function.
+        """
         super().__init__(name, problem)
 
     def __add_obj(self) -> None:
@@ -325,7 +336,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
             then the column should be ``[0, 1, 0]``.
         demand_quantity_col : str
             Column name representing amount of demand at each client location.
-        facility_capacity_arr : str
+        facility_capacity_col : str
             Column name representing capacity for service at each facility location.
         distance_metric : str (default 'euclidean')
             A metric used for the distance calculations supported by

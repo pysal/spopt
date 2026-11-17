@@ -1,6 +1,6 @@
 # `spopt`: Spatial Optimization
 
-#### Regionalization, facility location, and transportation-oriented modeling
+__Regionalization, facility location, and transportation-oriented modeling__
 
 ![tag](https://img.shields.io/github/v/release/pysal/spopt?include_prereleases&sort=semver)
 [![Continuous Integration](https://github.com/pysal/spopt/actions/workflows/testing.yml/badge.svg)](https://github.com/pysal/spopt/actions/workflows/testing.yml)
@@ -18,7 +18,7 @@ data. Originating from the `region` module in
 development for the inclusion of newly proposed models and methods for regionalization,
 facility location, and transportation-oriented solutions.
 
-### Regionalization
+## Regionalization
 
 ```python
 import spopt, libpysal, geopandas, numpy
@@ -38,7 +38,7 @@ mexico.plot(column="maxp_new", categorical=True, figsize=(12,8), ec="w");
 <img src="https://raw.githubusercontent.com/pysal/spopt/refs/heads/main/docs/_static/images/maxp.svg" height="350" />
 </p>
 
-### Locate
+## Locate
 
 ```python
 from spopt.locate import MCLP
@@ -205,6 +205,6 @@ following citations:
 
 This project is/was partially funded through:
 
-[<img align="middle" src="https://raw.githubusercontent.com/pysal/spopt/refs/heads/main/docs/_static/images/nsf_logo.png" width="75">](https://www.nsf.gov/index.jsp)
+[<img align="center" src="https://raw.githubusercontent.com/pysal/spopt/refs/heads/main/docs/_static/images/nsf_logo.png" width="75">](https://www.nsf.gov/index.jsp)
 National Science Foundation Award #1831615:
 [RIDIR: Scalable Geospatial Analytics for Social Science Research](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1831615)

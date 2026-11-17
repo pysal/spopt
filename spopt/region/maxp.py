@@ -63,7 +63,7 @@ def maxp(
     max_iterations_construction : int
         Max number of iterations for construction phase.
 
-    max_iterations_SA: int
+    max_iterations_sa: int
         Max number of iterations for customized simulated annealing.
 
     verbose : boolean
@@ -739,7 +739,7 @@ class MaxPHeuristic(BaseSpOptHeuristicSolver):
     max_iterations_construction : int
         Max number of iterations for construction phase.
 
-    max_iterations_SA : int
+    max_iterations_sa : int
         Max number of iterations for customized simulated annealing.
 
     verbose : boolean
