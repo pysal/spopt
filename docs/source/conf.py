@@ -87,7 +87,7 @@ autodoc_default_options = {
     "undoc-members": True,
     "inherited-members": True,
 }
-autoclass_content = "both"
+autoclass_content = "class"
 html_theme = "sphinx_immaterial"
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]

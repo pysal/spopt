@@ -18,6 +18,7 @@ class PCenter(LocateSolver, BaseOutputMixin):
 
     .. math::
 
+       {\small
        \begin{array}{lllll}
        \displaystyle \textbf{Minimize}      & \displaystyle W                                   &&                                          & (1)                                                                               \\
        \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j \in J}{X_{ij} = 1}          && \forall i \in I                          & (2)                                                                               \\
@@ -27,20 +28,24 @@ class PCenter(LocateSolver, BaseOutputMixin):
                                             & X_{ij} \in \{0, 1\}                               && \forall i \in I \quad \forall j \in J    & (6)                                                                               \\
                                             & Y_j \in \{0, 1\}                                  && \forall j \in J                          & (7)                                                                               \\
                                             &                                                   &&                                          &                                                                                   \\
-       \displaystyle \textbf{Where}         && i                                                & =                                         & \textrm{index of demand points/areas/objects in set } I                           \\
-                                            && j                                                & =                                         & \textrm{index of potential facility sites in set } J                              \\
-                                            && p                                                & =                                         & \textrm{the number of facilities to be sited}                                     \\
-                                            && d_{ij}                                           & =                                         & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
-                                            && X_{ij}                                           & =                                         & \begin{cases}
+       \end{array}}
+   
+       {\small    
+       \begin{array}{@{}llr@{}}
+       \displaystyle \textbf{Where}         & i                                                & =                                         & \textrm{index of demand points/areas/objects in set } I                           \\
+                                            & j                                                & =                                         & \textrm{index of potential facility sites in set } J                              \\
+                                            & p                                                & =                                         & \textrm{the number of facilities to be sited}                                     \\
+                                            & d_{ij}                                           & =                                         & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
+                                            & X_{ij}                                           & =                                         & \begin{cases}
                                                                                                                                                1, \textrm{if client location } i \textrm{ is served by facility } j             \\
                                                                                                                                                0, \textrm{otherwise}                                                            \\
                                                                                                                                               \end{cases}                                                                       \\
-                                            && Y_j                                              & =                                         & \begin{cases}
+                                            & Y_j                                              & =                                         & \begin{cases}
                                                                                                                                                1, \textrm{if a facility is sited at location } j                                \\
                                                                                                                                                0, \textrm{otherwise}                                                            \\
                                                                                                                                               \end{cases}                                                                      \\
-                                            && W                                                & =                                         & \textrm{maximum distance between any demand site and its associated facility}
-       \end{array}
+                                            & W                                                & =                                         & \textrm{maximum distance between any demand site and its associated facility}
+       \end{array}}
 
     Parameters
     ----------
