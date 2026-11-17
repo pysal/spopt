@@ -19,6 +19,7 @@ dependencies:
   - lonboard
   - ipywidgets
   - geodatasets
+  - osmnx>=2
   - seaborn
   - watermark
   - pyarrow  # for lonboard

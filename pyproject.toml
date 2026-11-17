@@ -72,7 +72,7 @@ notebooks = [
     "inequality",
     "matplotlib>=3.8",
     "matplotlib-scalebar",
-    "overpy",
+    "osmnx>=2",
     "routingpy",
     "seaborn",
     "watermark",
