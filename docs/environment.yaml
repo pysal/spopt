@@ -1,0 +1,30 @@
+---
+name: docs
+channels:
+  - conda-forge
+dependencies:
+  - python=3.14
+  # required
+  - networkx
+  - numpy
+  - pandas
+  - scikit-learn
+  - scipy
+  # docs
+  - geopandas
+  - libpysal
+  - matplotlib
+  - ipykernel
+  - palettable
+  - lonboard
+  - ipywidgets
+  - geodatasets
+  - seaborn
+  - watermark
+  - pyarrow  # for lonboard
+  - myst-nb
+  - sphinx
+  - sphinxcontrib-bibtex
+  - sphinx-autosummary-accessors
+  - sphinx-copybutton
+  - sphinx-immaterial

@@ -29,3 +29,6 @@ __pycache__
 
 .ruff_cache
 .pytest_cache
+
+docs/source/generated
+docs/source/notebooks/frlm_basic.lp
