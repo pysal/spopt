@@ -37,3 +37,4 @@ dependencies:
   - pip:
     - pulp<4
     - routingpy
+    - matplotlib_scalebar
