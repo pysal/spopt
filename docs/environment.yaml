@@ -25,7 +25,6 @@ dependencies:
   - folium
   - ipykernel
   - osmnx>=2
-  - routingpy
   - watermark
   - myst-nb
   - sphinx
@@ -37,3 +36,4 @@ dependencies:
   - pip
   - pip:
     - pulp<4
+    - routingpy
