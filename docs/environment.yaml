@@ -3,29 +3,37 @@ name: docs
 channels:
   - conda-forge
 dependencies:
-  - python=3.14
+  - python
   # required
-  - networkx
-  - numpy
-  - pandas
-  - scikit-learn
-  - scipy
-  # docs
+  - fast_hdbscan # for sa3
   - geopandas
   - libpysal
+  - mapclassify
+  - networkx
+  - numba # for sa3
+  - numpy
+  - pandas
+  - pointpats
+  - scikit-learn
+  - scipy
+  - shapely
+  - spaghetti
+  - tqdm
+  # docs
   - matplotlib
-  - ipykernel
-  - palettable
-  - lonboard
-  - ipywidgets
-  - geodatasets
-  - osmnx>=2
   - seaborn
+  - folium
+  - ipykernel
+  - osmnx>=2
+  - routingpy
   - watermark
-  - pyarrow  # for lonboard
   - myst-nb
   - sphinx
   - sphinxcontrib-bibtex
   - sphinx-autosummary-accessors
   - sphinx-copybutton
   - sphinx-immaterial
+  # with pip
+  - pip
+  - pip:
+    - pulp<4

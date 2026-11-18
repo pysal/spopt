@@ -59,14 +59,13 @@ dev = [
     "ruff",
 ]
 docs = [
-    "nbsphinx",
-    "numpydoc",
+    "myst-nb",
     "pandoc",
     "sphinx",
+    "sphinx-autosummary-accessors",
     "sphinxcontrib-bibtex",
-    "sphinx_bootstrap_theme",
-]
-notebooks = [
+    "sphinx-copybutton",
+    "sphinx-immaterial",
     "folium",
     "glpk",
     "inequality",

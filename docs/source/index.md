@@ -6,6 +6,7 @@
 
 Home <self>
 installation
+references
 ```
 
 ```{toctree}
@@ -21,7 +22,6 @@ notebooks/ward.ipynb
 notebooks/reg-k-means.ipynb
 notebooks/randomregion.ipynb
 notebooks/component_policy.ipynb
-references
 ```
 
 ```{toctree}
