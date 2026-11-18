@@ -3,7 +3,7 @@ name: docs
 channels:
   - conda-forge
 dependencies:
-  - python
+  - python=3.14
   # required
   - fast_hdbscan # for sa3
   - geopandas
