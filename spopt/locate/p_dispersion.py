@@ -26,7 +26,7 @@ class PDispersion(LocateSolver):
                                             & Y_i \in \{0, 1\}                      && \forall i \in I                      & (4)                                                                               \\
                                             &                                       &&                                      &                                                                                   \\
        \end{array}}
-       
+
        {\small
        \begin{array}{@{}llr@{}}
        \displaystyle \textbf{Where}         && i, j                                 & =                                     & \textrm{index of potential facility sites in set } I                              \\

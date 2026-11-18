@@ -35,7 +35,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
                                             & Y_j \in \{0,1\}                               && \forall j \in J  & (3)                                                                               \\
                                             &                                               &&                  &                                                                                   \\
        \end{array}}
-       
+
        {\small
        \begin{array}{@{}llr@{}}
        \displaystyle \textbf{Where}         && i                                            & =                 & \textrm{index of demand points/areas/objects in set } I                           \\

@@ -29,8 +29,8 @@ class PCenter(LocateSolver, BaseOutputMixin):
                                             & Y_j \in \{0, 1\}                                  && \forall j \in J                          & (7)                                                                               \\
                                             &                                                   &&                                          &                                                                                   \\
        \end{array}}
-   
-       {\small    
+
+       {\small
        \begin{array}{@{}llr@{}}
        \displaystyle \textbf{Where}         & i                                                & =                                         & \textrm{index of demand points/areas/objects in set } I                           \\
                                             & j                                                & =                                         & \textrm{index of potential facility sites in set } J                              \\
