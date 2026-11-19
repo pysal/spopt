@@ -67,7 +67,7 @@ class SPENC(clust.SpectralClustering):
         Parameters
         -----------
 
-        n_clusters : int (default 5)
+        n_clusters : int (default 8)
             The number of clusters to form.
         eigen_solver : str (default None)
             The eigenvalue decomposition strategy to use. Valid values include
@@ -100,7 +100,7 @@ class SPENC(clust.SpectralClustering):
         n_neighbors : int (default 10)
             The number of neighbors to use when constructing the affinity matrix using
             the nearest neighbors method. Ignored for ``affinity='rbf'``.
-        eigen_tol : float (default 1e-7)
+        eigen_tol : float (default 1e-9)
             Stopping criterion for eigen decomposition of the Laplacian matrix
             when using ``'arpack'`` as the ``eigen_solver``.
         assign_labels : str (default 'discretize')
