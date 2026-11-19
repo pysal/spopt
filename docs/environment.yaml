@@ -25,6 +25,7 @@ dependencies:
   - matplotlib
   - seaborn
   - folium
+  - inequality
   - ipykernel
   - osmnx>=2
   - watermark
