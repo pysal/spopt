@@ -1,0 +1,17 @@
+﻿spopt.region.MaxPHeuristic
+==========================
+
+.. currentmodule:: spopt.region
+
+.. autoclass:: MaxPHeuristic
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MaxPHeuristic.solve
+   
+
+   

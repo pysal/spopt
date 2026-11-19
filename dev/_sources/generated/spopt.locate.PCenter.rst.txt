@@ -1,0 +1,22 @@
+﻿spopt.locate.PCenter
+====================
+
+.. currentmodule:: spopt.locate
+
+.. autoclass:: PCenter
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PCenter.check_status
+      ~PCenter.client_facility_array
+      ~PCenter.facility_client_array
+      ~PCenter.from_cost_matrix
+      ~PCenter.from_geodataframe
+      ~PCenter.solve
+   
+
+   

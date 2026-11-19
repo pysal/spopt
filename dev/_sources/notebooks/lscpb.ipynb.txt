@@ -1,0 +1,1351 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true,
+    "jupyter": {
+     "outputs_hidden": true
+    }
+   },
+   "source": [
+    "# The Backup Coverage Location Problem (LSCP-B)\n",
+    "\n",
+    "*Authors:* [Erin Olson](https://github.com/erinrolson), [Germano Barcelos](https://github.com/gegen07), [James Gaboardi](https://github.com/jGaboardi), [Levi J. Wolf](https://github.com/ljwolf), [Qunshan Zhao](https://github.com/qszhao)\n",
+    "\n",
+    "The Backup Coverage Problem is refered to as an extension of the LSCP (Location Set Covering Problem) as it seeks a solution to LSCP while selecting a set of facilities that optimizes for backup coverage (Church and Murray, 2018). If you are unfamiliar with LSCP the following [notebook](./lscp.ipynb) explains the problem formulation in detail.\n",
+    "\n",
+    "Daskin and Stern (1981) posed the following problem, which Church and Murray (2018) refers to as LSCP-B (Location Set Covering Problem with Backup): _Find the minimum number of facilities and their locations such that each demand is covered, while maximizing the number of backup coverage instances among demand areas._\n",
+    "\n",
+    "**LSCP-B can be written as:**\n",
+    "\n",
+    "$$\n",
+    "\\begin{equation*}\n",
+    "\\textbf{Maximize }\\sum_{i \\in I} U_i\n",
+    "\\end{equation*}\n",
+    "$$\n",
+    "\n",
+    "___Subject to:___\n",
+    "\n",
+    "$$\n",
+    "\\begin{aligned}\n",
+    "\\sum_{j \\in J} a_{ij}Y_j &\\geq 1 + U_i && \\forall i \\in I \\\\\n",
+    "\\sum_{j \\in J} Y_j &= p \\\\\n",
+    "Y_j &\\in \\{0, 1\\} && \\forall j \\in J \\\\\n",
+    "U_i &\\leq 1 && \\forall i \\in I\n",
+    "\\end{aligned}\n",
+    "$$\n",
+    "\n",
+    "___Where:___\n",
+    "\n",
+    "$$\n",
+    "\\begin{array}{lcllll}\n",
+    "& & j & \\small = & \\textrm{index of potential facility sites where } j = 1, 2, . . . , m \\\\\n",
+    "& & i & \\small = & \\textrm{index of demand units where } i = 1, 2, . . . , n \\\\\n",
+    "& & p & \\small = & \\textrm{objective value identified by using the LSCP} \\\\\n",
+    "& & U_i & \\small = & \\begin{cases} \n",
+    "          1, \\text{ if a demand unit is covered twice} \\\\\n",
+    "          0, \\text{ if a demand unit is covered once} \\end{cases} \\\\\n",
+    "& & a_{ij} & \\small = & \\begin{cases} \n",
+    "          1, \\text{ if facility located at site } j \\text{ covers demand unit } i \\\\\n",
+    "          0, \\text{ if not} \\end{cases} \\\\\n",
+    "& & Y_j & \\small = & \\begin{cases} \n",
+    "          1, \\text{ if a facility is located at potential site } j \\\\\n",
+    "          0, \\text{ otherwise} \\end{cases} \\\\\n",
+    "\\end{array}\n",
+    "$$\n",
+    "\n",
+    "This tutorial generates synthetic demand (clients) and facility sites near a 10x10 lattice representing a gridded urban core. Three LSCP-B instances are solved while varying parameters and comparing to LSCP solutions:\n",
+    "\n",
+    "* `LSCPB.from_cost_matrix()` with network distance as the metric\n",
+    "* `LSCPB.from_geodataframe()` with euclidean distance as the metric\n",
+    "* `LSCPB.from_geodataframe()` with predefined facility locations and euclidean distance as the metric"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:14.337953Z",
+     "start_time": "2023-01-10T18:22:14.305937Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:23.834602Z",
+     "iopub.status.busy": "2025-04-07T19:05:23.834290Z",
+     "iopub.status.idle": "2025-04-07T19:05:23.869343Z",
+     "shell.execute_reply": "2025-04-07T19:05:23.868935Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:23.834579Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "%config InlineBackend.figure_format = \"retina\"\n",
+    "%load_ext watermark\n",
+    "%watermark"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:16.618983Z",
+     "start_time": "2023-01-10T18:22:14.341111Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:23.870208Z",
+     "iopub.status.busy": "2025-04-07T19:05:23.870060Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.101677Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.101471Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:23.870190Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import warnings\n",
+    "\n",
+    "import geopandas\n",
+    "import matplotlib.lines as mlines\n",
+    "import matplotlib.pyplot as plt\n",
+    "import numpy\n",
+    "import pulp\n",
+    "import shapely\n",
+    "from matplotlib.patches import Patch\n",
+    "\n",
+    "import spopt\n",
+    "from spopt.locate import LSCP, LSCPB, simulated_geo_points\n",
+    "\n",
+    "with warnings.catch_warnings():\n",
+    "    warnings.simplefilter(\"ignore\")\n",
+    "    # ignore deprecation warning - GH pysal/spaghetti#649\n",
+    "    import spaghetti\n",
+    "\n",
+    "%watermark -w\n",
+    "%watermark -iv"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Since the model needs a distance cost matrix we start with defining our variables. In the comments, it's defined what these variables are for except for solver. The solver, assigned below as `pulp.COIN_CMD`, is an interface to optimization solver developed by [COIN-OR](https://github.com/coin-or/Cbc). If you want to use another optimization interface as Gurobi or CPLEX see this [guide](https://coin-or.github.io/pulp/guides/how_to_configure_solvers.html) that explains how to achieve this."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:16.626350Z",
+     "start_time": "2023-01-10T18:22:16.622910Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.102787Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.102604Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.104532Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.104344Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.102780Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# quantity demand points\n",
+    "CLIENT_COUNT = 100\n",
+    "\n",
+    "# quantity supply points\n",
+    "FACILITY_COUNT = 10\n",
+    "\n",
+    "# maximum service radius (in distance units)\n",
+    "SERVICE_RADIUS = 8\n",
+    "\n",
+    "# random seeds for reproducibility\n",
+    "CLIENT_SEED = 5\n",
+    "FACILITY_SEED = 6\n",
+    "\n",
+    "# set the solver\n",
+    "solver = pulp.COIN_CMD(msg=False, warmStart=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Lattice 10x10\n",
+    "\n",
+    "Create a 10x10 lattice with 9 interior lines, both vertical and horizontal."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:16.668809Z",
+     "start_time": "2023-01-10T18:22:16.630452Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.104853Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.104794Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.116033Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.115811Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.104846Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "with warnings.catch_warnings():\n",
+    "    warnings.simplefilter(\"ignore\")\n",
+    "    # ignore deprecation warning - GH pysal/libpysal#468\n",
+    "    lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)\n",
+    "ntw = spaghetti.Network(in_data=lattice)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Transform the `spaghetti` instance into a geodataframe."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:16.786561Z",
+     "start_time": "2023-01-10T18:22:16.671717Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.116489Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.116377Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.159304Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.159057Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.116482Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "streets = spaghetti.element_as_gdf(ntw, arcs=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:16.816925Z",
+     "start_time": "2023-01-10T18:22:16.788855Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.159799Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.159728Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.170866Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.170620Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.159791Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "streets_buffered = geopandas.GeoDataFrame(\n",
+    "    geopandas.GeoSeries(streets[\"geometry\"].buffer(0.5).union_all()),\n",
+    "    crs=streets.crs,\n",
+    "    columns=[\"geometry\"],\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Plotting the network created by `spaghetti` we can verify that it mimics a district with quarters and streets."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:16.981149Z",
+     "start_time": "2023-01-10T18:22:16.820499Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.171316Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.171249Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.247278Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.247050Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.171309Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "streets.plot();"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Simulate points in a network\n",
+    "\n",
+    "The `simulated_geo_points` function simulates points near a network. In this case, it uses the 10x10 lattice network created using the `spaghetti` package. Below we use the function defined above and simulate the points near the lattice edges."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:16.997880Z",
+     "start_time": "2023-01-10T18:22:16.983649Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.247662Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.247586Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.254794Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.254549Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.247654Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "client_points = simulated_geo_points(\n",
+    "    streets_buffered, needed=CLIENT_COUNT, seed=CLIENT_SEED\n",
+    ")\n",
+    "facility_points = simulated_geo_points(\n",
+    "    streets_buffered, needed=FACILITY_COUNT, seed=FACILITY_SEED\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Plotting the 100 client and 10 facility points we can see that the function generates dummy points to an area of 10x10, which is the area created by our lattice created on previous cells."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:17.525926Z",
+     "start_time": "2023-01-10T18:22:17.000327Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.255281Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.255180Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.415433Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.415167Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.255274Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(6, 6))\n",
+    "streets.plot(ax=ax, alpha=0.8, zorder=1, label=\"streets\")\n",
+    "facility_points.plot(\n",
+    "    ax=ax,\n",
+    "    color=\"red\",\n",
+    "    zorder=2,\n",
+    "    label=f\"facility candidate sites ($n$={FACILITY_COUNT})\",\n",
+    ")\n",
+    "client_points.plot(ax=ax, color=\"black\", label=f\"clients sites ($n$={CLIENT_COUNT})\")\n",
+    "plt.legend(loc=\"upper left\", bbox_to_anchor=(1.05, 1));"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Assign simulated points network locations\n",
+    "\n",
+    "The simulated client and facility points do not adhere to network space. Calculating distances between them without restricting movement to the network results in a euclidean distances,'as the crow flies.' While this is acceptable for some applications, for others it is more realistic to consider network traversal (e.g. Does a mail carrier follow roads to deliver letters or fly from mailbox to mailbox?).\n",
+    "\n",
+    "In our first example we will consider distance along the 10x10 lattice network created above. Therefore, we must first snap the observation points to the network prior to calculating a cost matrix."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:17.612218Z",
+     "start_time": "2023-01-10T18:22:17.532036Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.415803Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.415732Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.475923Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.475618Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.415795Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "with warnings.catch_warnings():\n",
+    "    warnings.simplefilter(\"ignore\")\n",
+    "    # ignore deprecation warning - GH pysal/libpysal#468\n",
+    "    ntw.snapobservations(client_points, \"clients\", attribute=True)\n",
+    "clients_snapped = spaghetti.element_as_gdf(ntw, pp_name=\"clients\", snapped=True)\n",
+    "clients_snapped.drop(columns=[\"id\", \"comp_label\"], inplace=True)\n",
+    "\n",
+    "with warnings.catch_warnings():\n",
+    "    warnings.simplefilter(\"ignore\")\n",
+    "    # ignore deprecation warning - GH pysal/libpysal#468\n",
+    "    ntw.snapobservations(facility_points, \"facilities\", attribute=True)\n",
+    "facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name=\"facilities\", snapped=True)\n",
+    "facilities_snapped.drop(columns=[\"id\", \"comp_label\"], inplace=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now the plot seems more organized as the points occupy network space. The network is plotted below with the network locations of the facility points and clients points."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.000914Z",
+     "start_time": "2023-01-10T18:22:17.614775Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.476332Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.476261Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.586764Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.586552Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.476325Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(6, 6))\n",
+    "streets.plot(ax=ax, alpha=0.8, zorder=1, label=\"streets\")\n",
+    "facilities_snapped.plot(\n",
+    "    ax=ax,\n",
+    "    color=\"red\",\n",
+    "    zorder=2,\n",
+    "    label=f\"facility candidate sites ($n$={FACILITY_COUNT})\",\n",
+    ")\n",
+    "clients_snapped.plot(ax=ax, color=\"black\", label=f\"clients sites ($n$={CLIENT_COUNT})\")\n",
+    "plt.legend(loc=\"upper left\", bbox_to_anchor=(1.05, 1));"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Calculating the (network distance) cost matrix\n",
+    "Calculate the network distance between clients and facilities."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.068610Z",
+     "start_time": "2023-01-10T18:22:18.004078Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.588704Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.588626Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.610108Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.609934Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.588697Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "cost_matrix = ntw.allneighbordistances(\n",
+    "    sourcepattern=ntw.pointpatterns[\"clients\"],\n",
+    "    destpattern=ntw.pointpatterns[\"facilities\"],\n",
+    ")\n",
+    "cost_matrix.shape"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The expected result here is a network distance between clients and facilities points, in our case a 2D 100x10 array."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.076030Z",
+     "start_time": "2023-01-10T18:22:18.071070Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.610454Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.610391Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.612601Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.612373Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.610447Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "cost_matrix[:5, :]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.084102Z",
+     "start_time": "2023-01-10T18:22:18.078879Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.613187Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.612994Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.615104Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.614931Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.613179Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "cost_matrix[-5:, :]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We will solve for both the LSCP and LSCP-B to demonstrate their solution similarities and differences. The ``.from_cost_matrix`` method from each respective model class will be used with the network distance cost matrix calculated above as input to solve each instance. For both models all demand points must be covered by `SERVICE_RADIUS` distance units, but the LSCP-B go one step further and maximizes the likelihood of demand points being covered by more than one service facility. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.149629Z",
+     "start_time": "2023-01-10T18:22:18.086725Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.616024Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.615795Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.639317Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.639005Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.616016Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "lscp_from_cm = LSCP.from_cost_matrix(\n",
+    "    cost_matrix, SERVICE_RADIUS, name=\"lscp-network-distance\"\n",
+    ")\n",
+    "lscp_from_cm = lscp_from_cm.solve(solver)\n",
+    "lscp_from_cm"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.383987Z",
+     "start_time": "2023-01-10T18:22:18.153382Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.639881Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.639773Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.680666Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.680407Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.639871Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "lscpb_from_cm = LSCPB.from_cost_matrix(\n",
+    "    cost_matrix, SERVICE_RADIUS, solver, name=\"lscp-b-network-distance\"\n",
+    ")\n",
+    "lscpb_from_cm = lscpb_from_cm.solve()\n",
+    "lscpb_from_cm"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As stated earlier, the LSCP-B builds on the LSCP. Where the objective of the LSCP is to minimize the number of facilities needed to achieve 100% coverage, the objective of the LSCP-B is to maximize backup coverage *after* solving the LSCP. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.391443Z",
+     "start_time": "2023-01-10T18:22:18.386929Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.681179Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.681086Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.683169Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.682974Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.681171Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "lscp_obj = lscp_from_cm.problem.objective.value()\n",
+    "lscpb_obj = lscpb_from_cm.problem.objective.value()\n",
+    "lscpb_lscp = lscpb_from_cm.lscp_obj_value\n",
+    "lscpb_perc = lscpb_from_cm.backup_perc\n",
+    "print(\n",
+    "    \"The minimum number of facilites needed to achieve complete \"\n",
+    "    f\"coverage within a distance units service radius of {SERVICE_RADIUS} \"\n",
+    "    f\"are {lscp_obj} and {lscpb_lscp} for the LSCP and LSCP-B, \"\n",
+    "    \"respectively. However, with the LSCP-B we observe coverage by more \"\n",
+    "    f\"than one facility at {lscpb_perc}% of client locations.\"\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Define the decision variable names used for mapping later."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.405870Z",
+     "start_time": "2023-01-10T18:22:18.392864Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.683472Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.683405Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.689043Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.688843Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.683465Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "facility_points[\"dv\"] = lscp_from_cm.fac_vars\n",
+    "facility_points[\"dv\"] = facility_points[\"dv\"].map(lambda x: x.name.replace(\"_\", \"\"))\n",
+    "facilities_snapped[\"dv\"] = facility_points[\"dv\"]\n",
+    "facility_points"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Calculating euclidean distance from a `GeoDataFrame`\n",
+    "\n",
+    "Now we will use the ``.from_geodataframe`` method from each respective model class to solve each instance. With the ``.from_geodataframe`` method we will calculate a euclidean distance cost matrix as input and consider all 10 candidate locations for potential selection."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.465536Z",
+     "start_time": "2023-01-10T18:22:18.407606Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.689598Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.689419Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.713252Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.713006Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.689589Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "distance_metric = \"euclidean\"\n",
+    "lscp_from_gdf = LSCP.from_geodataframe(\n",
+    "    clients_snapped,\n",
+    "    facilities_snapped,\n",
+    "    \"geometry\",\n",
+    "    \"geometry\",\n",
+    "    SERVICE_RADIUS,\n",
+    "    distance_metric=distance_metric,\n",
+    "    name=f\"lscp-{distance_metric}-distance\",\n",
+    ")\n",
+    "lscp_from_gdf = lscp_from_gdf.solve(solver)\n",
+    "lscp_from_gdf"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.572735Z",
+     "start_time": "2023-01-10T18:22:18.468208Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.713877Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.713698Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.758456Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.758192Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.713869Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "distance_metric = \"euclidean\"\n",
+    "lscpb_from_gdf = LSCPB.from_geodataframe(\n",
+    "    clients_snapped,\n",
+    "    facilities_snapped,\n",
+    "    \"geometry\",\n",
+    "    \"geometry\",\n",
+    "    SERVICE_RADIUS,\n",
+    "    solver,\n",
+    "    distance_metric=distance_metric,\n",
+    "    name=f\"lscp-b-{distance_metric}-distance\",\n",
+    ")\n",
+    "lscpb_from_gdf = lscpb_from_gdf.solve()\n",
+    "lscpb_from_gdf"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.579384Z",
+     "start_time": "2023-01-10T18:22:18.575416Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.759275Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.759161Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.761500Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.761308Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.759267Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "lscp_obj = lscp_from_gdf.problem.objective.value()\n",
+    "lscpb_obj = lscpb_from_gdf.problem.objective.value()\n",
+    "lscpb_lscp = lscpb_from_gdf.lscp_obj_value\n",
+    "lscpb_perc = lscpb_from_gdf.backup_perc\n",
+    "print(\n",
+    "    \"The minimum number of facilites needed to achieve complete \"\n",
+    "    f\"coverage within a distance units service radius of {SERVICE_RADIUS} \"\n",
+    "    f\"are {lscp_obj} and {lscpb_lscp} for the LSCP and LSCP-B, \"\n",
+    "    \"respectively. However, with the LSCP-B we observe coverage by more \"\n",
+    "    f\"than one facility at {lscpb_perc}% of client locations.\"\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "However, in many real world applications there may already be existing facility locations with the goal being to add one or more new facilities. Here we will define facilites $y_4$ and $y_9$ as already existing (they must be present in the model solution). This will lead to a sub-optimal solution.\n",
+    "\n",
+    "***Important:*** The facilities in `\"predefined_loc\"` are a binary array where `1` means the associated location must appear in the solution."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.592876Z",
+     "start_time": "2023-01-10T18:22:18.581505Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.761925Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.761840Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.766936Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.766716Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.761918Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "facility_points[\"predefined_loc\"] = 0\n",
+    "facility_points.loc[(4, 9), \"predefined_loc\"] = 1\n",
+    "facilities_snapped[\"predefined_loc\"] = facility_points[\"predefined_loc\"]\n",
+    "facility_points"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.650000Z",
+     "start_time": "2023-01-10T18:22:18.594475Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.767381Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.767290Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.790107Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.789802Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.767372Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "lscp_from_gdf_pre = LSCP.from_geodataframe(\n",
+    "    clients_snapped,\n",
+    "    facilities_snapped,\n",
+    "    \"geometry\",\n",
+    "    \"geometry\",\n",
+    "    SERVICE_RADIUS,\n",
+    "    distance_metric=distance_metric,\n",
+    "    predefined_facility_col=\"predefined_loc\",\n",
+    "    name=f\"lscp-{distance_metric}-distance-predefined\",\n",
+    ")\n",
+    "lscp_from_gdf_pre = lscp_from_gdf_pre.solve(solver)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.755294Z",
+     "start_time": "2023-01-10T18:22:18.653406Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.790645Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.790559Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.834187Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.833891Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.790635Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "lscpb_from_gdf_pre = LSCPB.from_geodataframe(\n",
+    "    clients_snapped,\n",
+    "    facilities_snapped,\n",
+    "    \"geometry\",\n",
+    "    \"geometry\",\n",
+    "    SERVICE_RADIUS,\n",
+    "    solver,\n",
+    "    distance_metric=distance_metric,\n",
+    "    predefined_facility_col=\"predefined_loc\",\n",
+    "    name=f\"lscp-b-{distance_metric}-distance-predefined\",\n",
+    ")\n",
+    "lscpb_from_gdf_pre = lscpb_from_gdf_pre.solve()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.763946Z",
+     "start_time": "2023-01-10T18:22:18.758432Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.834875Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.834713Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.837178Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.836962Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.834864Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "lscp_obj = lscp_from_gdf_pre.problem.objective.value()\n",
+    "lscpb_obj = lscpb_from_gdf_pre.problem.objective.value()\n",
+    "lscpb_lscp = lscpb_from_gdf_pre.lscp_obj_value\n",
+    "lscpb_perc = lscpb_from_gdf_pre.backup_perc\n",
+    "print(\n",
+    "    \"The minimum number of facilites needed to achieve complete \"\n",
+    "    f\"coverage within a distance units service radius of {SERVICE_RADIUS} \"\n",
+    "    f\"are {lscp_obj} and {lscpb_lscp} for the LSCP and LSCP-B, \"\n",
+    "    \"respectively. However, with the LSCP-B we observe coverage by more \"\n",
+    "    f\"than one facility at {lscpb_perc}% of client locations.\"\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Plotting the results\n",
+    "\n",
+    "The two cells below describe the plotting of the results. For each method from the `LSCP` and `LSCPB` classes (`.from_cost_matrix()`, `.from_geodataframe()`) there is a plot displaying the facility site that was selected with a star colored and the points covered with the same color. Demand points covered by more than one facility are displayed in overlapping concentric circles."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.772391Z",
+     "start_time": "2023-01-10T18:22:18.766772Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.837588Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.837524Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.840081Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.839877Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.837581Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "dv_colors_arr = [\n",
+    "    \"darkcyan\",\n",
+    "    \"mediumseagreen\",\n",
+    "    \"saddlebrown\",\n",
+    "    \"darkslategray\",\n",
+    "    \"lightskyblue\",\n",
+    "    \"thistle\",\n",
+    "    \"lavender\",\n",
+    "    \"darkgoldenrod\",\n",
+    "    \"peachpuff\",\n",
+    "    \"coral\",\n",
+    "    \"mediumvioletred\",\n",
+    "    \"blueviolet\",\n",
+    "    \"fuchsia\",\n",
+    "    \"cyan\",\n",
+    "    \"limegreen\",\n",
+    "    \"mediumorchid\",\n",
+    "]\n",
+    "dv_colors = {f\"y{i}\": dv_colors_arr[i] for i in range(len(dv_colors_arr))}\n",
+    "dv_colors"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:18.786717Z",
+     "start_time": "2023-01-10T18:22:18.774571Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.840642Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.840514Z",
+     "iopub.status.idle": "2025-04-07T19:05:25.846410Z",
+     "shell.execute_reply": "2025-04-07T19:05:25.846179Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.840633Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def plot_results(model, p, facs, clis=None, ax=None):\n",
+    "    \"\"\"Visualize optimal solution sets and context.\"\"\"\n",
+    "    if not ax:\n",
+    "        multi_plot = False\n",
+    "        fig, ax = plt.subplots(figsize=(6, 6))\n",
+    "        markersize, markersize_factor = 4, 4\n",
+    "    else:\n",
+    "        ax.axis(\"off\")\n",
+    "        multi_plot = True\n",
+    "        markersize, markersize_factor = 2, 2\n",
+    "    ax.set_title(model.name, fontsize=15)\n",
+    "\n",
+    "    # extract facility-client relationships for plotting (except for p-dispersion)\n",
+    "    plot_clis = isinstance(clis, geopandas.GeoDataFrame)\n",
+    "    if plot_clis:\n",
+    "        cli_points = {}\n",
+    "    fac_sites = {}\n",
+    "    for i, dv in enumerate(model.fac_vars):\n",
+    "        if dv.varValue:\n",
+    "            dv, predef = facs.loc[i, [\"dv\", \"predefined_loc\"]]\n",
+    "            fac_sites[dv] = [i, predef]\n",
+    "            if plot_clis:\n",
+    "                geom = clis.iloc[model.fac2cli[i]][\"geometry\"]\n",
+    "                cli_points[dv] = geom\n",
+    "\n",
+    "    # study area and legend entries initialization\n",
+    "    streets.plot(ax=ax, alpha=1, color=\"black\", zorder=1)\n",
+    "    legend_elements = [mlines.Line2D([], [], color=\"black\", label=\"streets\")]\n",
+    "\n",
+    "    if plot_clis and model.name.startswith(\"mclp\"):\n",
+    "        # any clients that not asscociated with a facility\n",
+    "        c = \"k\"\n",
+    "        if model.n_cli_uncov:\n",
+    "            idx = [i for i, v in enumerate(model.cli2fac) if len(v) == 0]\n",
+    "            pnt_kws = {\n",
+    "                \"ax\": ax,\n",
+    "                \"fc\": c,\n",
+    "                \"ec\": c,\n",
+    "                \"marker\": \"s\",\n",
+    "                \"markersize\": 7,\n",
+    "                \"zorder\": 2,\n",
+    "            }\n",
+    "            clis.iloc[idx].plot(**pnt_kws)\n",
+    "        _label = f\"Demand sites not covered ($n$={model.n_cli_uncov})\"\n",
+    "        _mkws = {\n",
+    "            \"marker\": \"s\",\n",
+    "            \"markerfacecolor\": c,\n",
+    "            \"markeredgecolor\": c,\n",
+    "            \"linewidth\": 0,\n",
+    "        }\n",
+    "        legend_elements.append(mlines.Line2D([], [], ms=3, label=_label, **_mkws))\n",
+    "\n",
+    "    # all candidate facilities\n",
+    "    facs.plot(ax=ax, fc=\"brown\", marker=\"*\", markersize=80, zorder=8)\n",
+    "    _label = f\"Facility sites ($n$={len(model.fac_vars)})\"\n",
+    "    _mkws = {\"marker\": \"*\", \"markerfacecolor\": \"brown\", \"markeredgecolor\": \"brown\"}\n",
+    "    legend_elements.append(mlines.Line2D([], [], ms=7, lw=0, label=_label, **_mkws))\n",
+    "\n",
+    "    # facility-(client) symbology and legend entries\n",
+    "    zorder = 4\n",
+    "    for fname, (fac, predef) in fac_sites.items():\n",
+    "        cset = dv_colors[fname]\n",
+    "        if plot_clis:\n",
+    "            # clients\n",
+    "            geoms = cli_points[fname]\n",
+    "            gdf = geopandas.GeoDataFrame(geoms)\n",
+    "            gdf.plot(ax=ax, zorder=zorder, ec=\"k\", fc=cset, markersize=100 * markersize)\n",
+    "            _label = f\"Demand sites covered by {fname}\"\n",
+    "            _mkws = {\n",
+    "                \"markerfacecolor\": cset,\n",
+    "                \"markeredgecolor\": \"k\",\n",
+    "                \"ms\": markersize + 7,\n",
+    "            }\n",
+    "            legend_elements.append(\n",
+    "                mlines.Line2D([], [], marker=\"o\", lw=0, label=_label, **_mkws)\n",
+    "            )\n",
+    "        # facilities\n",
+    "        ec = \"k\"\n",
+    "        lw = 2\n",
+    "        predef_label = \"predefined\"\n",
+    "        if model.name.endswith(predef_label) and predef:\n",
+    "            ec = \"r\"\n",
+    "            lw = 3\n",
+    "            fname += f\" ({predef_label})\"\n",
+    "        facs.iloc[[fac]].plot(\n",
+    "            ax=ax, marker=\"*\", markersize=1000, zorder=9, fc=cset, ec=ec, lw=lw\n",
+    "        )\n",
+    "        _mkws = {\"markerfacecolor\": cset, \"markeredgecolor\": ec, \"markeredgewidth\": lw}\n",
+    "        legend_elements.append(\n",
+    "            mlines.Line2D([], [], marker=\"*\", ms=20, lw=0, label=fname, **_mkws)\n",
+    "        )\n",
+    "        # increment zorder up and markersize down for stacked client symbology\n",
+    "        zorder += 1\n",
+    "        if plot_clis:\n",
+    "            markersize -= markersize_factor / p\n",
+    "\n",
+    "    if not multi_plot:\n",
+    "        # legend\n",
+    "        kws = {\"loc\": \"upper left\", \"bbox_to_anchor\": (1.05, 0.7)}\n",
+    "        plt.legend(handles=legend_elements, **kws)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### LSCP and LSCP-B built from cost matrix (network distance)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:19.528062Z",
+     "start_time": "2023-01-10T18:22:18.793748Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:25.846885Z",
+     "iopub.status.busy": "2025-04-07T19:05:25.846766Z",
+     "iopub.status.idle": "2025-04-07T19:05:26.038634Z",
+     "shell.execute_reply": "2025-04-07T19:05:26.038421Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:25.846876Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "plot_results(\n",
+    "    lscp_from_cm,\n",
+    "    lscp_from_cm.problem.objective.value(),\n",
+    "    facility_points,\n",
+    "    clis=client_points,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:20.200922Z",
+     "start_time": "2023-01-10T18:22:19.530192Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:26.039000Z",
+     "iopub.status.busy": "2025-04-07T19:05:26.038921Z",
+     "iopub.status.idle": "2025-04-07T19:05:26.229036Z",
+     "shell.execute_reply": "2025-04-07T19:05:26.228805Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:26.038991Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "plot_results(\n",
+    "    lscpb_from_cm,\n",
+    "    lscpb_from_cm.lscp_obj_value,\n",
+    "    facility_points,\n",
+    "    clis=client_points,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:21.062857Z",
+     "start_time": "2023-01-10T18:22:20.202558Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:26.229382Z",
+     "iopub.status.busy": "2025-04-07T19:05:26.229312Z",
+     "iopub.status.idle": "2025-04-07T19:05:26.478653Z",
+     "shell.execute_reply": "2025-04-07T19:05:26.478427Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:26.229374Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "fig, axarr = plt.subplots(1, 2, figsize=(12, 6))\n",
+    "fig.subplots_adjust(wspace=-0.01)\n",
+    "for i, m in enumerate([lscp_from_cm, lscpb_from_cm]):\n",
+    "    _p = m.lscp_obj_value if m.name.startswith(\"LSCPB\") else m.problem.objective.value()\n",
+    "    plot_results(m, _p, facility_points, clis=client_points, ax=axarr[i])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-10-21T13:45:07.892742Z",
+     "start_time": "2022-10-21T13:45:07.552657Z"
+    }
+   },
+   "source": [
+    "When comparing the selection sets of the LSCP and LSCP-B (based on network distance), we can clearly see the difference. For both, facilities $y_2$ is selected, and cover the same clients in both models. However, the LSCP-B improves upon the LSCP selection set where it is determined that facilities $y_3$ and $y_8$ provides more backup coverage than facilities $y_2$ and $y_7$.\n",
+    "\n",
+    "\n",
+    "### LSCP and LSCP-B built from geodataframe (euclidean distance)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:21.554372Z",
+     "start_time": "2023-01-10T18:22:21.064474Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:26.478998Z",
+     "iopub.status.busy": "2025-04-07T19:05:26.478931Z",
+     "iopub.status.idle": "2025-04-07T19:05:26.610291Z",
+     "shell.execute_reply": "2025-04-07T19:05:26.610084Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:26.478990Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "plot_results(\n",
+    "    lscp_from_gdf,\n",
+    "    lscp_from_gdf.problem.objective.value(),\n",
+    "    facility_points,\n",
+    "    clis=client_points,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:22.042381Z",
+     "start_time": "2023-01-10T18:22:21.557448Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:26.610701Z",
+     "iopub.status.busy": "2025-04-07T19:05:26.610624Z",
+     "iopub.status.idle": "2025-04-07T19:05:26.742320Z",
+     "shell.execute_reply": "2025-04-07T19:05:26.742092Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:26.610692Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "plot_results(\n",
+    "    lscpb_from_gdf,\n",
+    "    lscpb_from_gdf.lscp_obj_value,\n",
+    "    facility_points,\n",
+    "    clis=client_points,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:22.602135Z",
+     "start_time": "2023-01-10T18:22:22.045234Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:26.742677Z",
+     "iopub.status.busy": "2025-04-07T19:05:26.742602Z",
+     "iopub.status.idle": "2025-04-07T19:05:26.894816Z",
+     "shell.execute_reply": "2025-04-07T19:05:26.894610Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:26.742669Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "fig, axarr = plt.subplots(1, 2, figsize=(12, 6))\n",
+    "fig.subplots_adjust(wspace=-0.01)\n",
+    "for i, m in enumerate([lscp_from_gdf, lscpb_from_gdf]):\n",
+    "    _p = (\n",
+    "        m.lscp_obj_value if m.name.startswith(\"lscp-b\") else m.problem.objective.value()\n",
+    "    )\n",
+    "    plot_results(m, _p, facility_points, clis=client_points, ax=axarr[i])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "But how can just one facility cover all of the demand locations? This can be explained by the nature of the problem. The problem was configured in a synthetic manner, the streets are created as a 10x10 lattice and the `SERVICE_RADIUS` parameter is 8 distance units. Owing to the central location of facility $y_3$, all demand points can be reached within 8 euclidean distance units. Therefore, the LSCP-B is not able to improve upon the results from solving the LSCP.\n",
+    "\n",
+    "### LSCP and LSCP-B with preselected facilities (euclidean distance)\n",
+    "\n",
+    "Finally, let's visualize the results of the LSCP when stipulating that facilities $y_4$ and $y_9$ must be included in the final selection."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:23.346150Z",
+     "start_time": "2023-01-10T18:22:22.604629Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:26.895227Z",
+     "iopub.status.busy": "2025-04-07T19:05:26.895160Z",
+     "iopub.status.idle": "2025-04-07T19:05:27.088259Z",
+     "shell.execute_reply": "2025-04-07T19:05:27.088029Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:26.895219Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "plot_results(\n",
+    "    lscp_from_gdf_pre,\n",
+    "    lscp_from_gdf_pre.problem.objective.value(),\n",
+    "    facility_points,\n",
+    "    clis=client_points,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:23.989503Z",
+     "start_time": "2023-01-10T18:22:23.348414Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:27.088720Z",
+     "iopub.status.busy": "2025-04-07T19:05:27.088642Z",
+     "iopub.status.idle": "2025-04-07T19:05:27.280642Z",
+     "shell.execute_reply": "2025-04-07T19:05:27.280437Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:27.088713Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "plot_results(\n",
+    "    lscpb_from_gdf_pre,\n",
+    "    lscpb_from_gdf_pre.lscp_obj_value,\n",
+    "    facility_points,\n",
+    "    clis=client_points,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:22:24.907015Z",
+     "start_time": "2023-01-10T18:22:23.992075Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:05:27.281035Z",
+     "iopub.status.busy": "2025-04-07T19:05:27.280964Z",
+     "iopub.status.idle": "2025-04-07T19:05:27.590202Z",
+     "shell.execute_reply": "2025-04-07T19:05:27.589914Z",
+     "shell.execute_reply.started": "2025-04-07T19:05:27.281027Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "fig, axarr = plt.subplots(1, 2, figsize=(12, 6))\n",
+    "fig.subplots_adjust(wspace=-0.01)\n",
+    "for i, m in enumerate([lscp_from_gdf_pre, lscpb_from_gdf_pre]):\n",
+    "    _p = (\n",
+    "        m.lscp_obj_value if m.name.startswith(\"lscp-b\") else m.problem.objective.value()\n",
+    "    )\n",
+    "    plot_results(m, _p, facility_points, clis=client_points, ax=axarr[i])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Here we stipulated that facilities $y_4$ and $y_9$ were to be included in the 'optimal' solution to the LSCP and LSCP-B based on euclidean distance. Therefore, the solutions diverge wherein the LSCP-B improves upon the LSCP selection set by determining that facility $y_3$ provides more backup coverage than facility $y_8$.\n",
+    "\n",
+    "## References\n",
+    "\n",
+    "- [Church, R. L., & Murray, A. T. (2018). Location covering models: History, applications and advancements (1st edition 2018). Springer](https://www.springer.com/gb/book/9783319998459)\n",
+    "- [Toregas, C., Swain, R., ReVelle, C., &amp; Bergman, L. (1971). The location of emergency service facilities. Operations Research, 19(6), 1363–1373.](https://pubsonline.informs.org/doi/abs/10.1287/opre.19.6.1363)\n",
+    "- [Daskin MS, Stern EH (1981) A hierarchical objective set covering model for emergency medical\n",
+    "service vehicle deployment.](https://daskin.engin.umich.edu/wp-content/uploads/sites/133/2014/07/daskinandstern_ts1981_.pdf)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "default",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.10"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

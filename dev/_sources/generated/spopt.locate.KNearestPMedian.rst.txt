@@ -1,0 +1,23 @@
+﻿spopt.locate.KNearestPMedian
+============================
+
+.. currentmodule:: spopt.locate
+
+.. autoclass:: KNearestPMedian
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~KNearestPMedian.check_status
+      ~KNearestPMedian.client_facility_array
+      ~KNearestPMedian.facility_client_array
+      ~KNearestPMedian.from_cost_matrix
+      ~KNearestPMedian.from_geodataframe
+      ~KNearestPMedian.get_mean_distance
+      ~KNearestPMedian.solve
+   
+
+   

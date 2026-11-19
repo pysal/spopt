@@ -1,0 +1,17 @@
+﻿spopt.region.Spenc
+==================
+
+.. currentmodule:: spopt.region
+
+.. autoclass:: Spenc
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Spenc.solve
+   
+
+   

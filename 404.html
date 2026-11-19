@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting…</title>
+  <script>
+    (function () {
+      const path = window.location.pathname;
+      const origin = window.location.origin;
+
+      // Match old URLs like /libpysal/api.html or /esda/api.html
+      // but do not touch already-versioned paths.
+      const m = path.match(/^\/([^/]+)\/(.+)$/);
+      if (!m) return;
+
+      const packageName = m[1];
+      const rest = m[2];
+
+      // Leave versioned folders alone
+      if (
+        rest.startsWith("stable/") ||
+        rest.startsWith("dev/") ||
+        /^v\d+\.\d+\.\d+\//.test(rest)
+      ) {
+        return;
+      }
+
+      const target = origin + "/" + packageName + "/stable/" + rest + window.location.search + window.location.hash;
+      window.location.replace(target);
+    })();
+  </script>
+</head>
+
+<body>
+  <p>Redirecting…</p>
+</body>
+
+</html>

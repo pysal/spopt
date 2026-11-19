@@ -1,0 +1,2641 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="spopt.locate.PCenter.html">
+      
+      
+        <link rel="next" href="spopt.locate.FRLM.html">
+      
+      
+      <link rel="icon" href="../_static/pysal_favicon.ico">
+    
+    
+      
+        <title>spopt.locate.PDispersion - spopt</title>
+      
+    
+    
+      
+        
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+        <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#spopt.locate.PDispersion" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="spopt" class="md-header__button md-logo" aria-label="spopt" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spopt
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              spopt.locate.PDispersion
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pysal/spopt/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/spopt
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="spopt" class="md-nav__button md-logo" aria-label="spopt" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    spopt
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pysal/spopt/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/spopt
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Home</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Installation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>Regionalization</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Regionalization</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/maxp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Max-<wbr>P Regionalization</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/azp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Automatic Zoning Procedure <wbr>(AZP) algorithm</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/sa3.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Adaptive Agglomerative Aggregation <wbr>(SA^3)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/skater.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>SKATER</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/ward.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Ward</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/reg-k-means.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Regional-<wbr>k-<wbr>means</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/randomregion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Random Regions</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/component_policy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Max-<wbr>P Regionalization for Multiple Components</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>References</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>Locate</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Locate</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/lscp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Location Set Covering Problem <wbr>(LSCP)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/lscp_gis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Siting First Aid Stations with LSCP on Toronto’s University Campus</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/lscp_capacity.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Capacitated Location Set Covering Problem–System Optimal <wbr>(CLSCP-<wbr>SO)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/lscpb.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Backup Coverage Location Problem <wbr>(LSCP-<wbr>B)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/mclp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Maximal Coverage Location Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/mclp_gis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Siting Restaurants with MCLP in San Francisco</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/p-center.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>P-<wbr>Center Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/p-median.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Median Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/p-median_variations.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Comparing P-<wbr>Median Variations</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/p-dispersion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Dispersion <wbr>(max-<wbr>min-<wbr>min) Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/facloc-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Empirical examples of facility location problems</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/facloc-lscpb-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Backup Coverage Location Problem:<wbr> An Empirical Example</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/facloc-disperse-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Dispersion Problem:<wbr> An Empirical Example</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/flow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Flow Refueling Location Model <wbr>(FRLM)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>API</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>API</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>API reference</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            <span>API reference</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.html#region-methods" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Region Methods</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api.html#locate-methods" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>Locate Methods</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5_1_2" id="__nav_5_1_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_1_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Locate Methods</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="spopt.locate.LSCP.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>spopt.<wbr>locate.<wbr>LSCP</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="spopt.locate.LSCPB.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>spopt.<wbr>locate.<wbr>LSCPB</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="spopt.locate.MCLP.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>spopt.<wbr>locate.<wbr>MCLP</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="spopt.locate.PMedian.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>spopt.<wbr>locate.<wbr>PMedian</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="spopt.locate.KNearestPMedian.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>spopt.<wbr>locate.<wbr>KNearest<wbr>PMedian</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="spopt.locate.PCenter.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>spopt.<wbr>locate.<wbr>PCenter</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    <span>spopt.<wbr>locate.<wbr>PDispersion</span>
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>spopt.<wbr>locate.<wbr>PDispersion</span>
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion" class="md-nav__link">
+    
+      <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion (Python class) — Implement the p-dispersion optimization model and solve it kuby_1987. The p-dispersion problem, as adapted from MALISZEWSKI2012331, can be formulated as:"><span>spopt.<wbr>locate.<wbr>PDispersion</span></span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="spopt.locate.PDispersion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion-parameters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Parameters</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.__init__.name" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.__init__.name (Python parameter) — The problem name."><span>name</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.__init__.problem" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.__init__.problem (Python parameter) — A pulp instance of an optimization model that contains constraints, variables, and an objective function."><span>problem</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.name" class="md-nav__link">
+    
+      <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.name (Python attribute) — The problem name."><span>name</span></span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="name">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.name-type" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Type</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.problem" class="md-nav__link">
+    
+      <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.problem (Python attribute) — A pulp instance of an optimization model that contains constraints, variables, and an objective function."><span>problem</span></span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="problem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.problem-type" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Type</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.check_status" class="md-nav__link">
+    
+      <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.check_status (Python method) — Ensure a model is solved."><span>check_<wbr>status</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix" class="md-nav__link">
+    
+      <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_cost_matrix (Python method) — Create a PDispersion object based on a cost matrix."><span>from_<wbr>cost_<wbr>matrix</span></span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="from_cost_matrix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix-parameters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Parameters</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix.cost_matrix" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_cost_matrix.cost_matrix (Python parameter) — A cost matrix in the form of a 2D array between origins and destinations."><span>cost_<wbr>matrix</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix.p_facilities" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_cost_matrix.p_facilities (Python parameter) — The number of facilities to be located."><span>p_<wbr>facilities</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix.predefined_facilities_arr" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_cost_matrix.predefined_facilities_arr (Python parameter) — A binary 1D array of service facilities that must appear in the solution."><span>predefined_<wbr>facilities_<wbr>arr</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix.name" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_cost_matrix.name (Python parameter) — The name of the problem."><span>name</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix-return-type" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Return type</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe" class="md-nav__link">
+    
+      <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe (Python method) — Create a PDispersion object based on a geodataframe. Calculate the cost matrix between facilities, and then use the from_cost_matrix method."><span>from_<wbr>geodataframe</span></span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="from_geodataframe">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe-parameters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Parameters</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe.gdf_fac" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe.gdf_fac (Python parameter) — Facility locations."><span>gdf_<wbr>fac</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe.facility_col" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe.facility_col (Python parameter) — Facility candidate sites geometry column name."><span>facility_<wbr>col</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe.p_facilities" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe.p_facilities (Python parameter) — The number of facilities to be located."><span>p_<wbr>facilities</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe.predefined_facility_col" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe.predefined_facility_col (Python parameter) — Column name representing facilities are already defined. This a binary assignment per facility."><span>predefined_<wbr>facility_<wbr>col</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe.distance_metric" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe.distance_metric (Python parameter) — A metric used for the distance calculations supported by scipy.spatial.distance.cdist."><span>distance_<wbr>metric</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe.name" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe.name (Python parameter) — The name of the problem."><span>name</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe-return-type" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Return type</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.solve" class="md-nav__link">
+    
+      <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.solve (Python method) — Solve the PDispersion model."><span>solve</span></span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="solve">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.solve-parameters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Parameters</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.solve.solver" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.solve.solver (Python parameter) — A solver supported by pulp."><span>solver</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.solve-return-type" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Return type</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="spopt.locate.FRLM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>spopt.<wbr>locate.<wbr>FRLM</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>For contributors</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            <span>For contributors</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/spopt" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Git<wbr>Hub</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/spopt/releases" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Changelog</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion" class="md-nav__link">
+    
+      <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion (Python class) — Implement the p-dispersion optimization model and solve it kuby_1987. The p-dispersion problem, as adapted from MALISZEWSKI2012331, can be formulated as:"><span>spopt.<wbr>locate.<wbr>PDispersion</span></span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="spopt.locate.PDispersion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion-parameters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Parameters</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.__init__.name" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.__init__.name (Python parameter) — The problem name."><span>name</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.__init__.problem" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.__init__.problem (Python parameter) — A pulp instance of an optimization model that contains constraints, variables, and an objective function."><span>problem</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.name" class="md-nav__link">
+    
+      <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.name (Python attribute) — The problem name."><span>name</span></span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="name">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.name-type" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Type</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.problem" class="md-nav__link">
+    
+      <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.problem (Python attribute) — A pulp instance of an optimization model that contains constraints, variables, and an objective function."><span>problem</span></span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="problem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.problem-type" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Type</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.check_status" class="md-nav__link">
+    
+      <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.check_status (Python method) — Ensure a model is solved."><span>check_<wbr>status</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix" class="md-nav__link">
+    
+      <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_cost_matrix (Python method) — Create a PDispersion object based on a cost matrix."><span>from_<wbr>cost_<wbr>matrix</span></span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="from_cost_matrix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix-parameters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Parameters</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix.cost_matrix" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_cost_matrix.cost_matrix (Python parameter) — A cost matrix in the form of a 2D array between origins and destinations."><span>cost_<wbr>matrix</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix.p_facilities" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_cost_matrix.p_facilities (Python parameter) — The number of facilities to be located."><span>p_<wbr>facilities</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix.predefined_facilities_arr" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_cost_matrix.predefined_facilities_arr (Python parameter) — A binary 1D array of service facilities that must appear in the solution."><span>predefined_<wbr>facilities_<wbr>arr</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix.name" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_cost_matrix.name (Python parameter) — The name of the problem."><span>name</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_cost_matrix-return-type" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Return type</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe" class="md-nav__link">
+    
+      <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe (Python method) — Create a PDispersion object based on a geodataframe. Calculate the cost matrix between facilities, and then use the from_cost_matrix method."><span>from_<wbr>geodataframe</span></span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="from_geodataframe">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe-parameters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Parameters</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe.gdf_fac" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe.gdf_fac (Python parameter) — Facility locations."><span>gdf_<wbr>fac</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe.facility_col" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe.facility_col (Python parameter) — Facility candidate sites geometry column name."><span>facility_<wbr>col</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe.p_facilities" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe.p_facilities (Python parameter) — The number of facilities to be located."><span>p_<wbr>facilities</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe.predefined_facility_col" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe.predefined_facility_col (Python parameter) — Column name representing facilities are already defined. This a binary assignment per facility."><span>predefined_<wbr>facility_<wbr>col</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe.distance_metric" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe.distance_metric (Python parameter) — A metric used for the distance calculations supported by scipy.spatial.distance.cdist."><span>distance_<wbr>metric</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe.name" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.from_geodataframe.name (Python parameter) — The name of the problem."><span>name</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.from_geodataframe-return-type" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Return type</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.solve" class="md-nav__link">
+    
+      <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.solve (Python method) — Solve the PDispersion model."><span>solve</span></span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="solve">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.solve-parameters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Parameters</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.solve.solver" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="spopt.locate.PDispersion.solve.solver (Python parameter) — A solver supported by pulp."><span>solver</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spopt.locate.PDispersion.solve-return-type" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Return type</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                
+                
+                  
+
+
+  
+    <a href="https://github.com/pysal/spopt/blob/main/docs/source/generated/spopt.locate.PDispersion.rst" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5zM6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41zm11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41z"/></svg>
+    </a>
+  
+  
+
+<h1 id="spopt-locate-pdispersion">spopt.locate.PDispersion<a class="headerlink" href="#spopt-locate-pdispersion" title="Link to this heading">¶</a></h1>
+<dl class="py class objdesc">
+<dt class="sig sig-object highlight py" id="spopt.locate.PDispersion">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">spopt.locate.</span></span><span class="sig-name descname"><span class="pre">PDispersion</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion.__init__.name" title="spopt.locate.PDispersion.__init__.name (Python parameter) — The problem name."><span class="n"><span class="pre">name</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion.__init__.problem" title="spopt.locate.PDispersion.__init__.problem (Python parameter) — A pulp instance of an optimization model that contains constraints, variables, and an objective function."><span class="n"><span class="pre">problem</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion" title="spopt.locate.PDispersion.__init__.p_facilities (Python parameter)"><span class="n"><span class="pre">p_facilities</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/spopt/blob/main/spopt/locate/p_dispersion.py#L13-L339"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.PDispersion" title="Link to this definition">¶</a></dt>
+<dd><p>Implement the <span class="math notranslate nohighlight">\(p\)</span>-dispersion optimization model and solve it
+<span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id15" title="MJ Kuby. Programming Models for Facility Dispersion: The p-Dispersion and Maxisum Dispersion Problems. Geographical Analysis, 19(4):315–329, 1987. doi:10.1111/j.1538-4632.1987.tb00133.x.">Kuby, 1987</a>]</span>. The <span class="math notranslate nohighlight">\(p\)</span>-dispersion problem, as adapted from
+<span class="bibtex-citation" id="id2">[<a class="reference internal" href="../references.html#id16" title="PJ Maliszewski, MJ Kuby, and MW Horner. A comparison of multi-objective spatial dispersion models for managing critical assets in urban areas. Computers, Environment and Urban Systems, 36(4):331–341, 2012. doi:10.1016/j.compenvurbsys.2011.12.006.">Maliszewski <em>et al.</em>, 2012</a>]</span>, can be formulated as:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\begin{split}{\small
+\begin{array}{lllll}
+\displaystyle \textbf{Maximize}      &amp; \displaystyle D                       &amp;&amp;                                      &amp; (1)                                                                               \\
+\displaystyle \textbf{Subject To}    &amp; \displaystyle \sum_{i \in I}{Y_i} = p &amp;&amp;                                      &amp; (2)                                                                               \\
+                                     &amp; D \leq d_{ij} + M (2 - Y_{i} - Y_{j}) &amp;&amp; \forall i \in I \quad \forall j &gt; i  &amp; (3)                                                                               \\
+                                     &amp; Y_i \in \{0, 1\}                      &amp;&amp; \forall i \in I                      &amp; (4)                                                                               \\
+                                     &amp;                                       &amp;&amp;                                      &amp;                                                                                   \\
+\end{array}}\end{split}\\\begin{split}{\small
+\begin{array}{&#64;{}llr&#64;{}}
+\displaystyle \textbf{Where}         &amp;&amp; i, j                                 &amp; =                                     &amp; \textrm{index of potential facility sites in set } I                              \\
+                                     &amp;&amp; p                                    &amp; =                                     &amp; \textrm{the number of facilities to be sited}                                     \\
+                                     &amp;&amp; d_{ij}                               &amp; =                                     &amp; \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
+                                     &amp;&amp; D                                    &amp; =                                     &amp; \textrm{minimum distance between any two sited facilities } i \textrm{ and } j    \\
+                                     &amp;&amp; M                                    &amp; =                                     &amp; \textrm{some large number; such that } M \geq \max_{ij}\{d_{ij}\}                 \\
+                                     &amp;&amp; Y_i                                  &amp; =                                     &amp; \begin{cases}
+                                                                                                                        1, \textrm{if a facility is sited at location } i                                \\
+                                                                                                                        0, \textrm{otherwise}                                                            \\
+                                                                                                                       \end{cases}                                                                       \\
+\end{array}}\end{split}\end{aligned}\end{align} \]</div>
+<dl class="field-list simple">
+<dt class="field-odd" id="spopt.locate.PDispersion-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#spopt.locate.PDispersion-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="simple api-field highlight">
+<dt id="spopt.locate.PDispersion.__init__.name"><span class="sig-name descname">name</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></span></span><a class="headerlink" href="#spopt.locate.PDispersion.__init__.name" title="Permalink to this definition">¶</a></dt><dd><p>The problem name.</p>
+</dd>
+<dt id="spopt.locate.PDispersion.__init__.problem"><span class="sig-name descname">problem</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://www.coin-or.org/pulp/technical/pulp.html#pulp.LpProblem" title="(in PuLP v4.3)">pulp.LpProblem</a></span></span><a class="headerlink" href="#spopt.locate.PDispersion.__init__.problem" title="Permalink to this definition">¶</a></dt><dd><p>A <code class="docutils literal notranslate"><span class="pre">pulp</span></code> instance of an optimization model that contains
+constraints, variables, and an objective function.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py attribute objdesc">
+<dt class="sig sig-object highlight py" id="spopt.locate.PDispersion.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="reference external" href="https://github.com/pysal/spopt/blob/main/spopt/locate.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.PDispersion.name" title="Link to this definition">¶</a></dt>
+<dd><p>The problem name.</p>
+<dl class="field-list simple">
+<dt class="field-odd" id="spopt.locate.PDispersion.name-type">Type<span class="colon">:</span><a class="headerlink" href="#spopt.locate.PDispersion.name-type" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute objdesc">
+<dt class="sig sig-object highlight py" id="spopt.locate.PDispersion.problem">
+<span class="sig-name descname"><span class="pre">problem</span></span><a class="reference external" href="https://github.com/pysal/spopt/blob/main/spopt/locate.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.PDispersion.problem" title="Link to this definition">¶</a></dt>
+<dd><p>A <code class="docutils literal notranslate"><span class="pre">pulp</span></code> instance of an optimization model that contains
+constraints, variables, and an objective function.</p>
+<dl class="field-list simple">
+<dt class="field-odd" id="spopt.locate.PDispersion.problem-type">Type<span class="colon">:</span><a class="headerlink" href="#spopt.locate.PDispersion.problem-type" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://www.coin-or.org/pulp/technical/pulp.html#pulp.LpProblem" title="(in PuLP v4.3)">pulp.LpProblem</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.PDispersion.check_status" title="spopt.locate.PDispersion.check_status (Python method) — Ensure a model is solved."><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_status</span></code></a>()</p></td>
+<td><p>Ensure a model is solved.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.PDispersion.from_cost_matrix" title="spopt.locate.PDispersion.from_cost_matrix (Python method) — Create a PDispersion object based on a cost matrix."><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_cost_matrix</span></code></a>(cost_matrix, p_facilities)</p></td>
+<td><p>Create a <code class="docutils literal notranslate"><span class="pre">PDispersion</span></code> object based on a cost matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.PDispersion.from_geodataframe" title="spopt.locate.PDispersion.from_geodataframe (Python method) — Create a PDispersion object based on a geodataframe. Calculate the cost matrix between facilities, and then use the from_cost_matrix method."><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_geodataframe</span></code></a>(gdf_fac, facility_col, ...)</p></td>
+<td><p>Create a <code class="docutils literal notranslate"><span class="pre">PDispersion</span></code> object based on a geodataframe.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.PDispersion.solve" title="spopt.locate.PDispersion.solve (Python method) — Solve the PDispersion model."><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve</span></code></a>(solver)</p></td>
+<td><p>Solve the <code class="docutils literal notranslate"><span class="pre">PDispersion</span></code> model.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="spopt.locate.PDispersion.check_status">
+<span class="sig-name descname"><span class="pre">check_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/spopt/blob/main/spopt/locate/base.py#L52-L61"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.PDispersion.check_status" title="Link to this definition">¶</a></dt>
+<dd><p>Ensure a model is solved.</p>
+</dd></dl>
+
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight sig-wrap py" id="spopt.locate.PDispersion.from_cost_matrix">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_cost_matrix</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion.from_cost_matrix.cost_matrix" title="spopt.locate.PDispersion.from_cost_matrix.cost_matrix (Python parameter) — A cost matrix in the form of a 2D array between origins and destinations."><span class="n"><span class="pre">cost_matrix</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion.from_cost_matrix.p_facilities" title="spopt.locate.PDispersion.from_cost_matrix.p_facilities (Python parameter) — The number of facilities to be located."><span class="n"><span class="pre">p_facilities</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion.from_cost_matrix.predefined_facilities_arr" title="spopt.locate.PDispersion.from_cost_matrix.predefined_facilities_arr (Python parameter) — A binary 1D array of service facilities that must appear in the solution."><span class="n"><span class="pre">predefined_facilities_arr</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion.from_cost_matrix.name" title="spopt.locate.PDispersion.from_cost_matrix.name (Python parameter) — The name of the problem."><span class="n"><span class="pre">name</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">'p-dispersion'</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/spopt/blob/main/spopt/locate/p_dispersion.py#L83-L197"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.PDispersion.from_cost_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Create a <code class="docutils literal notranslate"><span class="pre">PDispersion</span></code> object based on a cost matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd" id="spopt.locate.PDispersion.from_cost_matrix-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#spopt.locate.PDispersion.from_cost_matrix-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="simple api-field highlight">
+<dt id="spopt.locate.PDispersion.from_cost_matrix.cost_matrix"><span class="sig-name descname">cost_matrix</span><span class="p"> : </span><span class="desctype"><span class="desctype">np.array</span></span><a class="headerlink" href="#spopt.locate.PDispersion.from_cost_matrix.cost_matrix" title="Permalink to this definition">¶</a></dt><dd><p>A cost matrix in the form of a 2D array between origins and destinations.</p>
+</dd>
+<dt id="spopt.locate.PDispersion.from_cost_matrix.p_facilities"><span class="sig-name descname">p_facilities</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)">int</a></span></span><a class="headerlink" href="#spopt.locate.PDispersion.from_cost_matrix.p_facilities" title="Permalink to this definition">¶</a></dt><dd><p>The number of facilities to be located.</p>
+</dd>
+<dt id="spopt.locate.PDispersion.from_cost_matrix.predefined_facilities_arr"><span class="sig-name descname">predefined_facilities_arr</span><span class="p"> : </span><span class="desctype"><span class="desctype">numpy.array (default None)</span></span><a class="headerlink" href="#spopt.locate.PDispersion.from_cost_matrix.predefined_facilities_arr" title="Permalink to this definition">¶</a></dt><dd><p>A binary 1D array of service facilities that must appear in the
+solution. For example, consider 3 facilites <code class="docutils literal notranslate"><span class="pre">['A',</span> <span class="pre">'B',</span> <span class="pre">'C']</span></code>.
+If facility <code class="docutils literal notranslate"><span class="pre">'B'</span></code> must be in the model solution, then the passed
+in array should be <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0]</span></code>.</p>
+</dd>
+<dt id="spopt.locate.PDispersion.from_cost_matrix.name"><span class="sig-name descname">name</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a> (default 'p-dispersion')</span></span><a class="headerlink" href="#spopt.locate.PDispersion.from_cost_matrix.name" title="Permalink to this definition">¶</a></dt><dd><p>The name of the problem.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even" id="spopt.locate.PDispersion.from_cost_matrix-return-type">Return type<span class="colon">:</span><a class="headerlink" href="#spopt.locate.PDispersion.from_cost_matrix-return-type" title="Permalink to this headline">¶</a></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spopt.locate.PDispersion" title="spopt.locate.p_dispersion.PDispersion (Python class)">spopt.locate.p_dispersion.PDispersion</a></p>
+</dd>
+</dl>
+<p class="example rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spopt.locate.p_dispersion</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDispersion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spopt.locate.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulated_geo_points</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pulp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">spaghetti</span>
+</code></pre></div>
+</div>
+<p>Create a regular lattice.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">lattice</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">regular_lattice</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">9</span><span class="p">,</span> <span class="n">exterior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ntw</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">Network</span><span class="p">(</span><span class="n">in_data</span><span class="o">=</span><span class="n">lattice</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">streets</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">element_as_gdf</span><span class="p">(</span><span class="n">ntw</span><span class="p">,</span> <span class="n">arcs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">streets_buffered</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoSeries</span><span class="p">(</span><span class="n">streets</span><span class="p">[</span><span class="s2">"geometry"</span><span class="p">]</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span><span class="o">.</span><span class="n">unary_union</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">crs</span><span class="o">=</span><span class="n">streets</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"geometry"</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>Simulate points about the lattice.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">facility_points</span> <span class="o">=</span> <span class="n">simulated_geo_points</span><span class="p">(</span><span class="n">streets_buffered</span><span class="p">,</span> <span class="n">needed</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>Snap the points to the network of lattice edges.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">ntw</span><span class="o">.</span><span class="n">snapobservations</span><span class="p">(</span><span class="n">facility_points</span><span class="p">,</span> <span class="s2">"facilities"</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">facilities_snapped</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">element_as_gdf</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">ntw</span><span class="p">,</span> <span class="n">pp_name</span><span class="o">=</span><span class="s2">"facilities"</span><span class="p">,</span> <span class="n">snapped</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>Calculate the cost matrix from origins to destinations. Origins
+and destinations are both <code class="docutils literal notranslate"><span class="pre">'facilities'</span></code> in this case.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">cost_matrix</span> <span class="o">=</span> <span class="n">ntw</span><span class="o">.</span><span class="n">allneighbordistances</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">sourcepattern</span><span class="o">=</span><span class="n">ntw</span><span class="o">.</span><span class="n">pointpatterns</span><span class="p">[</span><span class="s2">"facilities"</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="n">destpattern</span><span class="o">=</span><span class="n">ntw</span><span class="o">.</span><span class="n">pointpatterns</span><span class="p">[</span><span class="s2">"facilities"</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>Create and solve a <code class="docutils literal notranslate"><span class="pre">PDispersion</span></code> instance from the cost matrix.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">pdispersion_from_cost_matrix</span> <span class="o">=</span> <span class="n">PDispersion</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">cost_matrix</span><span class="p">,</span> <span class="n">p_fac</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pdispersion_from_cost_matrix</span> <span class="o">=</span> <span class="n">pdispersion_from_cost_matrix</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">pulp</span><span class="o">.</span><span class="n">PULP_CBC_CMD</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>Examine the solution.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">dv</span> <span class="ow">in</span> <span class="n">pdispersion_from_cost_matrix</span><span class="o">.</span><span class="n">fac_vars</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">dv</span><span class="o">.</span><span class="n">varValue</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"facility </span><span class="si">{</span><span class="n">dv</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is selected"</span><span class="p">)</span>
+<span class="go">facility y_0_ is selected</span>
+<span class="go">facility y_1_ is selected</span>
+</code></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight sig-wrap py" id="spopt.locate.PDispersion.from_geodataframe">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_geodataframe</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion.from_geodataframe.gdf_fac" title="spopt.locate.PDispersion.from_geodataframe.gdf_fac (Python parameter) — Facility locations."><span class="n"><span class="pre">gdf_fac</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion.from_geodataframe.facility_col" title="spopt.locate.PDispersion.from_geodataframe.facility_col (Python parameter) — Facility candidate sites geometry column name."><span class="n"><span class="pre">facility_col</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion.from_geodataframe.p_facilities" title="spopt.locate.PDispersion.from_geodataframe.p_facilities (Python parameter) — The number of facilities to be located."><span class="n"><span class="pre">p_facilities</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion.from_geodataframe.predefined_facility_col" title="spopt.locate.PDispersion.from_geodataframe.predefined_facility_col (Python parameter) — Column name representing facilities are already defined. This a binary assignment per facility."><span class="n"><span class="pre">predefined_facility_col</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion.from_geodataframe.distance_metric" title="spopt.locate.PDispersion.from_geodataframe.distance_metric (Python parameter) — A metric used for the distance calculations supported by scipy.spatial.distance.cdist."><span class="n"><span class="pre">distance_metric</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">'euclidean'</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion.from_geodataframe.name" title="spopt.locate.PDispersion.from_geodataframe.name (Python parameter) — The name of the problem."><span class="n"><span class="pre">name</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">'p-dispersion'</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/spopt/blob/main/spopt/locate/p_dispersion.py#L199-L318"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.PDispersion.from_geodataframe" title="Link to this definition">¶</a></dt>
+<dd><p>Create a <code class="docutils literal notranslate"><span class="pre">PDispersion</span></code> object based on a geodataframe. Calculate the
+cost matrix between facilities, and then use the from_cost_matrix method.</p>
+<dl class="field-list simple">
+<dt class="field-odd" id="spopt.locate.PDispersion.from_geodataframe-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#spopt.locate.PDispersion.from_geodataframe-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="simple api-field highlight">
+<dt id="spopt.locate.PDispersion.from_geodataframe.gdf_fac"><span class="sig-name descname">gdf_fac</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://geopandas.org/en/latest/docs/reference/api/geopandas.GeoDataFrame.html#geopandas.GeoDataFrame" title="(in GeoPandas v1.2.1.dev10)">geopandas.GeoDataFrame</a></span></span><a class="headerlink" href="#spopt.locate.PDispersion.from_geodataframe.gdf_fac" title="Permalink to this definition">¶</a></dt><dd><p>Facility locations.</p>
+</dd>
+<dt id="spopt.locate.PDispersion.from_geodataframe.facility_col"><span class="sig-name descname">facility_col</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></span></span><a class="headerlink" href="#spopt.locate.PDispersion.from_geodataframe.facility_col" title="Permalink to this definition">¶</a></dt><dd><p>Facility candidate sites geometry column name.</p>
+</dd>
+<dt id="spopt.locate.PDispersion.from_geodataframe.p_facilities"><span class="sig-name descname">p_facilities</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)">int</a></span></span><a class="headerlink" href="#spopt.locate.PDispersion.from_geodataframe.p_facilities" title="Permalink to this definition">¶</a></dt><dd><p>The number of facilities to be located.</p>
+</dd>
+<dt id="spopt.locate.PDispersion.from_geodataframe.predefined_facility_col"><span class="sig-name descname">predefined_facility_col</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a> (default None)</span></span><a class="headerlink" href="#spopt.locate.PDispersion.from_geodataframe.predefined_facility_col" title="Permalink to this definition">¶</a></dt><dd><p>Column name representing facilities are already defined.
+This a binary assignment per facility. For example, consider 3 facilites
+<code class="docutils literal notranslate"><span class="pre">['A',</span> <span class="pre">'B',</span> <span class="pre">'C']</span></code>. If facility <code class="docutils literal notranslate"><span class="pre">'B'</span></code> must be in the model solution,
+then the column should be <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0]</span></code>.</p>
+</dd>
+<dt id="spopt.locate.PDispersion.from_geodataframe.distance_metric"><span class="sig-name descname">distance_metric</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a> (default 'euclidean')</span></span><a class="headerlink" href="#spopt.locate.PDispersion.from_geodataframe.distance_metric" title="Permalink to this definition">¶</a></dt><dd><p>A metric used for the distance calculations supported by
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html">scipy.spatial.distance.cdist</a>.</p>
+</dd>
+<dt id="spopt.locate.PDispersion.from_geodataframe.name"><span class="sig-name descname">name</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a> (default 'p-dispersion')</span></span><a class="headerlink" href="#spopt.locate.PDispersion.from_geodataframe.name" title="Permalink to this definition">¶</a></dt><dd><p>The name of the problem.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even" id="spopt.locate.PDispersion.from_geodataframe-return-type">Return type<span class="colon">:</span><a class="headerlink" href="#spopt.locate.PDispersion.from_geodataframe-return-type" title="Permalink to this headline">¶</a></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spopt.locate.PDispersion" title="spopt.locate.p_dispersion.PDispersion (Python class)">spopt.locate.p_dispersion.PDispersion</a></p>
+</dd>
+</dl>
+<p class="example rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spopt.locate.p_dispersion</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDispersion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">spopt.locate.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulated_geo_points</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pulp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">spaghetti</span>
+</code></pre></div>
+</div>
+<p>Create a regular lattice.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">lattice</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">regular_lattice</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">9</span><span class="p">,</span> <span class="n">exterior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ntw</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">Network</span><span class="p">(</span><span class="n">in_data</span><span class="o">=</span><span class="n">lattice</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">streets</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">element_as_gdf</span><span class="p">(</span><span class="n">ntw</span><span class="p">,</span> <span class="n">arcs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">streets_buffered</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoSeries</span><span class="p">(</span><span class="n">streets</span><span class="p">[</span><span class="s2">"geometry"</span><span class="p">]</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span><span class="o">.</span><span class="n">unary_union</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">crs</span><span class="o">=</span><span class="n">streets</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"geometry"</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>Simulate points about the lattice.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">facility_points</span> <span class="o">=</span> <span class="n">simulated_geo_points</span><span class="p">(</span><span class="n">streets_buffered</span><span class="p">,</span> <span class="n">needed</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>Snap the points to the network of lattice edges
+and extract as a <code class="docutils literal notranslate"><span class="pre">GeoDataFrame</span></code> object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">ntw</span><span class="o">.</span><span class="n">snapobservations</span><span class="p">(</span><span class="n">facility_points</span><span class="p">,</span> <span class="s2">"facilities"</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">facilities_snapped</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">element_as_gdf</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">ntw</span><span class="p">,</span> <span class="n">pp_name</span><span class="o">=</span><span class="s2">"facilities"</span><span class="p">,</span> <span class="n">snapped</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>Create and solve a <code class="docutils literal notranslate"><span class="pre">PDispersion</span></code> instance from the <code class="docutils literal notranslate"><span class="pre">GeoDataFrame</span></code> object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">pdispersion_from_geodataframe</span> <span class="o">=</span> <span class="n">PDispersion</span><span class="o">.</span><span class="n">from_geodataframe</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">facilities_snapped</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">"geometry"</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">p_fac</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">distance_metric</span><span class="o">=</span><span class="s2">"euclidean"</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pdispersion_from_geodataframe</span> <span class="o">=</span> <span class="n">pdispersion_from_geodataframe</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">pulp</span><span class="o">.</span><span class="n">PULP_CBC_CMD</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p>Examine the solution.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">dv</span> <span class="ow">in</span> <span class="n">pdispersion_from_geodataframe</span><span class="o">.</span><span class="n">fac_vars</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">dv</span><span class="o">.</span><span class="n">varValue</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"facility </span><span class="si">{</span><span class="n">dv</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is selected"</span><span class="p">)</span>
+<span class="go">facility y_0_ is selected</span>
+<span class="go">facility y_1_ is selected</span>
+</code></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method objdesc">
+<dt class="sig sig-object highlight py" id="spopt.locate.PDispersion.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#spopt.locate.PDispersion.solve.solver" title="spopt.locate.PDispersion.solve.solver (Python parameter) — A solver supported by pulp."><span class="n"><span class="pre">solver</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/spopt/blob/main/spopt/locate/p_dispersion.py#L320-L339"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.PDispersion.solve" title="Link to this definition">¶</a></dt>
+<dd><p>Solve the <code class="docutils literal notranslate"><span class="pre">PDispersion</span></code> model.</p>
+<dl class="field-list simple">
+<dt class="field-odd" id="spopt.locate.PDispersion.solve-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#spopt.locate.PDispersion.solve-parameters" title="Permalink to this headline">¶</a></dt>
+<dd class="field-odd"><dl class="simple api-field highlight">
+<dt id="spopt.locate.PDispersion.solve.solver"><span class="sig-name descname">solver</span><span class="p"> : </span><span class="desctype"><span class="desctype">pulp.LpSolver</span></span><a class="headerlink" href="#spopt.locate.PDispersion.solve.solver" title="Permalink to this definition">¶</a></dt><dd><p>A solver supported by <code class="docutils literal notranslate"><span class="pre">pulp</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even" id="spopt.locate.PDispersion.solve-return-type">Return type<span class="colon">:</span><a class="headerlink" href="#spopt.locate.PDispersion.solve-return-type" title="Permalink to this headline">¶</a></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spopt.locate.PDispersion" title="spopt.locate.p_dispersion.PDispersion (Python class)">spopt.locate.p_dispersion.PDispersion</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2018-, pysal developers.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    9.2.0.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/spopt/versions.json"}}</script>
+    
+      
+        <script src="../_static/sphinx_immaterial_theme.ce3f826234c1e494c.min.js?v=6917d573"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script id="MathJax-script" src="../_static/mathjax/tex-mml-chtml.js"></script>
+    
+  </body>
+</html>

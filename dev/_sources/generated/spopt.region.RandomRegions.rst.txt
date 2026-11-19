@@ -1,0 +1,11 @@
+﻿spopt.region.RandomRegions
+==========================
+
+.. currentmodule:: spopt.region
+
+.. autoclass:: RandomRegions
+
+   
+   
+
+   

@@ -1,0 +1,24 @@
+﻿spopt.locate.MCLP
+=================
+
+.. currentmodule:: spopt.locate
+
+.. autoclass:: MCLP
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MCLP.check_status
+      ~MCLP.client_facility_array
+      ~MCLP.facility_client_array
+      ~MCLP.from_cost_matrix
+      ~MCLP.from_geodataframe
+      ~MCLP.get_percentage
+      ~MCLP.solve
+      ~MCLP.uncovered_clients
+   
+
+   

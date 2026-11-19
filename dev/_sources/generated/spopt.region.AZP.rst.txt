@@ -1,0 +1,17 @@
+﻿spopt.region.AZP
+================
+
+.. currentmodule:: spopt.region
+
+.. autoclass:: AZP
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~AZP.solve
+   
+
+   

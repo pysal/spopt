@@ -1,0 +1,28 @@
+﻿spopt.locate.LSCP
+=================
+
+.. currentmodule:: spopt.locate
+
+.. autoclass:: LSCP
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~LSCP.__init__
+      ~LSCP.check_status
+      ~LSCP.client_facility_array
+      ~LSCP.facility_client_array
+      ~LSCP.from_cost_matrix
+      ~LSCP.from_geodataframe
+      ~LSCP.solve
+   
+   
+
+   
+   
+   

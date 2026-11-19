@@ -1,0 +1,24 @@
+﻿spopt.region.RandomRegion
+=========================
+
+.. currentmodule:: spopt.region
+
+.. autoclass:: RandomRegion
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RandomRegion.build_contig_regions
+      ~RandomRegion.build_noncontig_regions
+      ~RandomRegion.cards2breaks
+      ~RandomRegion.get_cards
+      ~RandomRegion.get_num_regions
+      ~RandomRegion.get_region_breaks
+      ~RandomRegion.grow_compact
+      ~RandomRegion.grow_free
+   
+
+   

@@ -1,0 +1,1121 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true,
+    "jupyter": {
+     "outputs_hidden": true
+    }
+   },
+   "source": [
+    "# P-Center Problem\n",
+    "\n",
+    "*Authors:* [Germano Barcelos](https://github.com/gegen07), [James Gaboardi](https://github.com/jGaboardi), [Levi J. Wolf](https://github.com/ljwolf), [Qunshan Zhao](https://github.com/qszhao)\n",
+    "\n",
+    "Hakimi (1964) introduced the absolute center problem to locate a police station or a hospital such that the maximum distance of the station to a set of communities connected by a highway system is minimized. Hakimi (1965) generalizes the absolute center problem to the $p$-center problem. Given a set $X_p=\\{x_1,\\ldots,x_p\\}$ of $p$ points in graph $G$, the distance $d(X_p, v_j)$ between $X_p$ and node $v_j$ is computed as $\\min_{i=1,\\ldots,n}{w_jd(v_j, X_p)}$. Daskin (2013) proposed a Mixed Integer Programming formulation to discretize the $p$-center problem written as:\n",
+    "\n",
+    "$$\n",
+    "\\begin{array}{llll}\n",
+    "\\displaystyle \\textbf{Minimize} & \\displaystyle W & & (1) \\\\\n",
+    "\\displaystyle \\textbf{Subject to:} & \\displaystyle \\sum_{j \\in J}{X_{ij}} = 1 & \\forall i \\in I & (2) \\\\\n",
+    " & \\displaystyle \\sum_{j \\in J}{Y_j} = p & & (3) \\\\\n",
+    " & X_{ij} \\leq Y_j & \\forall i \\in I \\quad \\forall j \\in J & (4) \\\\\n",
+    " & W \\geq \\displaystyle \\sum_{j \\in J}{d_{ij} X_{ij}} & \\forall i \\in I & (5) \\\\\n",
+    " & Y_j \\in \\{0,1\\} & \\forall j \\in J & (6) \\\\\n",
+    " & X_{ij} \\geq 0 & \\forall i \\in I \\quad \\forall j \\in J & (7)\n",
+    "\\end{array}\n",
+    "$$\n",
+    "\n",
+    "$$\n",
+    "\\begin{array}{lllll}\n",
+    "\\textbf{Where:} & & & & \\\\\n",
+    " & i & = & \\textrm{index referencing nodes of the network as demand} & \\\\\n",
+    " & j & = & \\textrm{index referencing nodes of the network as potential facility sites} & \\\\\n",
+    " & d_{ij} & = & \\textrm{shortest distance or travel time between nodes } i \\textrm{ and } j & \\\\\n",
+    " & p & = & \\textrm{number of facilities to be located} & \\\\\n",
+    " & Y_j & = & \\begin{cases}\n",
+    "      1, & \\text{if locate at candidate site } j \\\\\n",
+    "      0, & \\text{otherwise}\n",
+    "    \\end{cases} & \\\\\n",
+    " & X_{ij} & = & \\textrm{fraction of demand at node } i \\textrm{ that is served by a facility at node } j & \\\\\n",
+    " & W & = & \\textrm{maximum distance between a demand node and the nearest facility} &\n",
+    "\\end{array}\n",
+    "$$\n",
+    "\n",
+    "This tutorial generates synthetic demand (clients) and facility sites near a 10x10 lattice representing a gridded urban core. Three $p$-center instances are solved while varying parameters:\n",
+    "\n",
+    "* `PCenter.from_cost_matrix()` with network distance as the metric\n",
+    "* `PCenter.from_geodataframe()` with euclidean distance as the metric\n",
+    "* `PCenter.from_geodataframe()` with predefined facility locations and euclidean distance as the metric"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:20.723193Z",
+     "start_time": "2023-01-10T18:23:20.690419Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:03.938457Z",
+     "iopub.status.busy": "2025-04-07T19:07:03.938287Z",
+     "iopub.status.idle": "2025-04-07T19:07:03.962224Z",
+     "shell.execute_reply": "2025-04-07T19:07:03.961881Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:03.938437Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "%config InlineBackend.figure_format = \"retina\"\n",
+    "%load_ext watermark\n",
+    "%watermark"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:23.038654Z",
+     "start_time": "2023-01-10T18:23:20.726303Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:03.962973Z",
+     "iopub.status.busy": "2025-04-07T19:07:03.962870Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.130777Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.130569Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:03.962960Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import warnings\n",
+    "\n",
+    "import geopandas\n",
+    "import matplotlib.lines as mlines\n",
+    "import matplotlib.pyplot as plt\n",
+    "import numpy\n",
+    "import pulp\n",
+    "import shapely\n",
+    "from matplotlib.patches import Patch\n",
+    "\n",
+    "import spopt\n",
+    "from spopt.locate import PCenter, simulated_geo_points\n",
+    "\n",
+    "with warnings.catch_warnings():\n",
+    "    warnings.simplefilter(\"ignore\")\n",
+    "    # ignore deprecation warning - GH pysal/spaghetti#649\n",
+    "    import spaghetti\n",
+    "\n",
+    "%watermark -w\n",
+    "%watermark -iv"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Since the model needs a cost matrix (distance, time, etc.) we should define some variables. First we will assign some the number of clients and facility locations, then the maximum service radius, followed by random seeds in order to reproduce the results. Finally, the solver, assigned below as `pulp.COIN_CMD`, is an interface to optimization solver developed by [COIN-OR](https://github.com/coin-or/Cbc). If you want to use another optimization interface, such as Gurobi or CPLEX, see this [guide](https://coin-or.github.io/pulp/guides/how_to_configure_solvers.html) that explains how to achieve this."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:23.045720Z",
+     "start_time": "2023-01-10T18:23:23.042337Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.131823Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.131688Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.133572Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.133402Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.131816Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# quantity demand points\n",
+    "CLIENT_COUNT = 100\n",
+    "\n",
+    "# quantity supply points\n",
+    "FACILITY_COUNT = 10\n",
+    "\n",
+    "# number of candidate facilities in optimal solution\n",
+    "P_FACILITIES = 3\n",
+    "\n",
+    "# random seeds for reproducibility\n",
+    "CLIENT_SEED = 5\n",
+    "FACILITY_SEED = 6\n",
+    "\n",
+    "# set the solver\n",
+    "solver = pulp.COIN_CMD(msg=False, warmStart=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Lattice 10x10\n",
+    "\n",
+    "Create a 10x10 lattice with 9 interior lines, both vertical and horizontal."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:23.083983Z",
+     "start_time": "2023-01-10T18:23:23.049034Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.133901Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.133804Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.145020Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.144848Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.133894Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "with warnings.catch_warnings():\n",
+    "    warnings.simplefilter(\"ignore\")\n",
+    "    # ignore deprecation warning - GH pysal/libpysal#468\n",
+    "    lattice = spaghetti.regular_lattice((0, 0, 10, 10), 9, exterior=True)\n",
+    "ntw = spaghetti.Network(in_data=lattice)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Transform the `spaghetti` instance into a geodataframe."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:23.208413Z",
+     "start_time": "2023-01-10T18:23:23.086997Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.145406Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.145321Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.185342Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.185128Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.145400Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "streets = spaghetti.element_as_gdf(ntw, arcs=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:23.241368Z",
+     "start_time": "2023-01-10T18:23:23.211843Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.185801Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.185732Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.195977Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.195744Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.185794Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "streets_buffered = geopandas.GeoDataFrame(\n",
+    "    geopandas.GeoSeries(streets[\"geometry\"].buffer(0.5).union_all()),\n",
+    "    crs=streets.crs,\n",
+    "    columns=[\"geometry\"],\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Plotting the network created by `spaghetti` we can verify that it mimics a district with quarters and streets."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:23.409576Z",
+     "start_time": "2023-01-10T18:23:23.243762Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.196295Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.196233Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.256338Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.256132Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.196288Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "streets.plot();"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Simulate points in a network\n",
+    "\n",
+    "The `simulated_geo_points` function simulates points near a network. In this case, it uses the 10x10 lattice network created using the `spaghetti` package. Below we use the function defined above and simulate the points near the lattice edges."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:23.428302Z",
+     "start_time": "2023-01-10T18:23:23.412143Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.256695Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.256622Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.262683Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.262517Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.256687Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "client_points = simulated_geo_points(\n",
+    "    streets_buffered, needed=CLIENT_COUNT, seed=CLIENT_SEED\n",
+    ")\n",
+    "facility_points = simulated_geo_points(\n",
+    "    streets_buffered, needed=FACILITY_COUNT, seed=FACILITY_SEED\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Plotting the 100 client and 10 facility points we can see that the function generates dummy points to an area of 10x10, which is the area created by our lattice created on previous cells."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:23.912466Z",
+     "start_time": "2023-01-10T18:23:23.430687Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.263069Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.262998Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.410323Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.410120Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.263063Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(6, 6))\n",
+    "streets.plot(ax=ax, alpha=0.8, zorder=1, label=\"streets\")\n",
+    "facility_points.plot(\n",
+    "    ax=ax,\n",
+    "    color=\"red\",\n",
+    "    zorder=2,\n",
+    "    label=f\"facility candidate sites ($n$={FACILITY_COUNT})\",\n",
+    ")\n",
+    "client_points.plot(ax=ax, color=\"black\", label=f\"clients sites ($n$={CLIENT_COUNT})\")\n",
+    "plt.legend(loc=\"upper left\", bbox_to_anchor=(1.05, 1));"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Assign simulated points network locations\n",
+    "\n",
+    "The simulated client and facility points do not adhere to network space. Calculating distances between them without restricting movement to the network results in a euclidean distances,'as the crow flies.' While this is acceptable for some applications, for others it is more realistic to consider network traversal (e.g. Does a mail carrier follow roads to deliver letters or fly from mailbox to mailbox?).\n",
+    "\n",
+    "In our first example we will consider distance along the 10x10 lattice network created above. Therefore, we must first snap the observation points to the network prior to calculating a cost matrix."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:23.999838Z",
+     "start_time": "2023-01-10T18:23:23.918768Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.410720Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.410647Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.469683Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.469219Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.410712Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "with warnings.catch_warnings():\n",
+    "    warnings.simplefilter(\"ignore\")\n",
+    "    # ignore deprecation warning - GH pysal/libpysal#468\n",
+    "    ntw.snapobservations(client_points, \"clients\", attribute=True)\n",
+    "clients_snapped = spaghetti.element_as_gdf(ntw, pp_name=\"clients\", snapped=True)\n",
+    "clients_snapped.drop(columns=[\"id\", \"comp_label\"], inplace=True)\n",
+    "\n",
+    "with warnings.catch_warnings():\n",
+    "    warnings.simplefilter(\"ignore\")\n",
+    "    # ignore deprecation warning - GH pysal/libpysal#468\n",
+    "    ntw.snapobservations(facility_points, \"facilities\", attribute=True)\n",
+    "facilities_snapped = spaghetti.element_as_gdf(ntw, pp_name=\"facilities\", snapped=True)\n",
+    "facilities_snapped.drop(columns=[\"id\", \"comp_label\"], inplace=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now the plot seems more organized as the points occupy network space. The network is plotted below with the network locations of the facility points and clients points."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:24.440673Z",
+     "start_time": "2023-01-10T18:23:24.002576Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.470311Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.470215Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.595399Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.595085Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.470302Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(6, 6))\n",
+    "streets.plot(ax=ax, alpha=0.8, zorder=1, label=\"streets\")\n",
+    "facilities_snapped.plot(\n",
+    "    ax=ax,\n",
+    "    color=\"red\",\n",
+    "    zorder=2,\n",
+    "    label=f\"facility candidate sites ($n$={FACILITY_COUNT})\",\n",
+    ")\n",
+    "clients_snapped.plot(ax=ax, color=\"black\", label=f\"clients sites ($n$={CLIENT_COUNT})\")\n",
+    "plt.legend(loc=\"upper left\", bbox_to_anchor=(1.05, 1));"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Calculating the (network distance) cost matrix\n",
+    "Calculate the network distance between clients and facilities."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:24.508154Z",
+     "start_time": "2023-01-10T18:23:24.443415Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.597430Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.597330Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.619722Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.619490Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.597422Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "cost_matrix = ntw.allneighbordistances(\n",
+    "    sourcepattern=ntw.pointpatterns[\"clients\"],\n",
+    "    destpattern=ntw.pointpatterns[\"facilities\"],\n",
+    ")\n",
+    "cost_matrix.shape"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The expected result here is a network distance between clients and facilities points, in our case a 2D 100x10 array."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:24.515632Z",
+     "start_time": "2023-01-10T18:23:24.510830Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.620122Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.620049Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.622302Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.622102Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.620114Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "cost_matrix[:5, :]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:24.522587Z",
+     "start_time": "2023-01-10T18:23:24.517774Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.622637Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.622573Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.624864Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.624660Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.622630Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "cost_matrix[-5:, :]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "With ``PCenter.from_cost_matrix`` we model the $p$-center problem to minimize the maximum cost between any client and any facility while siting $p$ facilities, 3 in our case, and ensuring that each client is assigned to one, and only one, facility. We use the network distance matrix calculated above (in generic 'distance units') to model cost."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:24.552580Z",
+     "start_time": "2023-01-10T18:23:24.524382Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.625197Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.625133Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.637376Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.637142Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.625189Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "pcenter_from_cm = PCenter.from_cost_matrix(\n",
+    "    cost_matrix, p_facilities=P_FACILITIES, name=\"p-center-network-distance\"\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The expected result is a solved instance of `PCenter`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:24.840311Z",
+     "start_time": "2023-01-10T18:23:24.555653Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.637820Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.637729Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.760540Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.760261Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.637812Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "pcenter_from_cm = pcenter_from_cm.solve(solver)\n",
+    "pcenter_from_cm"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "What is the minimized maximum?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:24.847044Z",
+     "start_time": "2023-01-10T18:23:24.843050Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.761138Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.761047Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.763117Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.762919Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.761129Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "pcp_obj = round(pcenter_from_cm.problem.objective.value(), 3)\n",
+    "print(\n",
+    "    f\"A single largest minimized maximum distance of {pcp_obj} units is \"\n",
+    "    f\"observed between a client and selected candidate facility.\"\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-10-20T14:33:19.038494Z",
+     "start_time": "2022-10-20T14:33:18.576354Z"
+    }
+   },
+   "source": [
+    "Define the decision variable names used for mapping later."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:24.862596Z",
+     "start_time": "2023-01-10T18:23:24.849413Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.763500Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.763438Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.768968Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.768733Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.763493Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "facility_points[\"dv\"] = pcenter_from_cm.fac_vars\n",
+    "facility_points[\"dv\"] = facility_points[\"dv\"].map(lambda x: x.name.replace(\"_\", \"\"))\n",
+    "facilities_snapped[\"dv\"] = facility_points[\"dv\"]\n",
+    "facility_points"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Calculating euclidean distance from a `GeoDataFrame`\n",
+    "\n",
+    "With ``PCenter.from_cost_matrix`` we model the $p$-center problem to minimize the maximum cost between any client and any facility while siting $p$ facilities, 3 in our case, and ensuring that each client is assigned to one, and only one, facility. Here we use geodataframes to calculate a euclidean distance cost matrix.\n",
+    "\n",
+    "Next we will solve the $p$-center problem considering all 10 candidate locations for potential selection."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:24.894663Z",
+     "start_time": "2023-01-10T18:23:24.864627Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.769415Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.769336Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.782489Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.782254Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.769408Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "distance_metric = \"euclidean\"\n",
+    "pcenter_from_gdf = PCenter.from_geodataframe(\n",
+    "    clients_snapped,\n",
+    "    facilities_snapped,\n",
+    "    \"geometry\",\n",
+    "    \"geometry\",\n",
+    "    p_facilities=P_FACILITIES,\n",
+    "    distance_metric=distance_metric,\n",
+    "    name=f\"p-center-{distance_metric}-distance\",\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:25.093329Z",
+     "start_time": "2023-01-10T18:23:24.897532Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.782916Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.782833Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.862281Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.861980Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.782908Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "pcenter_from_gdf = pcenter_from_gdf.solve(solver)\n",
+    "pcp_obj = round(pcenter_from_gdf.problem.objective.value(), 3)\n",
+    "print(\n",
+    "    f\"A single largest minimized maximum distance of {pcp_obj} units is \"\n",
+    "    f\"observed between a client and selected candidate facility.\"\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "However, in many real world applications there may already be existing facility locations with the goal being to add one or more new facilities. Here we will define facilites $y_0$ and $y_1$ as already existing (they must be present in the model solution). This will lead to a sub-optimal solution.\n",
+    "\n",
+    "***Important:*** The facilities in `\"predefined_loc\"` are a binary array where `1` means the associated location must appear in the solution."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:25.108851Z",
+     "start_time": "2023-01-10T18:23:25.096664Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.863028Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.862866Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.867873Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.867652Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.863017Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "facility_points[\"predefined_loc\"] = 0\n",
+    "facility_points.loc[(0, 1), \"predefined_loc\"] = 1\n",
+    "facilities_snapped[\"predefined_loc\"] = facility_points[\"predefined_loc\"]\n",
+    "facility_points"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:25.141105Z",
+     "start_time": "2023-01-10T18:23:25.111148Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.868308Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.868240Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.881403Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.881185Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.868301Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "distance_metric = \"euclidean\"\n",
+    "pcenter_from_gdf_pre = PCenter.from_geodataframe(\n",
+    "    clients_snapped,\n",
+    "    facilities_snapped,\n",
+    "    \"geometry\",\n",
+    "    \"geometry\",\n",
+    "    p_facilities=P_FACILITIES,\n",
+    "    predefined_facility_col=\"predefined_loc\",\n",
+    "    distance_metric=distance_metric,\n",
+    "    name=f\"p-center-{distance_metric}-distance-predefined\",\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:25.348907Z",
+     "start_time": "2023-01-10T18:23:25.144186Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.881759Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.881684Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.973663Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.973373Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.881752Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "pcenter_from_gdf_pre = pcenter_from_gdf_pre.solve(solver)\n",
+    "pcp_obj = round(pcenter_from_gdf_pre.problem.objective.value(), 3)\n",
+    "print(\n",
+    "    f\"A single largest minimized maximum distance of {pcp_obj} units is \"\n",
+    "    f\"observed between a client and selected candidate facility.\"\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Plotting the results\n",
+    "\n",
+    "The two cells below describe the plotting of the results. For each method from the `PCenter` class (`.from_cost_matrix()`, `.from_geodataframe()`) there is a plot displaying the facility site that was selected with a star colored and the points covered with the same color."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:25.358146Z",
+     "start_time": "2023-01-10T18:23:25.352143Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.974363Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.974253Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.977240Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.977045Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.974352Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "dv_colors_arr = [\n",
+    "    \"darkcyan\",\n",
+    "    \"mediumseagreen\",\n",
+    "    \"saddlebrown\",\n",
+    "    \"darkslategray\",\n",
+    "    \"lightskyblue\",\n",
+    "    \"thistle\",\n",
+    "    \"lavender\",\n",
+    "    \"darkgoldenrod\",\n",
+    "    \"peachpuff\",\n",
+    "    \"coral\",\n",
+    "    \"mediumvioletred\",\n",
+    "    \"blueviolet\",\n",
+    "    \"fuchsia\",\n",
+    "    \"cyan\",\n",
+    "    \"limegreen\",\n",
+    "    \"mediumorchid\",\n",
+    "]\n",
+    "dv_colors = {f\"y{i}\": dv_colors_arr[i] for i in range(len(dv_colors_arr))}\n",
+    "dv_colors"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:25.372237Z",
+     "start_time": "2023-01-10T18:23:25.360304Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.977831Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.977753Z",
+     "iopub.status.idle": "2025-04-07T19:07:05.983763Z",
+     "shell.execute_reply": "2025-04-07T19:07:05.983524Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.977823Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def plot_results(model, p, facs, clis=None, ax=None):\n",
+    "    \"\"\"Visualize optimal solution sets and context.\"\"\"\n",
+    "    if not ax:\n",
+    "        multi_plot = False\n",
+    "        fig, ax = plt.subplots(figsize=(6, 6))\n",
+    "        markersize, markersize_factor = 4, 4\n",
+    "    else:\n",
+    "        ax.axis(\"off\")\n",
+    "        multi_plot = True\n",
+    "        markersize, markersize_factor = 2, 2\n",
+    "    ax.set_title(model.name, fontsize=15)\n",
+    "\n",
+    "    # extract facility-client relationships for plotting (except for p-dispersion)\n",
+    "    plot_clis = isinstance(clis, geopandas.GeoDataFrame)\n",
+    "    if plot_clis:\n",
+    "        cli_points = {}\n",
+    "    fac_sites = {}\n",
+    "    for i, dv in enumerate(model.fac_vars):\n",
+    "        if dv.varValue:\n",
+    "            dv, predef = facs.loc[i, [\"dv\", \"predefined_loc\"]]\n",
+    "            fac_sites[dv] = [i, predef]\n",
+    "            if plot_clis:\n",
+    "                geom = clis.iloc[model.fac2cli[i]][\"geometry\"]\n",
+    "                cli_points[dv] = geom\n",
+    "\n",
+    "    # study area and legend entries initialization\n",
+    "    streets.plot(ax=ax, alpha=1, color=\"black\", zorder=1)\n",
+    "    legend_elements = [mlines.Line2D([], [], color=\"black\", label=\"streets\")]\n",
+    "\n",
+    "    if plot_clis and model.name.startswith(\"mclp\"):\n",
+    "        # any clients that not asscociated with a facility\n",
+    "        c = \"k\"\n",
+    "        if model.n_cli_uncov:\n",
+    "            idx = [i for i, v in enumerate(model.cli2fac) if len(v) == 0]\n",
+    "            pnt_kws = {\n",
+    "                \"ax\": ax,\n",
+    "                \"fc\": c,\n",
+    "                \"ec\": c,\n",
+    "                \"marker\": \"s\",\n",
+    "                \"markersize\": 7,\n",
+    "                \"zorder\": 2,\n",
+    "            }\n",
+    "            clis.iloc[idx].plot(**pnt_kws)\n",
+    "        _label = f\"Demand sites not covered ($n$={model.n_cli_uncov})\"\n",
+    "        _mkws = {\n",
+    "            \"marker\": \"s\",\n",
+    "            \"markerfacecolor\": c,\n",
+    "            \"markeredgecolor\": c,\n",
+    "            \"linewidth\": 0,\n",
+    "        }\n",
+    "        legend_elements.append(mlines.Line2D([], [], ms=3, label=_label, **_mkws))\n",
+    "\n",
+    "    # all candidate facilities\n",
+    "    facs.plot(ax=ax, fc=\"brown\", marker=\"*\", markersize=80, zorder=8)\n",
+    "    _label = f\"Facility sites ($n$={len(model.fac_vars)})\"\n",
+    "    _mkws = {\"marker\": \"*\", \"markerfacecolor\": \"brown\", \"markeredgecolor\": \"brown\"}\n",
+    "    legend_elements.append(mlines.Line2D([], [], ms=7, lw=0, label=_label, **_mkws))\n",
+    "\n",
+    "    # facility-(client) symbology and legend entries\n",
+    "    zorder = 4\n",
+    "    for fname, (fac, predef) in fac_sites.items():\n",
+    "        cset = dv_colors[fname]\n",
+    "        if plot_clis:\n",
+    "            # clients\n",
+    "            geoms = cli_points[fname]\n",
+    "            gdf = geopandas.GeoDataFrame(geoms)\n",
+    "            gdf.plot(ax=ax, zorder=zorder, ec=\"k\", fc=cset, markersize=100 * markersize)\n",
+    "            _label = f\"Demand sites covered by {fname}\"\n",
+    "            _mkws = {\n",
+    "                \"markerfacecolor\": cset,\n",
+    "                \"markeredgecolor\": \"k\",\n",
+    "                \"ms\": markersize + 7,\n",
+    "            }\n",
+    "            legend_elements.append(\n",
+    "                mlines.Line2D([], [], marker=\"o\", lw=0, label=_label, **_mkws)\n",
+    "            )\n",
+    "        # facilities\n",
+    "        ec = \"k\"\n",
+    "        lw = 2\n",
+    "        predef_label = \"predefined\"\n",
+    "        if model.name.endswith(predef_label) and predef:\n",
+    "            ec = \"r\"\n",
+    "            lw = 3\n",
+    "            fname += f\" ({predef_label})\"\n",
+    "        facs.iloc[[fac]].plot(\n",
+    "            ax=ax, marker=\"*\", markersize=1000, zorder=9, fc=cset, ec=ec, lw=lw\n",
+    "        )\n",
+    "        _mkws = {\"markerfacecolor\": cset, \"markeredgecolor\": ec, \"markeredgewidth\": lw}\n",
+    "        legend_elements.append(\n",
+    "            mlines.Line2D([], [], marker=\"*\", ms=20, lw=0, label=fname, **_mkws)\n",
+    "        )\n",
+    "        # increment zorder up and markersize down for stacked client symbology\n",
+    "        zorder += 1\n",
+    "        if plot_clis:\n",
+    "            markersize -= markersize_factor / p\n",
+    "\n",
+    "    if not multi_plot:\n",
+    "        # legend\n",
+    "        kws = {\"loc\": \"upper left\", \"bbox_to_anchor\": (1.05, 0.7)}\n",
+    "        plt.legend(handles=legend_elements, **kws)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### P-Center built from cost matrix (network distance)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:25.939153Z",
+     "start_time": "2023-01-10T18:23:25.374661Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:05.984376Z",
+     "iopub.status.busy": "2025-04-07T19:07:05.984294Z",
+     "iopub.status.idle": "2025-04-07T19:07:06.175229Z",
+     "shell.execute_reply": "2025-04-07T19:07:06.175011Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:05.984369Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "plot_results(pcenter_from_cm, P_FACILITIES, facility_points, clis=client_points)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### P-Center built from geodataframes (euclidean distance)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:26.523393Z",
+     "start_time": "2023-01-10T18:23:25.941587Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:06.175645Z",
+     "iopub.status.busy": "2025-04-07T19:07:06.175566Z",
+     "iopub.status.idle": "2025-04-07T19:07:06.359500Z",
+     "shell.execute_reply": "2025-04-07T19:07:06.359291Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:06.175636Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "plot_results(pcenter_from_gdf, P_FACILITIES, facility_points, clis=client_points)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "You may notice that the model results are similar, yet different. This is expected as the distances between facility and demand points are calculated with different metrics (network vs. euclidean distance).\n",
+    "\n",
+    "### P-center with preselected facilities (euclidean distance)\n",
+    "\n",
+    "Finally, let's visualize the results of the $p$-center problem when stipulating that facilities $y_0$ and $y_1$ must be included in the final selection."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:27.147241Z",
+     "start_time": "2023-01-10T18:23:26.531040Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:06.359829Z",
+     "iopub.status.busy": "2025-04-07T19:07:06.359762Z",
+     "iopub.status.idle": "2025-04-07T19:07:06.546455Z",
+     "shell.execute_reply": "2025-04-07T19:07:06.546238Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:06.359821Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "plot_results(pcenter_from_gdf_pre, P_FACILITIES, facility_points, clis=client_points)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Here, the differences is explained by the preselected facilities $y_0$ and $y_1$. So, the $p$-center model chooses the facility $y_4$ to minimize maximum single cost to serve all clients.\n",
+    "\n",
+    "-----------------------------------\n",
+    "\n",
+    "## Comparing solution from varied metrics"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2023-01-10T18:23:28.811190Z",
+     "start_time": "2023-01-10T18:23:27.149672Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:07:06.546792Z",
+     "iopub.status.busy": "2025-04-07T19:07:06.546721Z",
+     "iopub.status.idle": "2025-04-07T19:07:07.030962Z",
+     "shell.execute_reply": "2025-04-07T19:07:07.030739Z",
+     "shell.execute_reply.started": "2025-04-07T19:07:06.546783Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "fig, axarr = plt.subplots(1, 3, figsize=(20, 10))\n",
+    "fig.subplots_adjust(wspace=-0.01)\n",
+    "for i, m in enumerate([pcenter_from_cm, pcenter_from_gdf, pcenter_from_gdf_pre]):\n",
+    "    plot_results(m, P_FACILITIES, facility_points, clis=client_points, ax=axarr[i])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## References\n",
+    "\n",
+    "- [Hakimi, S. L. (1965). Optimum Distribution of Switching Centers in a Communication Network and Some Related Graph Theoretic Problems. Operations Research, 13(3), 462–475.](https://doi:10.1287/opre.13.3.462) \n",
+    "\n",
+    "- [Hakimi, S. L. “Optimum Locations of Switching Centers and the Absolute Centers and Medians of a Graph.” Operations Research, vol. 12, no. 3, 1964, pp. 450–459.](https://doi.org/10.1287/opre.12.3.450)\n",
+    "\n",
+    "- [Calik H., Labbé M., Yaman H. (2015) p-Center Problems. In: Laporte G., Nickel S., Saldanha da Gama F. (eds) Location Science. Springer, Cham.](https://doi.org/10.1007/978-3-319-13111-5_4)\n",
+    "\n",
+    "- [Daskin, M. S. (2013). Network and Discrete Location: Models, Algorithms, and Applications (2nd ed.). Wiley.](https://onlinelibrary.wiley.com/doi/book/10.1002/9781118537015)\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "default",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.10"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

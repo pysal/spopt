@@ -1,0 +1,2708 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="reg-k-means.html">
+      
+      
+        <link rel="next" href="component_policy.html">
+      
+      
+      <link rel="icon" href="../_static/pysal_favicon.ico">
+    
+    
+      
+        <title>Random Regions - spopt</title>
+      
+    
+    
+      
+        
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+        <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#introduction" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="spopt" class="md-header__button md-logo" aria-label="spopt" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spopt
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Random Regions
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pysal/spopt/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/spopt
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="spopt" class="md-nav__button md-logo" aria-label="spopt" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    spopt
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pysal/spopt/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/spopt
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Home</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Installation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>Regionalization</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Regionalization</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="maxp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Max-<wbr>P Regionalization</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="azp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Automatic Zoning Procedure <wbr>(AZP) algorithm</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="sa3.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Adaptive Agglomerative Aggregation <wbr>(SA^3)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="skater.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>SKATER</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ward.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Ward</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reg-k-means.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Regional-<wbr>k-<wbr>means</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    <span>Random Regions</span>
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Random Regions</span>
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Introduction</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evaluating-regional-partitions-the-case-of-mexican-state-incomes" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>1.<wbr> Evaluating Regional Partitions:<wbr> The case of Mexican state incomes</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-good-is-hanson03-as-a-partition" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>How good is HANSON03 as a partition?</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How good is HANSON03 as a partition?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-random-partition-respecting-cardinality-constraints" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>A random partition respecting cardinality constraints</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-random-partition-respecting-cardinality-and-contiguity-constraints" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>A random partition respecting cardinality and contiguity constraints</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparing-partitions" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Comparing Partitions</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comparing Partitions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generating-a-reference-distribution" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Generating a Reference Distribution</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#demonstrating-the-max-swaps-parameter" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>2.<wbr> Demonstrating the max_<wbr>swaps parameter</span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="component_policy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Max-<wbr>P Regionalization for Multiple Components</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>References</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>Locate</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Locate</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Location Set Covering Problem <wbr>(LSCP)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscp_gis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Siting First Aid Stations with LSCP on Toronto’s University Campus</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscp_capacity.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Capacitated Location Set Covering Problem–System Optimal <wbr>(CLSCP-<wbr>SO)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscpb.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Backup Coverage Location Problem <wbr>(LSCP-<wbr>B)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mclp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Maximal Coverage Location Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mclp_gis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Siting Restaurants with MCLP in San Francisco</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-center.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>P-<wbr>Center Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-median.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Median Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-median_variations.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Comparing P-<wbr>Median Variations</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-dispersion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Dispersion <wbr>(max-<wbr>min-<wbr>min) Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="facloc-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Empirical examples of facility location problems</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="facloc-lscpb-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Backup Coverage Location Problem:<wbr> An Empirical Example</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="facloc-disperse-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Dispersion Problem:<wbr> An Empirical Example</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="flow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Flow Refueling Location Model <wbr>(FRLM)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>API</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>API</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>API reference</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>For contributors</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            <span>For contributors</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/spopt" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Git<wbr>Hub</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/spopt/releases" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Changelog</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Introduction</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evaluating-regional-partitions-the-case-of-mexican-state-incomes" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>1.<wbr> Evaluating Regional Partitions:<wbr> The case of Mexican state incomes</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-good-is-hanson03-as-a-partition" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>How good is HANSON03 as a partition?</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How good is HANSON03 as a partition?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-random-partition-respecting-cardinality-constraints" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>A random partition respecting cardinality constraints</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-random-partition-respecting-cardinality-and-contiguity-constraints" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>A random partition respecting cardinality and contiguity constraints</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparing-partitions" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Comparing Partitions</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comparing Partitions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generating-a-reference-distribution" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Generating a Reference Distribution</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#demonstrating-the-max-swaps-parameter" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>2.<wbr> Demonstrating the max_<wbr>swaps parameter</span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                
+                
+                  
+
+
+  
+    <a href="https://github.com/pysal/spopt/blob/main/docs/source/notebooks/randomregion.ipynb" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5zM6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41zm11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41z"/></svg>
+    </a>
+  
+  
+
+<h1 id="random-regions">Random Regions<a class="headerlink" href="#random-regions" title="Link to this heading">¶</a></h1>
+<p>Authors: <a class="reference external" href="https://github.com/sjsrey">Serge Rey</a>, <a class="reference external" href="https://github.com/jGaboardi">James Gaboardi</a></p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p>In this notebook we demonstrate how to use <code class="docutils literal notranslate"><span class="pre">spopt</span></code> with empirical and synthetic examples by:</p>
+<ol class="arabic simple">
+<li><p>Evaluating the properties of a predefined regionalization scheme.</p></li>
+<li><p>Exploring the <code class="docutils literal notranslate"><span class="pre">max_swaps</span></code> parameter on a simple lattice.</p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">spopt</span></code> offers functionality to generate random regions based on user-defined constraints. There are three optional parameters to constrain the regionalization: number of regions, cardinality, and contiguity. The default case simply takes a list of area IDs and randomly selects the number of regions and then allocates areas to each region. The user can also pass a vector of integers to the cardinality parameter to designate the number of areas to randomly assign to each region. The contiguity parameter takes a spatial weights object and uses that to ensure that each region is made up of spatially contiguous areas. When the contiguity constraint is enforced, it is possible to arrive at infeasible solutions; the <code class="docutils literal notranslate"><span class="pre">maxiter</span></code> parameter can be set to make multiple attempts to find a feasible solution.</p>
+<p>We begin with importing the relevant packages:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="o">%</span><span class="k">config</span> InlineBackend.figure_format = "retina"
+<span class="o">%</span><span class="k">load_ext</span> watermark
+<span class="o">%</span><span class="k">watermark</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Last updated: 2026-11-18T16:32:24.581658+01:00
+
+Python implementation: CPython
+Python version       : 3.14.10
+IPython version      : 9.18.1
+
+Compiler    : Clang 20.1.8 
+OS          : Darwin
+Release     : 27.0.0
+Machine     : arm64
+Processor   : arm
+CPU cores   : 10
+Architecture: 64bit
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inequality</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">spopt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spopt.region</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomRegion</span><span class="p">,</span> <span class="n">RandomRegions</span>
+
+<span class="n">RANDOM_SEED</span> <span class="o">=</span> <span class="mi">12345</span>
+
+<span class="o">%</span><span class="k">watermark</span> -w
+<span class="o">%</span><span class="k">watermark</span> -iv
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Watermark: 2.6.0
+
+geopandas : 1.2.0
+inequality: 1.2.1.dev6+g51ea3e7af
+libpysal  : 4.15.1.dev15+g10abcb628
+matplotlib: 3.11.2
+numpy     : 2.5.4
+pandas    : 3.1.1
+seaborn   : 0.13.2
+spopt     : 0.8.1.dev6+g356ab8d10.d20261118
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="evaluating-regional-partitions-the-case-of-mexican-state-incomes">1. Evaluating Regional Partitions: The case of Mexican state incomes<a class="headerlink" href="#evaluating-regional-partitions-the-case-of-mexican-state-incomes" title="Link to this heading">¶</a></h2>
+<p>We will be using the built-in example data set <code class="docutils literal notranslate"><span class="pre">mexico</span></code> from the <a class="reference external" href="https://pysal.org/libpysal/">libpysal</a> package. First, we get a high-level overview of the example:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="s2">"mexico"</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>mexico
+======
+
+Decennial per capita incomes of Mexican states 1940-2000
+--------------------------------------------------------
+
+* mexico.csv: attribute data. (n=32, k=13)
+* mexico.gal: spatial weights in GAL format.
+* mexicojoin.shp: Polygon shapefile. (n=32)
+
+Data used in Rey, S.J. and M.L. Sastre Gutierrez. (2010) "Interregional inequality dynamics in Mexico." Spatial Economic Analysis, 5: 277-298.
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">mdf</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">"mexicojoin.shp"</span><span class="p">))</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">mdf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>POLY_ID</th>
+      <th>AREA</th>
+      <th>CODE</th>
+      <th>NAME</th>
+      <th>PERIMETER</th>
+      <th>ACRES</th>
+      <th>HECTARES</th>
+      <th>PCGDP1940</th>
+      <th>PCGDP1950</th>
+      <th>PCGDP1960</th>
+      <th>...</th>
+      <th>GR9000</th>
+      <th>LPCGDP40</th>
+      <th>LPCGDP50</th>
+      <th>LPCGDP60</th>
+      <th>LPCGDP70</th>
+      <th>LPCGDP80</th>
+      <th>LPCGDP90</th>
+      <th>LPCGDP00</th>
+      <th>TEST</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>7.252751e+10</td>
+      <td>MX02</td>
+      <td>Baja California Norte</td>
+      <td>2040312.385</td>
+      <td>1.792187e+07</td>
+      <td>7252751.376</td>
+      <td>22361.0</td>
+      <td>20977.0</td>
+      <td>17865.0</td>
+      <td>...</td>
+      <td>0.05</td>
+      <td>4.35</td>
+      <td>4.32</td>
+      <td>4.25</td>
+      <td>4.40</td>
+      <td>4.47</td>
+      <td>4.43</td>
+      <td>4.48</td>
+      <td>1.0</td>
+      <td>MULTIPOLYGON (((-113.13972 29.01778, -113.2405...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>7.225988e+10</td>
+      <td>MX03</td>
+      <td>Baja California Sur</td>
+      <td>2912880.772</td>
+      <td>1.785573e+07</td>
+      <td>7225987.769</td>
+      <td>9573.0</td>
+      <td>16013.0</td>
+      <td>16707.0</td>
+      <td>...</td>
+      <td>0.00</td>
+      <td>3.98</td>
+      <td>4.20</td>
+      <td>4.22</td>
+      <td>4.39</td>
+      <td>4.46</td>
+      <td>4.41</td>
+      <td>4.42</td>
+      <td>2.0</td>
+      <td>MULTIPOLYGON (((-111.20612 25.80278, -111.2302...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>2.731957e+10</td>
+      <td>MX18</td>
+      <td>Nayarit</td>
+      <td>1034770.341</td>
+      <td>6.750785e+06</td>
+      <td>2731956.859</td>
+      <td>4836.0</td>
+      <td>7515.0</td>
+      <td>7621.0</td>
+      <td>...</td>
+      <td>-0.05</td>
+      <td>3.68</td>
+      <td>3.88</td>
+      <td>3.88</td>
+      <td>4.04</td>
+      <td>4.13</td>
+      <td>4.11</td>
+      <td>4.06</td>
+      <td>3.0</td>
+      <td>MULTIPOLYGON (((-106.62108 21.56531, -106.6475...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>7.961008e+10</td>
+      <td>MX14</td>
+      <td>Jalisco</td>
+      <td>2324727.436</td>
+      <td>1.967200e+07</td>
+      <td>7961008.285</td>
+      <td>5309.0</td>
+      <td>8232.0</td>
+      <td>9953.0</td>
+      <td>...</td>
+      <td>0.03</td>
+      <td>3.73</td>
+      <td>3.92</td>
+      <td>4.00</td>
+      <td>4.21</td>
+      <td>4.32</td>
+      <td>4.30</td>
+      <td>4.33</td>
+      <td>4.0</td>
+      <td>POLYGON ((-101.5249 21.85664, -101.5883 21.772...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>5.467030e+09</td>
+      <td>MX01</td>
+      <td>Aguascalientes</td>
+      <td>313895.530</td>
+      <td>1.350927e+06</td>
+      <td>546702.985</td>
+      <td>10384.0</td>
+      <td>6234.0</td>
+      <td>8714.0</td>
+      <td>...</td>
+      <td>0.13</td>
+      <td>4.02</td>
+      <td>3.79</td>
+      <td>3.94</td>
+      <td>4.21</td>
+      <td>4.32</td>
+      <td>4.32</td>
+      <td>4.44</td>
+      <td>5.0</td>
+      <td>POLYGON ((-101.8462 22.01176, -101.9653 21.883...</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 35 columns</p>
+</div></div></div>
+</div>
+<p>This data set records per capital Gross Domestic Product (PCGDP) for the decades 1940-2000 for 32 Mexican states.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">mdf</span><span class="o">.</span><span class="n">columns</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Index(['POLY_ID', 'AREA', 'CODE', 'NAME', 'PERIMETER', 'ACRES', 'HECTARES',
+       'PCGDP1940', 'PCGDP1950', 'PCGDP1960', 'PCGDP1970', 'PCGDP1980',
+       'PCGDP1990', 'PCGDP2000', 'HANSON03', 'HANSON98', 'ESQUIVEL99', 'INEGI',
+       'INEGI2', 'MAXP', 'GR4000', 'GR5000', 'GR6000', 'GR7000', 'GR8000',
+       'GR9000', 'LPCGDP40', 'LPCGDP50', 'LPCGDP60', 'LPCGDP70', 'LPCGDP80',
+       'LPCGDP90', 'LPCGDP00', 'TEST', 'geometry'],
+      dtype='str')
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>We can plot the spatial distribution of regional incomes in the last decade of the sample:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">mdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"PCGDP2000"</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s2">"quantiles"</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">"Blues"</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"grey"</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">legend_kwds</span><span class="o">=</span><span class="p">{</span><span class="s2">"fmt"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:.0f}</span><span class="s2">"</span><span class="p">},</span>
+<span class="p">)</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>(np.float64(-118.64174423217773),
+ np.float64(-85.21563186645508),
+ np.float64(13.6420334815979),
+ np.float64(33.6293231010437))
+</code></pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/3a5efe4dd70c08d904275bb94af948299a0b90ee26ca8fc0d7c8e9c993e4881b.png"><img alt="../_images/3a5efe4dd70c08d904275bb94af948299a0b90ee26ca8fc0d7c8e9c993e4881b.png" src="../_images/3a5efe4dd70c08d904275bb94af948299a0b90ee26ca8fc0d7c8e9c993e4881b.png" style="width: 640px; height: 390px;" />
+</a>
+</div>
+</div>
+<p>Here we see the north-south divide in the Mexican space economy. This pattern has been the subject of much recent research, and a common methodological strategy in these studies is to <em>partition</em> the states into mutually exclusive and exhaustive regions. The motivation is similar to that in traditional clustering where one attempts to group like objects together. Here the regional sets should be composed of states that are more similar to other members of the same set, and distinct from those states in other sets.</p>
+<p>Our dataset has a number of regionalization schemes from the published literature. Here we will focus on one <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code>. We can plot this partition using a categorical scheme:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">mdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">column</span><span class="o">=</span><span class="s2">"HANSON03"</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">);</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/0932546259d48e375d565cf443f104cf76f57b4837729a0cd07966e7debad294.png"><img alt="../_images/0932546259d48e375d565cf443f104cf76f57b4837729a0cd07966e7debad294.png" src="../_images/0932546259d48e375d565cf443f104cf76f57b4837729a0cd07966e7debad294.png" style="width: 640px; height: 390px;" />
+</a>
+</div>
+</div>
+<p>Here the different colors symbolize membership in a different region. We can examine the cardinality structure of this partition:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">cards</span> <span class="o">=</span> <span class="n">mdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">"HANSON03"</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">NAME</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">cards</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>[6, 7, 10, 2, 3, 4]
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Thus, we see there six regions (sets) of different sizes, the smallest region has only two states, while the largest (in a set-theory sense) has 10 states. We can explore the regional definitions in tabular form:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">mdf</span><span class="p">[[</span><span class="s2">"NAME"</span><span class="p">,</span> <span class="s2">"HANSON03"</span><span class="p">,</span> <span class="s2">"PCGDP2000"</span><span class="p">]]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">"HANSON03"</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>NAME</th>
+      <th>HANSON03</th>
+      <th>PCGDP2000</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Baja California Norte</td>
+      <td>1.0</td>
+      <td>29855.0</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>Nuevo Leon</td>
+      <td>1.0</td>
+      <td>38672.0</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>Coahuila De Zaragoza</td>
+      <td>1.0</td>
+      <td>28460.0</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>Chihuahua</td>
+      <td>1.0</td>
+      <td>30735.0</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>Sonora</td>
+      <td>1.0</td>
+      <td>24068.0</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>Tamaulipas</td>
+      <td>1.0</td>
+      <td>23546.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Baja California Sur</td>
+      <td>2.0</td>
+      <td>26103.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Nayarit</td>
+      <td>2.0</td>
+      <td>11478.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Aguascalientes</td>
+      <td>2.0</td>
+      <td>27782.0</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>San Luis Potosi</td>
+      <td>2.0</td>
+      <td>15866.0</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Zacatecas</td>
+      <td>2.0</td>
+      <td>11130.0</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>Durango</td>
+      <td>2.0</td>
+      <td>17379.0</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>Sinaloa</td>
+      <td>2.0</td>
+      <td>15242.0</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>Tlaxcala</td>
+      <td>3.0</td>
+      <td>11701.0</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Puebla</td>
+      <td>3.0</td>
+      <td>15685.0</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>Veracruz-Llave</td>
+      <td>3.0</td>
+      <td>12191.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Jalisco</td>
+      <td>3.0</td>
+      <td>21610.0</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Morelos</td>
+      <td>3.0</td>
+      <td>18170.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Guanajuato</td>
+      <td>3.0</td>
+      <td>15585.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Queretaro de Arteaga</td>
+      <td>3.0</td>
+      <td>26149.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Hidalgo</td>
+      <td>3.0</td>
+      <td>12348.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Michoacan de Ocampo</td>
+      <td>3.0</td>
+      <td>11838.0</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Colima</td>
+      <td>3.0</td>
+      <td>21358.0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Mexico</td>
+      <td>4.0</td>
+      <td>16322.0</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Distrito Federal</td>
+      <td>4.0</td>
+      <td>54349.0</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>Chiapas</td>
+      <td>5.0</td>
+      <td>8684.0</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>Oaxaca</td>
+      <td>5.0</td>
+      <td>9010.0</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>Guerrero</td>
+      <td>5.0</td>
+      <td>11820.0</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>Tabasco</td>
+      <td>6.0</td>
+      <td>13360.0</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>Quintana Roo</td>
+      <td>6.0</td>
+      <td>33442.0</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Campeche</td>
+      <td>6.0</td>
+      <td>36163.0</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Yucatan</td>
+      <td>6.0</td>
+      <td>17509.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<h2 id="how-good-is-hanson03-as-a-partition">How good is <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> as a partition?<a class="headerlink" href="#how-good-is-hanson03-as-a-partition" title="Link to this heading">¶</a></h2>
+<p>One question we might ask about the partition, is how good of a job does it do at capturing the spatial distribution of incomes in Mexico? To answer this question, we are going to leverage the random regions functionality in <code class="docutils literal notranslate"><span class="pre">spopt</span></code>.</p>
+<h3 id="a-random-partition-respecting-cardinality-constraints">A random partition respecting cardinality constraints<a class="headerlink" href="#a-random-partition-respecting-cardinality-constraints" title="Link to this heading">¶</a></h3>
+<p>We will first create a new random partition that has the same cardinality structure/distribution as the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ids</span> <span class="o">=</span> <span class="n">mdf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">RANDOM_SEED</span><span class="p">)</span>
+<span class="n">rrmx</span> <span class="o">=</span> <span class="n">RandomRegion</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">num_regions</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">cardinality</span><span class="o">=</span><span class="n">cards</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>This creates a new <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instance. One of its attributes is the definition of the regions in the partition:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">rrmx</span><span class="o">.</span><span class="n">regions</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>[[np.int64(27),
+  np.int64(12),
+  np.int64(18),
+  np.int64(3),
+  np.int64(15),
+  np.int64(8)],
+ [np.int64(0),
+  np.int64(25),
+  np.int64(21),
+  np.int64(20),
+  np.int64(7),
+  np.int64(6),
+  np.int64(24)],
+ [np.int64(23),
+  np.int64(10),
+  np.int64(13),
+  np.int64(11),
+  np.int64(19),
+  np.int64(16),
+  np.int64(26),
+  np.int64(14),
+  np.int64(17),
+  np.int64(22)],
+ [np.int64(28), np.int64(31)],
+ [np.int64(30), np.int64(9), np.int64(4)],
+ [np.int64(1), np.int64(29), np.int64(5), np.int64(2)]]
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>This will have the same cardinality as the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nb">len</span><span class="p">(</span><span class="n">region</span><span class="p">)</span> <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">rrmx</span><span class="o">.</span><span class="n">regions</span><span class="p">}</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">cards</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>True
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>A simple helper function let’s us attach the region labels for this new partition into the dataframe:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">region_labels</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"labels_"</span><span class="p">):</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">labels_</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,),</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">region</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">regions</span><span class="p">):</span>
+        <span class="n">labels_</span><span class="p">[</span><span class="n">region</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels_</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>And, then we can visualize the new partition:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">region_labels</span><span class="p">(</span><span class="n">mdf</span><span class="p">,</span> <span class="n">rrmx</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"rrmx"</span><span class="p">)</span>
+<span class="n">mdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">column</span><span class="o">=</span><span class="s2">"rrmx"</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">);</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/b5ad449e5701aa008e2b041b1b1291242cba6059b5b93fff0e049c1933dc399e.png"><img alt="../_images/b5ad449e5701aa008e2b041b1b1291242cba6059b5b93fff0e049c1933dc399e.png" src="../_images/b5ad449e5701aa008e2b041b1b1291242cba6059b5b93fff0e049c1933dc399e.png" style="width: 640px; height: 390px;" />
+</a>
+</div>
+</div>
+<p>While the <code class="docutils literal notranslate"><span class="pre">rrmx</span></code> partition and the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partitions have identical cardinality structures, their spatial distributions are radically different. The <code class="docutils literal notranslate"><span class="pre">rrmx</span></code> map looks nothing like the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> map.</p>
+<p>One of the key differences is that the sets in the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition are each spatially connected components while this is not the case for the “regions” in the <code class="docutils literal notranslate"><span class="pre">rrmx</span></code> partition.</p>
+<h3 id="a-random-partition-respecting-cardinality-and-contiguity-constraints">A random partition respecting cardinality and contiguity constraints<a class="headerlink" href="#a-random-partition-respecting-cardinality-and-contiguity-constraints" title="Link to this heading">¶</a></h3>
+<p>A second way to form a random partition is to add an additional constraint in the form of the spatial connectivity between the states. To do so, we will construct a spatial weights object using the <code class="docutils literal notranslate"><span class="pre">Queen</span></code> contiguity criterion:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">Queen</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">mdf</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>and then add this as an additional parameter to instantiate a new <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">RANDOM_SEED</span><span class="p">)</span>
+<span class="n">rrmxc</span> <span class="o">=</span> <span class="n">RandomRegion</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">num_regions</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">cardinality</span><span class="o">=</span><span class="n">cards</span><span class="p">,</span> <span class="n">contiguity</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">rrmxc</span><span class="o">.</span><span class="n">regions</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>[[np.int64(27), 5, 28, 8, 11, 24, 3, np.int64(4), np.int64(2), np.int64(29)],
+ [18, 19, 9, np.int64(21), np.int64(10), np.int64(12), np.int64(20)],
+ [np.int64(0), 22, 1, 25, 23, np.int64(26)],
+ [np.int64(13), 16, 14],
+ [np.int64(15), 17, 7, np.int64(6)],
+ [np.int64(31), 30]]
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>This will also have the same cardinality as the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nb">len</span><span class="p">(</span><span class="n">region</span><span class="p">)</span> <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">rrmxc</span><span class="o">.</span><span class="n">regions</span><span class="p">}</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">cards</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>True
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>But, more importantly, we see the partition yields spatially connected components for the regions:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">region_labels</span><span class="p">(</span><span class="n">mdf</span><span class="p">,</span> <span class="n">rrmxc</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"rrmxc"</span><span class="p">)</span>
+<span class="n">mdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">column</span><span class="o">=</span><span class="s2">"rrmxc"</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">);</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/9f87ac68cf6dbaed7638ea1250dfbddc67cad6a6bcf13247a611677b4201b256.png"><img alt="../_images/9f87ac68cf6dbaed7638ea1250dfbddc67cad6a6bcf13247a611677b4201b256.png" src="../_images/9f87ac68cf6dbaed7638ea1250dfbddc67cad6a6bcf13247a611677b4201b256.png" style="width: 640px; height: 390px;" />
+</a>
+</div>
+</div>
+<h2 id="comparing-partitions">Comparing Partitions<a class="headerlink" href="#comparing-partitions" title="Link to this heading">¶</a></h2>
+<p>We now can get back to the question of how good the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition does in capturing the spatial structure of state incomes in Mexico. Two alternative random partitions have been constructed using <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> and we can compare these with the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">ax3</span> <span class="o">=</span> <span class="n">axs</span>
+
+<span class="n">mdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"HANSON03"</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">"equal"</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"HANSON03"</span><span class="p">)</span>
+
+<span class="n">mdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"rrmx"</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">"equal"</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Cardinality Constrained"</span><span class="p">)</span>
+
+<span class="n">mdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"rrmxc"</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax3</span><span class="p">)</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">"equal"</span><span class="p">)</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Cardinality and Contiguity Constrained"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=-</span><span class="mf">0.2</span><span class="p">);</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/2d8298fdbf54745862c8de2dd6b0cb808789a856c9ec733fd5c3d3b178c185bf.png"><img alt="../_images/2d8298fdbf54745862c8de2dd6b0cb808789a856c9ec733fd5c3d3b178c185bf.png" src="../_images/2d8298fdbf54745862c8de2dd6b0cb808789a856c9ec733fd5c3d3b178c185bf.png" style="width: 950px; height: 254px;" />
+</a>
+</div>
+</div>
+<p>In order to judge the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> regions against those from the two random solutions, we need some objective function to serve as our benchmark. Given the interest in the spatial distribution of incomes, we might ask if a partition has minimized the internal heterogeneity of the incomes for states belonging to each set?</p>
+<p>We can use the PySAL <a class="reference external" href="https://inequality.readthedocs.io/en/latest/">inequality</a> package to implement this measure:</p>
+<p>Let’s focus on the last year in the sample and pull out the state incomes:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">mdf</span><span class="o">.</span><span class="n">PCGDP2000</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The <a class="reference external" href="https://inequality.readthedocs.io/en/latest/generated/inequality.theil.TheilD.html#inequality.theil.TheilD">TheilD</a> statistic decomposes the inequality of the 32 state incomes into two parts:</p>
+<ul class="simple">
+<li><p>inequality between states belonging to different regions (inequality between regions)</p></li>
+<li><p>inequality between states belonging to the same region (inequality within regions)</p></li>
+</ul>
+<p>We can calculate this for the original partition:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_hanson</span> <span class="o">=</span> <span class="n">inequality</span><span class="o">.</span><span class="n">theil</span><span class="o">.</span><span class="n">TheilD</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">mdf</span><span class="o">.</span><span class="n">HANSON03</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The overall level of inequality is:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_hanson</span><span class="o">.</span><span class="n">T</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(0.10660832349588023)
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>which is decomposed into the “between-regions” component:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_hanson</span><span class="o">.</span><span class="n">bg</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([0.05373534])
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>and the “within-regions” component:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_hanson</span><span class="o">.</span><span class="n">wg</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([0.05287298])
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>For this partition, the two components are roughly equal. How does this compare to a random partition? Well, for a random partition with the same cardinality structure as <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> we can carry out the same decomposition:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_rrmx</span> <span class="o">=</span> <span class="n">inequality</span><span class="o">.</span><span class="n">theil</span><span class="o">.</span><span class="n">TheilD</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">mdf</span><span class="o">.</span><span class="n">rrmx</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The level of overall inequality will be the same:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_rrmx</span><span class="o">.</span><span class="n">T</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(0.10660832349588023)
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>However, the decomposition is very different now, with the within component being much larger than the between component.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_rrmx</span><span class="o">.</span><span class="n">bg</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([0.02096667])
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_rrmx</span><span class="o">.</span><span class="n">wg</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([0.08564165])
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>How about when both cardinality and contiguity are taken into account when developing the random partition? We can pass in the partition definition for this solution into the decomposition:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_rrmxc</span> <span class="o">=</span> <span class="n">inequality</span><span class="o">.</span><span class="n">theil</span><span class="o">.</span><span class="n">TheilD</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">mdf</span><span class="o">.</span><span class="n">rrmxc</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Again, the total inequality remains the same:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_rrmxc</span><span class="o">.</span><span class="n">T</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(0.10660832349588023)
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>and the within-region component is even larger than either the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> and <code class="docutils literal notranslate"><span class="pre">rrmx</span></code> partitions:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_rrmxc</span><span class="o">.</span><span class="n">bg</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([0.01313884])
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_rrmxc</span><span class="o">.</span><span class="n">wg</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([0.09346949])
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="generating-a-reference-distribution">Generating a Reference Distribution<a class="headerlink" href="#generating-a-reference-distribution" title="Link to this heading">¶</a></h3>
+<p>Both of the comparison partitions are examples of random partitions, subject to matching the cardinality (<code class="docutils literal notranslate"><span class="pre">rrmx</span></code>) or cardinality and contiguity constraints (<code class="docutils literal notranslate"><span class="pre">rmxc</span></code>). As such, the generated partitions should be viewed as samples from the population of all possible random partitions that also respect those constraints. Rather than relying on a single draw from each of these distributions, as we have done up to now, if we sample from these distributions, we can develop an empirical reference distribution to compare the original <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition against. In other words, we can ask if the latter partition is performing any better than a random partition that respects the cardinality and contiguity constraints.</p>
+<p>We can do this by adding in a <code class="docutils literal notranslate"><span class="pre">permutations</span></code> argument to the class <code class="docutils literal notranslate"><span class="pre">RandomRegions</span></code>. Note the plural here in that this class is intended to generate <code class="docutils literal notranslate"><span class="pre">permutations</span></code> solutions for the random regions that respect the relevant cardinality and contiguity constraints. We will generate <code class="docutils literal notranslate"><span class="pre">permutations=99</span></code> solutions and calculate the inequality decomposition for each of the 99 partitions, extracting the <code class="docutils literal notranslate"><span class="pre">wg</span></code> component to develop the reference distribution
+against which we can evaluate the observed <code class="docutils literal notranslate"><span class="pre">wg</span></code> value from the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">RANDOM_SEED</span><span class="p">)</span>
+<span class="n">rrmxcs</span> <span class="o">=</span> <span class="n">RandomRegions</span><span class="p">(</span>
+    <span class="n">ids</span><span class="p">,</span> <span class="n">num_regions</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">cardinality</span><span class="o">=</span><span class="n">cards</span><span class="p">,</span> <span class="n">contiguity</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">99</span>
+<span class="p">)</span>
+<span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
+    <span class="n">wg</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">solution</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rrmxcs</span><span class="o">.</span><span class="n">solutions_feas</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"rrmxc_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">region_labels</span><span class="p">(</span><span class="n">mdf</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">wg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inequality</span><span class="o">.</span><span class="n">theil</span><span class="o">.</span><span class="n">TheilD</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">mdf</span><span class="p">[</span><span class="n">name</span><span class="p">])</span><span class="o">.</span><span class="n">wg</span><span class="p">)</span>
+<span class="n">wg</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">wg</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The mean of the within-region inequality component is:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">wg</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(0.08499903576350976)
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>which is larger than the observed value for <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_hanson</span><span class="o">.</span><span class="n">wg</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([0.05287298])
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Examining the empirical distribution of the within-region inequality component for the random partitions:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">rdf</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">wg</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"Within-region inequality"</span><span class="p">])</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">_</span> <span class="o">=</span> <span class="n">seaborn</span><span class="o">.</span><span class="n">displot</span><span class="p">(</span>
+    <span class="n">rdf</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"kde"</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">"Within-region inequality"</span><span class="p">,</span> <span class="n">rug</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">);</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/5452aa2e8caf620276d17f24a67493b9be44ae4a57b03f780c5254714af4a937.png"><img alt="../_images/5452aa2e8caf620276d17f24a67493b9be44ae4a57b03f780c5254714af4a937.png" src="../_images/5452aa2e8caf620276d17f24a67493b9be44ae4a57b03f780c5254714af4a937.png" style="width: 489px; height: 489px;" />
+</a>
+</div>
+</div>
+<p>provides a more comprehensive benchmark for evaluating the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition. We see that the observed within-region component is extreme relative to what we would expect if the partitions were formed randomly subject to the
+cardinality and contiguity constraints:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">t_hanson</span><span class="o">.</span><span class="n">wg</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([0.05287298])
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">wg</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(0.052392123130697826)
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>We could even formalize this statement by developing a pseudo p-value for the observed component:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">pvalue</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">wg</span> <span class="o">&lt;=</span> <span class="n">t_hanson</span><span class="o">.</span><span class="n">wg</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">/</span> <span class="mi">100</span>
+<span class="n">pvalue</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(0.02)
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>which would lead us to conclude that the observed value is significantly different from what would be expected under a random region null.</p>
+<p>So, yes,the <code class="docutils literal notranslate"><span class="pre">HANSON03</span></code> partition does appear to be capturing the spatial pattern of incomes in Mexico in the sense that its larger within-region inequality component is not due to random chance.</p>
+<hr class="docutils" />
+<h2 id="demonstrating-the-max-swaps-parameter">2. Demonstrating the <code class="docutils literal notranslate"><span class="pre">max_swaps</span></code> parameter<a class="headerlink" href="#demonstrating-the-max-swaps-parameter" title="Link to this heading">¶</a></h2>
+<p>Generate a 20 x 20 lattice in <code class="docutils literal notranslate"><span class="pre">spenc</span></code> with synthetic labels &amp; plot.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">hori</span><span class="p">,</span> <span class="n">vert</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span>
+<span class="n">n_polys</span> <span class="o">=</span> <span class="n">hori</span> <span class="o">*</span> <span class="n">vert</span>
+<span class="n">gdf</span> <span class="o">=</span> <span class="n">spopt</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">spenclib</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">lattice</span><span class="p">(</span><span class="n">hori</span><span class="p">,</span> <span class="n">vert</span><span class="p">)</span>
+<span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">RANDOM_SEED</span><span class="p">)</span>
+<span class="n">gdf</span><span class="p">[</span><span class="s2">"synth_data"</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">laplace</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">n_polys</span><span class="p">)</span>
+<span class="n">gdf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>synth_data</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))</td>
+      <td>119.606435</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POLYGON ((0 1, 1 1, 1 2, 0 2, 0 1))</td>
+      <td>95.423219</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POLYGON ((0 2, 1 2, 1 3, 0 3, 0 2))</td>
+      <td>89.998863</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POLYGON ((0 3, 1 3, 1 4, 0 4, 0 3))</td>
+      <td>91.062546</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POLYGON ((0 4, 1 4, 1 5, 0 5, 0 4))</td>
+      <td>101.455462</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">"figure.figsize"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+<span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"synth_data"</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s2">"quantiles"</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">"Blues"</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"grey"</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">legend_kwds</span><span class="o">=</span><span class="p">{</span><span class="s2">"fmt"</span><span class="p">:</span> <span class="s2">"</span><span class="si">{:.2f}</span><span class="s2">"</span><span class="p">},</span>
+<span class="p">);</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/a943024240734487504af5e6c9fa303d9824f888b3b2c375087806deda2c68d1.png"><img alt="../_images/a943024240734487504af5e6c9fa303d9824f888b3b2c375087806deda2c68d1.png" src="../_images/a943024240734487504af5e6c9fa303d9824f888b3b2c375087806deda2c68d1.png" style="width: 848px; height: 830px;" />
+</a>
+</div>
+</div>
+<p>Set the number of desired regions to 4.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">n_regions</span> <span class="o">=</span> <span class="mi">4</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Define IDs &amp; set cardinality to 100 areas per region.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ids</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">cards</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">n_polys</span> <span class="o">/</span> <span class="n">n_regions</span><span class="p">)]</span> <span class="o">*</span> <span class="n">n_regions</span>
+<span class="n">cards</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>[100, 100, 100, 100]
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Generate a <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instance (constraining only region count and cardinality) and plot.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">RANDOM_SEED</span><span class="p">)</span>
+<span class="n">rrlat</span> <span class="o">=</span> <span class="n">RandomRegion</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">num_regions</span><span class="o">=</span><span class="n">n_regions</span><span class="p">,</span> <span class="n">cardinality</span><span class="o">=</span><span class="n">cards</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">region_labels</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">rrlat</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"rrlat"</span><span class="p">)</span>
+<span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"rrlat"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"tab20"</span><span class="p">);</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/5521502ba2254a80c745d393474b17d3a3bb7b506daf651a0d8173855cd58424.png"><img alt="../_images/5521502ba2254a80c745d393474b17d3a3bb7b506daf651a0d8173855cd58424.png" src="../_images/5521502ba2254a80c745d393474b17d3a3bb7b506daf651a0d8173855cd58424.png" style="width: 848px; height: 830px;" />
+</a>
+</div>
+</div>
+<p>Create a <code class="docutils literal notranslate"><span class="pre">Queen</span></code> weights object to define spatial contiguity.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">Queen</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">gdf</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Iterate over <code class="docutils literal notranslate"><span class="pre">max_swaps=[100,</span> <span class="pre">350,</span> <span class="pre">650,</span> <span class="pre">999]</span></code> for 4 <code class="docutils literal notranslate"><span class="pre">RandomRegion</span></code> instances.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">swaps</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">350</span><span class="p">,</span> <span class="mi">650</span><span class="p">,</span> <span class="mi">999</span><span class="p">]:</span>
+    <span class="n">swap_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"rrlatms</span><span class="si">{</span><span class="n">swaps</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">RANDOM_SEED</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">RandomRegion</span><span class="p">(</span>
+        <span class="n">ids</span><span class="p">,</span>
+        <span class="n">num_regions</span><span class="o">=</span><span class="n">n_regions</span><span class="p">,</span>
+        <span class="n">cardinality</span><span class="o">=</span><span class="n">cards</span><span class="p">,</span>
+        <span class="n">contiguity</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
+        <span class="n">compact</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">max_swaps</span><span class="o">=</span><span class="n">swaps</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">region_labels</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">swap_str</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Assign labels and titles, then plot.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">"synth_data"</span><span class="p">,</span> <span class="s2">"rrlatms100"</span><span class="p">,</span> <span class="s2">"rrlatms650"</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"rrlat"</span><span class="p">,</span> <span class="s2">"rrlatms350"</span><span class="p">,</span> <span class="s2">"rrlatms999"</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">titles</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">"Data"</span><span class="p">,</span> <span class="s2">"Max 100 Swaps"</span><span class="p">,</span> <span class="s2">"Max 650 Swaps"</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"Unconstrained"</span><span class="p">,</span> <span class="s2">"Max 350 Swaps"</span><span class="p">,</span> <span class="s2">"Max 999 Swaps"</span><span class="p">],</span>
+<span class="p">]</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+        <span class="n">label</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">],</span> <span class="n">titles</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">_ax</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">kws</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"scheme"</span><span class="p">:</span> <span class="s2">"quantiles"</span><span class="p">,</span> <span class="s2">"cmap"</span><span class="p">:</span> <span class="s2">"Blues"</span><span class="p">,</span> <span class="s2">"ec"</span><span class="p">:</span> <span class="s2">"grey"</span><span class="p">}</span>
+            <span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">_ax</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">_ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"tab20"</span><span class="p">)</span>
+        <span class="n">_ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+        <span class="n">_ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+        <span class="n">_ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">"equal"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/c80701b2bd3cddae0b229fd5c8673bc9bb04c339744a88696de3cbf4303444bc.png"><img alt="../_images/c80701b2bd3cddae0b229fd5c8673bc9bb04c339744a88696de3cbf4303444bc.png" src="../_images/c80701b2bd3cddae0b229fd5c8673bc9bb04c339744a88696de3cbf4303444bc.png" style="width: 890px; height: 653px;" />
+</a>
+</div>
+</div>
+<p>As shown here, the results obtained from setting the maximum number of swaps clearly vary.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2018-, pysal developers.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    9.2.0.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/spopt/versions.json"}}</script>
+    
+      
+        <script src="../_static/sphinx_immaterial_theme.ce3f826234c1e494c.min.js?v=6917d573"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+    
+  </body>
+</html>

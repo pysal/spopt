@@ -1,0 +1,2425 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="sa3.html">
+      
+      
+        <link rel="next" href="ward.html">
+      
+      
+      <link rel="icon" href="../_static/pysal_favicon.ico">
+    
+    
+      
+        <title>SKATER - spopt</title>
+      
+    
+    
+      
+        
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+        <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#spatial-k-luster-analysis-by-tree-edge-removal-clustering-airbnb-spots-in-chicago" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="spopt" class="md-header__button md-logo" aria-label="spopt" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spopt
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SKATER
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pysal/spopt/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/spopt
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="spopt" class="md-nav__button md-logo" aria-label="spopt" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    spopt
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pysal/spopt/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/spopt
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Home</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Installation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>Regionalization</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Regionalization</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="maxp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Max-<wbr>P Regionalization</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="azp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Automatic Zoning Procedure <wbr>(AZP) algorithm</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="sa3.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Adaptive Agglomerative Aggregation <wbr>(SA^3)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    <span>SKATER</span>
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>SKATER</span>
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#spatial-k-luster-analysis-by-tree-edge-removal-clustering-airbnb-spots-in-chicago" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Spatial ‘K’luster Analysis by Tree Edge Removal:<wbr> Clustering Airbnb Spots in Chicago</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#an-explanation-of-the-skater-algorithm" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>1.<wbr> An explanation of the SKATER algorithm</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supporting-data-airbnb-spots-in-chicago" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>2.<wbr> Supporting data:<wbr> Airbnb Spots in Chicago</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-parameters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>3.<wbr> Understanding parameters</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#regionalization" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>4.<wbr> Regionalization</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exploring-parameters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>5.<wbr> Exploring parameters</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Exploring parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#increasing-n-clusters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Increasing n_<wbr>clusters</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#increasing-floor" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Increasing floor</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clustering-on-more-than-one-variable" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Clustering on more than one variable</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ward.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Ward</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reg-k-means.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Regional-<wbr>k-<wbr>means</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="randomregion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Random Regions</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="component_policy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Max-<wbr>P Regionalization for Multiple Components</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>References</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>Locate</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Locate</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Location Set Covering Problem <wbr>(LSCP)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscp_gis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Siting First Aid Stations with LSCP on Toronto’s University Campus</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscp_capacity.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Capacitated Location Set Covering Problem–System Optimal <wbr>(CLSCP-<wbr>SO)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscpb.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Backup Coverage Location Problem <wbr>(LSCP-<wbr>B)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mclp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Maximal Coverage Location Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mclp_gis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Siting Restaurants with MCLP in San Francisco</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-center.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>P-<wbr>Center Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-median.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Median Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-median_variations.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Comparing P-<wbr>Median Variations</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-dispersion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Dispersion <wbr>(max-<wbr>min-<wbr>min) Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="facloc-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Empirical examples of facility location problems</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="facloc-lscpb-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Backup Coverage Location Problem:<wbr> An Empirical Example</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="facloc-disperse-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Dispersion Problem:<wbr> An Empirical Example</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="flow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Flow Refueling Location Model <wbr>(FRLM)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>API</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>API</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>API reference</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>For contributors</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            <span>For contributors</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/spopt" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Git<wbr>Hub</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/spopt/releases" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Changelog</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#spatial-k-luster-analysis-by-tree-edge-removal-clustering-airbnb-spots-in-chicago" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Spatial ‘K’luster Analysis by Tree Edge Removal:<wbr> Clustering Airbnb Spots in Chicago</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#an-explanation-of-the-skater-algorithm" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>1.<wbr> An explanation of the SKATER algorithm</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supporting-data-airbnb-spots-in-chicago" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>2.<wbr> Supporting data:<wbr> Airbnb Spots in Chicago</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-parameters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>3.<wbr> Understanding parameters</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#regionalization" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>4.<wbr> Regionalization</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exploring-parameters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>5.<wbr> Exploring parameters</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Exploring parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#increasing-n-clusters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Increasing n_<wbr>clusters</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#increasing-floor" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Increasing floor</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clustering-on-more-than-one-variable" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Clustering on more than one variable</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                
+                
+                  
+
+
+  
+    <a href="https://github.com/pysal/spopt/blob/main/docs/source/notebooks/skater.ipynb" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5zM6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41zm11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41z"/></svg>
+    </a>
+  
+  
+
+<h1 id="skater">SKATER<a class="headerlink" href="#skater" title="Link to this heading">¶</a></h1>
+<h2 id="spatial-k-luster-analysis-by-tree-edge-removal-clustering-airbnb-spots-in-chicago">Spatial ‘K’luster Analysis by Tree Edge Removal: Clustering Airbnb Spots in Chicago<a class="headerlink" href="#spatial-k-luster-analysis-by-tree-edge-removal-clustering-airbnb-spots-in-chicago" title="Link to this heading">¶</a></h2>
+<p>Authors: <a class="reference external" href="https://github.com/xf37">Xin Feng</a>, <a class="reference external" href="https://github.com/jGaboardi">James Gaboardi</a></p>
+<hr class="docutils" />
+<p>The tutorial is broken out as follows:</p>
+<ol class="arabic simple">
+<li><p>An explanation of the SKATER algorithm</p></li>
+<li><p>Supporting data: Airbnb Spots in Chicago</p></li>
+<li><p>Understanding parameters</p></li>
+<li><p>Regionalization</p></li>
+<li><p>Exploring parameters</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="o">%</span><span class="k">config</span> InlineBackend.figure_format = "retina"
+<span class="o">%</span><span class="k">load_ext</span> watermark
+<span class="o">%</span><span class="k">watermark</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Last updated: 2026-11-18T16:33:25.341752+01:00
+
+Python implementation: CPython
+Python version       : 3.14.10
+IPython version      : 9.18.1
+
+Compiler    : Clang 20.1.8 
+OS          : Darwin
+Release     : 27.0.0
+Machine     : arm64
+Processor   : arm
+CPU cores   : 10
+Architecture: 64bit
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shapely</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">pairwise</span> <span class="k">as</span> <span class="n">skm</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">spopt</span>
+
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="o">%</span><span class="k">watermark</span> -w
+<span class="o">%</span><span class="k">watermark</span> -iv
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Watermark: 2.6.0
+
+geopandas : 1.2.0
+libpysal  : 4.15.1.dev15+g10abcb628
+matplotlib: 3.11.2
+numpy     : 2.5.4
+pandas    : 3.1.1
+shapely   : 2.2.0
+sklearn   : 1.9.1
+spopt     : 0.8.1.dev6+g356ab8d10.d20261118
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="an-explanation-of-the-skater-algorithm">1. An explanation of the <em>SKATER</em> algorithm<a class="headerlink" href="#an-explanation-of-the-skater-algorithm" title="Link to this heading">¶</a></h2>
+<p><em>SKATER</em> (<a class="reference external" href="https://doi.org/10.1080/13658810600665111">Assunção et al. 2006</a>) is a constrained spatial regionalization algorithm based on spanning tree pruning. The number of edges is pre-specified to be cut in a continuous tree to group spatial units into contiguous regions.</p>
+<p>The first step of <em>SKATER</em> is to create a connectivity graph that captures the neighbourhood relationship between the spatial objects. The cost of each edge in the graph is inversely proportional to the similarity between the regions it joins. The neighbourhood is structured by a <a class="reference external" href="https://en.wikipedia.org/wiki/Minimum_spanning_tree">minimum spanning tree</a> (MST), which is a connected tree with no circuits. The next step is to partition the MST by successive removal of edges that link dissimilar regions. The final result is the division of the spatial objects into connected regions that have maximum internal homogeneity.</p>
+<ul class="simple">
+<li><p><strong>RM Assunção, MC Neves, G Câmara, and C da Costa Freitas</strong>. <em>Efficient regionalization techniques for socio-economic geographical units using minimum spanning trees</em>. International Journal of Geographical Information Science, 20(7):797–811, 2006. doi: <a class="reference external" href="https://doi.org/10.1080/13658810600665111">10.1080/13658810600665111</a>.</p></li>
+</ul>
+<p>See also <a class="reference external" href="https://www.dshkol.com/post/spatially-constrained-clustering-and-regionalization/">Dmitry Shkolnik’s tutorial</a> of the <em>SKATER</em> algorithm implemented in Roger Bivand’s <code class="docutils literal notranslate"><span class="pre">R</span></code> package, <a class="reference external" href="https://r-spatial.github.io/spdep/index.html">spdep</a>.</p>
+<hr class="docutils" />
+<h2 id="supporting-data-airbnb-spots-in-chicago">2. Supporting data: Airbnb Spots in Chicago<a class="headerlink" href="#supporting-data-airbnb-spots-in-chicago" title="Link to this heading">¶</a></h2>
+<p>To illustrate <code class="docutils literal notranslate"><span class="pre">Skater</span></code> we utilize data on Airbnb spots in Chicago, which can be downloaded from <a class="reference external" href="https://pysal.org/notebooks/lib/libpysal/Example_Datasets.html">libpysal.examples</a>. The data is broken down into 77 communites in Chicago, Illinois from 2015, where a number of attributes are listed for each community.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s2">"AirBnB"</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;libpysal.examples.base.Example at 0x167846510&gt;
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">chicago</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">"airbnb_Chicago 2015.shp"</span><span class="p">))</span>
+<span class="n">chicago</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>(77, 21)
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">chicago</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>community                                               DOUGLAS
+shape_area                                        46004621.1581
+shape_len                                         31027.0545098
+AREAID                                                       35
+response_r                                            98.771429
+accept_r                                              94.514286
+rev_rating                                            87.777778
+price_pp                                              78.157895
+room_type                                              1.789474
+num_spots                                                    38
+poverty                                                    29.6
+crowded                                                     1.8
+dependency                                                 30.7
+without_hs                                                 14.3
+unemployed                                                 18.2
+income_pc                                                 23791
+harship_in                                                   47
+num_crimes                                                 5013
+num_theft                                                  1241
+population                                                18238
+geometry      POLYGON ((-87.60914087617012 41.84469250346108...
+Name: 0, dtype: object
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>We can visualize the data by plotting the number of Airbnb spots in each community in the sample, using a quintile classification:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">chicago</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"num_spots"</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s2">"Quantiles"</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">"GnBu"</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"grey"</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">);</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/e0163df2e2b8083d35b727468693fde400e7e83372bb5b75e738d8b2b1aeab69.png"><img alt="../_images/e0163df2e2b8083d35b727468693fde400e7e83372bb5b75e738d8b2b1aeab69.png" src="../_images/e0163df2e2b8083d35b727468693fde400e7e83372bb5b75e738d8b2b1aeab69.png" style="width: 562px; height: 682px;" />
+</a>
+</div>
+</div>
+<hr class="docutils" />
+<h2 id="understanding-parameters">3. Understanding parameters<a class="headerlink" href="#understanding-parameters" title="Link to this heading">¶</a></h2>
+<p>With Skater, we can cluster these 77 communities into 5 regions such that each region consists of at least 5 communities. The homogeneity of the number of Airbnb spots per community within the regions is maximized.</p>
+<p>We first define the variable that will be used to measure regional homogeneity, which is the number of Airbnb spots in this case.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">attrs_name</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"num_spots"</span><span class="p">]</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Next, we specify a number of other parameters that will serve as input to the <code class="docutils literal notranslate"><span class="pre">skater</span></code> model, including the spatial weights (to describe the relationship between the spatial objects), the number of regions to include in the solution, the minimal threshold of spatial objects in each region, etc.</p>
+<p>A <a class="reference external" href="https://pysal.org/libpysal/tutorial.html">spatial weights object</a> describes the spatial connectivity of the spatial objects:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">Queen</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">chicago</span><span class="p">,</span> <span class="n">use_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The number of contiguous regions that we would like to group spatial units into:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">n_clusters</span> <span class="o">=</span> <span class="mi">5</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The minimum number of spatial objects in each region：</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">floor</span> <span class="o">=</span> <span class="mi">5</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">trace</span></code> is a bool denoting whether to store intermediate labelings as the tree gets pruned.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">trace</span> <span class="o">=</span> <span class="kc">False</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">islands</span></code> keyword argument describes what is to be done with islands. It can be set to either <code class="docutils literal notranslate"><span class="pre">'ignore'</span></code>, which will treat each island as its own region when solving for <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> regions, or <code class="docutils literal notranslate"><span class="pre">'increase'</span></code>, which will consider each island as its own region and add to <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> regions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">islands</span> <span class="o">=</span> <span class="s2">"increase"</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>We can also specify some keywords as input to the spanning forest algorithm, including:</p>
+<ul class="simple">
+<li><p><strong>dissimilarity</strong></p>
+<ul>
+<li><p>A callable distance metric, with the default as <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.manhattan_distances.html">sklearn.metrics.pairwise.manhattan_distances</a>.</p></li>
+</ul>
+</li>
+<li><p><strong>affinity</strong></p>
+<ul>
+<li><p>A callable affinity metric between 0 and 1, which is inverted to provide a dissimilarity metric. No metric is provided as a default (<code class="docutils literal notranslate"><span class="pre">None</span></code>). If <code class="docutils literal notranslate"><span class="pre">affinity</span></code> is desired, <code class="docutils literal notranslate"><span class="pre">dissimilarity</span></code> <em><strong>must</strong></em> explicitly be set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</li>
+<li><p><strong>reduction</strong></p>
+<ul>
+<li><p>The reduction applied over all clusters to provide the map score, with the default as <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.sum.html">numpy.sum()</a>.</p></li>
+</ul>
+</li>
+<li><p><strong>center</strong></p>
+<ul>
+<li><p>The method for computing the center of each region in attribute space with the default as <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.mean.html">numpy.mean()</a>.</p></li>
+</ul>
+</li>
+<li><p><strong>verbose</strong></p>
+<ul>
+<li><p>A flag for how much output to provide to the user in terms of print statements and progress bars. Set to <code class="docutils literal notranslate"><span class="pre">1</span></code> for minimal output and <code class="docutils literal notranslate"><span class="pre">2</span></code> for full output. The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>, which provides no output.</p></li>
+</ul>
+</li>
+</ul>
+<p>See <code class="docutils literal notranslate"><span class="pre">spopt.region.skater.SpanningForest</span></code> for documentation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">spanning_forest_kwds</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"dissimilarity"</span><span class="p">:</span> <span class="n">skm</span><span class="o">.</span><span class="n">manhattan_distances</span><span class="p">,</span>
+    <span class="s2">"affinity"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">"reduction"</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+    <span class="s2">"center"</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
+    <span class="s2">"verbose"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="regionalization">4. Regionalization<a class="headerlink" href="#regionalization" title="Link to this heading">¶</a></h2>
+<p>The model can then be instantiated and solved:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">model</span> <span class="o">=</span> <span class="n">spopt</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">Skater</span><span class="p">(</span>
+    <span class="n">chicago</span><span class="p">,</span>
+    <span class="n">w</span><span class="p">,</span>
+    <span class="n">attrs_name</span><span class="p">,</span>
+    <span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span>
+    <span class="n">floor</span><span class="o">=</span><span class="n">floor</span><span class="p">,</span>
+    <span class="n">trace</span><span class="o">=</span><span class="n">trace</span><span class="p">,</span>
+    <span class="n">islands</span><span class="o">=</span><span class="n">islands</span><span class="p">,</span>
+    <span class="n">spanning_forest_kwds</span><span class="o">=</span><span class="n">spanning_forest_kwds</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Computing Affinity Kernel took 0.00s
+Computing initial MST took 0.00s
+Computing connected components took 0.00s.
+making cut deletion(in_node=np.int32(45), out_node=np.int32(67), score=3445.5)...
+making cut deletion(in_node=np.int32(13), out_node=np.int32(15), score=2574.6813186813188)...
+making cut deletion(in_node=np.int32(2), out_node=np.int32(34), score=2146.556998556998)...
+making cut deletion(in_node=np.int32(3), out_node=np.int32(34), score=2025.520634920635)...
+</code></pre></div>
+</div>
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "2e9cfcee8e29487384da929b7df05b1c"}</script><script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "4a19a0f4549f4bdcb706a9fbc3557ff4"}</script><script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "cfe490b16b6242e0b38951c0ae299127"}</script><script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "bc3ed3136355421395bff51af5d630c1"}</script></div>
+</div>
+<p>Region labels can then be added to the <code class="docutils literal notranslate"><span class="pre">GeoDataFrame</span></code> from the <code class="docutils literal notranslate"><span class="pre">model</span></code> object and used for plotting.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">chicago</span><span class="p">[</span><span class="s2">"demo_regions"</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">labels_</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">chicago</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span> <span class="n">column</span><span class="o">=</span><span class="s2">"demo_regions"</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"w"</span>
+<span class="p">)</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">);</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/faedce8345ac1a7da0239eea828c1045a58a6e26b8af4c769b2eceb02e72befc.png"><img alt="../_images/faedce8345ac1a7da0239eea828c1045a58a6e26b8af4c769b2eceb02e72befc.png" src="../_images/faedce8345ac1a7da0239eea828c1045a58a6e26b8af4c769b2eceb02e72befc.png" style="width: 562px; height: 682px;" />
+</a>
+</div>
+</div>
+<p>The model solution results in five regions, two of which have five communities, one with six, one with seven, and one with fifty-four.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">chicago</span><span class="p">[</span><span class="s2">"count"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">chicago</span><span class="p">[[</span><span class="s2">"demo_regions"</span><span class="p">,</span> <span class="s2">"count"</span><span class="p">]]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">"demo_regions"</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>count</th>
+    </tr>
+    <tr>
+      <th>demo_regions</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>54</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>6</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<hr class="docutils" />
+<h2 id="exploring-parameters">5. Exploring parameters<a class="headerlink" href="#exploring-parameters" title="Link to this heading">¶</a></h2>
+<p>There are myriad parameter combinations that can be passed in for regionalizing with <code class="docutils literal notranslate"><span class="pre">Skater</span></code>. Here we will explore two combinations of parameters.</p>
+<ul class="simple">
+<li><p>Increasing <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> while holding all other parameters constant</p></li>
+<li><p>Increasing <code class="docutils literal notranslate"><span class="pre">floor</span></code> while holding all other parameters constant</p></li>
+<li><p>Clustering on multiple variables</p></li>
+</ul>
+<h3 id="increasing-n-clusters">Increasing <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code><a class="headerlink" href="#increasing-n-clusters" title="Link to this heading">¶</a></h3>
+<p>Let’s see how regionalization results differ when increasing <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> from 2 to 10 by increments of 2.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">n_clusters_range</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+<span class="n">n_clusters_range</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>[2, 4, 6, 8, 10]
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>For each regionalization run we will hold the other parameters constant.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">floor</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">islands</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"increase"</span>
+<span class="n">spanning_forest_kwds</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"dissimilarity"</span><span class="p">:</span> <span class="n">skm</span><span class="o">.</span><span class="n">manhattan_distances</span><span class="p">,</span>
+    <span class="s2">"affinity"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">"reduction"</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+    <span class="s2">"center"</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
+    <span class="s2">"verbose"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Solve.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">ncluster</span> <span class="ow">in</span> <span class="n">n_clusters_range</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">spopt</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">Skater</span><span class="p">(</span>
+        <span class="n">chicago</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">,</span>
+        <span class="n">attrs_name</span><span class="p">,</span>
+        <span class="n">n_clusters</span><span class="o">=</span><span class="n">ncluster</span><span class="p">,</span>
+        <span class="n">floor</span><span class="o">=</span><span class="n">floor</span><span class="p">,</span>
+        <span class="n">trace</span><span class="o">=</span><span class="n">trace</span><span class="p">,</span>
+        <span class="n">islands</span><span class="o">=</span><span class="n">islands</span><span class="p">,</span>
+        <span class="n">spanning_forest_kwds</span><span class="o">=</span><span class="n">spanning_forest_kwds</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+    <span class="n">chicago</span><span class="p">[</span><span class="sa">f</span><span class="s2">"clusters_</span><span class="si">{</span><span class="n">ncluster</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">labels_</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Plot results.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_clusters_range</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">clust</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">n_clusters_range</span><span class="p">):</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"clusters_</span><span class="si">{</span><span class="n">clust</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">chicago</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axarr</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"tab20"</span><span class="p">)</span>
+    <span class="n">axarr</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">axarr</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/bd83dd02bc1536b4d979d298130d3e4e5c9651d57fa8f02f67b6fc368345b7fc.png"><img alt="../_images/bd83dd02bc1536b4d979d298130d3e4e5c9651d57fa8f02f67b6fc368345b7fc.png" src="../_images/bd83dd02bc1536b4d979d298130d3e4e5c9651d57fa8f02f67b6fc368345b7fc.png" style="width: 890px; height: 238px;" />
+</a>
+</div>
+</div>
+<p>Above we can see that regions become more dispersed and boundaries become more consistent as the number of desired clusters increases. Also, we can investigate the count of communities and the number of AirBnB spots per region, as shown below.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">attr1</span><span class="p">,</span> <span class="n">attr2</span> <span class="o">=</span> <span class="s2">"count"</span><span class="p">,</span> <span class="s2">"num_spots"</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">columns</span><span class="o">=</span><span class="n">pandas</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_product</span><span class="p">(</span>
+        <span class="p">[[</span><span class="sa">f</span><span class="s2">"clusters_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">n_clusters_range</span><span class="p">],</span> <span class="p">[</span><span class="n">attr1</span><span class="p">,</span> <span class="n">attr2</span><span class="p">]]</span>
+    <span class="p">),</span>
+    <span class="n">index</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"region_id"</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">n_clusters_range</span><span class="p">:</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"clusters_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">,</span> <span class="n">attr1</span><span class="p">]</span> <span class="o">=</span> <span class="n">chicago</span><span class="p">[[</span><span class="n">col</span><span class="p">,</span> <span class="n">attr1</span><span class="p">]]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="n">attr1</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">,</span> <span class="n">attr2</span><span class="p">]</span> <span class="o">=</span> <span class="n">chicago</span><span class="p">[[</span><span class="n">col</span><span class="p">,</span> <span class="n">attr2</span><span class="p">]]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()[</span><span class="n">attr2</span><span class="p">]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"0"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="2" halign="left">clusters_2</th>
+      <th colspan="2" halign="left">clusters_4</th>
+      <th colspan="2" halign="left">clusters_6</th>
+      <th colspan="2" halign="left">clusters_8</th>
+      <th colspan="2" halign="left">clusters_10</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+    </tr>
+    <tr>
+      <th>region_id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>72</td>
+      <td>2321</td>
+      <td>11</td>
+      <td>963</td>
+      <td>5</td>
+      <td>236</td>
+      <td>5</td>
+      <td>236</td>
+      <td>5</td>
+      <td>236</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>5</td>
+      <td>2705</td>
+      <td>54</td>
+      <td>429</td>
+      <td>35</td>
+      <td>143</td>
+      <td>5</td>
+      <td>38</td>
+      <td>5</td>
+      <td>38</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-</td>
+      <td>-</td>
+      <td>7</td>
+      <td>929</td>
+      <td>7</td>
+      <td>929</td>
+      <td>7</td>
+      <td>929</td>
+      <td>7</td>
+      <td>929</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-</td>
+      <td>-</td>
+      <td>5</td>
+      <td>2705</td>
+      <td>19</td>
+      <td>286</td>
+      <td>7</td>
+      <td>60</td>
+      <td>7</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>5</td>
+      <td>2705</td>
+      <td>19</td>
+      <td>286</td>
+      <td>8</td>
+      <td>147</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>6</td>
+      <td>727</td>
+      <td>5</td>
+      <td>2705</td>
+      <td>11</td>
+      <td>139</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>6</td>
+      <td>727</td>
+      <td>5</td>
+      <td>2705</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>23</td>
+      <td>45</td>
+      <td>6</td>
+      <td>727</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>15</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>8</td>
+      <td>20</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<h3 id="increasing-floor">Increasing <code class="docutils literal notranslate"><span class="pre">floor</span></code><a class="headerlink" href="#increasing-floor" title="Link to this heading">¶</a></h3>
+<p>Next we’ll increase <code class="docutils literal notranslate"><span class="pre">floor</span></code> from 3 to 15 by increments of 3.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">floor_range</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+<span class="n">floor_range</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>[3, 6, 9, 12, 15]
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>For each regionalization run we will hold the other parameters constant.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">n_clusters</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">islands</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"increase"</span>
+<span class="n">spanning_forest_kwds</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"dissimilarity"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">"affinity"</span><span class="p">:</span> <span class="n">skm</span><span class="o">.</span><span class="n">euclidean_distances</span><span class="p">,</span>
+    <span class="s2">"reduction"</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+    <span class="s2">"center"</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">std</span><span class="p">,</span>
+    <span class="s2">"verbose"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Solve.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">floor</span> <span class="ow">in</span> <span class="n">floor_range</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">spopt</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">Skater</span><span class="p">(</span>
+        <span class="n">chicago</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">,</span>
+        <span class="n">attrs_name</span><span class="p">,</span>
+        <span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span>
+        <span class="n">floor</span><span class="o">=</span><span class="n">floor</span><span class="p">,</span>
+        <span class="n">trace</span><span class="o">=</span><span class="n">trace</span><span class="p">,</span>
+        <span class="n">islands</span><span class="o">=</span><span class="n">islands</span><span class="p">,</span>
+        <span class="n">spanning_forest_kwds</span><span class="o">=</span><span class="n">spanning_forest_kwds</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+        <span class="c1"># due to `affinity`</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span>
+            <span class="s2">"ignore"</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="s2">"divide by zero encountered in log"</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+    <span class="n">chicago</span><span class="p">[</span><span class="sa">f</span><span class="s2">"floor_</span><span class="si">{</span><span class="n">floor</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">labels_</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Plot results.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">floor_range</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">floor</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">floor_range</span><span class="p">):</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"floor_</span><span class="si">{</span><span class="n">floor</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">chicago</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axarr</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"tab20"</span><span class="p">)</span>
+    <span class="n">axarr</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">axarr</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/9bf97693a6d27f02940888f819ba047b36b931ddcd9a4b082971397d8e13cd33.png"><img alt="../_images/9bf97693a6d27f02940888f819ba047b36b931ddcd9a4b082971397d8e13cd33.png" src="../_images/9bf97693a6d27f02940888f819ba047b36b931ddcd9a4b082971397d8e13cd33.png" style="width: 890px; height: 238px;" />
+</a>
+</div>
+</div>
+<p>Above we can see an interesting pattern. Boundaries are fixed when stipulating a minimum of 3 and 6 communities per region then the smallest region increases by 3 communities when stipulating <code class="docutils literal notranslate"><span class="pre">floor==9</span></code>. However, as the minimum number of communities is increased to 12 and 15 the location, shape, and rank of the 3 desired regions vary greatly. See the count of communities and the number of AirBnB spots per region below.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">attr1</span><span class="p">,</span> <span class="n">attr2</span> <span class="o">=</span> <span class="s2">"count"</span><span class="p">,</span> <span class="s2">"num_spots"</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">columns</span><span class="o">=</span><span class="n">pandas</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_product</span><span class="p">(</span>
+        <span class="p">[[</span><span class="sa">f</span><span class="s2">"floor_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">floor_range</span><span class="p">],</span> <span class="p">[</span><span class="n">attr1</span><span class="p">,</span> <span class="n">attr2</span><span class="p">]]</span>
+    <span class="p">),</span>
+    <span class="n">index</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"region_id"</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">floor_range</span><span class="p">:</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"floor_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">,</span> <span class="n">attr1</span><span class="p">]</span> <span class="o">=</span> <span class="n">chicago</span><span class="p">[[</span><span class="n">col</span><span class="p">,</span> <span class="n">attr1</span><span class="p">]]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()[</span><span class="n">attr1</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">,</span> <span class="n">attr2</span><span class="p">]</span> <span class="o">=</span> <span class="n">chicago</span><span class="p">[[</span><span class="n">col</span><span class="p">,</span> <span class="n">attr2</span><span class="p">]]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()[</span><span class="n">attr2</span><span class="p">]</span>
+<span class="n">df</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="2" halign="left">floor_3</th>
+      <th colspan="2" halign="left">floor_6</th>
+      <th colspan="2" halign="left">floor_9</th>
+      <th colspan="2" halign="left">floor_12</th>
+      <th colspan="2" halign="left">floor_15</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+      <th>count</th>
+      <th>num_spots</th>
+    </tr>
+    <tr>
+      <th>region_id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>52</td>
+      <td>2867</td>
+      <td>52</td>
+      <td>2867</td>
+      <td>52</td>
+      <td>2867</td>
+      <td>39</td>
+      <td>2637</td>
+      <td>37</td>
+      <td>2601</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>6</td>
+      <td>504</td>
+      <td>6</td>
+      <td>504</td>
+      <td>9</td>
+      <td>1440</td>
+      <td>13</td>
+      <td>230</td>
+      <td>15</td>
+      <td>266</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>19</td>
+      <td>1655</td>
+      <td>19</td>
+      <td>1655</td>
+      <td>16</td>
+      <td>719</td>
+      <td>25</td>
+      <td>2159</td>
+      <td>25</td>
+      <td>2159</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<h3 id="clustering-on-more-than-one-variable">Clustering on more than one variable<a class="headerlink" href="#clustering-on-more-than-one-variable" title="Link to this heading">¶</a></h3>
+<p>First, let’s isolate some of the variables in the dataset that are characterisitc of social vulnerability.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">attrs_name</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"poverty"</span><span class="p">,</span>
+    <span class="s2">"crowded"</span><span class="p">,</span>
+    <span class="s2">"without_hs"</span><span class="p">,</span>
+    <span class="s2">"unemployed"</span><span class="p">,</span>
+    <span class="s2">"harship_in"</span><span class="p">,</span>
+    <span class="s2">"num_crimes"</span><span class="p">,</span>
+    <span class="s2">"num_theft"</span><span class="p">,</span>
+<span class="p">]</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Not all values are available in all communities for each variable, so we’ll set those to 0.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">attrs_name</span><span class="p">:</span>
+    <span class="n">chicago</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">chicago</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Now we’ll see how regionalization results differ when increasing <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> from 3 to 7 by increments of 1 while considering the 7 social vulnerability variables.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">n_clusters_range</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="n">n_clusters_range</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>[3, 4, 5, 6, 7]
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>For each regionalization run we will hold the other parameters constant.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">floor</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">islands</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"increase"</span>
+<span class="n">spanning_forest_kwds</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"dissimilarity"</span><span class="p">:</span> <span class="n">skm</span><span class="o">.</span><span class="n">manhattan_distances</span><span class="p">,</span>
+    <span class="s2">"affinity"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">"reduction"</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+    <span class="s2">"center"</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
+    <span class="s2">"verbose"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Solve.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">ncluster</span> <span class="ow">in</span> <span class="n">n_clusters_range</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">spopt</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">Skater</span><span class="p">(</span>
+        <span class="n">chicago</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">,</span>
+        <span class="n">attrs_name</span><span class="p">,</span>
+        <span class="n">n_clusters</span><span class="o">=</span><span class="n">ncluster</span><span class="p">,</span>
+        <span class="n">floor</span><span class="o">=</span><span class="n">floor</span><span class="p">,</span>
+        <span class="n">trace</span><span class="o">=</span><span class="n">trace</span><span class="p">,</span>
+        <span class="n">islands</span><span class="o">=</span><span class="n">islands</span><span class="p">,</span>
+        <span class="n">spanning_forest_kwds</span><span class="o">=</span><span class="n">spanning_forest_kwds</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+    <span class="n">chicago</span><span class="p">[</span><span class="sa">f</span><span class="s2">"clusters_</span><span class="si">{</span><span class="n">ncluster</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">labels_</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Plot results.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_clusters_range</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">clust</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">n_clusters_range</span><span class="p">):</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"clusters_</span><span class="si">{</span><span class="n">clust</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">chicago</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axarr</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"tab20"</span><span class="p">)</span>
+    <span class="n">axarr</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">axarr</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/b8e7a80c1ad44ea4999c328318f90539c7674eb3749e57690affa0d9f2980b7b.png"><img alt="../_images/b8e7a80c1ad44ea4999c328318f90539c7674eb3749e57690affa0d9f2980b7b.png" src="../_images/b8e7a80c1ad44ea4999c328318f90539c7674eb3749e57690affa0d9f2980b7b.png" style="width: 890px; height: 238px;" />
+</a>
+</div>
+</div>
+<p>When considering multiple related variables certain cores regions are present in all solutions.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2018-, pysal developers.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    9.2.0.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/spopt/versions.json"}}</script>
+    
+      
+        <script src="../_static/sphinx_immaterial_theme.ce3f826234c1e494c.min.js?v=6917d573"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script type="application/vnd.jupyter.widget-state+json">{"state": {"84c284c698234521a3d7a838642f25c5": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "0334d4bf23e048c586fcd39a2a6b6eff": {"model_name": "ProgressStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "ProgressStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "bar_color": null, "description_width": ""}}, "4f89a4ac34c84fbc9a9d13d811a1368b": {"model_name": "FloatProgressModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "FloatProgressModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "ProgressView", "bar_style": "success", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_84c284c698234521a3d7a838642f25c5", "max": 76.0, "min": 0.0, "orientation": "horizontal", "style": "IPY_MODEL_0334d4bf23e048c586fcd39a2a6b6eff", "tabbable": null, "tooltip": null, "value": 76.0}}, "dcf20484ae3d41768ce6dc8b593897e1": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "6d4be25452384ad2a305117639d71bc8": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "cd59084dbe174264b3cd96c8aa573f5a": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_dcf20484ae3d41768ce6dc8b593897e1", "placeholder": "\u200b", "style": "IPY_MODEL_6d4be25452384ad2a305117639d71bc8", "tabbable": null, "tooltip": null, "value": "finding\u2007cut...:\u2007100%"}}, "2706b113fa2c4357a5ce7afe43ad0217": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "3d31ca1133e447b8892457821d80456f": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "dfb1778e1349488393bcdb75afb8a8fd": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_2706b113fa2c4357a5ce7afe43ad0217", "placeholder": "\u200b", "style": "IPY_MODEL_3d31ca1133e447b8892457821d80456f", "tabbable": null, "tooltip": null, "value": "\u200776/76\u2007[00:00&lt;00:00,\u20075951.37it/s]"}}, "7321f7f1c0674fa096e7be66f82aaf68": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "2e9cfcee8e29487384da929b7df05b1c": {"model_name": "HBoxModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_cd59084dbe174264b3cd96c8aa573f5a", "IPY_MODEL_4f89a4ac34c84fbc9a9d13d811a1368b", "IPY_MODEL_dfb1778e1349488393bcdb75afb8a8fd"], "layout": "IPY_MODEL_7321f7f1c0674fa096e7be66f82aaf68", "tabbable": null, "tooltip": null}}, "3e2e5e842b7a436eb415d429a50b16ca": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "0802861e88f14cbaa2d2050b96042443": {"model_name": "ProgressStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "ProgressStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "bar_color": null, "description_width": ""}}, "11cf82b2242e4efaa6f2beab83ffcd05": {"model_name": "FloatProgressModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "FloatProgressModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "ProgressView", "bar_style": "success", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_3e2e5e842b7a436eb415d429a50b16ca", "max": 75.0, "min": 0.0, "orientation": "horizontal", "style": "IPY_MODEL_0802861e88f14cbaa2d2050b96042443", "tabbable": null, "tooltip": null, "value": 75.0}}, "cc18209fa8f149029b0592637c2440c8": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "13a647e2c47c42f4ad6557c74b0a34d5": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "661d7ec0206c4b90b48691a12a8841db": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_cc18209fa8f149029b0592637c2440c8", "placeholder": "\u200b", "style": "IPY_MODEL_13a647e2c47c42f4ad6557c74b0a34d5", "tabbable": null, "tooltip": null, "value": "finding\u2007cut...:\u2007100%"}}, "399bf62495734816bb524a69267c5566": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "c0d9b599ca7c4080915d24cd508d3123": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "1291d52200d341288af18e3466ae384d": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_399bf62495734816bb524a69267c5566", "placeholder": "\u200b", "style": "IPY_MODEL_c0d9b599ca7c4080915d24cd508d3123", "tabbable": null, "tooltip": null, "value": "\u200775/75\u2007[00:00&lt;00:00,\u20076403.65it/s]"}}, "3b2890feca7a4e66b38ead14036b1c2a": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "4a19a0f4549f4bdcb706a9fbc3557ff4": {"model_name": "HBoxModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_661d7ec0206c4b90b48691a12a8841db", "IPY_MODEL_11cf82b2242e4efaa6f2beab83ffcd05", "IPY_MODEL_1291d52200d341288af18e3466ae384d"], "layout": "IPY_MODEL_3b2890feca7a4e66b38ead14036b1c2a", "tabbable": null, "tooltip": null}}, "c8461154f2b942929927a3cabbc918e4": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "3a6ad449666d48f0a2e883a02e35c19a": {"model_name": "ProgressStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "ProgressStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "bar_color": null, "description_width": ""}}, "3f74fccf1821404cbee82610bf154f62": {"model_name": "FloatProgressModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "FloatProgressModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "ProgressView", "bar_style": "success", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_c8461154f2b942929927a3cabbc918e4", "max": 74.0, "min": 0.0, "orientation": "horizontal", "style": "IPY_MODEL_3a6ad449666d48f0a2e883a02e35c19a", "tabbable": null, "tooltip": null, "value": 74.0}}, "adac35a27f574081872c71a104984212": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "12eb57feedf5488cb49768902c876e72": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "627db6a5fa7b4417b644ec8a326513f7": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_adac35a27f574081872c71a104984212", "placeholder": "\u200b", "style": "IPY_MODEL_12eb57feedf5488cb49768902c876e72", "tabbable": null, "tooltip": null, "value": "finding\u2007cut...:\u2007100%"}}, "65925268e8a8419e9d1b36ced7dbf6a1": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "e0f33b06d6324f16bd27c020c567b935": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "49dad5c2d660405287119ca9804614aa": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_65925268e8a8419e9d1b36ced7dbf6a1", "placeholder": "\u200b", "style": "IPY_MODEL_e0f33b06d6324f16bd27c020c567b935", "tabbable": null, "tooltip": null, "value": "\u200774/74\u2007[00:00&lt;00:00,\u20076574.98it/s]"}}, "25a8834b277f451da16899a03dd49310": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "cfe490b16b6242e0b38951c0ae299127": {"model_name": "HBoxModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_627db6a5fa7b4417b644ec8a326513f7", "IPY_MODEL_3f74fccf1821404cbee82610bf154f62", "IPY_MODEL_49dad5c2d660405287119ca9804614aa"], "layout": "IPY_MODEL_25a8834b277f451da16899a03dd49310", "tabbable": null, "tooltip": null}}, "df31a73938e54d1e9f2c07f6a4969e6b": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "46d2d491181946c9a751d2a0d9748250": {"model_name": "ProgressStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "ProgressStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "bar_color": null, "description_width": ""}}, "207b2deea7384b24975016337376362a": {"model_name": "FloatProgressModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "FloatProgressModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "ProgressView", "bar_style": "success", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_df31a73938e54d1e9f2c07f6a4969e6b", "max": 73.0, "min": 0.0, "orientation": "horizontal", "style": "IPY_MODEL_46d2d491181946c9a751d2a0d9748250", "tabbable": null, "tooltip": null, "value": 73.0}}, "dc9083935f1f4dbb9c5d7cf34d63ad4c": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "21b82bc251f1412b9c233c9950de2924": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "bedd33a6848741138931acae03b51673": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_dc9083935f1f4dbb9c5d7cf34d63ad4c", "placeholder": "\u200b", "style": "IPY_MODEL_21b82bc251f1412b9c233c9950de2924", "tabbable": null, "tooltip": null, "value": "finding\u2007cut...:\u2007100%"}}, "d24a21c165cc488591b576197ece485c": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "d36f424b255e44109706fc3d32b4d642": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "259ca85b005b4a89832ad4091fa56261": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_d24a21c165cc488591b576197ece485c", "placeholder": "\u200b", "style": "IPY_MODEL_d36f424b255e44109706fc3d32b4d642", "tabbable": null, "tooltip": null, "value": "\u200773/73\u2007[00:00&lt;00:00,\u20075940.71it/s]"}}, "17b3851ba8264c978cbb03fb04df183c": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "bc3ed3136355421395bff51af5d630c1": {"model_name": "HBoxModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_bedd33a6848741138931acae03b51673", "IPY_MODEL_207b2deea7384b24975016337376362a", "IPY_MODEL_259ca85b005b4a89832ad4091fa56261"], "layout": "IPY_MODEL_17b3851ba8264c978cbb03fb04df183c", "tabbable": null, "tooltip": null}}}, "version_major": 2, "version_minor": 0}</script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script crossorigin="anonymous" data-jupyter-widgets-cdn="https://cdn.jsdelivr.net/npm/" src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@1.0.6/dist/embed-amd.js"></script>
+    
+  </body>
+</html>

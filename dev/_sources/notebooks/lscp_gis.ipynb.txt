@@ -1,0 +1,642 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "d59e293a",
+   "metadata": {},
+   "source": [
+    "# Siting First Aid Stations with LSCP on Toronto's University Campus\n",
+    "\n",
+    "*Authors:* [Timothy Ellersiek](https://github.com/TimMcCauley), [James Gaboardi](https://github.com/jGaboardi), [Germano Barcelos](https://github.com/gegen07)\n",
+    "\n",
+    "This notebook implements the location set covering problem (LSCP) to site first aid stations for Toronto's University campus. LSCP determines locations such that as many demand points as possible are within the maximum service radius. By doing so, the number of locations required to cover all demand points is minimized. In contrast to the maximum covering location problem it does not require a maximum amount of locations as an input parameter. Hence, the use cases for LSCP are specific. One common scenario is finding suitable locations for hospitals in cities where the amount is governed by reachability preconditions to households in a certain amount of time.  \n",
+    "\n",
+    "In this notebook demand is described as buildings within Toronto's University campus. We use [OSMnx](https://osmnx.readthedocs.io/) to fetch building and road geometries from [OpenStreetMap](https://openstreetmap.org) via the Overpass API.\n",
+    "\n",
+    "The routing matrix is computed using [Open Source Routing Machine's demo server API](http://project-osrm.org).\n",
+    "\n",
+    "## Prerequisites\n",
+    "\n",
+    "To run this jupyter notebook locally, you will have to install the following additional libraries into your python environment.\n",
+    "\n",
+    "- [folium](https://python-visualization.github.io/folium)\n",
+    "- [osmnx](https://osmnx.readthedocs.io/)\n",
+    "- [routing-py](https://github.com/gis-ops/routing-py)\n",
+    "- [shapely](https://github.com/shapely/shapely)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4a4648c9",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:18:56.099117Z",
+     "start_time": "2022-12-29T02:18:56.053561Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:01:57.956829Z",
+     "iopub.status.busy": "2025-04-07T19:01:57.956634Z",
+     "iopub.status.idle": "2025-04-07T19:01:57.982822Z",
+     "shell.execute_reply": "2025-04-07T19:01:57.982500Z",
+     "shell.execute_reply.started": "2025-04-07T19:01:57.956808Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "%config InlineBackend.figure_format = \"retina\"\n",
+    "%load_ext watermark\n",
+    "%watermark"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "367156e4",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:18:58.404656Z",
+     "start_time": "2022-12-29T02:18:56.103546Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:01:57.983566Z",
+     "iopub.status.busy": "2025-04-07T19:01:57.983426Z",
+     "iopub.status.idle": "2025-04-07T19:01:59.664049Z",
+     "shell.execute_reply": "2025-04-07T19:01:59.663827Z",
+     "shell.execute_reply.started": "2025-04-07T19:01:57.983553Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import folium\n",
+    "import numpy\n",
+    "import osmnx\n",
+    "import pandas\n",
+    "import pulp\n",
+    "from routingpy import OSRM\n",
+    "\n",
+    "from spopt.locate import LSCP\n",
+    "\n",
+    "%watermark -w\n",
+    "%watermark -iv"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "391b3990",
+   "metadata": {},
+   "source": [
+    "--------------------------\n",
+    "\n",
+    "Find the University of Toronto St. George campus boundary with OSMnx."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9c1276e0",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:18:58.414149Z",
+     "start_time": "2022-12-29T02:18:58.410492Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:01:59.665187Z",
+     "iopub.status.busy": "2025-04-07T19:01:59.664942Z",
+     "iopub.status.idle": "2025-04-07T19:01:59.667010Z",
+     "shell.execute_reply": "2025-04-07T19:01:59.666591Z",
+     "shell.execute_reply.started": "2025-04-07T19:01:59.665180Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "campus = osmnx.geocode_to_gdf(\"University of Toronto, Toronto, Ontario, Canada\")\n",
+    "campus_polygon = campus.geometry.iloc[0]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "27413bd6",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-10-19T13:06:22.437712Z",
+     "start_time": "2022-10-19T13:06:18.752025Z"
+    }
+   },
+   "source": [
+    "First of all we want to fetch all buildings in the University of Toronto boundary"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7fe7a37e-b072-4b12-8339-7cd6e11b730e",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:01:59.667471Z",
+     "iopub.status.busy": "2025-04-07T19:01:59.667397Z",
+     "iopub.status.idle": "2025-04-07T19:02:01.509506Z",
+     "shell.execute_reply": "2025-04-07T19:02:01.508324Z",
+     "shell.execute_reply.started": "2025-04-07T19:01:59.667464Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "result = osmnx.features_from_polygon(campus_polygon, tags={\"building\": \"university\"})\n",
+    "result = result[result.index.get_level_values(\"element\") == \"way\"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7c4fe9c9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "result.explore(tooltip=\"name\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5194acea",
+   "metadata": {},
+   "source": [
+    "And now we want to fetch some roads in the same area and return their center points which we can use for our potential locations for first aid stations"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "961e3128",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:19:02.249236Z",
+     "start_time": "2022-12-29T02:19:01.299496Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:02:01.603734Z",
+     "iopub.status.busy": "2025-04-07T19:02:01.603654Z",
+     "iopub.status.idle": "2025-04-07T19:02:03.284561Z",
+     "shell.execute_reply": "2025-04-07T19:02:03.283669Z",
+     "shell.execute_reply.started": "2025-04-07T19:02:01.603725Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "result_roads = osmnx.features_from_polygon(campus_polygon, tags={\"highway\": True})\n",
+    "result_roads = result_roads[\n",
+    "    (result_roads.index.get_level_values(\"element\") == \"way\")\n",
+    "    & result_roads[\"highway\"].str.contains(\"secondary|tertiary|unclassified\", na=False)\n",
+    "]\n",
+    "first_aid_stations_locations = result_roads.representative_point()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2a8bd5b2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "m = result.explore()\n",
+    "first_aid_stations_locations.explore(m=m, color=\"black\", tooltip=False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4fc0985b",
+   "metadata": {},
+   "source": [
+    "## Computing the Distance (Routing) Matrix\n",
+    "\n",
+    "Given our potential first aid station locations and the university buildings on the campus we want to compute our distance matrix. Instead of using simple euclidean distance we can make use of proper routes following roads which will yield more realistic travel times. The [routing-py library](https://github.com/gis-ops/routing-py) helps us achieve this which features the ability to use different open source frameworks such as OSRM or Valhalla as well as 3rd party API's such as Google Maps or HERE."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b3b935cd",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:19:02.428564Z",
+     "start_time": "2022-12-29T02:19:02.424480Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:02:03.376826Z",
+     "iopub.status.busy": "2025-04-07T19:02:03.376749Z",
+     "iopub.status.idle": "2025-04-07T19:02:03.378531Z",
+     "shell.execute_reply": "2025-04-07T19:02:03.378318Z",
+     "shell.execute_reply.started": "2025-04-07T19:02:03.376819Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "client = OSRM(base_url=\"https://router.project-osrm.org\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d814ce8f",
+   "metadata": {},
+   "source": [
+    "Isolate all location coordinates"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "76fd012c",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:19:02.437629Z",
+     "start_time": "2022-12-29T02:19:02.432066Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:02:03.381546Z",
+     "iopub.status.busy": "2025-04-07T19:02:03.381409Z",
+     "iopub.status.idle": "2025-04-07T19:02:03.383953Z",
+     "shell.execute_reply": "2025-04-07T19:02:03.383759Z",
+     "shell.execute_reply.started": "2025-04-07T19:02:03.381537Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "all_locations = pandas.concat([result.representative_point(), first_aid_stations_locations])\n",
+    "all_locations = [[row.x, row.y] for row in all_locations.get_coordinates().itertuples()]\n",
+    "all_locations[:5]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "fc75afe7",
+   "metadata": {},
+   "source": [
+    "Define source and target indices"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cdccb223",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:19:02.445514Z",
+     "start_time": "2022-12-29T02:19:02.441547Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:02:03.384364Z",
+     "iopub.status.busy": "2025-04-07T19:02:03.384289Z",
+     "iopub.status.idle": "2025-04-07T19:02:03.386116Z",
+     "shell.execute_reply": "2025-04-07T19:02:03.385886Z",
+     "shell.execute_reply.started": "2025-04-07T19:02:03.384356Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "source_indices = list(range(len(result)))\n",
+    "target_indices = list(range(len(result), len(all_locations)))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1725c145",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:19:02.454626Z",
+     "start_time": "2022-12-29T02:19:02.448981Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:02:03.386465Z",
+     "iopub.status.busy": "2025-04-07T19:02:03.386389Z",
+     "iopub.status.idle": "2025-04-07T19:02:03.388522Z",
+     "shell.execute_reply": "2025-04-07T19:02:03.388330Z",
+     "shell.execute_reply.started": "2025-04-07T19:02:03.386444Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "source_indices[-5:], target_indices[:5]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "414f0de3",
+   "metadata": {},
+   "source": [
+    "Generate routing matrix object"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "50519af5",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:19:03.529423Z",
+     "start_time": "2022-12-29T02:19:02.458322Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:02:03.388843Z",
+     "iopub.status.busy": "2025-04-07T19:02:03.388788Z",
+     "iopub.status.idle": "2025-04-07T19:02:04.051253Z",
+     "shell.execute_reply": "2025-04-07T19:02:04.050607Z",
+     "shell.execute_reply.started": "2025-04-07T19:02:03.388837Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "osrm_routing_matrix = client.matrix(\n",
+    "    dry_run=False,\n",
+    "    locations=all_locations,\n",
+    "    sources=source_indices,\n",
+    "    destinations=target_indices,\n",
+    "    profile=\"foot\",\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "28946080",
+   "metadata": {},
+   "source": [
+    "Isolate route durations"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "426aa8e9",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:19:03.544238Z",
+     "start_time": "2022-12-29T02:19:03.534290Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:02:04.052718Z",
+     "iopub.status.busy": "2025-04-07T19:02:04.052210Z",
+     "iopub.status.idle": "2025-04-07T19:02:04.060306Z",
+     "shell.execute_reply": "2025-04-07T19:02:04.059722Z",
+     "shell.execute_reply.started": "2025-04-07T19:02:04.052691Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "cost_matrix = numpy.array(osrm_routing_matrix.durations)\n",
+    "cost_matrix.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5d8460fa",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:19:03.555327Z",
+     "start_time": "2022-12-29T02:19:03.548600Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:02:04.061235Z",
+     "iopub.status.busy": "2025-04-07T19:02:04.061080Z",
+     "iopub.status.idle": "2025-04-07T19:02:04.065584Z",
+     "shell.execute_reply": "2025-04-07T19:02:04.065138Z",
+     "shell.execute_reply.started": "2025-04-07T19:02:04.061218Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "cost_matrix"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a69b120b",
+   "metadata": {},
+   "source": [
+    "## Solving the LSCP\n",
+    "\n",
+    "Last but not least we want to run the solver. We choose the `pulp.COIN_CMD` and set the distance cutoff to 4 minutes and 50 seconds afoot. Note that, the service radius is large since it is the minimum acceptable value that covers all buildings. To decrease this value, there are two options: remove buildings far away from aid stations or add more potential aid stations in sparse regions.\n",
+    "\n",
+    "Finally we loop over the solution and add the sited stations and the corresponding allocated buildings to the map with different radiuses."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c09408ac",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:19:03.562417Z",
+     "start_time": "2022-12-29T02:19:03.557932Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:02:04.066608Z",
+     "iopub.status.busy": "2025-04-07T19:02:04.066359Z",
+     "iopub.status.idle": "2025-04-07T19:02:04.069411Z",
+     "shell.execute_reply": "2025-04-07T19:02:04.069008Z",
+     "shell.execute_reply.started": "2025-04-07T19:02:04.066589Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# maximum acceptable service duration, 4 minutes and 50 seconds\n",
+    "SERVICE_RADIUS = 290\n",
+    "\n",
+    "# set the solver (for available solvers run ``pulp.listSolvers(onlyAvailable=True)``)\n",
+    "solver = pulp.COIN_CMD(msg=False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "13cd22c7",
+   "metadata": {},
+   "source": [
+    "Create and solve an LSCP instance"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "657edff4",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:19:03.685319Z",
+     "start_time": "2022-12-29T02:19:03.564772Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:02:04.070239Z",
+     "iopub.status.busy": "2025-04-07T19:02:04.070070Z",
+     "iopub.status.idle": "2025-04-07T19:02:04.143323Z",
+     "shell.execute_reply": "2025-04-07T19:02:04.142964Z",
+     "shell.execute_reply.started": "2025-04-07T19:02:04.070224Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "lscp = LSCP.from_cost_matrix(cost_matrix, SERVICE_RADIUS)\n",
+    "lscp = lscp.solve(solver)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9746eb0a",
+   "metadata": {},
+   "source": [
+    "How many first aid sites are needed to entirely cover the university buildings?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b5191a08",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:19:03.695732Z",
+     "start_time": "2022-12-29T02:19:03.688994Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:02:04.144022Z",
+     "iopub.status.busy": "2025-04-07T19:02:04.143916Z",
+     "iopub.status.idle": "2025-04-07T19:02:04.147210Z",
+     "shell.execute_reply": "2025-04-07T19:02:04.146922Z",
+     "shell.execute_reply.started": "2025-04-07T19:02:04.144010Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "lscp.problem.objective.value()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b297d70a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "len(lscp.fac2cli)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3ffc97cb",
+   "metadata": {},
+   "source": [
+    "Add the results to the map"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5323e10c",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:19:04.040005Z",
+     "start_time": "2022-12-29T02:19:03.697459Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:02:04.147970Z",
+     "iopub.status.busy": "2025-04-07T19:02:04.147817Z",
+     "iopub.status.idle": "2025-04-07T19:02:04.294447Z",
+     "shell.execute_reply": "2025-04-07T19:02:04.293950Z",
+     "shell.execute_reply.started": "2025-04-07T19:02:04.147960Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "sited_first_aid_stations_fg = folium.FeatureGroup(\"Sited First Aid Stations\").add_to(m)\n",
+    "allocated_buildings_demand_fg = folium.FeatureGroup(\"Allocated Buildings\").add_to(m)\n",
+    "solution = {}\n",
+    "colors = [\n",
+    "    \"darkcyan\",\n",
+    "    \"mediumseagreen\",\n",
+    "    \"saddlebrown\",\n",
+    "    \"lightskyblue\",\n",
+    "    \"darkgoldenrod\",\n",
+    "    \"coral\",\n",
+    "    \"mediumvioletred\",\n",
+    "    \"blueviolet\",\n",
+    "    \"mediumorchid\",\n",
+    "]\n",
+    "client_marker_size = 30\n",
+    "numpy.random.seed(0)\n",
+    "\n",
+    "m = result.explore()\n",
+    "first_aid_stations_locations.explore(m=m, color=\"black\", tooltip=False)\n",
+    "\n",
+    "for i in range(len(first_aid_stations_locations)):\n",
+    "    if lscp.fac2cli[i]:\n",
+    "        color_choice_idx = numpy.random.choice(range(len(colors)))\n",
+    "        color = colors.pop(color_choice_idx)\n",
+    "\n",
+    "        first_aid_stations_locations.iloc[[i]].explore(\n",
+    "            m=m,\n",
+    "            marker_kwds=dict(radius=client_marker_size),\n",
+    "            fill=True,\n",
+    "            color=color,\n",
+    "            marker_type=\"circle_marker\"\n",
+    "        )\n",
+    "\n",
+    "        # client locations with associated facility symbology\n",
+    "        client_marker_size -= 4\n",
+    "        result.iloc[lscp.fac2cli[i]].explore(m=m, color=color)\n",
+    "        solution[i] = []\n",
+    "        for j in lscp.fac2cli[i]:\n",
+    "            r = result.iloc[j]\n",
+    "            solution[i].append({\"name\": r[\"name\"], \"center\": r.geometry.centroid.wkt, \"idx\": r.name})\n",
+    "m"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2bbfbc5e",
+   "metadata": {},
+   "source": [
+    "It is ***important to note*** that the modeling solution is a direct result of the input cost matrix (seconds of travel) obtained from `routingpy.OSRM`. Although the solution set and decisions may not appear to optimal, the formulation of and solution to the LSCP are correct based on the input matrix."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "25869602",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2022-12-29T02:19:04.068344Z",
+     "start_time": "2022-12-29T02:19:04.042371Z"
+    },
+    "execution": {
+     "iopub.execute_input": "2025-04-07T19:02:04.295189Z",
+     "iopub.status.busy": "2025-04-07T19:02:04.295002Z",
+     "iopub.status.idle": "2025-04-07T19:02:04.300830Z",
+     "shell.execute_reply": "2025-04-07T19:02:04.300618Z",
+     "shell.execute_reply.started": "2025-04-07T19:02:04.295179Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "solution"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "default",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.10"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

@@ -1,0 +1,3095 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="lscp_gis.html">
+      
+      
+        <link rel="next" href="lscpb.html">
+      
+      
+      <link rel="icon" href="../_static/pysal_favicon.ico">
+    
+    
+      
+        <title>Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO) - spopt</title>
+      
+    
+    
+      
+        
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+        <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+        <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-and-setup" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="spopt" class="md-header__button md-logo" aria-label="spopt" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spopt
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pysal/spopt/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/spopt
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="spopt" class="md-nav__button md-logo" aria-label="spopt" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    spopt
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pysal/spopt/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/spopt
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Home</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Installation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>Regionalization</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Regionalization</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="maxp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Max-<wbr>P Regionalization</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="azp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Automatic Zoning Procedure <wbr>(AZP) algorithm</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="sa3.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Adaptive Agglomerative Aggregation <wbr>(SA^3)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="skater.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>SKATER</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ward.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Ward</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reg-k-means.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Regional-<wbr>k-<wbr>means</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="randomregion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Random Regions</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="component_policy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Max-<wbr>P Regionalization for Multiple Components</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>References</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>Locate</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Locate</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Location Set Covering Problem <wbr>(LSCP)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscp_gis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Siting First Aid Stations with LSCP on Toronto’s University Campus</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    <span>Capacitated Location Set Covering Problem–System Optimal <wbr>(CLSCP-<wbr>SO)</span>
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Capacitated Location Set Covering Problem–System Optimal <wbr>(CLSCP-<wbr>SO)</span>
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#data-and-setup" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>1.<wbr> Data and setup</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Data and setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lattice-10x10" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Lattice 10x10</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulate-points-in-a-network" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Simulate points in a network</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assign-simulated-points-network-locations" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Assign simulated points network locations</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calculating-the-network-distance-cost-matrix" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Calculating the <wbr>(network distance) cost matrix</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#demonstrating-clscp-so-behavior" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>2.<wbr> Demonstrating CLSCP-<wbr>SO behavior</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Demonstrating CLSCP-SO behavior">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generating-synthetic-client-demand-and-facility-capacity" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Generating synthetic client demand and facility capacity</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-1" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 1</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-2" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 2</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-3" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 3</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-4" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 4</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-5" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 5</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-6" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 6</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotting-the-results" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Plotting the results</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id1" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 1</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id2" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 2</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id3" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 3</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id4" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 4</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id5" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 5</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id6" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 6</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-comparison-of-the-solutions" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>A comparison of the solutions</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparing-covering-problems" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>3.<wbr> Comparing covering problems</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Comparing covering problems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters-and-input-data" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Parameters and input data</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stipulate-that-facility-y-5-must-be-a-member-of-the-solution-set" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Stipulate that facility y_<wbr>5 must be a member of the solution set</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-synthetic-demand" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Generate synthetic demand</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-synthetic-capacity-equal-to-at-least-2x-demand" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Generate synthetic capacity equal to at least 2x demand</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solve-plot-the-clscp-so" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Solve &amp; plot the CLSCP-<wbr>SO</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solve-plot-the-standard-lscp" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Solve &amp; plot the standard LSCP</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compare-the-results" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Compare the results</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>References</span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscpb.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Backup Coverage Location Problem <wbr>(LSCP-<wbr>B)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mclp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Maximal Coverage Location Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mclp_gis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Siting Restaurants with MCLP in San Francisco</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-center.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>P-<wbr>Center Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-median.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Median Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-median_variations.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Comparing P-<wbr>Median Variations</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-dispersion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Dispersion <wbr>(max-<wbr>min-<wbr>min) Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="facloc-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Empirical examples of facility location problems</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="facloc-lscpb-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Backup Coverage Location Problem:<wbr> An Empirical Example</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="facloc-disperse-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Dispersion Problem:<wbr> An Empirical Example</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="flow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Flow Refueling Location Model <wbr>(FRLM)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>API</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>API</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>API reference</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>For contributors</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            <span>For contributors</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/spopt" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Git<wbr>Hub</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/spopt/releases" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Changelog</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#data-and-setup" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>1.<wbr> Data and setup</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Data and setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lattice-10x10" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Lattice 10x10</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulate-points-in-a-network" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Simulate points in a network</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assign-simulated-points-network-locations" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Assign simulated points network locations</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calculating-the-network-distance-cost-matrix" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Calculating the <wbr>(network distance) cost matrix</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#demonstrating-clscp-so-behavior" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>2.<wbr> Demonstrating CLSCP-<wbr>SO behavior</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Demonstrating CLSCP-SO behavior">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generating-synthetic-client-demand-and-facility-capacity" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Generating synthetic client demand and facility capacity</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-1" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 1</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-2" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 2</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-3" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 3</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-4" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 4</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-5" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 5</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-6" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 6</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotting-the-results" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Plotting the results</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id1" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 1</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id2" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 2</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id3" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 3</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id4" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 4</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id5" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 5</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id6" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Scenario 6</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-comparison-of-the-solutions" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>A comparison of the solutions</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparing-covering-problems" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>3.<wbr> Comparing covering problems</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Comparing covering problems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters-and-input-data" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Parameters and input data</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stipulate-that-facility-y-5-must-be-a-member-of-the-solution-set" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Stipulate that facility y_<wbr>5 must be a member of the solution set</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-synthetic-demand" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Generate synthetic demand</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-synthetic-capacity-equal-to-at-least-2x-demand" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Generate synthetic capacity equal to at least 2x demand</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solve-plot-the-clscp-so" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Solve &amp; plot the CLSCP-<wbr>SO</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solve-plot-the-standard-lscp" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Solve &amp; plot the standard LSCP</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compare-the-results" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Compare the results</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>References</span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                
+                
+                  
+
+
+  
+    <a href="https://github.com/pysal/spopt/blob/main/docs/source/notebooks/lscp_capacity.ipynb" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5zM6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41zm11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41z"/></svg>
+    </a>
+  
+  
+
+<h1 id="capacitated-location-set-covering-problemsystem-optimal-clscp-so">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)<a class="headerlink" href="#capacitated-location-set-covering-problemsystem-optimal-clscp-so" title="Link to this heading">¶</a></h1>
+<p><em>Authors:</em> <a class="reference external" href="https://github.com/erinrolson">Erin Olson</a>, <a class="reference external" href="https://github.com/gegen07">Germano Barcelos</a>, <a class="reference external" href="https://github.com/jGaboardi">James Gaboardi</a>, <a class="reference external" href="https://github.com/ljwolf">Levi J. Wolf</a>, <a class="reference external" href="https://github.com/qszhao">Qunshan Zhao</a></p>
+<p>The Capacitated Location Set Covering – System Optimal (CLSCP-SO) model builds off of the <a class="reference external" href="https://pysal.org/spopt/notebooks/lscp.html">LSCP</a>, but allows for the assignment of a facility’s capacity and the amount of demand at a demand point to be used in the siting of facilities. CLSCP-SO can be described as follows:</p>
+<p>“<em>Locate just enough facilities and associated capacity such that all demand is served within the capacity limits of each facility, given the coverage capabilities of each facility.</em>” Church L. &amp; Murray, A. (2018)</p>
+<p><strong>CLSCP-SO can be written as:</strong></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{llll}
+\displaystyle \textbf{Minimize}    &amp; \displaystyle \sum_{j \in J}{Y_j} &amp; &amp; (1) \\
+\displaystyle \textbf{Subject to:} &amp; \displaystyle \sum_{j \in N_i}{z_{ij}} = 1 &amp; \forall i \in I &amp; (2) \\
+                                   &amp; \displaystyle \sum_{i \in I} a_i z_{ij} \leq C_j Y_j &amp; \forall j \in J &amp; (3) \\
+                                   &amp; Y_j \in \{0,1\} &amp; \forall j \in J &amp; (4) \\
+                                   &amp; z_{ij} \geq 0 &amp; \forall i \in I,\ \forall j \in N_i &amp; (5)
+\end{array}
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{lcl}
+\textbf{Where:} &amp; &amp; \\
+i   &amp; = &amp; \textrm{index of demand points/areas/objects in set } I \\
+j   &amp; = &amp; \textrm{index of potential facility sites in set } J \\
+S   &amp; = &amp; \textrm{maximal acceptable service distance or time standard} \\
+d_{ij} &amp; = &amp; \textrm{shortest distance or travel time between nodes } i \textrm{ and } j \\
+N_i &amp; = &amp; \{j \mid d_{ij} &lt; S\} \\
+a_i &amp; = &amp; \textrm{amount of demand at } i \\
+C_j &amp; = &amp; \textrm{capacity of potential facility } j \\
+z_{ij} &amp; = &amp; \textrm{fraction of demand } i \textrm{ that is assigned to facility } j \\
+Y_j &amp; = &amp; \begin{cases}
+          1, &amp; \text{if a facility is located at node } j \\
+          0, &amp; \text{otherwise}
+          \end{cases}
+\end{array}
+\end{split}\]</div>
+<p><em>The formulation above is adapted from Church and Murray (2018).</em></p>
+<hr class="docutils" />
+<p>This tutorial solves the CLSCP-SO by generating synthetic demand (clients) and facility sites near a 10x10 lattice representing a gridded urban core, and is broken out as follows:</p>
+<ol class="arabic simple">
+<li><p>Data and setup</p></li>
+<li><p>Demonstrating the CLSCP-SO with 2 facilities and 5 five client sites</p></li>
+</ol>
+<ul class="simple">
+<li><p>Six scenarios are detailed in which facility capacity is swapped between sites</p></li>
+</ul>
+<ol class="arabic simple" start="3">
+<li><p>Comparing solutions to covering problems with a single pre-defined facility</p></li>
+</ol>
+<ul class="simple">
+<li><p>CLSCP-SO</p></li>
+<li><p>standard LSCP</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="o">%</span><span class="k">config</span> InlineBackend.figure_format = "retina"
+<span class="o">%</span><span class="k">load_ext</span> watermark
+<span class="o">%</span><span class="k">watermark</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Last updated: 2026-11-18T16:30:09.140178+01:00
+
+Python implementation: CPython
+Python version       : 3.14.10
+IPython version      : 9.18.1
+
+Compiler    : Clang 20.1.8 
+OS          : Darwin
+Release     : 27.0.0
+Machine     : arm64
+Processor   : arm
+CPU cores   : 10
+Architecture: 64bit
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.lines</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mlines</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pulp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shapely</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Patch</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">spopt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spopt.locate</span><span class="w"> </span><span class="kn">import</span> <span class="n">LSCP</span><span class="p">,</span> <span class="n">LSCPB</span><span class="p">,</span> <span class="n">MCLP</span><span class="p">,</span> <span class="n">simulated_geo_points</span>
+
+<span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
+    <span class="c1"># ignore deprecation warning - GH pysal/spaghetti#649</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">spaghetti</span>
+
+<span class="o">%</span><span class="k">watermark</span> -w
+<span class="o">%</span><span class="k">watermark</span> -iv
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Watermark: 2.6.0
+
+geopandas : 1.2.0
+matplotlib: 3.11.2
+numpy     : 2.5.4
+pandas    : 3.1.1
+pulp      : 3.3.2
+shapely   : 2.2.0
+spaghetti : 1.7.7.dev16+gb5d0f5c89
+spopt     : 0.8.1.dev6+g356ab8d10.d20261118
+</code></pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<h2 id="data-and-setup">1. Data and setup<a class="headerlink" href="#data-and-setup" title="Link to this heading">¶</a></h2>
+<p>Since the model needs a distance cost matrix we should define some variables. In the comments, it’s defined what these variables are for but solver. The solver, assigned below as <code class="docutils literal notranslate"><span class="pre">pulp.PULP_CBC_CMD</span></code>, is an interface to optimization solver developed by <a class="reference external" href="https://github.com/coin-or/Cbc">COIN-OR</a>. If you want to use another optimization interface as Gurobi or CPLEX see this <a class="reference external" href="https://coin-or.github.io/pulp/guides/how_to_configure_solvers.html">guide</a> that explains how to achieve this.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># quantity demand points</span>
+<span class="n">CLIENT_COUNT</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="c1"># quantity supply points</span>
+<span class="n">FACILITY_COUNT</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="c1"># maximum service radius (in distance units)</span>
+<span class="n">SERVICE_RADIUS</span> <span class="o">=</span> <span class="mi">15</span>
+
+<span class="c1"># random seeds for reproducibility</span>
+<span class="n">CLIENT_SEED</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">FACILITY_SEED</span> <span class="o">=</span> <span class="mi">6</span>
+
+<span class="c1"># set the solver</span>
+<span class="n">solver</span> <span class="o">=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">COIN_CMD</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">warmStart</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="lattice-10x10">Lattice 10x10<a class="headerlink" href="#lattice-10x10" title="Link to this heading">¶</a></h3>
+<p>Create a 10x10 lattice with 9 interior lines, both vertical and horizontal.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
+    <span class="c1"># ignore deprecation warning - GH pysal/libpysal#468</span>
+    <span class="n">lattice</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">regular_lattice</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">9</span><span class="p">,</span> <span class="n">exterior</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ntw</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">Network</span><span class="p">(</span><span class="n">in_data</span><span class="o">=</span><span class="n">lattice</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Transform the <code class="docutils literal notranslate"><span class="pre">spaghetti</span></code> instance into a geodataframe.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">streets</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">element_as_gdf</span><span class="p">(</span><span class="n">ntw</span><span class="p">,</span> <span class="n">arcs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">streets_buffered</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span>
+    <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoSeries</span><span class="p">(</span><span class="n">streets</span><span class="p">[</span><span class="s2">"geometry"</span><span class="p">]</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span><span class="o">.</span><span class="n">union_all</span><span class="p">()),</span>
+    <span class="n">crs</span><span class="o">=</span><span class="n">streets</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"geometry"</span><span class="p">],</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Plotting the network created by <code class="docutils literal notranslate"><span class="pre">spaghetti</span></code> we can verify that it mimics a district with quarters and streets.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">streets</span><span class="o">.</span><span class="n">plot</span><span class="p">();</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/192f41c40cddde0209d3fa87322847c8d6702239e719d79dd130d6a9023dc88a.png"><img alt="../_images/192f41c40cddde0209d3fa87322847c8d6702239e719d79dd130d6a9023dc88a.png" src="../_images/192f41c40cddde0209d3fa87322847c8d6702239e719d79dd130d6a9023dc88a.png" style="width: 434px; height: 430px;" />
+</a>
+</div>
+</div>
+<h3 id="simulate-points-in-a-network">Simulate points in a network<a class="headerlink" href="#simulate-points-in-a-network" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">simulated_geo_points</span></code> function simulates points near a network. In this case, it uses the 10x10 lattice network created using the <code class="docutils literal notranslate"><span class="pre">spaghetti</span></code> package. Below we use the function defined above and simulate the points near the lattice edges.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">client_points</span> <span class="o">=</span> <span class="n">simulated_geo_points</span><span class="p">(</span>
+    <span class="n">streets_buffered</span><span class="p">,</span> <span class="n">needed</span><span class="o">=</span><span class="n">CLIENT_COUNT</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">CLIENT_SEED</span>
+<span class="p">)</span>
+<span class="n">facility_points</span> <span class="o">=</span> <span class="n">simulated_geo_points</span><span class="p">(</span>
+    <span class="n">streets_buffered</span><span class="p">,</span> <span class="n">needed</span><span class="o">=</span><span class="n">FACILITY_COUNT</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">FACILITY_SEED</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Plotting the 5 client and 2 facility points we can see that the function generates dummy points to an area of 10x10, which is the area created by our lattice created on previous cells.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">streets</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"streets"</span><span class="p">)</span>
+<span class="n">facility_points</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span>
+    <span class="n">zorder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"facility candidate sites ($n$=</span><span class="si">{</span><span class="n">FACILITY_COUNT</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">client_points</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"clients sites ($n$=</span><span class="si">{</span><span class="n">CLIENT_COUNT</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">"upper left"</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/41034d428685e4d513a3ab49b21ae753a21b77d32d6453960ebc69b38c99d599.png"><img alt="../_images/41034d428685e4d513a3ab49b21ae753a21b77d32d6453960ebc69b38c99d599.png" src="../_images/41034d428685e4d513a3ab49b21ae753a21b77d32d6453960ebc69b38c99d599.png" style="width: 807px; height: 522px;" />
+</a>
+</div>
+</div>
+<h3 id="assign-simulated-points-network-locations">Assign simulated points network locations<a class="headerlink" href="#assign-simulated-points-network-locations" title="Link to this heading">¶</a></h3>
+<p>The simulated client and facility points do not adhere to network space. Calculating distances between them without restricting movement to the network results in a euclidean distances,’as the crow flies.’ While this is acceptable for some applications, for others it is more realistic to consider network traversal (e.g. Does a mail carrier follow roads to deliver letters or fly from mailbox to mailbox?).</p>
+<p>In our first example we will consider distance along the 10x10 lattice network created above. Therefore, we must first snap the observation points to the network prior to calculating a cost matrix.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
+    <span class="c1"># ignore deprecation warning - GH pysal/libpysal#468</span>
+    <span class="n">ntw</span><span class="o">.</span><span class="n">snapobservations</span><span class="p">(</span><span class="n">client_points</span><span class="p">,</span> <span class="s2">"clients"</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">clients_snapped</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">element_as_gdf</span><span class="p">(</span><span class="n">ntw</span><span class="p">,</span> <span class="n">pp_name</span><span class="o">=</span><span class="s2">"clients"</span><span class="p">,</span> <span class="n">snapped</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">clients_snapped</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"comp_label"</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
+    <span class="c1"># ignore deprecation warning - GH pysal/libpysal#468</span>
+    <span class="n">ntw</span><span class="o">.</span><span class="n">snapobservations</span><span class="p">(</span><span class="n">facility_points</span><span class="p">,</span> <span class="s2">"facilities"</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">facilities_snapped</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">element_as_gdf</span><span class="p">(</span><span class="n">ntw</span><span class="p">,</span> <span class="n">pp_name</span><span class="o">=</span><span class="s2">"facilities"</span><span class="p">,</span> <span class="n">snapped</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">facilities_snapped</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"comp_label"</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/var/folders/n0/xbnn2f2d0ybbp2c_bf_9ztzw0000gn/T/ipykernel_40122/3656048561.py:6: Pandas4Warning: The inplace keyword in GeoDataFrame.drop is deprecated and will be removed in a future version (PDEP-8).
+See https://pandas.pydata.org/docs/dev/whatsnew/v3.1.0.html#deprecation-inplace for more details.
+  clients_snapped.drop(columns=["id", "comp_label"], inplace=True)
+/var/folders/n0/xbnn2f2d0ybbp2c_bf_9ztzw0000gn/T/ipykernel_40122/3656048561.py:13: Pandas4Warning: The inplace keyword in GeoDataFrame.drop is deprecated and will be removed in a future version (PDEP-8).
+See https://pandas.pydata.org/docs/dev/whatsnew/v3.1.0.html#deprecation-inplace for more details.
+  facilities_snapped.drop(columns=["id", "comp_label"], inplace=True)
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Now the plot seems more organized as the points occupy network space. The network is plotted below with the network locations of the facility points and clients points.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">streets</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"streets"</span><span class="p">)</span>
+<span class="n">facilities_snapped</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span>
+    <span class="n">zorder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"facility candidate sites ($n$=</span><span class="si">{</span><span class="n">FACILITY_COUNT</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">clients_snapped</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"clients sites ($n$=</span><span class="si">{</span><span class="n">CLIENT_COUNT</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">"upper left"</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/f2e390773b680ae67ca0d78c80f7df192c29b3b1da6a02979837ac641e1d2f06.png"><img alt="../_images/f2e390773b680ae67ca0d78c80f7df192c29b3b1da6a02979837ac641e1d2f06.png" src="../_images/f2e390773b680ae67ca0d78c80f7df192c29b3b1da6a02979837ac641e1d2f06.png" style="width: 807px; height: 522px;" />
+</a>
+</div>
+</div>
+<h3 id="calculating-the-network-distance-cost-matrix">Calculating the (network distance) cost matrix<a class="headerlink" href="#calculating-the-network-distance-cost-matrix" title="Link to this heading">¶</a></h3>
+<p>Calculate the network distance between clients and facilities.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">cost_matrix</span> <span class="o">=</span> <span class="n">ntw</span><span class="o">.</span><span class="n">allneighbordistances</span><span class="p">(</span>
+    <span class="n">sourcepattern</span><span class="o">=</span><span class="n">ntw</span><span class="o">.</span><span class="n">pointpatterns</span><span class="p">[</span><span class="s2">"clients"</span><span class="p">],</span>
+    <span class="n">destpattern</span><span class="o">=</span><span class="n">ntw</span><span class="o">.</span><span class="n">pointpatterns</span><span class="p">[</span><span class="s2">"facilities"</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>(5, 2)
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The expected result here is a network distance between clients and facilities points, in our case a 2D 5x2 array.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">cost_matrix</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([[12.60302601,  3.93598651],
+       [13.10096347,  4.43392397],
+       [ 6.9095462 ,  4.2425067 ],
+       [ 2.98196832,  7.84581224],
+       [ 7.5002892 ,  6.32806975]])
+</code></pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<h2 id="demonstrating-clscp-so-behavior">2. Demonstrating CLSCP-SO behavior<a class="headerlink" href="#demonstrating-clscp-so-behavior" title="Link to this heading">¶</a></h2>
+<h3 id="generating-synthetic-client-demand-and-facility-capacity">Generating synthetic client demand and facility capacity<a class="headerlink" href="#generating-synthetic-client-demand-and-facility-capacity" title="Link to this heading">¶</a></h3>
+<p>First create synthetic demand total 15 units.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">client_points</span><span class="p">[</span><span class="s2">"demand"</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">client_points</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>demand</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POINT (2.10873 8.85562)</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POINT (1.94988 9.35355)</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POINT (4.87948 6.16214)</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POINT (7.76544 5.19155)</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POINT (2.88673 1.7523)</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>By manipulating client demand and facility capacity we can demonstrate how capacity is accounted for and generates different results. We’ll do this using 6 different scenarios while adjusting the capacities at the two sites.</p>
+<ol class="arabic simple">
+<li><p><span class="math notranslate nohighlight">\(1 \gg 2 \quad [15, 5]\)</span>: Facility 1 has much more capacity than Facility 2. Only Facility 1 provides a feasible solution.</p></li>
+<li><p><span class="math notranslate nohighlight">\(1 \ll 2 \quad [5, 15]\)</span>: Facility 1 has much less capacity than Facility 2. Only Facility 2 provides a feasible solution.</p></li>
+<li><p><span class="math notranslate nohighlight">\(1 \gtrapprox 2 \quad [8, 7]\)</span>: Facility 1 and Facility 2 have nearly equal capacity, but Facility 1 is slightly larger. Neither facility can serve all demand alone.</p></li>
+<li><p><span class="math notranslate nohighlight">\(1 \equiv 2 \quad [15, 15]\)</span>: Facility 1 and Facility 2 have equivalent capacity. Either facility can serve all demand.</p></li>
+<li><p><span class="math notranslate nohighlight">\(1 \gtrapprox 2 \quad [16, 15]\)</span>: Facility 1 and Facility 2 have nearly equal capacity, but Facility 1 is slightly larger. Either facility can serve all demand.</p></li>
+<li><p><span class="math notranslate nohighlight">\(1 \lessapprox 2 \quad [15, 16]\)</span>: Facility 1 and Facility 2 have nearly equal capacity, but Facility 2 is slightly larger. Either facility can serve all demand.</p></li>
+</ol>
+<p>Since the sum of demand quantity is 15, the problem will be feasible in all cases. We know this because the capacity of the system must always be greater than the demand.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">facility_points</span><span class="p">[</span><span class="s2">"cap_1"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">facility_points</span><span class="p">[</span><span class="s2">"cap_2"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+<span class="n">facility_points</span><span class="p">[</span><span class="s2">"cap_3"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="n">facility_points</span><span class="p">[</span><span class="s2">"cap_4"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+<span class="n">facility_points</span><span class="p">[</span><span class="s2">"cap_5"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+<span class="n">facility_points</span><span class="p">[</span><span class="s2">"cap_6"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+<span class="n">facility_points</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>cap_1</th>
+      <th>cap_2</th>
+      <th>cap_3</th>
+      <th>cap_4</th>
+      <th>cap_5</th>
+      <th>cap_6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POINT (9.08575 3.25259)</td>
+      <td>15</td>
+      <td>5</td>
+      <td>8</td>
+      <td>15</td>
+      <td>16</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POINT (0.91963 5.98854)</td>
+      <td>5</td>
+      <td>15</td>
+      <td>7</td>
+      <td>15</td>
+      <td>15</td>
+      <td>16</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">LSCP.from_cost_matrix</span></code> we model the CLSCP-SO to cover all demand points within <code class="docutils literal notranslate"><span class="pre">SERVICE_RADIUS</span></code> distance units using the network distance cost matrix calculated above.</p>
+<h3 id="scenario-1">Scenario 1<a class="headerlink" href="#scenario-1" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>facility 1 capacity &gt;&gt; facility 2 capacity</p></li>
+<li><p>only Facility 1 provides a feasible solution</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">clscpso_1</span> <span class="o">=</span> <span class="n">LSCP</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+    <span class="n">cost_matrix</span><span class="p">,</span>
+    <span class="n">SERVICE_RADIUS</span><span class="p">,</span>
+    <span class="n">demand_quantity_arr</span><span class="o">=</span><span class="n">client_points</span><span class="p">[</span><span class="s2">"demand"</span><span class="p">],</span>
+    <span class="n">facility_capacity_arr</span><span class="o">=</span><span class="n">facility_points</span><span class="p">[</span><span class="s2">"cap_1"</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"CLSCP-SO_$1</span><span class="se">\\</span><span class="s2">gg2$"</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The expected result is a solved instance of <code class="docutils literal notranslate"><span class="pre">LSCP</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">clscpso_1</span> <span class="o">=</span> <span class="n">clscpso_1</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+<span class="n">clscpso_1</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;spopt.locate.coverage.LSCP at 0x167e8b620&gt;
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Define the decision variable names used for mapping later.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">facility_points</span><span class="p">[</span><span class="s2">"dv"</span><span class="p">]</span> <span class="o">=</span> <span class="n">clscpso_1</span><span class="o">.</span><span class="n">fac_vars</span>
+<span class="n">facility_points</span><span class="p">[</span><span class="s2">"dv"</span><span class="p">]</span> <span class="o">=</span> <span class="n">facility_points</span><span class="p">[</span><span class="s2">"dv"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"_"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
+<span class="n">facility_points</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>cap_1</th>
+      <th>cap_2</th>
+      <th>cap_3</th>
+      <th>cap_4</th>
+      <th>cap_5</th>
+      <th>cap_6</th>
+      <th>dv</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POINT (9.08575 3.25259)</td>
+      <td>15</td>
+      <td>5</td>
+      <td>8</td>
+      <td>15</td>
+      <td>16</td>
+      <td>15</td>
+      <td>y0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POINT (0.91963 5.98854)</td>
+      <td>5</td>
+      <td>15</td>
+      <td>7</td>
+      <td>15</td>
+      <td>15</td>
+      <td>16</td>
+      <td>y1</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<h3 id="scenario-2">Scenario 2<a class="headerlink" href="#scenario-2" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>facility 1 capacity &lt;&lt; facility 2 capacity</p></li>
+<li><p>only Facility 2 provides a feasible solution</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">clscpso_2</span> <span class="o">=</span> <span class="n">LSCP</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+    <span class="n">cost_matrix</span><span class="p">,</span>
+    <span class="n">SERVICE_RADIUS</span><span class="p">,</span>
+    <span class="n">demand_quantity_arr</span><span class="o">=</span><span class="n">client_points</span><span class="p">[</span><span class="s2">"demand"</span><span class="p">],</span>
+    <span class="n">facility_capacity_arr</span><span class="o">=</span><span class="n">facility_points</span><span class="p">[</span><span class="s2">"cap_2"</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"CLSCP-SO_$1</span><span class="se">\\</span><span class="s2">ll2$"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">clscpso_2</span> <span class="o">=</span> <span class="n">clscpso_2</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="scenario-3">Scenario 3<a class="headerlink" href="#scenario-3" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>facility 1 capacity <span class="math notranslate nohighlight">\(\gtrapprox\)</span> facility 2 capacity</p></li>
+<li><p>neither facility can serve all demand alone</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">clscpso_3</span> <span class="o">=</span> <span class="n">LSCP</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+    <span class="n">cost_matrix</span><span class="p">,</span>
+    <span class="n">SERVICE_RADIUS</span><span class="p">,</span>
+    <span class="n">demand_quantity_arr</span><span class="o">=</span><span class="n">client_points</span><span class="p">[</span><span class="s2">"demand"</span><span class="p">],</span>
+    <span class="n">facility_capacity_arr</span><span class="o">=</span><span class="n">facility_points</span><span class="p">[</span><span class="s2">"cap_3"</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"CLSCP-SO_$1</span><span class="se">\\</span><span class="s2">gtrapprox2$_low"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">clscpso_3</span> <span class="o">=</span> <span class="n">clscpso_3</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="scenario-4">Scenario 4<a class="headerlink" href="#scenario-4" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>facility 1 capacity <span class="math notranslate nohighlight">\(\equiv\)</span> facility 2 capacity</p></li>
+<li><p>either facility can serve all demand</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">clscpso_4</span> <span class="o">=</span> <span class="n">LSCP</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+    <span class="n">cost_matrix</span><span class="p">,</span>
+    <span class="n">SERVICE_RADIUS</span><span class="p">,</span>
+    <span class="n">demand_quantity_arr</span><span class="o">=</span><span class="n">client_points</span><span class="p">[</span><span class="s2">"demand"</span><span class="p">],</span>
+    <span class="n">facility_capacity_arr</span><span class="o">=</span><span class="n">facility_points</span><span class="p">[</span><span class="s2">"cap_4"</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"CLSCP-SO_$1</span><span class="se">\\</span><span class="s2">equiv2$_high"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">clscpso_4</span> <span class="o">=</span> <span class="n">clscpso_4</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="scenario-5">Scenario 5<a class="headerlink" href="#scenario-5" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>facility 1 capacity <span class="math notranslate nohighlight">\(\gtrapprox\)</span> facility 2 capacity</p></li>
+<li><p>either facility can serve all demand</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">clscpso_5</span> <span class="o">=</span> <span class="n">LSCP</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+    <span class="n">cost_matrix</span><span class="p">,</span>
+    <span class="n">SERVICE_RADIUS</span><span class="p">,</span>
+    <span class="n">demand_quantity_arr</span><span class="o">=</span><span class="n">client_points</span><span class="p">[</span><span class="s2">"demand"</span><span class="p">],</span>
+    <span class="n">facility_capacity_arr</span><span class="o">=</span><span class="n">facility_points</span><span class="p">[</span><span class="s2">"cap_5"</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"CLSCP-SO_$1</span><span class="se">\\</span><span class="s2">gtrapprox2$_high"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">clscpso_5</span> <span class="o">=</span> <span class="n">clscpso_5</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="scenario-6">Scenario 6<a class="headerlink" href="#scenario-6" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>facility 1 capacity <span class="math notranslate nohighlight">\(\lessapprox\)</span> facility 2 capacity</p></li>
+<li><p>either facility can serve all demand</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">clscpso_6</span> <span class="o">=</span> <span class="n">LSCP</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+    <span class="n">cost_matrix</span><span class="p">,</span>
+    <span class="n">SERVICE_RADIUS</span><span class="p">,</span>
+    <span class="n">demand_quantity_arr</span><span class="o">=</span><span class="n">client_points</span><span class="p">[</span><span class="s2">"demand"</span><span class="p">],</span>
+    <span class="n">facility_capacity_arr</span><span class="o">=</span><span class="n">facility_points</span><span class="p">[</span><span class="s2">"cap_6"</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"CLSCP-SO_$1</span><span class="se">\\</span><span class="s2">lessapprox2$_high"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">clscpso_6</span> <span class="o">=</span> <span class="n">clscpso_6</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="plotting-the-results">Plotting the results<a class="headerlink" href="#plotting-the-results" title="Link to this heading">¶</a></h3>
+<p>The two cells below describe the plotting of the results. The plots display the facility sites that were selected with a star colored and the points covered with the same color. Demand points covered by more than one facility are displayed in overlapping concentric circles.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">dv_colors_arr</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"darkcyan"</span><span class="p">,</span>
+    <span class="s2">"mediumseagreen"</span><span class="p">,</span>
+    <span class="s2">"saddlebrown"</span><span class="p">,</span>
+    <span class="s2">"darkslategray"</span><span class="p">,</span>
+    <span class="s2">"lightskyblue"</span><span class="p">,</span>
+    <span class="s2">"thistle"</span><span class="p">,</span>
+    <span class="s2">"lavender"</span><span class="p">,</span>
+    <span class="s2">"darkgoldenrod"</span><span class="p">,</span>
+    <span class="s2">"peachpuff"</span><span class="p">,</span>
+    <span class="s2">"coral"</span><span class="p">,</span>
+    <span class="s2">"mediumvioletred"</span><span class="p">,</span>
+    <span class="s2">"blueviolet"</span><span class="p">,</span>
+    <span class="s2">"fuchsia"</span><span class="p">,</span>
+    <span class="s2">"cyan"</span><span class="p">,</span>
+    <span class="s2">"limegreen"</span><span class="p">,</span>
+    <span class="s2">"mediumorchid"</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">dv_colors</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">"y</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">:</span> <span class="n">dv_colors_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dv_colors_arr</span><span class="p">))}</span>
+<span class="n">dv_colors</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>{'y0': 'darkcyan',
+ 'y1': 'mediumseagreen',
+ 'y2': 'saddlebrown',
+ 'y3': 'darkslategray',
+ 'y4': 'lightskyblue',
+ 'y5': 'thistle',
+ 'y6': 'lavender',
+ 'y7': 'darkgoldenrod',
+ 'y8': 'peachpuff',
+ 'y9': 'coral',
+ 'y10': 'mediumvioletred',
+ 'y11': 'blueviolet',
+ 'y12': 'fuchsia',
+ 'y13': 'cyan',
+ 'y14': 'limegreen',
+ 'y15': 'mediumorchid'}
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_results</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">facs</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Visualize optimal solution sets and context."""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="p">:</span>
+        <span class="n">multi_plot</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        <span class="n">markersize</span><span class="p">,</span> <span class="n">markersize_factor</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">)</span>
+        <span class="n">multi_plot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">markersize</span><span class="p">,</span> <span class="n">markersize_factor</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+    <span class="c1"># extract facility-client relationships for plotting (except for p-dispersion)</span>
+    <span class="n">plot_clis</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clis</span><span class="p">,</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">plot_clis</span><span class="p">:</span>
+        <span class="n">cli_points</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">fac_sites</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">dv</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">fac_vars</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">dv</span><span class="o">.</span><span class="n">varValue</span><span class="p">:</span>
+            <span class="n">dv</span><span class="p">,</span> <span class="n">predef</span> <span class="o">=</span> <span class="n">facs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">[</span><span class="s2">"dv"</span><span class="p">,</span> <span class="s2">"predefined_loc"</span><span class="p">]]</span>
+            <span class="n">fac_sites</span><span class="p">[</span><span class="n">dv</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">predef</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">plot_clis</span><span class="p">:</span>
+                <span class="n">geom</span> <span class="o">=</span> <span class="n">clis</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">fac2cli</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="s2">"geometry"</span><span class="p">]</span>
+                <span class="n">cli_points</span><span class="p">[</span><span class="n">dv</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom</span>
+
+    <span class="c1"># study area and legend entries initialization</span>
+    <span class="n">streets</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">legend_elements</span> <span class="o">=</span> <span class="p">[</span><span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"streets"</span><span class="p">)]</span>
+
+    <span class="k">if</span> <span class="n">plot_clis</span> <span class="ow">and</span> <span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"mclp"</span><span class="p">):</span>
+        <span class="c1"># any clients that not asscociated with a facility</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="s2">"k"</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">n_cli_uncov</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">cli2fac</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">pnt_kws</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"ax"</span><span class="p">:</span> <span class="n">ax</span><span class="p">,</span>
+                <span class="s2">"fc"</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
+                <span class="s2">"ec"</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
+                <span class="s2">"marker"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
+                <span class="s2">"markersize"</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+                <span class="s2">"zorder"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">clis</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">**</span><span class="n">pnt_kws</span><span class="p">)</span>
+        <span class="n">_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Demand sites not covered ($n$=</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">n_cli_uncov</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="n">_mkws</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"marker"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
+            <span class="s2">"markerfacecolor"</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
+            <span class="s2">"markeredgecolor"</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
+            <span class="s2">"linewidth"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">legend_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">_label</span><span class="p">,</span> <span class="o">**</span><span class="n">_mkws</span><span class="p">))</span>
+
+    <span class="c1"># all candidate facilities</span>
+    <span class="n">facs</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s2">"brown"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"*"</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Facility sites ($n$=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">fac_vars</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span>
+    <span class="n">_mkws</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"marker"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">,</span> <span class="s2">"markerfacecolor"</span><span class="p">:</span> <span class="s2">"brown"</span><span class="p">,</span> <span class="s2">"markeredgecolor"</span><span class="p">:</span> <span class="s2">"brown"</span><span class="p">}</span>
+    <span class="n">legend_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">ms</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">_label</span><span class="p">,</span> <span class="o">**</span><span class="n">_mkws</span><span class="p">))</span>
+
+    <span class="c1"># facility-(client) symbology and legend entries</span>
+    <span class="n">zorder</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="k">for</span> <span class="n">fname</span><span class="p">,</span> <span class="p">(</span><span class="n">fac</span><span class="p">,</span> <span class="n">predef</span><span class="p">)</span> <span class="ow">in</span> <span class="n">fac_sites</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">cset</span> <span class="o">=</span> <span class="n">dv_colors</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">plot_clis</span><span class="p">:</span>
+            <span class="c1"># clients</span>
+            <span class="n">geoms</span> <span class="o">=</span> <span class="n">cli_points</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span>
+            <span class="n">gdf</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geoms</span><span class="p">)</span>
+            <span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">cset</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">100</span> <span class="o">*</span> <span class="n">markersize</span><span class="p">)</span>
+            <span class="n">_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Demand sites covered by </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">"</span>
+            <span class="n">_mkws</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"markerfacecolor"</span><span class="p">:</span> <span class="n">cset</span><span class="p">,</span>
+                <span class="s2">"markeredgecolor"</span><span class="p">:</span> <span class="s2">"k"</span><span class="p">,</span>
+                <span class="s2">"ms"</span><span class="p">:</span> <span class="n">markersize</span> <span class="o">+</span> <span class="mi">7</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">legend_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"o"</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">_label</span><span class="p">,</span> <span class="o">**</span><span class="n">_mkws</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="c1"># facilities</span>
+        <span class="n">ec</span> <span class="o">=</span> <span class="s2">"k"</span>
+        <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">predef_label</span> <span class="o">=</span> <span class="s2">"predefined"</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">predef_label</span><span class="p">)</span> <span class="ow">and</span> <span class="n">predef</span><span class="p">:</span>
+            <span class="n">ec</span> <span class="o">=</span> <span class="s2">"r"</span>
+            <span class="n">lw</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="n">fname</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" (</span><span class="si">{</span><span class="n">predef_label</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="n">facs</span><span class="o">.</span><span class="n">iloc</span><span class="p">[[</span><span class="n">fac</span><span class="p">]]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"*"</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">cset</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="n">ec</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="n">lw</span>
+        <span class="p">)</span>
+        <span class="n">_mkws</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"markerfacecolor"</span><span class="p">:</span> <span class="n">cset</span><span class="p">,</span> <span class="s2">"markeredgecolor"</span><span class="p">:</span> <span class="n">ec</span><span class="p">,</span> <span class="s2">"markeredgewidth"</span><span class="p">:</span> <span class="n">lw</span><span class="p">}</span>
+        <span class="n">legend_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"*"</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span> <span class="o">**</span><span class="n">_mkws</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># increment zorder up and markersize down for stacked client symbology</span>
+        <span class="n">zorder</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">plot_clis</span><span class="p">:</span>
+            <span class="n">markersize</span> <span class="o">-=</span> <span class="n">markersize_factor</span> <span class="o">/</span> <span class="n">p</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">multi_plot</span><span class="p">:</span>
+        <span class="c1"># legend</span>
+        <span class="n">kws</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"loc"</span><span class="p">:</span> <span class="s2">"upper left"</span><span class="p">,</span> <span class="s2">"bbox_to_anchor"</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)}</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="n">legend_elements</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="id1">Scenario 1<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">facility_points</span><span class="p">[</span><span class="s2">"predefined_loc"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">plot_results</span><span class="p">(</span>
+    <span class="n">clscpso_1</span><span class="p">,</span> <span class="n">clscpso_1</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">client_points</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/192c6c49183ea00234c5bb712e4fc52ac2cd1bb9d26c5f8745038da755c87bdf.png"><img alt="../_images/192c6c49183ea00234c5bb712e4fc52ac2cd1bb9d26c5f8745038da755c87bdf.png" src="../_images/192c6c49183ea00234c5bb712e4fc52ac2cd1bb9d26c5f8745038da755c87bdf.png" style="width: 808px; height: 546px;" />
+</a>
+</div>
+</div>
+<p>Facility <span class="math notranslate nohighlight">\(y_0\)</span> is selected because it is the only feasible solution with a capacity of 15.</p>
+<h3 id="id2">Scenario 2<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">plot_results</span><span class="p">(</span>
+    <span class="n">clscpso_2</span><span class="p">,</span> <span class="n">clscpso_2</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">client_points</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/0bb5794176d8f192efe05282eda8637dd6e397685987e10f04601d665a893d30.png"><img alt="../_images/0bb5794176d8f192efe05282eda8637dd6e397685987e10f04601d665a893d30.png" src="../_images/0bb5794176d8f192efe05282eda8637dd6e397685987e10f04601d665a893d30.png" style="width: 808px; height: 546px;" />
+</a>
+</div>
+</div>
+<p>When swapping the capacities from scenario 1, Facility <span class="math notranslate nohighlight">\(y_1\)</span> is selected because it is the only feasible solution with a capacity of 15.</p>
+<h3 id="id3">Scenario 3<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">plot_results</span><span class="p">(</span>
+    <span class="n">clscpso_3</span><span class="p">,</span> <span class="n">clscpso_3</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">client_points</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/7dae6950a0e5467168405ee6caddbc7ccc5fa3d101a79e0da19727c36d1c4897.png"><img alt="../_images/7dae6950a0e5467168405ee6caddbc7ccc5fa3d101a79e0da19727c36d1c4897.png" src="../_images/7dae6950a0e5467168405ee6caddbc7ccc5fa3d101a79e0da19727c36d1c4897.png" style="width: 808px; height: 547px;" />
+</a>
+</div>
+</div>
+<p>In scenario 3 neither facilities have the capacity to be the sole server of all client locations. However, they do have a combined capacity of 15. Therefore, both Facility <span class="math notranslate nohighlight">\(y_0\)</span> and Facility <span class="math notranslate nohighlight">\(y_1\)</span> are selected in the solution. Moreover, all client locations are within the 15 distance unit <code class="docutils literal notranslate"><span class="pre">SERVICE_RADIUS</span></code> from both facilities so they both can potentially serve all locations.</p>
+<h3 id="id4">Scenario 4<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">plot_results</span><span class="p">(</span>
+    <span class="n">clscpso_4</span><span class="p">,</span> <span class="n">clscpso_4</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">client_points</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/cb44071073cf295843160f5ac949a3b465271259924a897eef2d6a47d5810e62.png"><img alt="../_images/cb44071073cf295843160f5ac949a3b465271259924a897eef2d6a47d5810e62.png" src="../_images/cb44071073cf295843160f5ac949a3b465271259924a897eef2d6a47d5810e62.png" style="width: 808px; height: 547px;" />
+</a>
+</div>
+</div>
+<p>When setting facility capacities as equivalent, and high enough to serve the complete set of demand, only 1 facility is needed to satisfy the objective. The selection of Facility <span class="math notranslate nohighlight">\(y_1\)</span> is arbitrary in this case and may differ according to the internal state when the solver begins the solution process.</p>
+<h3 id="id5">Scenario 5<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">plot_results</span><span class="p">(</span>
+    <span class="n">clscpso_5</span><span class="p">,</span> <span class="n">clscpso_5</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">client_points</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/98d050e22cbe8a261f3d559007b441be762c0f0916d72455a8236f1d7a46788c.png"><img alt="../_images/98d050e22cbe8a261f3d559007b441be762c0f0916d72455a8236f1d7a46788c.png" src="../_images/98d050e22cbe8a261f3d559007b441be762c0f0916d72455a8236f1d7a46788c.png" style="width: 808px; height: 547px;" />
+</a>
+</div>
+</div>
+<p>Scenario 5 shows that when both facilities are capable of serving all the demand, the facility with a higher capacity (Facility <span class="math notranslate nohighlight">\(y_0\)</span> in this case) is selected.</p>
+<h3 id="id6">Scenario 6<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">plot_results</span><span class="p">(</span>
+    <span class="n">clscpso_6</span><span class="p">,</span> <span class="n">clscpso_6</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">client_points</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/848778aca9b6afee81f0f86f5fc78fdc277a3168a8eecef74c128b19571cddde.png"><img alt="../_images/848778aca9b6afee81f0f86f5fc78fdc277a3168a8eecef74c128b19571cddde.png" src="../_images/848778aca9b6afee81f0f86f5fc78fdc277a3168a8eecef74c128b19571cddde.png" style="width: 808px; height: 547px;" />
+</a>
+</div>
+</div>
+<p>Scenario 6 demostrates the reverse situation from above in Scenario 5. Facility <span class="math notranslate nohighlight">\(y_1\)</span> is selected over Facility <span class="math notranslate nohighlight">\(y_0\)</span> because it has a larger capacity.</p>
+<h3 id="a-comparison-of-the-solutions">A comparison of the solutions<a class="headerlink" href="#a-comparison-of-the-solutions" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">scenarios</span> <span class="o">=</span> <span class="p">[</span><span class="n">clscpso_1</span><span class="p">,</span> <span class="n">clscpso_2</span><span class="p">,</span> <span class="n">clscpso_3</span><span class="p">,</span> <span class="n">clscpso_4</span><span class="p">,</span> <span class="n">clscpso_5</span><span class="p">,</span> <span class="n">clscpso_6</span><span class="p">]</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">scenarios</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=-</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">scenarios</span><span class="p">):</span>
+    <span class="n">plot_results</span><span class="p">(</span>
+        <span class="n">m</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">client_points</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axarr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/c65e2d8bd568a1deacbd150226c348ab26c8cf4c590dd9f09f71471328d80a48.png"><img alt="../_images/c65e2d8bd568a1deacbd150226c348ab26c8cf4c590dd9f09f71471328d80a48.png" src="../_images/c65e2d8bd568a1deacbd150226c348ab26c8cf4c590dd9f09f71471328d80a48.png" style="width: 1570px; height: 304px;" />
+</a>
+</div>
+</div>
+<hr class="docutils" />
+<h2 id="comparing-covering-problems">3. Comparing covering problems<a class="headerlink" href="#comparing-covering-problems" title="Link to this heading">¶</a></h2>
+<p>Next we will set up, solve, and compare the CLSCP-SO to the standard LSCP with both more client locations and facilities. We will also stipulate that Facility <span class="math notranslate nohighlight">\(y_5\)</span> must be part of the optimal solution in both models.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">snap_obs</span><span class="p">(</span><span class="n">_ntw</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
+        <span class="c1"># ignore deprecation warning - GH pysal/libpysal#468</span>
+        <span class="n">_ntw</span><span class="o">.</span><span class="n">snapobservations</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">attribute</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df_snapped</span> <span class="o">=</span> <span class="n">spaghetti</span><span class="o">.</span><span class="n">element_as_gdf</span><span class="p">(</span><span class="n">_ntw</span><span class="p">,</span> <span class="n">pp_name</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">snapped</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df_snapped</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"comp_label"</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df_snapped</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="parameters-and-input-data">Parameters and input data<a class="headerlink" href="#parameters-and-input-data" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># quantity demand points, supply points, &amp; maximum service radius (in distance units)</span>
+<span class="n">CLIENT_COUNT</span><span class="p">,</span> <span class="n">FACILITY_COUNT</span><span class="p">,</span> <span class="n">SERVICE_RADIUS</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">7</span>
+
+<span class="c1"># generate  input data</span>
+<span class="n">_buff</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoSeries</span><span class="p">(</span><span class="n">streets</span><span class="p">[</span><span class="s2">"geometry"</span><span class="p">]</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">union_all</span><span class="p">())</span>
+<span class="n">_buff</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">_buff</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">streets</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span>
+<span class="n">client_points</span> <span class="o">=</span> <span class="n">simulated_geo_points</span><span class="p">(</span><span class="n">_buff</span><span class="p">,</span> <span class="n">needed</span><span class="o">=</span><span class="n">CLIENT_COUNT</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">CLIENT_SEED</span><span class="p">)</span>
+<span class="n">facility_points</span> <span class="o">=</span> <span class="n">simulated_geo_points</span><span class="p">(</span><span class="n">_buff</span><span class="p">,</span> <span class="n">needed</span><span class="o">=</span><span class="n">FACILITY_COUNT</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">FACILITY_SEED</span><span class="p">)</span>
+<span class="n">snap_obs</span><span class="p">(</span><span class="n">ntw</span><span class="p">,</span> <span class="n">client_points</span><span class="p">,</span> <span class="s2">"clients"</span><span class="p">)</span>
+<span class="n">snap_obs</span><span class="p">(</span><span class="n">ntw</span><span class="p">,</span> <span class="n">facility_points</span><span class="p">,</span> <span class="s2">"facilities"</span><span class="p">)</span>
+
+<span class="c1"># calculate the OD cost matrix</span>
+<span class="n">orig</span><span class="p">,</span> <span class="n">dest</span> <span class="o">=</span> <span class="n">ntw</span><span class="o">.</span><span class="n">pointpatterns</span><span class="p">[</span><span class="s2">"clients"</span><span class="p">],</span> <span class="n">ntw</span><span class="o">.</span><span class="n">pointpatterns</span><span class="p">[</span><span class="s2">"facilities"</span><span class="p">]</span>
+<span class="n">cost_matrix</span> <span class="o">=</span> <span class="n">ntw</span><span class="o">.</span><span class="n">allneighbordistances</span><span class="p">(</span><span class="n">sourcepattern</span><span class="o">=</span><span class="n">orig</span><span class="p">,</span> <span class="n">destpattern</span><span class="o">=</span><span class="n">dest</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/var/folders/n0/xbnn2f2d0ybbp2c_bf_9ztzw0000gn/T/ipykernel_40122/24800956.py:7: Pandas4Warning: The inplace keyword in GeoDataFrame.drop is deprecated and will be removed in a future version (PDEP-8).
+See https://pandas.pydata.org/docs/dev/whatsnew/v3.1.0.html#deprecation-inplace for more details.
+  df_snapped.drop(columns=["id", "comp_label"], inplace=True)
+/var/folders/n0/xbnn2f2d0ybbp2c_bf_9ztzw0000gn/T/ipykernel_40122/24800956.py:7: Pandas4Warning: The inplace keyword in GeoDataFrame.drop is deprecated and will be removed in a future version (PDEP-8).
+See https://pandas.pydata.org/docs/dev/whatsnew/v3.1.0.html#deprecation-inplace for more details.
+  df_snapped.drop(columns=["id", "comp_label"], inplace=True)
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="stipulate-that-facility-y-5-must-be-a-member-of-the-solution-set">Stipulate that facility <span class="math notranslate nohighlight">\(y_5\)</span> must be a member of the solution set<a class="headerlink" href="#stipulate-that-facility-y-5-must-be-a-member-of-the-solution-set" title="Link to this heading">¶</a></h3>
+<p><em><strong>Important:</strong></em> The facilities in <code class="docutils literal notranslate"><span class="pre">&quot;predefined_loc&quot;</span></code> are a binary array where <code class="docutils literal notranslate"><span class="pre">1</span></code> means the associated location must appear in the solution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">facility_points</span><span class="p">[</span><span class="s2">"predefined_loc"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">facility_points</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="mi">5</span><span class="p">],</span> <span class="s2">"predefined_loc"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="generate-synthetic-demand">Generate synthetic demand<a class="headerlink" href="#generate-synthetic-demand" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">222</span><span class="p">)</span>
+<span class="n">demand_quantity</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">CLIENT_COUNT</span><span class="p">)</span>
+<span class="n">total_demand</span> <span class="o">=</span> <span class="n">demand_quantity</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">client_points</span><span class="p">[</span><span class="s2">"demand"</span><span class="p">]</span> <span class="o">=</span> <span class="n">demand_quantity</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total demand: </span><span class="si">{</span><span class="n">total_demand</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">demand_quantity</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Total demand: 238
+</code></pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([3, 2, 4, 3, 3, 3, 1, 2, 3, 2, 4, 2, 4, 1, 1, 1, 1, 4, 3, 1, 1, 1,
+       1, 2, 4, 4, 4, 1, 3, 4, 2, 2, 2, 1, 4, 2, 1, 3, 2, 2, 4, 4, 4, 4,
+       1, 2, 2, 1, 2, 2, 2, 4, 1, 2, 2, 4, 2, 4, 1, 1, 1, 1, 1, 2, 2, 1,
+       1, 1, 2, 4, 4, 4, 2, 2, 3, 3, 2, 3, 3, 1, 3, 1, 1, 3, 1, 2, 4, 1,
+       4, 4, 3, 3, 1, 4, 1, 4, 4, 4, 3, 1])
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="generate-synthetic-capacity-equal-to-at-least-2x-demand">Generate synthetic capacity equal to at least 2x demand<a class="headerlink" href="#generate-synthetic-capacity-equal-to-at-least-2x-demand" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">cap_sum_search</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">while</span> <span class="n">cap_sum_search</span><span class="p">:</span>
+    <span class="n">facility_capacity</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">FACILITY_COUNT</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">facility_capacity</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">demand_quantity</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">cap_sum_search</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">facility_points</span><span class="p">[</span><span class="s2">"capacity"</span><span class="p">]</span> <span class="o">=</span> <span class="n">facility_capacity</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total capacity: </span><span class="si">{</span><span class="n">facility_points</span><span class="p">[</span><span class="s1">'capacity'</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">facility_points</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Total capacity: 575
+</code></pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>predefined_loc</th>
+      <th>capacity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POINT (9.32146 3.15178)</td>
+      <td>0</td>
+      <td>49</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POINT (8.53352 -0.04134)</td>
+      <td>0</td>
+      <td>52</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POINT (0.68422 6.04557)</td>
+      <td>0</td>
+      <td>69</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POINT (5.32799 4.10688)</td>
+      <td>0</td>
+      <td>72</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POINT (3.18949 6.34771)</td>
+      <td>0</td>
+      <td>72</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>POINT (4.31956 7.5947)</td>
+      <td>1</td>
+      <td>14</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>POINT (5.1984 5.86744)</td>
+      <td>0</td>
+      <td>88</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>POINT (6.59891 10.39247)</td>
+      <td>0</td>
+      <td>26</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>POINT (8.51844 4.04521)</td>
+      <td>0</td>
+      <td>41</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>POINT (9.13894 8.56135)</td>
+      <td>0</td>
+      <td>92</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<h3 id="solve-plot-the-clscp-so">Solve &amp; plot the CLSCP-SO<a class="headerlink" href="#solve-plot-the-clscp-so" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">clscpso</span> <span class="o">=</span> <span class="n">LSCP</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+    <span class="n">cost_matrix</span><span class="p">,</span>
+    <span class="n">SERVICE_RADIUS</span><span class="p">,</span>
+    <span class="n">demand_quantity_arr</span><span class="o">=</span><span class="n">demand_quantity</span><span class="p">,</span>
+    <span class="n">facility_capacity_arr</span><span class="o">=</span><span class="n">facility_capacity</span><span class="p">,</span>
+    <span class="n">predefined_facilities_arr</span><span class="o">=</span><span class="n">facility_points</span><span class="p">[</span><span class="s2">"predefined_loc"</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"CLSCP-SO_predefined"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">clscpso</span> <span class="o">=</span> <span class="n">clscpso</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+<span class="n">facility_points</span><span class="p">[</span><span class="s2">"dv"</span><span class="p">]</span> <span class="o">=</span> <span class="n">clscpso</span><span class="o">.</span><span class="n">fac_vars</span>
+<span class="n">facility_points</span><span class="p">[</span><span class="s2">"dv"</span><span class="p">]</span> <span class="o">=</span> <span class="n">facility_points</span><span class="p">[</span><span class="s2">"dv"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"_"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
+<span class="n">plot_results</span><span class="p">(</span>
+    <span class="n">clscpso</span><span class="p">,</span> <span class="n">clscpso</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">client_points</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/ff1cb5b96039a241087157ee7d80b69208119b9cbc6c1b0021483b569cdd403c.png"><img alt="../_images/ff1cb5b96039a241087157ee7d80b69208119b9cbc6c1b0021483b569cdd403c.png" src="../_images/ff1cb5b96039a241087157ee7d80b69208119b9cbc6c1b0021483b569cdd403c.png" style="width: 811px; height: 543px;" />
+</a>
+</div>
+</div>
+<h3 id="solve-plot-the-standard-lscp">Solve &amp; plot the standard LSCP<a class="headerlink" href="#solve-plot-the-standard-lscp" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">lscp</span> <span class="o">=</span> <span class="n">LSCP</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+    <span class="n">cost_matrix</span><span class="p">,</span>
+    <span class="n">SERVICE_RADIUS</span><span class="p">,</span>
+    <span class="n">predefined_facilities_arr</span><span class="o">=</span><span class="n">facility_points</span><span class="p">[</span><span class="s2">"predefined_loc"</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"lscp_predefined"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">lscp</span> <span class="o">=</span> <span class="n">lscp</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+<span class="n">plot_results</span><span class="p">(</span><span class="n">lscp</span><span class="p">,</span> <span class="n">lscp</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">client_points</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/1c525b5133549baf088de1dae4f3d9defc6377bc7e7215526c1ca73742e0a46e.png"><img alt="../_images/1c525b5133549baf088de1dae4f3d9defc6377bc7e7215526c1ca73742e0a46e.png" src="../_images/1c525b5133549baf088de1dae4f3d9defc6377bc7e7215526c1ca73742e0a46e.png" style="width: 811px; height: 543px;" />
+</a>
+</div>
+</div>
+<h3 id="compare-the-results">Compare the results<a class="headerlink" href="#compare-the-results" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="n">clscpso</span><span class="p">,</span> <span class="n">lscp</span><span class="p">]</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=-</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=-</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">models</span><span class="p">):</span>
+    <span class="n">plot_results</span><span class="p">(</span>
+        <span class="n">m</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">client_points</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axarr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/a8984bcd8b31b54f2a1fcb9a5ed40de2f3a1ed83b4d758ff252d70e22bb87528.png"><img alt="../_images/a8984bcd8b31b54f2a1fcb9a5ed40de2f3a1ed83b4d758ff252d70e22bb87528.png" src="../_images/a8984bcd8b31b54f2a1fcb9a5ed40de2f3a1ed83b4d758ff252d70e22bb87528.png" style="width: 795px; height: 428px;" />
+</a>
+</div>
+</div>
+<p>Here we can see the solutions to the CLSCP-SO and LSCP are very similar. Facilities <span class="math notranslate nohighlight">\(y_1\)</span> (green), <span class="math notranslate nohighlight">\(y_2\)</span> (brown), <span class="math notranslate nohighlight">\(y_5\)</span> (darker violet), and <span class="math notranslate nohighlight">\(y_9\)</span> (orange) are present in both solutions, with <span class="math notranslate nohighlight">\(y_5\)</span> being pre-defined in both. In fact, the only difference between the two models is the inclusion of Facility <span class="math notranslate nohighlight">\(y_6\)</span> (lighter lilac) in the CLSCP-SO solution. This difference is due to taking client demand into consideration along with facility capacity.</p>
+<hr class="docutils" />
+<h2 id="references">References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.springer.com/gb/book/9783319998459">Church, R. L., &amp; Murray, A. T. (2018). Location covering models: History, Applications and Advancements (1st edition 2018). Springer</a></p></li>
+<li><p><a class="reference external" href="https://journals.sagepub.com/doi/abs/10.1068/b150153">Current, J. R., &amp; Storbeck, J. E. (1988). Capacitated Covering Models. Environment and Planning B: Planning and Design, 15(2):153–163, 1988. doi:10.1068/b150153.</a></p></li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2018-, pysal developers.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    9.2.0.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/spopt/versions.json"}}</script>
+    
+      
+        <script src="../_static/sphinx_immaterial_theme.ce3f826234c1e494c.min.js?v=6917d573"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script id="MathJax-script" src="../_static/mathjax/tex-mml-chtml.js?v=cadf963e"></script>
+    
+  </body>
+</html>

@@ -1,0 +1,2943 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="p-dispersion.html">
+      
+      
+        <link rel="next" href="facloc-lscpb-real-world.html">
+      
+      
+      <link rel="icon" href="../_static/pysal_favicon.ico">
+    
+    
+      
+        <title>Empirical examples of facility location problems - spopt</title>
+      
+    
+    
+      
+        
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+        <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#lscp" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="spopt" class="md-header__button md-logo" aria-label="spopt" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spopt
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Empirical examples of facility location problems
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pysal/spopt/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/spopt
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="spopt" class="md-nav__button md-logo" aria-label="spopt" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    spopt
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pysal/spopt/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/spopt
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Home</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Installation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>Regionalization</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Regionalization</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="maxp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Max-<wbr>P Regionalization</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="azp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Automatic Zoning Procedure <wbr>(AZP) algorithm</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="sa3.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Adaptive Agglomerative Aggregation <wbr>(SA^3)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="skater.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>SKATER</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ward.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Ward</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reg-k-means.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Regional-<wbr>k-<wbr>means</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="randomregion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Random Regions</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="component_policy.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Max-<wbr>P Regionalization for Multiple Components</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>References</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>Locate</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Locate</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Location Set Covering Problem <wbr>(LSCP)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscp_gis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Siting First Aid Stations with LSCP on Toronto’s University Campus</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscp_capacity.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Capacitated Location Set Covering Problem–System Optimal <wbr>(CLSCP-<wbr>SO)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="lscpb.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Backup Coverage Location Problem <wbr>(LSCP-<wbr>B)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mclp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The Maximal Coverage Location Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mclp_gis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Siting Restaurants with MCLP in San Francisco</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-center.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>P-<wbr>Center Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-median.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Median Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-median_variations.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Comparing P-<wbr>Median Variations</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="p-dispersion.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Dispersion <wbr>(max-<wbr>min-<wbr>min) Problem</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    <span>Empirical examples of facility location problems</span>
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Empirical examples of facility location problems</span>
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lscp" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>LSCP</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mclp" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>MCLP</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#p-median" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>P-<wbr>Median</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#p-center" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>P-<wbr>Center</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparing-all-models" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Comparing all models</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evaluating-available-solvers" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Evaluating available solvers</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evaluating available solvers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#id1" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>MCLP</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id2" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>P-<wbr>Center</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="facloc-lscpb-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Backup Coverage Location Problem:<wbr> An Empirical Example</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="facloc-disperse-real-world.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>The P-<wbr>Dispersion Problem:<wbr> An Empirical Example</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="flow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Flow Refueling Location Model <wbr>(FRLM)</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>API</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>API</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>API reference</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>For contributors</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            <span>For contributors</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/spopt" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Git<wbr>Hub</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/spopt/releases" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Changelog</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lscp" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>LSCP</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mclp" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>MCLP</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#p-median" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>P-<wbr>Median</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#p-center" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>P-<wbr>Center</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparing-all-models" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Comparing all models</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evaluating-available-solvers" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Evaluating available solvers</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evaluating available solvers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#id1" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>MCLP</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id2" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>P-<wbr>Center</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                
+                
+                  
+
+
+  
+    <a href="https://github.com/pysal/spopt/blob/main/docs/source/notebooks/facloc-real-world.ipynb" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5zM6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41zm11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41z"/></svg>
+    </a>
+  
+  
+
+<h1 id="empirical-examples-of-facility-location-problems">Empirical examples of facility location problems<a class="headerlink" href="#empirical-examples-of-facility-location-problems" title="Link to this heading">¶</a></h1>
+<p><em>Authors:</em> <a class="reference external" href="https://github.com/gegen07">Germano Barcelos</a>, <a class="reference external" href="https://github.com/jGaboardi">James Gaboardi</a>, <a class="reference external" href="https://github.com/ljwolf">Levi J. Wolf</a>, <a class="reference external" href="https://github.com/qszhao">Qunshan Zhao</a></p>
+<p>This tutorial aims to show a facility location application. To achieve this goal the tuorial will solve mulitple real world facility location problems using a dataset describing an area of census tract 205, San Francisco. The general scenarios can be stated as: store sites should supply the demand in this census tract considering the distance between the two sets of sites: demand points and candidate supply sites. Four fundamental facility location models are utilized to highlight varying outcomes dependent on objectives: LSCP (Location Set Covering Problem), MCLP (Maximal Coverage Location Problem), P-Median and P-Center. For further information on these models, it’s recommended to see the notebooks that explain more deeply about each one: <a class="reference internal" href="lscp.html"><span class="std std-doc">LSCP</span></a>, <a class="reference internal" href="mclp.html"><span class="std std-doc">MCLP</span></a>, <a class="reference internal" href="p-median.html"><span class="std std-doc">P-Median</span></a>, <a class="reference internal" href="p-center.html"><span class="std std-doc">P-Center</span></a>.</p>
+<p>Also, this tutorial demonstrates the use of different solvers that <a class="reference external" href="https://github.com/coin-or/pulp">PULP</a> supports.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="o">%</span><span class="k">config</span> InlineBackend.figure_format = "retina"
+<span class="o">%</span><span class="k">load_ext</span> watermark
+<span class="o">%</span><span class="k">watermark</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Last updated: 2026-11-18T16:29:23.128228+01:00
+
+Python implementation: CPython
+Python version       : 3.14.10
+IPython version      : 9.18.1
+
+Compiler    : Clang 20.1.8 
+OS          : Darwin
+Release     : 27.0.0
+Machine     : arm64
+Processor   : arm
+CPU cores   : 10
+Architecture: 64bit
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.lines</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mlines</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib_scalebar</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pulp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shapely</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Patch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib_scalebar.scalebar</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScaleBar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shapely.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">spopt</span>
+
+<span class="o">%</span><span class="k">watermark</span> -w
+<span class="o">%</span><span class="k">watermark</span> -iv
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Watermark: 2.6.0
+
+geopandas          : 1.2.0
+matplotlib         : 3.11.2
+matplotlib_scalebar: 0.9.0
+numpy              : 2.5.4
+pandas             : 3.1.1
+pulp               : 3.3.2
+shapely            : 2.2.0
+spopt              : 0.8.1.dev6+g356ab8d10.d20261118
+</code></pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<p>We use 4 data files as input:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">network_distance</span></code> is the distance between facility candidate sites calculated by ArcGIS Network Analyst Extension</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">demand_points</span></code> represents the demand points with some important features for the facility location problem like population</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">facility_points</span></code> represents the stores that are candidate facility sites</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tract</span></code> is the polygon of census tract 205.</p></li>
+</ul>
+<p>All datasets are online on this <a class="reference external" href="https://github.com/huanfachen/Open_source_location_cover_models/tree/master/Data/San_Francisco_store">repository</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">DIRPATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">spopt</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">"tests/test_locate/data/"</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">network_distance</span></code> dataframe</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">network_distance</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="n">DIRPATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">"SF_network_distance_candidateStore_16_censusTract_205_new.csv"</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">network_distance</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>distance</th>
+      <th>name</th>
+      <th>DestinationName</th>
+      <th>demand</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>671.573346</td>
+      <td>Store_1</td>
+      <td>60750479.01</td>
+      <td>6540</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1333.708063</td>
+      <td>Store_1</td>
+      <td>60750479.02</td>
+      <td>3539</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1656.188884</td>
+      <td>Store_1</td>
+      <td>60750352.02</td>
+      <td>4436</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1783.006047</td>
+      <td>Store_1</td>
+      <td>60750602.00</td>
+      <td>231</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1790.950612</td>
+      <td>Store_1</td>
+      <td>60750478.00</td>
+      <td>7787</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>3275</th>
+      <td>19643.307257</td>
+      <td>Store_19</td>
+      <td>60816023.00</td>
+      <td>3204</td>
+    </tr>
+    <tr>
+      <th>3276</th>
+      <td>20245.369594</td>
+      <td>Store_19</td>
+      <td>60816029.00</td>
+      <td>4135</td>
+    </tr>
+    <tr>
+      <th>3277</th>
+      <td>20290.986235</td>
+      <td>Store_19</td>
+      <td>60816026.00</td>
+      <td>7887</td>
+    </tr>
+    <tr>
+      <th>3278</th>
+      <td>20875.680521</td>
+      <td>Store_19</td>
+      <td>60816025.00</td>
+      <td>5146</td>
+    </tr>
+    <tr>
+      <th>3279</th>
+      <td>20958.530406</td>
+      <td>Store_19</td>
+      <td>60816024.00</td>
+      <td>6511</td>
+    </tr>
+  </tbody>
+</table>
+<p>3280 rows × 4 columns</p>
+</div></div></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">demand_points</span></code> dataframe</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">demand_points</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="n">DIRPATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">"SF_demand_205_centroid_uniform_weight.csv"</span><span class="p">),</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>
+<span class="n">demand_points</span> <span class="o">=</span> <span class="n">demand_points</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">demand_points</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>OBJECTID</th>
+      <th>ID</th>
+      <th>NAME</th>
+      <th>STATE_NAME</th>
+      <th>AREA</th>
+      <th>POP2000</th>
+      <th>HOUSEHOLDS</th>
+      <th>HSE_UNITS</th>
+      <th>BUS_COUNT</th>
+      <th>long</th>
+      <th>lat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>6081602900</td>
+      <td>60816029.00</td>
+      <td>California</td>
+      <td>0.48627</td>
+      <td>4135</td>
+      <td>1679</td>
+      <td>1715</td>
+      <td>112</td>
+      <td>-122.488653</td>
+      <td>37.650807</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>6081602800</td>
+      <td>60816028.00</td>
+      <td>California</td>
+      <td>0.47478</td>
+      <td>4831</td>
+      <td>1484</td>
+      <td>1506</td>
+      <td>59</td>
+      <td>-122.483550</td>
+      <td>37.659998</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>6081601700</td>
+      <td>60816017.00</td>
+      <td>California</td>
+      <td>0.46393</td>
+      <td>4155</td>
+      <td>1294</td>
+      <td>1313</td>
+      <td>55</td>
+      <td>-122.456484</td>
+      <td>37.663272</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>6081601900</td>
+      <td>60816019.00</td>
+      <td>California</td>
+      <td>0.81907</td>
+      <td>9041</td>
+      <td>3273</td>
+      <td>3330</td>
+      <td>118</td>
+      <td>-122.434247</td>
+      <td>37.662385</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>6081602500</td>
+      <td>60816025.00</td>
+      <td>California</td>
+      <td>0.46603</td>
+      <td>5146</td>
+      <td>1459</td>
+      <td>1467</td>
+      <td>44</td>
+      <td>-122.451187</td>
+      <td>37.640219</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>200</th>
+      <td>204</td>
+      <td>6075011100</td>
+      <td>60750111.00</td>
+      <td>California</td>
+      <td>0.09466</td>
+      <td>5559</td>
+      <td>2930</td>
+      <td>3037</td>
+      <td>362</td>
+      <td>-122.418479</td>
+      <td>37.791082</td>
+    </tr>
+    <tr>
+      <th>201</th>
+      <td>205</td>
+      <td>6075012200</td>
+      <td>60750122.00</td>
+      <td>California</td>
+      <td>0.07211</td>
+      <td>7035</td>
+      <td>3862</td>
+      <td>4074</td>
+      <td>272</td>
+      <td>-122.417237</td>
+      <td>37.785728</td>
+    </tr>
+    <tr>
+      <th>202</th>
+      <td>206</td>
+      <td>6075017601</td>
+      <td>60750176.01</td>
+      <td>California</td>
+      <td>0.24306</td>
+      <td>5756</td>
+      <td>2437</td>
+      <td>2556</td>
+      <td>943</td>
+      <td>-122.410115</td>
+      <td>37.779459</td>
+    </tr>
+    <tr>
+      <th>203</th>
+      <td>207</td>
+      <td>6075017800</td>
+      <td>60750178.00</td>
+      <td>California</td>
+      <td>0.27882</td>
+      <td>5829</td>
+      <td>3115</td>
+      <td>3231</td>
+      <td>807</td>
+      <td>-122.405411</td>
+      <td>37.778934</td>
+    </tr>
+    <tr>
+      <th>204</th>
+      <td>208</td>
+      <td>6075012400</td>
+      <td>60750124.00</td>
+      <td>California</td>
+      <td>0.17496</td>
+      <td>8188</td>
+      <td>4328</td>
+      <td>4609</td>
+      <td>549</td>
+      <td>-122.416455</td>
+      <td>37.782289</td>
+    </tr>
+  </tbody>
+</table>
+<p>205 rows × 11 columns</p>
+</div></div></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">facility_points</span></code> dataframe</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">facility_points</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">DIRPATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">"SF_store_site_16_longlat.csv"</span><span class="p">),</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">facility_points</span> <span class="o">=</span> <span class="n">facility_points</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">facility_points</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>OBJECTID</th>
+      <th>NAME</th>
+      <th>long</th>
+      <th>lat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>Store_1</td>
+      <td>-122.510018</td>
+      <td>37.772364</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>Store_2</td>
+      <td>-122.488873</td>
+      <td>37.753764</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>Store_3</td>
+      <td>-122.464927</td>
+      <td>37.774727</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>Store_4</td>
+      <td>-122.473945</td>
+      <td>37.743164</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>Store_5</td>
+      <td>-122.449291</td>
+      <td>37.731545</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>6</td>
+      <td>Store_6</td>
+      <td>-122.491745</td>
+      <td>37.649309</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>7</td>
+      <td>Store_7</td>
+      <td>-122.483182</td>
+      <td>37.701109</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>8</td>
+      <td>Store_11</td>
+      <td>-122.433782</td>
+      <td>37.655364</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>9</td>
+      <td>Store_12</td>
+      <td>-122.438982</td>
+      <td>37.719236</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>10</td>
+      <td>Store_13</td>
+      <td>-122.440218</td>
+      <td>37.745382</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>11</td>
+      <td>Store_14</td>
+      <td>-122.421636</td>
+      <td>37.742964</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>12</td>
+      <td>Store_15</td>
+      <td>-122.430982</td>
+      <td>37.782964</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>13</td>
+      <td>Store_16</td>
+      <td>-122.426873</td>
+      <td>37.769291</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>14</td>
+      <td>Store_17</td>
+      <td>-122.432345</td>
+      <td>37.805218</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>15</td>
+      <td>Store_18</td>
+      <td>-122.412818</td>
+      <td>37.805745</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>16</td>
+      <td>Store_19</td>
+      <td>-122.398909</td>
+      <td>37.797073</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">study_area</span></code> dataframe</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">study_area</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">DIRPATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">"ServiceAreas_4.shp"</span><span class="p">))</span><span class="o">.</span><span class="n">dissolve</span><span class="p">()</span>
+<span class="n">study_area</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POLYGON ((-122.45299 37.63898, -122.45415 37.6...</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Plot <code class="docutils literal notranslate"><span class="pre">study_area</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">base</span> <span class="o">=</span> <span class="n">study_area</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">base</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">);</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/c4374ada82e23938ce72a6375f2c17bd02899928a5adee4058c39f2d834bb031.png"><img alt="../_images/c4374ada82e23938ce72a6375f2c17bd02899928a5adee4058c39f2d834bb031.png" src="../_images/c4374ada82e23938ce72a6375f2c17bd02899928a5adee4058c39f2d834bb031.png" style="width: 318px; height: 389px;" />
+</a>
+</div>
+</div>
+<p>To start modeling the problem assuming the arguments expected by <code class="docutils literal notranslate"><span class="pre">spopt.locate</span></code>, we should pass a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> 2D array as a cost matrix. So, first we pivot the network_distance dataframe.</p>
+<p><em>Note that the columns and rows are sorted in ascending order.</em></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ntw_dist_piv</span> <span class="o">=</span> <span class="n">network_distance</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span>
+    <span class="n">values</span><span class="o">=</span><span class="s2">"distance"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s2">"DestinationName"</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">"name"</span>
+<span class="p">)</span>
+<span class="n">ntw_dist_piv</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>name</th>
+      <th>Store_1</th>
+      <th>Store_11</th>
+      <th>Store_12</th>
+      <th>Store_13</th>
+      <th>Store_14</th>
+      <th>Store_15</th>
+      <th>Store_16</th>
+      <th>Store_17</th>
+      <th>Store_18</th>
+      <th>Store_19</th>
+      <th>Store_2</th>
+      <th>Store_3</th>
+      <th>Store_4</th>
+      <th>Store_5</th>
+      <th>Store_6</th>
+      <th>Store_7</th>
+    </tr>
+    <tr>
+      <th>DestinationName</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>60750101.0</th>
+      <td>11495.190454</td>
+      <td>20022.666503</td>
+      <td>10654.593733</td>
+      <td>8232.543149</td>
+      <td>7561.399789</td>
+      <td>4139.772198</td>
+      <td>4805.805279</td>
+      <td>2055.530234</td>
+      <td>225.609240</td>
+      <td>1757.623456</td>
+      <td>11522.519829</td>
+      <td>7529.985950</td>
+      <td>10847.234951</td>
+      <td>10604.729605</td>
+      <td>20970.277793</td>
+      <td>15242.989416</td>
+    </tr>
+    <tr>
+      <th>60750102.0</th>
+      <td>10436.169910</td>
+      <td>19392.094770</td>
+      <td>10024.022001</td>
+      <td>7601.971416</td>
+      <td>6930.828057</td>
+      <td>3093.851654</td>
+      <td>4175.233547</td>
+      <td>1257.809690</td>
+      <td>1041.911304</td>
+      <td>2333.244000</td>
+      <td>10509.099285</td>
+      <td>6470.965406</td>
+      <td>10216.663219</td>
+      <td>9974.157873</td>
+      <td>20339.706061</td>
+      <td>14612.417684</td>
+    </tr>
+    <tr>
+      <th>60750103.0</th>
+      <td>10746.296811</td>
+      <td>19404.672860</td>
+      <td>10036.600090</td>
+      <td>7614.549505</td>
+      <td>6943.406146</td>
+      <td>3381.778555</td>
+      <td>4187.811636</td>
+      <td>2046.436590</td>
+      <td>744.584403</td>
+      <td>1685.517099</td>
+      <td>10800.926186</td>
+      <td>6778.892307</td>
+      <td>10229.241308</td>
+      <td>9986.735962</td>
+      <td>20352.284150</td>
+      <td>14624.995773</td>
+    </tr>
+    <tr>
+      <th>60750104.0</th>
+      <td>11420.492134</td>
+      <td>19808.368182</td>
+      <td>10440.295413</td>
+      <td>8018.244828</td>
+      <td>7347.101469</td>
+      <td>4044.473877</td>
+      <td>4591.506959</td>
+      <td>2463.736278</td>
+      <td>795.715285</td>
+      <td>1282.217412</td>
+      <td>11308.221508</td>
+      <td>7447.187630</td>
+      <td>10632.936630</td>
+      <td>10390.431285</td>
+      <td>20755.979472</td>
+      <td>15028.691095</td>
+    </tr>
+    <tr>
+      <th>60750105.0</th>
+      <td>11379.443952</td>
+      <td>19583.920000</td>
+      <td>10215.847231</td>
+      <td>7793.796646</td>
+      <td>7122.653287</td>
+      <td>4103.725695</td>
+      <td>4367.058776</td>
+      <td>3320.283731</td>
+      <td>1731.462738</td>
+      <td>249.669959</td>
+      <td>11083.773326</td>
+      <td>7379.539448</td>
+      <td>10408.488448</td>
+      <td>10165.983103</td>
+      <td>20531.531290</td>
+      <td>14804.242913</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>60816025.0</th>
+      <td>17324.066610</td>
+      <td>2722.031291</td>
+      <td>10884.063331</td>
+      <td>14178.007937</td>
+      <td>13891.857275</td>
+      <td>18418.384867</td>
+      <td>16726.951785</td>
+      <td>20834.395022</td>
+      <td>21441.247824</td>
+      <td>20875.680521</td>
+      <td>14662.484617</td>
+      <td>16569.371114</td>
+      <td>12483.322114</td>
+      <td>11926.727459</td>
+      <td>4968.842581</td>
+      <td>8648.054204</td>
+    </tr>
+    <tr>
+      <th>60816026.0</th>
+      <td>15981.172325</td>
+      <td>3647.137006</td>
+      <td>10299.369046</td>
+      <td>13593.313651</td>
+      <td>13307.162990</td>
+      <td>17833.690581</td>
+      <td>16142.257500</td>
+      <td>20249.700736</td>
+      <td>20856.553539</td>
+      <td>20290.986235</td>
+      <td>14050.290332</td>
+      <td>15963.776829</td>
+      <td>11871.527828</td>
+      <td>11342.033174</td>
+      <td>3625.948296</td>
+      <td>7919.659919</td>
+    </tr>
+    <tr>
+      <th>60816027.0</th>
+      <td>14835.342712</td>
+      <td>4581.333336</td>
+      <td>9637.139433</td>
+      <td>12931.084039</td>
+      <td>12644.933377</td>
+      <td>17171.460969</td>
+      <td>15480.027887</td>
+      <td>19587.471124</td>
+      <td>20194.323926</td>
+      <td>19628.756623</td>
+      <td>13341.313338</td>
+      <td>15301.547216</td>
+      <td>11209.298215</td>
+      <td>10679.803561</td>
+      <td>2290.818683</td>
+      <td>7242.830306</td>
+    </tr>
+    <tr>
+      <th>60816028.0</th>
+      <td>13339.491691</td>
+      <td>6392.856372</td>
+      <td>8577.488412</td>
+      <td>11871.433018</td>
+      <td>11585.282356</td>
+      <td>16111.809948</td>
+      <td>14420.376867</td>
+      <td>18527.820103</td>
+      <td>19134.672905</td>
+      <td>18569.105602</td>
+      <td>11845.462317</td>
+      <td>14241.196195</td>
+      <td>10155.147195</td>
+      <td>9620.152540</td>
+      <td>1846.795647</td>
+      <td>5746.979285</td>
+    </tr>
+    <tr>
+      <th>60816029.0</th>
+      <td>15257.855684</td>
+      <td>6394.920365</td>
+      <td>10253.752405</td>
+      <td>13547.697010</td>
+      <td>13261.546349</td>
+      <td>17788.073940</td>
+      <td>16096.640859</td>
+      <td>20204.084095</td>
+      <td>20810.936898</td>
+      <td>20245.369594</td>
+      <td>13763.826309</td>
+      <td>15918.160188</td>
+      <td>11825.911187</td>
+      <td>11296.416533</td>
+      <td>508.931655</td>
+      <td>7665.343278</td>
+    </tr>
+  </tbody>
+</table>
+<p>205 rows × 16 columns</p>
+</div></div></div>
+</div>
+<p>Here the pivot table is transformed to a numpy 2D array such as <code class="docutils literal notranslate"><span class="pre">spopt.locate</span></code> expected. The matrix has a shape of 205x16.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">cost_matrix</span> <span class="o">=</span> <span class="n">ntw_dist_piv</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="n">cost_matrix</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>(205, 16)
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">cost_matrix</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([[11495.19045438, 20022.66650296, 10654.59373325],
+       [10436.16991032, 19392.09477041, 10024.0220007 ],
+       [10746.29681106, 19404.67285964, 10036.60008993]])
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Now, as the rows and columns of our cost matrix are sorted, we have to sort our facility points and demand points geodataframes, too.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">n_dem_pnts</span> <span class="o">=</span> <span class="n">demand_points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">n_fac_pnts</span> <span class="o">=</span> <span class="n">facility_points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">process</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">as_gdf</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s2">"NAME"</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
+<span class="n">as_gdf</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">pnts</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>  <span class="c1"># noqa: E731</span>
+<span class="n">pnts</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">points_from_xy</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">lat</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">facility_points</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">facility_points</span><span class="p">)</span>
+<span class="n">demand_points</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">demand_points</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Reproject the input spatial data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">_df</span> <span class="ow">in</span> <span class="p">[</span><span class="n">facility_points</span><span class="p">,</span> <span class="n">demand_points</span><span class="p">,</span> <span class="n">study_area</span><span class="p">]:</span>
+    <span class="n">_df</span><span class="o">.</span><span class="n">set_crs</span><span class="p">(</span><span class="s2">"EPSG:4326"</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_df</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="s2">"EPSG:7131"</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Here the rest of parameters are set.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ai</span></code> is the demand weight and in this case we model as population in year 2000 of this tract.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ai</span> <span class="o">=</span> <span class="n">demand_points</span><span class="p">[</span><span class="s2">"POP2000"</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+<span class="c1"># maximum service radius (in meters)</span>
+<span class="n">SERVICE_RADIUS</span> <span class="o">=</span> <span class="mi">5000</span>
+
+<span class="c1"># number of candidate facilities in optimal solution</span>
+<span class="n">P_FACILITIES</span> <span class="o">=</span> <span class="mi">4</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Below, the method is used to plot the results of the four models that we will prepare to solve the problem.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">dv_colors_arr</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"darkcyan"</span><span class="p">,</span>
+    <span class="s2">"mediumseagreen"</span><span class="p">,</span>
+    <span class="s2">"saddlebrown"</span><span class="p">,</span>
+    <span class="s2">"darkslategray"</span><span class="p">,</span>
+    <span class="s2">"lightskyblue"</span><span class="p">,</span>
+    <span class="s2">"thistle"</span><span class="p">,</span>
+    <span class="s2">"lavender"</span><span class="p">,</span>
+    <span class="s2">"darkgoldenrod"</span><span class="p">,</span>
+    <span class="s2">"peachpuff"</span><span class="p">,</span>
+    <span class="s2">"coral"</span><span class="p">,</span>
+    <span class="s2">"mediumvioletred"</span><span class="p">,</span>
+    <span class="s2">"blueviolet"</span><span class="p">,</span>
+    <span class="s2">"fuchsia"</span><span class="p">,</span>
+    <span class="s2">"cyan"</span><span class="p">,</span>
+    <span class="s2">"limegreen"</span><span class="p">,</span>
+    <span class="s2">"mediumorchid"</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">dv_colors</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">"y</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">:</span> <span class="n">dv_colors_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dv_colors_arr</span><span class="p">))}</span>
+<span class="n">dv_colors</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>{'y0': 'darkcyan',
+ 'y1': 'mediumseagreen',
+ 'y2': 'saddlebrown',
+ 'y3': 'darkslategray',
+ 'y4': 'lightskyblue',
+ 'y5': 'thistle',
+ 'y6': 'lavender',
+ 'y7': 'darkgoldenrod',
+ 'y8': 'peachpuff',
+ 'y9': 'coral',
+ 'y10': 'mediumvioletred',
+ 'y11': 'blueviolet',
+ 'y12': 'fuchsia',
+ 'y13': 'cyan',
+ 'y14': 'limegreen',
+ 'y15': 'mediumorchid'}
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_results</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">facs</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Visualize optimal solution sets and context."""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="p">:</span>
+        <span class="n">multi_plot</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+        <span class="n">markersize</span><span class="p">,</span> <span class="n">markersize_factor</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">)</span>
+        <span class="n">multi_plot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">markersize</span><span class="p">,</span> <span class="n">markersize_factor</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+    <span class="c1"># extract facility-client relationships for plotting (except for p-dispersion)</span>
+    <span class="n">plot_clis</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clis</span><span class="p">,</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">plot_clis</span><span class="p">:</span>
+        <span class="n">cli_points</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">fac_sites</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">dv</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">fac_vars</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">dv</span><span class="o">.</span><span class="n">varValue</span><span class="p">:</span>
+            <span class="n">dv</span><span class="p">,</span> <span class="n">predef</span> <span class="o">=</span> <span class="n">facs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">[</span><span class="s2">"dv"</span><span class="p">,</span> <span class="s2">"predefined_loc"</span><span class="p">]]</span>
+            <span class="n">fac_sites</span><span class="p">[</span><span class="n">dv</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">predef</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">plot_clis</span><span class="p">:</span>
+                <span class="n">geom</span> <span class="o">=</span> <span class="n">clis</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">fac2cli</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="s2">"geometry"</span><span class="p">]</span>
+                <span class="n">cli_points</span><span class="p">[</span><span class="n">dv</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom</span>
+
+    <span class="c1"># study area and legend entries initialization</span>
+    <span class="n">study_area</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s2">"tan"</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">_patch</span> <span class="o">=</span> <span class="n">Patch</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s2">"tan"</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Dissolved Service Areas"</span><span class="p">)</span>
+    <span class="n">legend_elements</span> <span class="o">=</span> <span class="p">[</span><span class="n">_patch</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">plot_clis</span> <span class="ow">and</span> <span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"mclp"</span><span class="p">):</span>
+        <span class="c1"># any clients that not asscociated with a facility</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="s2">"k"</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">n_cli_uncov</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">cli2fac</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">pnt_kws</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"ax"</span><span class="p">:</span> <span class="n">ax</span><span class="p">,</span>
+                <span class="s2">"fc"</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
+                <span class="s2">"ec"</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
+                <span class="s2">"marker"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
+                <span class="s2">"markersize"</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+                <span class="s2">"zorder"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">clis</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">**</span><span class="n">pnt_kws</span><span class="p">)</span>
+        <span class="n">_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Demand sites not covered ($n$=</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">n_cli_uncov</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="n">_mkws</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"marker"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
+            <span class="s2">"markerfacecolor"</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
+            <span class="s2">"markeredgecolor"</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
+            <span class="s2">"linewidth"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">legend_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">_label</span><span class="p">,</span> <span class="o">**</span><span class="n">_mkws</span><span class="p">))</span>
+
+    <span class="c1"># all candidate facilities</span>
+    <span class="n">facs</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s2">"brown"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"*"</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Facility sites ($n$=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">fac_vars</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span>
+    <span class="n">_mkws</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"marker"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">,</span> <span class="s2">"markerfacecolor"</span><span class="p">:</span> <span class="s2">"brown"</span><span class="p">,</span> <span class="s2">"markeredgecolor"</span><span class="p">:</span> <span class="s2">"brown"</span><span class="p">}</span>
+    <span class="n">legend_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">ms</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">_label</span><span class="p">,</span> <span class="o">**</span><span class="n">_mkws</span><span class="p">))</span>
+
+    <span class="c1"># facility-(client) symbology and legend entries</span>
+    <span class="n">zorder</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="k">for</span> <span class="n">fname</span><span class="p">,</span> <span class="p">(</span><span class="n">fac</span><span class="p">,</span> <span class="n">predef</span><span class="p">)</span> <span class="ow">in</span> <span class="n">fac_sites</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">cset</span> <span class="o">=</span> <span class="n">dv_colors</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">plot_clis</span><span class="p">:</span>
+            <span class="c1"># clients</span>
+            <span class="n">geoms</span> <span class="o">=</span> <span class="n">cli_points</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span>
+            <span class="n">gdf</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geoms</span><span class="p">)</span>
+            <span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">cset</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">100</span> <span class="o">*</span> <span class="n">markersize</span><span class="p">)</span>
+            <span class="n">_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Demand sites covered by </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">"</span>
+            <span class="n">_mkws</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"markerfacecolor"</span><span class="p">:</span> <span class="n">cset</span><span class="p">,</span>
+                <span class="s2">"markeredgecolor"</span><span class="p">:</span> <span class="s2">"k"</span><span class="p">,</span>
+                <span class="s2">"ms"</span><span class="p">:</span> <span class="n">markersize</span> <span class="o">+</span> <span class="mi">7</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">legend_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"o"</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">_label</span><span class="p">,</span> <span class="o">**</span><span class="n">_mkws</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="c1"># facilities</span>
+        <span class="n">ec</span> <span class="o">=</span> <span class="s2">"k"</span>
+        <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">predef_label</span> <span class="o">=</span> <span class="s2">"predefined"</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">predef_label</span><span class="p">)</span> <span class="ow">and</span> <span class="n">predef</span><span class="p">:</span>
+            <span class="n">ec</span> <span class="o">=</span> <span class="s2">"r"</span>
+            <span class="n">lw</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="n">fname</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" (</span><span class="si">{</span><span class="n">predef_label</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="n">facs</span><span class="o">.</span><span class="n">iloc</span><span class="p">[[</span><span class="n">fac</span><span class="p">]]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"*"</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="n">cset</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="n">ec</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="n">lw</span>
+        <span class="p">)</span>
+        <span class="n">_mkws</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"markerfacecolor"</span><span class="p">:</span> <span class="n">cset</span><span class="p">,</span> <span class="s2">"markeredgecolor"</span><span class="p">:</span> <span class="n">ec</span><span class="p">,</span> <span class="s2">"markeredgewidth"</span><span class="p">:</span> <span class="n">lw</span><span class="p">}</span>
+        <span class="n">legend_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"*"</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span> <span class="o">**</span><span class="n">_mkws</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># increment zorder up and markersize down for stacked client symbology</span>
+        <span class="n">zorder</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">plot_clis</span><span class="p">:</span>
+            <span class="n">markersize</span> <span class="o">-=</span> <span class="n">markersize_factor</span> <span class="o">/</span> <span class="n">p</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">multi_plot</span><span class="p">:</span>
+        <span class="c1"># legend</span>
+        <span class="n">kws</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"loc"</span><span class="p">:</span> <span class="s2">"upper left"</span><span class="p">,</span> <span class="s2">"bbox_to_anchor"</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)}</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="n">legend_elements</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<h2 id="lscp">LSCP<a class="headerlink" href="#lscp" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">spopt.locate</span><span class="w"> </span><span class="kn">import</span> <span class="n">LSCP</span>
+
+<span class="n">lscp</span> <span class="o">=</span> <span class="n">LSCP</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span><span class="n">cost_matrix</span><span class="p">,</span> <span class="n">SERVICE_RADIUS</span><span class="p">)</span>
+<span class="n">lscp</span> <span class="o">=</span> <span class="n">lscp</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">pulp</span><span class="o">.</span><span class="n">GLPK</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">lscp_objval</span> <span class="o">=</span> <span class="n">lscp</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+<span class="n">lscp_objval</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>8.0
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Define the decision variable names used for mapping.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">facility_points</span><span class="p">[</span><span class="s2">"dv"</span><span class="p">]</span> <span class="o">=</span> <span class="n">lscp</span><span class="o">.</span><span class="n">fac_vars</span>
+<span class="n">facility_points</span><span class="p">[</span><span class="s2">"dv"</span><span class="p">]</span> <span class="o">=</span> <span class="n">facility_points</span><span class="p">[</span><span class="s2">"dv"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"_"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
+<span class="n">facility_points</span><span class="p">[</span><span class="s2">"predefined_loc"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">plot_results</span><span class="p">(</span><span class="n">lscp</span><span class="p">,</span> <span class="n">lscp_objval</span><span class="p">,</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">demand_points</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/5a33fd87ee92bb92745dae1d15aeacfa9faff4996b0a73fc3974bde0532df935.png"><img alt="../_images/5a33fd87ee92bb92745dae1d15aeacfa9faff4996b0a73fc3974bde0532df935.png" src="../_images/5a33fd87ee92bb92745dae1d15aeacfa9faff4996b0a73fc3974bde0532df935.png" style="width: 825px; height: 778px;" />
+</a>
+</div>
+</div>
+<hr class="docutils" />
+<h2 id="mclp">MCLP<a class="headerlink" href="#mclp" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">spopt.locate</span><span class="w"> </span><span class="kn">import</span> <span class="n">MCLP</span>
+
+<span class="n">mclp</span> <span class="o">=</span> <span class="n">MCLP</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+    <span class="n">cost_matrix</span><span class="p">,</span>
+    <span class="n">ai</span><span class="p">,</span>
+    <span class="n">service_radius</span><span class="o">=</span><span class="n">SERVICE_RADIUS</span><span class="p">,</span>
+    <span class="n">p_facilities</span><span class="o">=</span><span class="n">P_FACILITIES</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">mclp</span> <span class="o">=</span> <span class="n">mclp</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">pulp</span><span class="o">.</span><span class="n">GLPK</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">mclp</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>875247.0
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>MCLP Percentage Covered</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">mclp</span><span class="o">.</span><span class="n">perc_cov</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>89.75609756097562
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">plot_results</span><span class="p">(</span><span class="n">mclp</span><span class="p">,</span> <span class="n">P_FACILITIES</span><span class="p">,</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">demand_points</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/18c4e163c4118dc289cccd2116849fecc161eabcdad0f06b857f2ec8092cbb3a.png"><img alt="../_images/18c4e163c4118dc289cccd2116849fecc161eabcdad0f06b857f2ec8092cbb3a.png" src="../_images/18c4e163c4118dc289cccd2116849fecc161eabcdad0f06b857f2ec8092cbb3a.png" style="width: 851px; height: 778px;" />
+</a>
+</div>
+</div>
+<hr class="docutils" />
+<h2 id="p-median">P-Median<a class="headerlink" href="#p-median" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">spopt.locate</span><span class="w"> </span><span class="kn">import</span> <span class="n">PMedian</span>
+
+<span class="n">pmedian</span> <span class="o">=</span> <span class="n">PMedian</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span><span class="n">cost_matrix</span><span class="p">,</span> <span class="n">ai</span><span class="p">,</span> <span class="n">p_facilities</span><span class="o">=</span><span class="n">P_FACILITIES</span><span class="p">)</span>
+<span class="n">pmedian</span> <span class="o">=</span> <span class="n">pmedian</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">pulp</span><span class="o">.</span><span class="n">GLPK</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">pmedian</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>2848268129.7145104
+</code></pre></div>
+</div>
+</div>
+</div>
+<p><span class="math notranslate nohighlight">\(p\)</span>-median mean weighted distance</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">pmedian</span><span class="o">.</span><span class="n">mean_dist</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(2982.1268579890657)
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">plot_results</span><span class="p">(</span><span class="n">pmedian</span><span class="p">,</span> <span class="n">P_FACILITIES</span><span class="p">,</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">demand_points</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/6444bf5eb567c03d53099e09f0b0f29655e23196bec4e33d9d2765f032692b46.png"><img alt="../_images/6444bf5eb567c03d53099e09f0b0f29655e23196bec4e33d9d2765f032692b46.png" src="../_images/6444bf5eb567c03d53099e09f0b0f29655e23196bec4e33d9d2765f032692b46.png" style="width: 825px; height: 778px;" />
+</a>
+</div>
+</div>
+<hr class="docutils" />
+<h2 id="p-center">P-Center<a class="headerlink" href="#p-center" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">spopt.locate</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCenter</span>
+
+<span class="n">pcenter</span> <span class="o">=</span> <span class="n">PCenter</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span><span class="n">cost_matrix</span><span class="p">,</span> <span class="n">p_facilities</span><span class="o">=</span><span class="n">P_FACILITIES</span><span class="p">)</span>
+<span class="n">pcenter</span> <span class="o">=</span> <span class="n">pcenter</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">pulp</span><span class="o">.</span><span class="n">GLPK</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">pcenter</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>7403.06381085
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">plot_results</span><span class="p">(</span><span class="n">pcenter</span><span class="p">,</span> <span class="n">P_FACILITIES</span><span class="p">,</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">demand_points</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/25bf0247575c0c8b61b2f085f6f5e1df38c2e215328a530ba8dcf99179421717.png"><img alt="../_images/25bf0247575c0c8b61b2f085f6f5e1df38c2e215328a530ba8dcf99179421717.png" src="../_images/25bf0247575c0c8b61b2f085f6f5e1df38c2e215328a530ba8dcf99179421717.png" style="width: 825px; height: 777px;" />
+</a>
+</div>
+</div>
+<hr class="docutils" />
+<h2 id="comparing-all-models">Comparing all models<a class="headerlink" href="#comparing-all-models" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">axarr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=-</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">lscp</span><span class="p">,</span> <span class="n">mclp</span><span class="p">,</span> <span class="n">pmedian</span><span class="p">,</span> <span class="n">pcenter</span><span class="p">]):</span>
+    <span class="n">_p</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"lscp"</span> <span class="k">else</span> <span class="n">P_FACILITIES</span>
+    <span class="n">plot_results</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">_p</span><span class="p">,</span> <span class="n">facility_points</span><span class="p">,</span> <span class="n">clis</span><span class="o">=</span><span class="n">demand_points</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axarr</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/d9f8c42a8350471f31bdcb9bc216b1bb92856ecd29be1b89c15be4a5214da3bd.png"><img alt="../_images/d9f8c42a8350471f31bdcb9bc216b1bb92856ecd29be1b89c15be4a5214da3bd.png" src="../_images/d9f8c42a8350471f31bdcb9bc216b1bb92856ecd29be1b89c15be4a5214da3bd.png" style="width: 1570px; height: 654px;" />
+</a>
+</div>
+</div>
+<p>The plot above clearly demonstrates the key features of each location model:</p>
+<ul class="simple">
+<li><p>LSCP</p>
+<ul>
+<li><p>Overlapping clusters of clients associated with multiple facilities</p></li>
+<li><p>All clients covered by at least one facility</p></li>
+</ul>
+</li>
+<li><p>MCLP</p>
+<ul>
+<li><p>Overlapping clusters of clients associated with multiple facilities</p></li>
+<li><p>Potential for complete coverage, but not guranteed</p></li>
+</ul>
+</li>
+<li><p><span class="math notranslate nohighlight">\(p\)</span>-median</p>
+<ul>
+<li><p>Tight and distinct clusters of client-facility relationships</p></li>
+<li><p>All clients allocated to exactly one facility</p></li>
+</ul>
+</li>
+<li><p><span class="math notranslate nohighlight">\(p\)</span>-center</p>
+<ul>
+<li><p>Loose and overlapping clusters of client-facility relationships</p></li>
+<li><p>All clients allocated to exactly one facility</p></li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+<h2 id="evaluating-available-solvers">Evaluating available solvers<a class="headerlink" href="#evaluating-available-solvers" title="Link to this heading">¶</a></h2>
+<p>For this task we’ll solve the MCLP and <span class="math notranslate nohighlight">\(p\)</span>-center models as examples of solver performance, but first we’ll determine which solvers are installed locally.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+    <span class="n">solvers</span> <span class="o">=</span> <span class="n">pulp</span><span class="o">.</span><span class="n">listSolvers</span><span class="p">(</span><span class="n">onlyAvailable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">_w</span> <span class="ow">in</span> <span class="n">w</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">_w</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+<span class="n">solvers</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>['GLPK_CMD', 'PULP_CBC_CMD', 'COIN_CMD']
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Above we can see that it returns a list with different solvers that are available. So, it’s up to the user to choose the best solver that fits the model.</p>
+<h3 id="id1">MCLP<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<p>Let’s get the percentage as a metric to evaluate which solver is the best or improves the model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">mclp</span> <span class="o">=</span> <span class="n">MCLP</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span>
+    <span class="n">cost_matrix</span><span class="p">,</span>
+    <span class="n">ai</span><span class="p">,</span>
+    <span class="n">service_radius</span><span class="o">=</span><span class="n">SERVICE_RADIUS</span><span class="p">,</span>
+    <span class="n">p_facilities</span><span class="o">=</span><span class="n">P_FACILITIES</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">results</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"Coverage %"</span><span class="p">,</span> <span class="s2">"Solve Time (sec.)"</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">solvers</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">solver</span> <span class="ow">in</span> <span class="n">solvers</span><span class="p">:</span>
+    <span class="n">_mclp</span> <span class="o">=</span> <span class="n">mclp</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">pulp</span><span class="o">.</span><span class="n">getSolver</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">solver</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">_mclp</span><span class="o">.</span><span class="n">perc_cov</span><span class="p">,</span> <span class="n">_mclp</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">solutionTime</span><span class="p">]</span>
+<span class="n">results</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Coverage %</th>
+      <th>Solve Time (sec.)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>GLPK_CMD</th>
+      <td>89.756098</td>
+      <td>0.014932</td>
+    </tr>
+    <tr>
+      <th>PULP_CBC_CMD</th>
+      <td>89.756098</td>
+      <td>0.035886</td>
+    </tr>
+    <tr>
+      <th>COIN_CMD</th>
+      <td>89.756098</td>
+      <td>0.014995</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>As is expected from such a small model the <strong>Coverage %</strong>, and thus the objective values, are equivalent for all solutions across solvers. However, solve times do vary slightly.</p>
+<h3 id="id2">P-Center<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">pcenter</span> <span class="o">=</span> <span class="n">PCenter</span><span class="o">.</span><span class="n">from_cost_matrix</span><span class="p">(</span><span class="n">cost_matrix</span><span class="p">,</span> <span class="n">p_facilities</span><span class="o">=</span><span class="n">P_FACILITIES</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">results</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"MinMax"</span><span class="p">,</span> <span class="s2">"Solve Time (sec.)"</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">solvers</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">solver</span> <span class="ow">in</span> <span class="n">solvers</span><span class="p">:</span>
+    <span class="n">_pcenter</span> <span class="o">=</span> <span class="n">pcenter</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">pulp</span><span class="o">.</span><span class="n">getSolver</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">solver</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">_pcenter</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
+        <span class="n">_pcenter</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">solutionTime</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="n">results</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>MinMax</th>
+      <th>Solve Time (sec.)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>GLPK_CMD</th>
+      <td>7403.063811</td>
+      <td>11.388662</td>
+    </tr>
+    <tr>
+      <th>PULP_CBC_CMD</th>
+      <td>7403.0638</td>
+      <td>0.868831</td>
+    </tr>
+    <tr>
+      <th>COIN_CMD</th>
+      <td>7403.0638</td>
+      <td>0.863376</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Here the <strong>MinMax</strong> objective values are mostly equivalent, but there are some precision concerns. This is due to the computational complexity of the <span class="math notranslate nohighlight">\(p\)</span>-center problem, which also results in dramaticaly longer run times needed to isolate the optimal solutions (when compared with the MCLP above).</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2018-, pysal developers.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    9.2.0.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/spopt/versions.json"}}</script>
+    
+      
+        <script src="../_static/sphinx_immaterial_theme.ce3f826234c1e494c.min.js?v=6917d573"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script id="MathJax-script" src="../_static/mathjax/tex-mml-chtml.js"></script>
+    
+  </body>
+</html>

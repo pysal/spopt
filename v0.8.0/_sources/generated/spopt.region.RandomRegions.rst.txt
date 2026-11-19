@@ -1,0 +1,22 @@
+﻿spopt.region.RandomRegions
+==========================
+
+.. currentmodule:: spopt.region
+
+.. autoclass:: RandomRegions
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RandomRegions.__init__
+   
+   
+
+   
+   
+   

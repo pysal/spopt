@@ -1,0 +1,17 @@
+﻿spopt.region.SA3
+================
+
+.. currentmodule:: spopt.region
+
+.. autoclass:: SA3
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SA3.solve
+   
+
+   

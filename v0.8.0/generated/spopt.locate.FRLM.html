@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>spopt.locate.FRLM &#8212; spopt v0.8.0 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=e5dd7357" />
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="References" href="../references.html" />
+    <link rel="prev" title="spopt.locate.PDispersion" href="spopt.locate.PDispersion.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          spopt</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.8.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorials.html">Tutorials</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/maxp.html">Max-P Regionalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/azp.html">Automatic Zoning Procedure (AZP) algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/sa3.html">Spatial Adaptive Agglomerative Aggregation (<span class="math notranslate nohighlight">\(SA^3\)</span>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/skater.html">SKATER</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/ward.html">Ward</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/reg-k-means.html">Regional-k-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/randomregion.html">Random Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/component_policy.html">Max-P Regionalization for Multiple Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/lscp.html">The Location Set Covering Problem (LSCP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/lscp_gis.html">Siting First Aid Stations with LSCP on Toronto’s University Campus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/lscp_capacity.html">Capacitated Location Set Covering Problem–System Optimal (CLSCP-SO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/lscpb.html">The Backup Coverage Location Problem (LSCP-B)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/mclp.html">The Maximal Coverage Location Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/mclp_gis.html">Siting Restaurants with MCLP in San Francisco</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/p-center.html">P-Center Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/p-median.html">The P-Median Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/p-median_variations.html">Comparing P-Median Variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/p-dispersion.html">The P-Dispersion (max-min-min) Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-real-world.html">Empirical examples of facility location problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-lscpb-real-world.html">Backup Coverage Location Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/facloc-disperse-real-world.html">The P-Dispersion Problem: An Empirical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/flow.html">Flow Refueling Location Model (FRLM)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#region-methods">Region Methods</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#locate-methods">Locate Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">spopt.locate.FRLM</a><ul>
+<li><a class="reference internal" href="#spopt.locate.FRLM"><code class="docutils literal notranslate"><span class="pre">FRLM</span></code></a><ul>
+<li><a class="reference internal" href="#spopt.locate.FRLM.__init__"><code class="docutils literal notranslate"><span class="pre">FRLM.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.add_flow"><code class="docutils literal notranslate"><span class="pre">FRLM.add_flow()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.add_flows"><code class="docutils literal notranslate"><span class="pre">FRLM.add_flows()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.add_network"><code class="docutils literal notranslate"><span class="pre">FRLM.add_network()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.calculate_node_weights"><code class="docutils literal notranslate"><span class="pre">FRLM.calculate_node_weights()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.check_path_refueling_feasibility"><code class="docutils literal notranslate"><span class="pre">FRLM.check_path_refueling_feasibility()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.compute_refueling_frequency"><code class="docutils literal notranslate"><span class="pre">FRLM.compute_refueling_frequency()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.from_flow_dataframe"><code class="docutils literal notranslate"><span class="pre">FRLM.from_flow_dataframe()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.generate_path_refueling_combinations"><code class="docutils literal notranslate"><span class="pre">FRLM.generate_path_refueling_combinations()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.get_constraint_dual"><code class="docutils literal notranslate"><span class="pre">FRLM.get_constraint_dual()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.get_reduced_costs"><code class="docutils literal notranslate"><span class="pre">FRLM.get_reduced_costs()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.get_shadow_price"><code class="docutils literal notranslate"><span class="pre">FRLM.get_shadow_price()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.get_shadow_prices"><code class="docutils literal notranslate"><span class="pre">FRLM.get_shadow_prices()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.get_slack"><code class="docutils literal notranslate"><span class="pre">FRLM.get_slack()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.get_solver_details"><code class="docutils literal notranslate"><span class="pre">FRLM.get_solver_details()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.get_variable_value"><code class="docutils literal notranslate"><span class="pre">FRLM.get_variable_value()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.get_variable_values"><code class="docutils literal notranslate"><span class="pre">FRLM.get_variable_values()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.is_constraint_active"><code class="docutils literal notranslate"><span class="pre">FRLM.is_constraint_active()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.problem"><code class="docutils literal notranslate"><span class="pre">FRLM.problem</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.selected_facilities"><code class="docutils literal notranslate"><span class="pre">FRLM.selected_facilities</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.solve"><code class="docutils literal notranslate"><span class="pre">FRLM.solve()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.summary"><code class="docutils literal notranslate"><span class="pre">FRLM.summary()</span></code></a></li>
+<li><a class="reference internal" href="#spopt.locate.FRLM.to_dataframes"><code class="docutils literal notranslate"><span class="pre">FRLM.to_dataframes()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="spopt-locate-frlm">
+<h1>spopt.locate.FRLM<a class="headerlink" href="#spopt-locate-frlm" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="spopt.locate.FRLM">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">spopt.locate.</span></span><span class="sig-name descname"><span class="pre">FRLM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_facilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.99</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'flow'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM" title="Link to this definition">¶</a></dt>
+<dd><p>Flow Refueling Location Model (FRLM)</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>vehicle_range</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, default=200000.0</span></dt><dd><p>Defines the maximum travel distance or range for vehicles.</p>
+<ul class="simple">
+<li><p>If value is between 0 and 1: Treated as a percentage of the longest path.
+e.g. 0.5: 50% of the longest path in the network</p></li>
+<li><p>If value &gt; 1: Treated as an absolute distance in distance units (e.g., meters)</p></li>
+</ul>
+</dd>
+<dt><strong>p_facilities</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, default=5</span></dt><dd><p>Number of facility modules to be located in the network.</p>
+</dd>
+<dt><strong>capacity</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>, default=None</span></dt><dd><p>Facility module capacity constraint.</p>
+<ul class="simple">
+<li><p>If None: Uses an uncapacitated model</p></li>
+<li><p>If provided: Sets a maximum capacity for each facility module</p></li>
+</ul>
+</dd>
+<dt><strong>threshold</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a>, default=0.0</span></dt><dd><p>Minimum flow coverage percentage for a node to be considered covered,
+0 disables threshold extension.</p>
+</dd>
+<dt><strong>weight</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a>, default=0.99</span></dt><dd><p>Controls the trade-off between node coverage and flow coverage for
+threshold extension objective.
+Range: [0.0, 1.0]</p>
+<ul class="simple">
+<li><p>1.0: Prioritises node coverage</p></li>
+<li><p>0.0: Prioritises flow coverage</p></li>
+</ul>
+<p>Only used when threshold &gt; 0.</p>
+</dd>
+<dt><strong>objective</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, default=”flow”</span></dt><dd><p>Optimisation objective.</p>
+<ul class="simple">
+<li><p>“flow”: Maximize total flow coverage</p></li>
+<li><p>“vmt”: Maximize vehicle miles traveled (VMT) coverage</p></li>
+</ul>
+</dd>
+<dt><strong>include_destination</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a>, default=False</span></dt><dd><p>Determines how node weights are calculated in threshold extension.</p>
+<ul class="simple">
+<li><p>False: Only origin nodes contribute to weight calculation</p></li>
+<li><p>True: Both origin and destination nodes contribute to weight calculation</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_facilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.99</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'flow'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.FRLM.__init__" title="spopt.locate.FRLM.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([vehicle_range, p_facilities, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.FRLM.add_flow" title="spopt.locate.FRLM.add_flow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_flow</span></code></a>(origin, destination, volume[, path])</p></td>
+<td><p>Add flow with path calculation using scipy network.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.FRLM.add_flows" title="spopt.locate.FRLM.add_flows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_flows</span></code></a>(flows)</p></td>
+<td><p>Add multiple flows to the FRLM instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.FRLM.add_network" title="spopt.locate.FRLM.add_network"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_network</span></code></a>(network)</p></td>
+<td><p>Add network to the FRLM instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_covered_nodes</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.FRLM.calculate_node_weights" title="spopt.locate.FRLM.calculate_node_weights"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_node_weights</span></code></a>([include_destination])</p></td>
+<td><p>Calculate node weights based on flow volumes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.FRLM.check_path_refueling_feasibility" title="spopt.locate.FRLM.check_path_refueling_feasibility"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_path_refueling_feasibility</span></code></a>(path, ...)</p></td>
+<td><p>Check if a path can be traversed with given facilities using scipy network.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.FRLM.compute_refueling_frequency" title="spopt.locate.FRLM.compute_refueling_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_refueling_frequency</span></code></a>(origin, destination)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_solver_statistics</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.FRLM.from_flow_dataframe" title="spopt.locate.FRLM.from_flow_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_flow_dataframe</span></code></a>(network, flows, **kwargs)</p></td>
+<td><p>Create FRLM instance from network and flows.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.FRLM.generate_path_refueling_combinations" title="spopt.locate.FRLM.generate_path_refueling_combinations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_path_refueling_combinations</span></code></a>([...])</p></td>
+<td><p>Generate dictionary mapping OD pairs to valid facility combinations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.FRLM.get_constraint_dual" title="spopt.locate.FRLM.get_constraint_dual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_constraint_dual</span></code></a>(constraint_name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_detailed_results</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_flow_coverage</span></code>()</p></td>
+<td><p>Improved and fixed calculation of flow coverage.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_node_coverage_percentage</span></code>()</p></td>
+<td><p>Get percentage of nodes covered.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.FRLM.get_reduced_costs" title="spopt.locate.FRLM.get_reduced_costs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reduced_costs</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.FRLM.get_shadow_price" title="spopt.locate.FRLM.get_shadow_price"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_shadow_price</span></code></a>(constraint_name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.FRLM.get_shadow_prices" title="spopt.locate.FRLM.get_shadow_prices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_shadow_prices</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.FRLM.get_slack" title="spopt.locate.FRLM.get_slack"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_slack</span></code></a>(constraint_name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.FRLM.get_solver_details" title="spopt.locate.FRLM.get_solver_details"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_solver_details</span></code></a>()</p></td>
+<td><p>Retrieve detailed solver information.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.FRLM.get_variable_value" title="spopt.locate.FRLM.get_variable_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_variable_value</span></code></a>(var_name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.FRLM.get_variable_values" title="spopt.locate.FRLM.get_variable_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_variable_values</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vmt_coverage</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.FRLM.is_constraint_active" title="spopt.locate.FRLM.is_constraint_active"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_constraint_active</span></code></a>(constraint_name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.FRLM.solve" title="spopt.locate.FRLM.solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve</span></code></a>([solver, seed, initialization_method, ...])</p></td>
+<td><p>Solve the FRLM problem.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.FRLM.summary" title="spopt.locate.FRLM.summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">summary</span></code></a>()</p></td>
+<td><p>Generate a summary of the solution.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.FRLM.to_dataframes" title="spopt.locate.FRLM.to_dataframes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dataframes</span></code></a>([include_iterations])</p></td>
+<td><p>Export solution to pandas DataFrames.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#spopt.locate.FRLM.problem" title="spopt.locate.FRLM.problem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">problem</span></code></a></p></td>
+<td><p>Return the PuLP problem instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#spopt.locate.FRLM.selected_facilities" title="spopt.locate.FRLM.selected_facilities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">selected_facilities</span></code></a></p></td>
+<td><p>Read facility selection from PuLP variables.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.add_flow">
+<span class="sig-name descname"><span class="pre">add_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.add_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.add_flow" title="Link to this definition">¶</a></dt>
+<dd><p>Add flow with path calculation using scipy network.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>origin</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></span></dt><dd><p>Origin node ID</p>
+</dd>
+<dt><strong>destination</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></span></dt><dd><p>Destination node ID</p>
+</dd>
+<dt><strong>volume</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Flow volume</p>
+</dd>
+<dt><strong>path</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>, default=None</span></dt><dd><p>Specific path to use (if None, shortest path is computed)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.add_flows">
+<span class="sig-name descname"><span class="pre">add_flows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.6)"><span class="pre">DataFrame</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.add_flows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.add_flows" title="Link to this definition">¶</a></dt>
+<dd><p>Add multiple flows to the FRLM instance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>flows</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">tuple</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code>], <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a>]]</span></dt><dd><p>Flows to be added. Can be either:</p>
+<ul class="simple">
+<li><p>A pandas DataFrame with flow information</p></li>
+<li><p>A dictionary mapping (origin, destination) tuples to flow volumes</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>self</strong><span class="classifier"><a class="reference internal" href="#spopt.locate.FRLM" title="spopt.locate.FRLM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FRLM</span></code></a></span></dt><dd><p>Returns the instance for method chaining</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.add_network">
+<span class="sig-name descname"><span class="pre">add_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.18.0)"><span class="pre">csr_matrix</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.add_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.add_network" title="Link to this definition">¶</a></dt>
+<dd><p>Add network to the FRLM instance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>network</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.18.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a></span></dt><dd><p>The network as a scipy sparse matrix where element [i,j] represents
+the distance/cost between nodes i and j.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>self</strong><span class="classifier"><a class="reference internal" href="#spopt.locate.FRLM" title="spopt.locate.FRLM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FRLM</span></code></a></span></dt><dd><p>Returns the instance for method chaining</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.calculate_node_weights">
+<span class="sig-name descname"><span class="pre">calculate_node_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.calculate_node_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.calculate_node_weights" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate node weights based on flow volumes.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>include_destination</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a>, default=False</span></dt><dd><p>If True, include destination nodes in weight calculation.
+If False, only use origin nodes for weight calculation, as specified
+in the paper (Hong and Kuby, 2016).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></a></dt><dd><p>Array of node weights</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.check_path_refueling_feasibility">
+<span class="sig-name descname"><span class="pre">check_path_refueling_feasibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">facilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.check_path_refueling_feasibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.check_path_refueling_feasibility" title="Link to this definition">¶</a></dt>
+<dd><p>Check if a path can be traversed with given facilities using scipy network.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>path</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Nodes in the path</p>
+</dd>
+<dt><strong>facilities</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Potential refueling facilities</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a></dt><dd><p>Whether the path is feasible with given facilities</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.compute_refueling_frequency">
+<span class="sig-name descname"><span class="pre">compute_refueling_frequency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.compute_refueling_frequency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.compute_refueling_frequency" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.from_flow_dataframe">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_flow_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.18.0)"><span class="pre">csr_matrix</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">flows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.6)"><span class="pre">DataFrame</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.from_flow_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.from_flow_dataframe" title="Link to this definition">¶</a></dt>
+<dd><p>Create FRLM instance from network and flows.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>network</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sp.csr_matrix</span></code></span></dt><dd><p>Network as a scipy sparse matrix</p>
+</dd>
+<dt><strong>flows</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a></span></dt><dd><p>Flow data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.generate_path_refueling_combinations">
+<span class="sig-name descname"><span class="pre">generate_path_refueling_combinations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">facility_combinations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.generate_path_refueling_combinations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.generate_path_refueling_combinations" title="Link to this definition">¶</a></dt>
+<dd><p>Generate dictionary mapping OD pairs to valid facility combinations.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>facility_combinations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a>]], optional</span></dt><dd><p>Pre-computed facility combinations (only used for combination method)</p>
+</dd>
+<dt><strong>start</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, optional</span></dt><dd><p>Minimum size of combinations (for combination method)</p>
+</dd>
+<dt><strong>stop</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, optional</span></dt><dd><p>Maximum size of combinations (for combination method)</p>
+</dd>
+<dt><strong>method</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, optional</span></dt><dd><p>Method to use: “auto”, “combination”, or “ac_pc”</p>
+<ul class="simple">
+<li><p>“auto”: Automatically choose based on model type</p></li>
+<li><p>“combination”: Generate all possible facility combinations</p></li>
+<li><p>“ac_pc”: Generate K and a sets for Arc Cover Path Cover</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a></dt><dd><p>Dictionary of OD pairs to valid facility combinations (combination method)
+or sets K and a sets (ac_pc method).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.get_constraint_dual">
+<span class="sig-name descname"><span class="pre">get_constraint_dual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraint_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.get_constraint_dual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.get_constraint_dual" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.get_reduced_costs">
+<span class="sig-name descname"><span class="pre">get_reduced_costs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.get_reduced_costs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.get_reduced_costs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.get_shadow_price">
+<span class="sig-name descname"><span class="pre">get_shadow_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraint_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.get_shadow_price"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.get_shadow_price" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.get_shadow_prices">
+<span class="sig-name descname"><span class="pre">get_shadow_prices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.get_shadow_prices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.get_shadow_prices" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.get_slack">
+<span class="sig-name descname"><span class="pre">get_slack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraint_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.get_slack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.get_slack" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.get_solver_details">
+<span class="sig-name descname"><span class="pre">get_solver_details</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.get_solver_details"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.get_solver_details" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve detailed solver information.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>verbose</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a>, default <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#True" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">True</span></code></a></span></dt><dd><p>If True, print the details to console. If False, return details dictionary.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a></dt><dd><p>A dictionary containing detailed solver information</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.get_variable_value">
+<span class="sig-name descname"><span class="pre">get_variable_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.get_variable_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.get_variable_value" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.get_variable_values">
+<span class="sig-name descname"><span class="pre">get_variable_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.get_variable_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.get_variable_values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.is_constraint_active">
+<span class="sig-name descname"><span class="pre">is_constraint_active</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraint_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.is_constraint_active"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.is_constraint_active" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.problem">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">problem</span></span><a class="headerlink" href="#spopt.locate.FRLM.problem" title="Link to this definition">¶</a></dt>
+<dd><p>Return the PuLP problem instance.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.selected_facilities">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">selected_facilities</span></span><a class="headerlink" href="#spopt.locate.FRLM.selected_facilities" title="Link to this definition">¶</a></dt>
+<dd><p>Read facility selection from PuLP variables.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'greedy'</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://coin-or.github.io/pulp/technical/solvers.html#pulp.apis.LpSolver" title="(in PuLP v4.0)"><span class="pre">LpSolver</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialization_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'empty'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.solve" title="Link to this definition">¶</a></dt>
+<dd><p>Solve the FRLM problem.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>solver</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Literal</span></code>[“greedy”] | <code class="xref py py-obj docutils literal notranslate"><span class="pre">pulp.LpSolver</span></code>]</span></dt><dd><p>Solver to use. If None, PuLP will use its default solver.
+If “greedy”, uses greedy heuristic.
+If a <code class="docutils literal notranslate"><span class="pre">pulp.Solver</span></code> instance, uses that solver.</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>, default=None</span></dt><dd><p>Random seed for reproducibility</p>
+</dd>
+<dt><strong>initialization_method</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, default=”empty”</span></dt><dd><p>Method for initializing greedy solution</p>
+</dd>
+<dt><strong>max_iterations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, default=100</span></dt><dd><p>Maximum iterations for greedy solver</p>
+</dd>
+<dt><strong>**kwargs</strong></dt><dd><p>Additional solver-specific parameters</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.summary" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a summary of the solution.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spopt.locate.FRLM.to_dataframes">
+<span class="sig-name descname"><span class="pre">to_dataframes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.6)"><span class="pre">DataFrame</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/spopt/locate/flow.html#FRLM.to_dataframes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spopt.locate.FRLM.to_dataframes" title="Link to this definition">¶</a></dt>
+<dd><p>Export solution to pandas DataFrames.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>include_iterations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a>, default=True</span></dt><dd><p>Whether to include iteration details (for greedy solver)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a></dt><dd><p>Dictionary of DataFrames with keys:</p>
+<ul class="simple">
+<li><p>‘facilities’: Selected facilities and modules</p></li>
+<li><p>‘coverage’: Flow coverage details</p></li>
+<li><p>‘summary’: Summary statistics</p></li>
+<li><p>‘iterations’: Greedy solver iterations (if applicable)</p></li>
+<li><p>‘shadow_prices’: Shadow prices/Lagrange multipliers (if applicable)</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/spopt.locate.FRLM.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

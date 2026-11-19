@@ -1,0 +1,17 @@
+﻿spopt.region.Skater
+===================
+
+.. currentmodule:: spopt.region
+
+.. autoclass:: Skater
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Skater.solve
+   
+
+   

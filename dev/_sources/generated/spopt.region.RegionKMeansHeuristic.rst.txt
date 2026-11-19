@@ -1,0 +1,17 @@
+﻿spopt.region.RegionKMeansHeuristic
+==================================
+
+.. currentmodule:: spopt.region
+
+.. autoclass:: RegionKMeansHeuristic
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RegionKMeansHeuristic.solve
+   
+
+   
