@@ -137,7 +137,9 @@
    },
    "outputs": [],
    "source": [
-    "facility_points = pandas.read_csv(DIRPATH.joinpath(\"SF_store_site_16_longlat.csv\"), index_col=0)\n",
+    "facility_points = pandas.read_csv(\n",
+    "    DIRPATH.joinpath(\"SF_store_site_16_longlat.csv\"), index_col=0\n",
+    ")\n",
     "facility_points = facility_points.reset_index(drop=True)\n",
     "facility_points"
    ]
