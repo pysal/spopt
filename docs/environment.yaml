@@ -35,6 +35,6 @@ dependencies:
   # with pip
   - pip
   - pip:
-    - pulp<4
+    - pulp[glpk]<4
     - routingpy
     - matplotlib_scalebar
