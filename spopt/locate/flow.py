@@ -608,6 +608,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
         - 1.0: Prioritises node coverage
         - 0.0: Prioritises flow coverage
+
         Only used when threshold > 0.
 
     objective : str, default="flow"
@@ -2070,11 +2071,6 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
     def get_solver_details(self) -> dict:
         """Retrieve detailed solver information.
-
-        Parameters
-        ----------
-        verbose : bool, default True
-            If True, print the details to console. If False, return details dictionary.
 
         Returns
         -------

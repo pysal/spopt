@@ -1,0 +1,43 @@
+---
+name: docs
+channels:
+  - conda-forge
+dependencies:
+  - python=3.14
+  # required
+  - fast_hdbscan # for sa3
+  - geopandas
+  - libpysal
+  - mapclassify
+  - networkx
+  - numba # for sa3
+  - numpy
+  - pandas
+  - pointpats
+  - scikit-learn
+  - scipy
+  - shapely
+  - spaghetti
+  - tqdm
+  # docs
+  - glpk
+  - coin-or-cbc
+  - matplotlib
+  - seaborn
+  - folium
+  - inequality
+  - ipykernel
+  - osmnx>=2
+  - watermark
+  - myst-nb
+  - sphinx
+  - sphinxcontrib-bibtex
+  - sphinx-autosummary-accessors
+  - sphinx-copybutton
+  - sphinx-immaterial
+  # with pip
+  - pip
+  - pip:
+    - pulp[glpk]<4
+    - routingpy
+    - matplotlib_scalebar

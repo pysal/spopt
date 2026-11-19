@@ -1,11 +1,6 @@
-
-<p align="center">
-<img src="docs/_static/images/pysal_banner.svg" width="370" height="200" />
-</p>
-
 # `spopt`: Spatial Optimization
 
-#### Regionalization, facility location, and transportation-oriented modeling
+__Regionalization, facility location, and transportation-oriented modeling__
 
 ![tag](https://img.shields.io/github/v/release/pysal/spopt?include_prereleases&sort=semver)
 [![Continuous Integration](https://github.com/pysal/spopt/actions/workflows/testing.yml/badge.svg)](https://github.com/pysal/spopt/actions/workflows/testing.yml)
@@ -17,9 +12,13 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4444156.svg)](https://doi.org/10.5281/zenodo.4444156)
 [![Discord](https://img.shields.io/badge/Discord-join%20chat-7289da?style=flat&logo=discord&logoColor=cccccc&link=https://discord.gg/BxFTEPFFZn)](https://discord.gg/BxFTEPFFZn)
 
-Spopt is an open-source Python library for solving optimization problems with spatial data. Originating from the `region` module in [PySAL (Python Spatial Analysis Library)](http://pysal.org), it is under active development for the inclusion of newly proposed models and methods for regionalization, facility location, and transportation-oriented solutions. 
+Spopt is an open-source Python library for solving optimization problems with spatial
+data. Originating from the `region` module in
+[PySAL (Python Spatial Analysis Library)](http://pysal.org), it is under active
+development for the inclusion of newly proposed models and methods for regionalization,
+facility location, and transportation-oriented solutions.
 
-### Regionalization
+## Regionalization
 
 ```python
 import spopt, libpysal, geopandas, numpy
@@ -36,10 +35,10 @@ mexico.plot(column="maxp_new", categorical=True, figsize=(12,8), ec="w");
 ```
 
 <p align="center">
-<img src="docs/_static/images/maxp.svg" height="350" />
+<img src="https://raw.githubusercontent.com/pysal/spopt/refs/heads/main/docs/_static/images/maxp.svg" height="350" />
 </p>
 
-### Locate
+## Locate
 
 ```python
 from spopt.locate import MCLP
@@ -75,21 +74,24 @@ mclp_from_cost_matrix = MCLP.from_cost_matrix(cost_matrix, ai, 4, p_facilities=4
 mclp_from_cost_matrix = mclp_from_cost_matrix.solve(solver)
 ```
 
-*see [notebook](https://github.com/pysal/spopt/blob/main/notebooks/mclp.ipynb) for plotting code*
+*see [notebook](https://github.com/pysal/spopt/blob/main/notebooks/mclp.ipynb) for
+plotting code*
 
 <p align="center">
-<img src="docs/_static/images/mclp.png" height="350" />
+<img src="https://raw.githubusercontent.com/pysal/spopt/refs/heads/main/docs/_static/images/mclp.png" height="350" />
 </p>
 
 ## Examples
 
-More examples can be found in the [Tutorials](https://pysal.org/spopt/tutorials.html) section of the documentation.
+More examples can be found in the [Tutorials](https://pysal.org/spopt/tutorials.html)
+section of the documentation.
 - [Max-p-regions problem](https://pysal.org/spopt/notebooks/maxp.html)
 - [Skater](https://pysal.org/spopt/notebooks/skater.html)
 - [Region K means](https://pysal.org/spopt/notebooks/reg-k-means.html)
 - [Facility Location Real World Problem](https://pysal.org/spopt/notebooks/facloc-real-world.html)
 
-All examples can be run interactively by launching this repository as a [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pysal/spopt/main).
+All examples can be run interactively by launching this repository as a
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pysal/spopt/main).
 
 ## Requirements
 - [scipy](http://scipy.github.io/devdocs/)
@@ -105,13 +107,15 @@ All examples can be run interactively by launching this repository as a [![Binde
 
 ## Installation
 
-spopt is available on the [Python Package Index](https://pypi.org/). Therefore, you can either install directly with pip from the command line:
+spopt is available on the [Python Package Index](https://pypi.org/). Therefore, you can
+either install directly with pip from the command line:
 
 ```
 $ pip install -U spopt
 ```
 
-or download the source distribution (.tar.gz) and decompress it to your selected destination. Open a command shell and navigate to the decompressed folder. Type:
+or download the source distribution (.tar.gz) and decompress it to your selected
+destination. Open a command shell and navigate to the decompressed folder. Type:
 
 ```
 $ pip install .
@@ -137,23 +141,37 @@ $ conda install --channel conda-forge spopt
 
 PySAL-spopt is under active development and contributors are welcome.
 
-If you have any suggestions, feature requests, or bug reports, please open new [issues](https://github.com/pysal/spopt/issues) on GitHub. To submit patches, please review [PySAL's documentation for developers](https://pysal.org/docs/devs/), the PySAL [development guidelines](https://github.com/pysal/pysal/wiki), the `spopt` [contributing guidelines](https://github.com/pysal/spopt/blob/main/.github/CONTRIBUTING.md) before  opening a [pull request](https://github.com/pysal/spopt/pulls). Once your changes get merged, you’ll automatically be added to the [Contributors List](https://github.com/pysal/spopt/graphs/contributors).
+If you have any suggestions, feature requests, or bug reports, please open new
+[issues](https://github.com/pysal/spopt/issues) on GitHub. To submit patches, please
+review [PySAL's documentation for developers](https://pysal.org/docs/devs/), the PySAL
+[development guidelines](https://github.com/pysal/pysal/wiki), the `spopt`
+[contributing guidelines](https://github.com/pysal/spopt/blob/main/.github/CONTRIBUTING.md)
+before opening a [pull request](https://github.com/pysal/spopt/pulls). Once your changes
+get merged, you’ll automatically be added to the
+[Contributors List](https://github.com/pysal/spopt/graphs/contributors).
 
 ## Support
 
-If you are having trouble, please [create an issue](https://github.com/pysal/spopt/issues), [start a discussion](https://github.com/pysal/spopt/discussions), or talk to us in [PySAL's Discord channel](https://discord.gg/BxFTEPFFZn).
+If you are having trouble, please
+[create an issue](https://github.com/pysal/spopt/issues),
+[start a discussion](https://github.com/pysal/spopt/discussions), or talk to us in
+[PySAL's Discord channel](https://discord.gg/BxFTEPFFZn).
 
 ## Code of Conduct
 
-As a PySAL-federated project, `spopt` follows the [Code of Conduct](https://github.com/pysal/governance/blob/main/conduct/code_of_conduct.rst) under the [PySAL governance model](https://github.com/pysal/governance).
+As a PySAL-federated project, `spopt` follows the
+[Code of Conduct](https://github.com/pysal/governance/blob/main/conduct/code_of_conduct.rst)
+under the [PySAL governance model](https://github.com/pysal/governance).
 
 ## License
 
-The project is licensed under the [BSD 3-Clause license](https://github.com/pysal/spopt/blob/main/LICENSE.txt).
+The project is licensed under the
+[BSD 3-Clause license](https://github.com/pysal/spopt/blob/main/LICENSE.txt).
 
 ## Citation
 
-If you use PySAL-spopt in a scientific publication, we would appreciate using the following citations:
+If you use PySAL-spopt in a scientific publication, we would appreciate using the
+following citations:
 
 ```
 @misc{spopt2021,
@@ -187,4 +205,6 @@ If you use PySAL-spopt in a scientific publication, we would appreciate using th
 
 This project is/was partially funded through:
 
-[<img align="middle" src="docs/_static/images/nsf_logo.png" width="75">](https://www.nsf.gov/index.jsp) National Science Foundation Award #1831615: [RIDIR: Scalable Geospatial Analytics for Social Science Research](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1831615)
+[<img align="center" src="https://raw.githubusercontent.com/pysal/spopt/refs/heads/main/docs/_static/images/nsf_logo.png" width="75">](https://www.nsf.gov/index.jsp)
+National Science Foundation Award #1831615:
+[RIDIR: Scalable Geospatial Analytics for Social Science Research](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1831615)

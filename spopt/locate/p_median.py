@@ -26,7 +26,8 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
 
     .. math::
 
-       \begin{array}{lllll}
+         {\small
+         \begin{array}{lllll}
        \displaystyle \textbf{Minimize}      & \displaystyle \sum_{i \in I}\sum_{j \in J}{a_i d_{ij} X_{ij}} &&                                          & (1)                                                                               \\
        \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j \in J}{X_{ij} = 1}                      && \forall i \in I                          & (2)                                                                               \\
                                             & \displaystyle \sum_{j \in J}{Y_j} = p                         &&                                          & (3)                                                                               \\
@@ -34,6 +35,10 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
                                             & X_{ij} \in \{0, 1\}                                           && \forall i \in I \quad \forall j \in J    & (5)                                                                               \\
                                             & Y_j \in \{0, 1\}                                              && \forall j \in J                          & (6)                                                                               \\
                                             &                                                               &&                                          &                                                                                   \\
+       \end{array}}
+
+       {\small
+       \begin{array}{@{}llr@{}}
        \displaystyle \textbf{Where}         && i                                                            & =                                         & \textrm{index of demand points/areas/objects in set } I                           \\
                                             && j                                                            & =                                         & \textrm{index of potential facility sites in set } J                              \\
                                             && p                                                            & =                                         & \textrm{the number of facilities to be sited}                                     \\
@@ -47,7 +52,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
                                                                                                                                                            1, \textrm{if a facility is sited at location } j                                \\
                                                                                                                                                            0, \textrm{otherwise}                                                            \\
                                                                                                                                                           \end{cases}                                                                       \\
-       \end{array}
+         \end{array}}
 
     Parameters
     ----------
@@ -154,7 +159,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             solution. For example, consider 3 facilites ``['A', 'B', 'C']``.
             If facility ``'B'`` must be in the model solution, then the passed
             in array should be ``[0, 1, 0]``.
-        facility_capacity : numpy.array (default None)
+        facility_capacities : numpy.array (default None)
             The capacity of each facility.
         fulfill_predefined_fac : bool (default False)
             If the predefined facilities need to be fulfilled.
@@ -352,7 +357,7 @@ class PMedian(LocateSolver, BaseOutputMixin, MeanDistanceMixin):
             This a binary assignment per facility. For example, consider 3 facilites
             ``['A', 'B', 'C']``. If facility ``'B'`` must be in the model solution,
             then the column should be ``[0, 1, 0]``.
-        facility_capacities_col: str (default None)
+        facility_capacity_col: str (default None)
             Column name representing the capacities of each facility.
         fulfill_predefined_fac : bool (default False)
             If the predefined facilities need to be fulfilled.
@@ -551,6 +556,7 @@ class KNearestPMedian(PMedian):
 
     .. math::
 
+       {\small
        \begin{array}{lllll}
        \displaystyle \textbf{Minimize}      & \displaystyle \sum_{i \in I}\sum_{k \in k_{i}}{a_i d_{ik} X_{ik}} + \sum_{i \in I}{g_i (d_{i{k_i}} + 1)}  &&                                          & (1)                                                                               \\
        \displaystyle \textbf{Subject To}    & \sum_{k \in k_{i}}{X_{ik} + g_i = 1}                                                                      && \forall i \in I                          & (2)                                                                               \\
@@ -560,26 +566,31 @@ class KNearestPMedian(PMedian):
                                             & X_{ij} \in \{0, 1\}                                                                                       && \forall i \in I \quad \forall j \in J    & (6)                                                                               \\
                                             & Y_j \in \{0, 1\}                                                                                          && \forall j \in J                          & (7)                                                                               \\
                                             &                                                                                                           &&                                          &                                                                                   \\
-       \displaystyle \textbf{Where}         && i                                                                                                        & =                                         & \textrm{index of demand points/areas/objects in set } I                           \\
-                                            && j                                                                                                        & =                                         & \textrm{index of potential facility sites in set } J                              \\
-                                            && p                                                                                                        & =                                         & \textrm{the number of facilities to be sited}                                     \\
-                                            && a_i                                                                                                      & =                                         & \textrm{service load or population demand at client location } i                  \\
-                                            && k_{i}                                                                                                    & =                                         & \textrm{the } k \textrm{nearest facilities of client location } i                 \\
-                                            && c_{j}                                                                                                    & =                                         & \textrm{the capacity of facility} j                                               \\
-                                            && d_{ij}                                                                                                   & =                                         & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
-                                            && X_{ij}                                                                                                   & =                                         & \begin{cases}
+       \end{array}}
+
+       {\small
+       \begin{array}{@{}llr@{}}
+       \displaystyle \textbf{Where}         & i                                                                                                        & =                                         & \textrm{index of demand points/areas/objects in set } I                           \\
+                                            & j                                                                                                        & =                                         & \textrm{index of potential facility sites in set } J                              \\
+                                            & p                                                                                                        & =                                         & \textrm{the number of facilities to be sited}                                     \\
+                                            & a_i                                                                                                      & =                                         & \textrm{service load or population demand at client location } i                  \\
+                                            & k_{i}                                                                                                    & =                                         & \textrm{the } k \textrm{nearest facilities of client location } i                 \\
+                                            & c_{j}                                                                                                    & =                                         & \textrm{the capacity of facility} j                                               \\
+                                            & d_{ij}                                                                                                   & =                                         & \textrm{shortest distance or travel time between locations } i \textrm{ and } j   \\
+                                            & X_{ij}                                                                                                   & =                                         & \begin{cases}
                                                                                                                                                                                                        1, \textrm{if client location } i \textrm{ is served by facility } j             \\
                                                                                                                                                                                                        0, \textrm{otherwise}                                                            \\
                                                                                                                                                                                                       \end{cases}                                                                       \\
-                                            && Y_j                                                                                                      & =                                         & \begin{cases}
+                                            & Y_j                                                                                                      & =                                         & \begin{cases}
                                                                                                                                                                                                        1, \textrm{if a facility is sited at location } j                                \\
                                                                                                                                                                                                        0, \textrm{otherwise}                                                            \\
                                                                                                                                                                                                       \end{cases}                                                                       \\
-                                            && g_i                                                                                                      & =                                         & \begin{cases}
+                                            & g_i                                                                                                      & =                                         & \begin{cases}
                                                                                                                                                                                                        1, \textrm{if the client } i \textrm{ needs to be served by non-k-nearest facilities}     \\
                                                                                                                                                                                                        0, \textrm{otherwise}                                                            \\
                                                                                                                                                                                                       \end{cases}                                                                       \\
-       \end{array}
+       \end{array}}
+
 
     Parameters
     ----------

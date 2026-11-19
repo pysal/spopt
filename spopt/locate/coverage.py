@@ -28,11 +28,16 @@ class LSCP(LocateSolver, BaseOutputMixin):
 
     .. math::
 
+       {\small
        \begin{array}{lllll}
        \displaystyle \textbf{Minimize}      & \displaystyle \sum_{j \in J}{Y_j}             &&                  & (1)                                                                               \\
        \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j \in N_i}{Y_j} \geq 1    && \forall i \in I  & (2)                                                                               \\
                                             & Y_j \in \{0,1\}                               && \forall j \in J  & (3)                                                                               \\
                                             &                                               &&                  &                                                                                   \\
+       \end{array}}
+
+       {\small
+       \begin{array}{@{}llr@{}}
        \displaystyle \textbf{Where}         && i                                            & =                 & \textrm{index of demand points/areas/objects in set } I                           \\
                                             && j                                            & =                 & \textrm{index of potential facility sites in set } J                              \\
                                             && S                                            & =                 & \textrm{maximum acceptable service distance or time standard}                     \\
@@ -42,33 +47,38 @@ class LSCP(LocateSolver, BaseOutputMixin):
                                                                                                                    1, \textrm{if a facility is sited at location } j                                \\
                                                                                                                    0, \textrm{otherwise}                                                            \\
                                                                                                                   \end{cases}
-       \end{array}
+       \end{array}}
 
     The *CLSCP-SO*, as adapted from :cite:`church_murray_2018`
     (see also :cite:`current1988capacitated`), can be formulated as:
 
     .. math::
 
+       {\small
        \begin{array}{lllll}
        \displaystyle \textbf{Minimize}      & \displaystyle \sum_{j \in J}{Y_j}                      &&                                          & (1)                                                                           \\
        \displaystyle \textbf{Subject to}    & \displaystyle \sum_{j \in N_i}{z_{ij}} = 1            && \forall i \in I                          & (2)                                                                           \\
                                             & \displaystyle \sum_{i \in I} a_i z_{ij} \leq C_jx_j   && \forall j \in J                          & (3)                                                                           \\
                                             & Y_j \in {0,1}                                         && \forall j \in J                          & (4)                                                                           \\
                                             & z_{ij} \geq 0                                         && \forall i \in I \quad \forall j \in N_i  & (5)                                                                           \\
-                                            &                                                       &&                                          &                                                                               \\
-       \displaystyle \textbf{Where:}        && i                                                    & =                                         & \textrm{index of demand points/areas/objects in set } I                       \\
-                                            && j                                                    & =                                         & \textrm{index of potential facility sites in set } J                          \\
-                                            && S                                                    & =                                         & \textrm{maximal acceptable service distance or time standard}                 \\
-                                            && d_{ij}                                               & =                                         & \textrm{shortest distance or travel time between nodes } i \textrm{ and } j   \\
-                                            && N_i                                                  & =                                         & \{j | d_{ij} < S\}                                                            \\
-                                            && a_i                                                  & =                                         & \textrm{amount of demand at } i                                               \\
-                                            && C_j                                                  & =                                         & \textrm{capacity of potential facility } j                                    \\
-                                            && z_{ij}                                               & =                                         & \textrm{fraction of demand } i \textrm{ that is assigned to facility } j      \\
-                                            && Y_j                                                  & =                                         & \begin{cases}
+        \end{array}}
+
+
+       {\small
+       \begin{array}{@{}llr@{}}                                                                                                                                                           &                                                                               \\
+       \displaystyle \textbf{Where:}        & i                                                    & =                                         & \textrm{index of demand points/areas/objects in set } I                       \\
+                                            & j                                                    & =                                         & \textrm{index of potential facility sites in set } J                          \\
+                                            & S                                                    & =                                         & \textrm{maximal acceptable service distance or time standard}                 \\
+                                            & d_{ij}                                               & =                                         & \textrm{shortest distance or travel time between nodes } i \textrm{ and } j   \\
+                                            & N_i                                                  & =                                         & \{j | d_{ij} < S\}                                                            \\
+                                            & a_i                                                  & =                                         & \textrm{amount of demand at } i                                               \\
+                                            & C_j                                                  & =                                         & \textrm{capacity of potential facility } j                                    \\
+                                            & z_{ij}                                               & =                                         & \textrm{fraction of demand } i \textrm{ that is assigned to facility } j      \\
+                                            & Y_j                                                  & =                                         & \begin{cases}
                                                                                                                                                    1, \text{if a facility is located at node } j                                \\
                                                                                                                                                    0, \text{otherwise}                                                          \\
                                                                                                                                                   \end{cases}
-       \end{array}
+       \end{array}}
 
 
     Parameters
@@ -102,6 +112,17 @@ class LSCP(LocateSolver, BaseOutputMixin):
     """  # noqa: E501
 
     def __init__(self, name: str, problem: pulp.LpProblem):
+        """Initialize LSCP.
+
+        Parameters
+        ----------
+
+        name : str
+            The problem name.
+        problem : pulp.LpProblem
+            A ``pulp`` instance of an optimization model that contains
+            constraints, variables, and an objective function.
+        """
         super().__init__(name, problem)
 
     def __add_obj(self) -> None:
@@ -325,7 +346,7 @@ class LSCP(LocateSolver, BaseOutputMixin):
             then the column should be ``[0, 1, 0]``.
         demand_quantity_col : str
             Column name representing amount of demand at each client location.
-        facility_capacity_arr : str
+        facility_capacity_col : str
             Column name representing capacity for service at each facility location.
         distance_metric : str (default 'euclidean')
             A metric used for the distance calculations supported by
@@ -524,29 +545,34 @@ class LSCPB(LocateSolver, BaseOutputMixin, BackupPercentageMixinMixin):
 
     .. math::
 
-       \begin{array}{lllll}
-       \displaystyle \textbf{Maximize}      & \displaystyle \sum_{i \in I}{U_i}                         &&                  & (1)                                                                          \\
-       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j \in J}{a_{ij}}{Y_j} \geq 1 + U_i    && \forall i \in I  & (2)                                                                          \\
-                                            & \displaystyle \sum_{j \in J}{Y_j} = p                     &&                  & (3)                                                                          \\
-                                            & U_i \leq 1                                                && \forall i \in I  & (4)                                                                          \\
-                                            & Y_j \in \{0, 1\}                                          && \forall j \in J  & (5)                                                                          \\
-                                            &                                                           &&                  &                                                                              \\
-       \displaystyle \textbf{Where}         && i                                                        & =                 & \textrm{index of demand points/areas/objects in set } I                      \\
-                                            && j                                                        & =                 & \textrm{index of potential facility sites in set } J                         \\
-                                            && p                                                        & =                 & \textrm{objective value identified by using the } LSCP                       \\
-                                            && U_i                                                      & =                 & \begin{cases}
+       {\small
+       \begin{array}{llll}
+       \displaystyle \textbf{Maximize}      & \displaystyle \sum_{i \in I}{U_i}                         &                  & (1) \\
+       \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j \in J}{a_{ij}}{Y_j} \geq 1 + U_i    & \forall i \in I  & (2) \\
+                                            & \displaystyle \sum_{j \in J}{Y_j} = p                     &                  & (3) \\
+                                            & U_i \leq 1                                                & \forall i \in I  & (4) \\
+                                            & Y_j \in \{0, 1\}                                          & \forall j \in J  & (5) \\
+                                            & & & \\
+       \end{array}}
+
+       {\small
+       \begin{array}{@{}llr@{}}
+       \displaystyle \textbf{Where}         & i                                                        & =                 & \textrm{index of demand points/areas/objects in set } I                      \\
+                                            & j                                                        & =                 & \textrm{index of potential facility sites in set } J                         \\
+                                            & p                                                        & =                 & \textrm{objective value identified by using the } LSCP                       \\
+                                            & U_i                                                      & =                 & \begin{cases}
                                                                                                                                1, \textrm{if demand location is covered twice}                             \\
                                                                                                                                0, \textrm{if demand location is covered once}                              \\
                                                                                                                               \end{cases}                                                                  \\
-                                            && a_{ij}                                                   & =                 & \begin{cases}
+                                            & a_{ij}                                                   & =                 & \begin{cases}
                                                                                                                                1, \textrm{if facility location } j \textrm{ covers demand location } i     \\
                                                                                                                                0, \textrm{otherwise}                                                       \\
                                                                                                                               \end{cases}                                                                  \\
-                                            && Y_j                                                      & =                 & \begin{cases}
+                                            & Y_j                                                      & =                 & \begin{cases}
                                                                                                                                1, \textrm{if a facility is sited at location } j                           \\
                                                                                                                                0, \textrm{otherwise}                                                       \\
                                                                                                                               \end{cases}
-       \end{array}
+       \end{array}}
 
     Parameters
     ----------
@@ -967,6 +993,7 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
 
     .. math::
 
+      {\small
        \begin{array}{lllll}
        \displaystyle \textbf{Maximize}      & \displaystyle \sum_{i \in I}{a_iX_i}          &&                  & (1)                                                                                   \\
        \displaystyle \textbf{Subject To}    & \displaystyle \sum_{j \in N_i}{Y_j \geq X_i}  && \forall i \in I  & (2)                                                                                   \\
@@ -974,21 +1001,25 @@ class MCLP(LocateSolver, BaseOutputMixin, CoveragePercentageMixin):
                                             & X_i \in \{0, 1\}                              && \forall i \in I  & (4)                                                                                   \\
                                             & Y_j \in \{0, 1\}                              && \forall j \in J  & (5)                                                                                   \\
                                             &                                               &&                  &                                                                                       \\
-       \displaystyle \textbf{Where}         && i                                            & =                 & \textrm{index of demand points/areas/objects in set } I                               \\
-                                            && j                                            & =                 & \textrm{index of potential facility sites in set } J                                  \\
-                                            && p                                            & =                 & \textrm{the number of facilities to be sited}                                         \\
-                                            && S                                            & =                 & \textrm{maximum acceptable service distance or time standard}                         \\
-                                            && d_{ij}                                       & =                 & \textrm{shortest distance or travel time between locations } i \textrm{ and } j       \\
-                                            && N_i                                          & =                 & \{j | d_{ij} < S\}                                                                    \\
-                                            && X_i                                          & =                 & \begin{cases}
+        \end{array}}
+
+        {\small
+        \begin{array}{@{}llr@{}}
+       \displaystyle \textbf{Where}         & i                                            & =                 & \textrm{index of demand points/areas/objects in set } I                               \\
+                                            & j                                            & =                 & \textrm{index of potential facility sites in set } J                                  \\
+                                            & p                                            & =                 & \textrm{the number of facilities to be sited}                                         \\
+                                            & S                                            & =                 & \textrm{maximum acceptable service distance or time standard}                         \\
+                                            & d_{ij}                                       & =                 & \textrm{shortest distance or travel time between locations } i \textrm{ and } j       \\
+                                            & N_i                                          & =                 & \{j | d_{ij} < S\}                                                                    \\
+                                            & X_i                                          & =                 & \begin{cases}
                                                                                                                    1, \textrm{if client location } i \textrm{ is covered within service standard } S    \\
                                                                                                                    0, \textrm{otherwise}                                                                \\
                                                                                                                   \end{cases}                                                                           \\
-                                            && Y_j                                          & =                 & \begin{cases}
+                                            & Y_j                                          & =                 & \begin{cases}
                                                                                                                    1, \textrm{if a facility is sited at location } j                                    \\
                                                                                                                    0, \textrm{otherwise}                                                                \\
                                                                                                                   \end{cases}
-       \end{array}
+       \end{array}}
 
     Parameters
     ----------
