@@ -21,6 +21,7 @@ dependencies:
   - tqdm
   # docs
   - glpk
+  - coin-or-cbc
   - matplotlib
   - seaborn
   - folium
