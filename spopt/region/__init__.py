@@ -1,4 +1,4 @@
-from .azp import AZP
+from .azp import AZP, AZPBasicTabu, AZPReactiveTabu, AZPSimulatedAnnealing
 from .base import w_to_g
 from .maxp import MaxPHeuristic
 from .random_region import RandomRegion, RandomRegions
