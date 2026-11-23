@@ -426,6 +426,17 @@ class TestFRLMOutputsAndReporting:
         assert params["p_facilities"] == 2
         assert params["objective_type"] == "flow"
 
+    def test_vmt_coverage_without_flow_coverage_attr(self, setup_solved_model):
+        model = setup_solved_model
+        if hasattr(model, "flow_coverage"):
+            delattr(model, "flow_coverage")
+
+        metrics = model.get_vmt_coverage()
+
+        assert "total_vmt" in metrics
+        assert "covered_vmt" in metrics
+        assert "vmt_coverage_percentage" in metrics
+
 
 class TestFRLMCustomPaths:
     def test_custom_paths_basic(self):
