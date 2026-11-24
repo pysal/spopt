@@ -421,7 +421,6 @@ class SPENC(clust.SpectralClustering):
                 current_affinity,
                 grid_resolution,
                 cut_method=cut_method,
-                floor=floor,
             )
             left_cut = this_cut.copy()
             left_cut[left_cut] *= new_cut
