@@ -83,7 +83,7 @@ class FlowModelBuilder:
             - Key: Path ID (q) - integer identifier for each OD path (1-indexed)
             - Value: List of arc IDs that compose this path
 
-        K : dict[tuple[int, int], list[Any]]
+        k : dict[tuple[int, int], list[Any]]
             Refueling capability dictionary where:
 
             - Key: Tuple (path_id, arc_id) identifying a specific arc on a path
@@ -92,6 +92,11 @@ class FlowModelBuilder:
             endpoint of the arc.
 
         candidate_sites : list[Any]
+            List of potential facility locations. Positions in `candidate_sites`
+            are mapped to `obj.facility_vars`, so the list must use the same
+            order as the facility variables. Nodes in `k[key]` that aren't in
+            `candidate_sites` are skipped without any warning, so their refueling
+            constraints are dropped.
         """
         if hasattr(obj, "facility_vars") and hasattr(obj, "flow_vars"):
             facility_vars = obj.facility_vars
@@ -1106,13 +1111,13 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
 
             - "auto": Automatically choose based on model type
             - "combination": Generate all possible facility combinations
-            - "ac_pc": Generate K and a sets for Arc Cover Path Cover
+            - "ac_pc": Generate k and a sets for Arc Cover Path Cover
 
         Returns
         -------
         dict
             Dictionary of OD pairs to valid facility combinations (combination method)
-            or sets K and a sets (ac_pc method).
+            or the k and a sets (ac_pc method).
         """
 
         method = "combination" if self.capacity is not None else "ac_pc"
