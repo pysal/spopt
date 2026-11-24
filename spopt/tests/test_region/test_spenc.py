@@ -34,3 +34,17 @@ class TestSpenc:
         model.solve()
 
         numpy.testing.assert_equal(model.labels_, self.non_default_mexico)
+
+    def test_spenc_hierarchical_label_assignment(self):
+        model = Spenc(
+            self.mexico,
+            self.w_mexico,
+            self.default_attrs_mexico,
+            random_state=RANDOM_STATE,
+            gamma=0,
+            n_clusters=5,
+            assign_labels="hierarchical",
+        )
+        model.solve()
+
+        numpy.testing.assert_equal(model.labels_.shape, (len(self.mexico),))
