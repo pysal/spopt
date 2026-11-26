@@ -366,7 +366,7 @@ class SPENC(clust.SpectralClustering):
                 tol=self.eigen_tol,
             )
 
-        embedding = spectrum.T[n_clusters :: -1]  # sklearn/issues/8129
+        embedding = spectrum.T[n_clusters::-1]  # sklearn/issues/8129
         embedding = embedding / orig_d
         embedding = _deterministic_vector_sign_flip(embedding)
         return embedding

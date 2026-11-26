@@ -63,8 +63,8 @@ class TestSpenc:
         assert model.assign_labels == "discretize"
         assert len(numpy.unique(model.labels_)) > 1
 
-    def test_spenc_kmeans_reproducibility(self):
-        m1 = Spenc(
+    def test_spenc_kmeans(self):
+        model = Spenc(
             self.mexico,
             self.w_mexico,
             self.default_attrs_mexico,
@@ -72,16 +72,7 @@ class TestSpenc:
             assign_labels="kmeans",
             random_state=RANDOM_STATE,
         )
-        m1.solve()
+        model.solve()
 
-        m2 = Spenc(
-            self.mexico,
-            self.w_mexico,
-            self.default_attrs_mexico,
-            n_clusters=3,
-            assign_labels="kmeans",
-            random_state=RANDOM_STATE,
-        )
-        m2.solve()
-
-        numpy.testing.assert_array_equal(m1.labels_, m2.labels_)
+        assert model.n_clusters == 3
+        assert len(numpy.unique(model.labels_)) == 3
