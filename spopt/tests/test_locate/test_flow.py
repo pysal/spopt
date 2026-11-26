@@ -390,6 +390,28 @@ class TestFRLMOutputsAndReporting:
         assert "origin" in dfs["coverage"].columns
         assert "destination" in dfs["coverage"].columns
         assert "covered_proportion" in dfs["coverage"].columns
+        assert "covered_volume" in dfs["coverage"].columns
+
+        summary_df = dfs["summary"]
+        assert "Metric" in summary_df.columns
+        assert "Value" in summary_df.columns
+
+        cov_row = summary_df.loc[
+            summary_df["Metric"] == "Covered Flow", "Value"
+        ].values[0]
+        cov_pct_row = summary_df.loc[
+            summary_df["Metric"] == "Coverage %", "Value"
+        ].values[0]
+
+        expected_covered = sum(
+            c["covered_volume"] for c in model.flow_coverage.values()
+        )
+        total_flow = sum(model.flows.values())
+        expected_pct = expected_covered / total_flow * 100
+
+        assert expected_covered > 0
+        assert cov_row == expected_covered
+        assert cov_pct_row == f"Flow Coverage: {expected_pct:.2f}%"
 
     def test_solver_details(self, setup_solved_model):
         model = setup_solved_model

@@ -2179,10 +2179,13 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
         dataframes["coverage"] = pd.DataFrame(coverage_data)
 
         covered_flow_sum = sum(
-            coverage.get("coverage", 0) for coverage in self.flow_coverage.values()
+            coverage.get("covered_volume", 0)
+            for coverage in self.flow_coverage.values()
         )
         total_flow = sum(self.flows.values())
-        coverage_pct = covered_flow_sum / total_flow * 100
+        coverage_pct = (
+            covered_flow_sum / total_flow * 100 if total_flow > 0 else 0.0
+        )
 
         summary_data = {
             "Metric": [
@@ -2207,11 +2210,8 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
                 self.status,
                 self.objective_value,
                 self.solution_time,
-                sum(self.flows.values()),
-                sum(
-                    coverage.get("covered_volume", 0)
-                    for coverage in self.flow_coverage.values()
-                ),
+                total_flow,
+                covered_flow_sum,
                 f"Flow Coverage: {coverage_pct:.2f}%",
             ],
         }
