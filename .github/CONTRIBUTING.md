@@ -6,4 +6,19 @@ Thank you for your interest in contributing! We work primarily on Github. Please
 ## Style and format
 
 1. At the time of this writing, Python 3.10, 3.11, and 3.12 are the officially supported versions.
-2. This project implements the linting and formatting conventions of [`ruff`](https://docs.astral.sh/ruff/) on all incoming Pull Requests. To ensure a PR is properly linted and formatted prior to creating a Pull Request, [install `pre-commit`](https://pre-commit.com/#installation) in your development environment and then [set up the configuration of pre-commit hooks](https://pre-commit.com/#3-install-the-git-hook-scripts). 
+2. This project implements the linting and formatting conventions of [`ruff`](https://docs.astral.sh/ruff/) on all incoming Pull Requests. To ensure a PR is properly linted and formatted prior to creating a Pull Request, [install `pre-commit`](https://pre-commit.com/#installation) in your development environment and then [set up the configuration of pre-commit hooks](https://pre-commit.com/#3-install-the-git-hook-scripts).
+
+
+## Running tests
+
+Before running the test suite locally, download the sample test datasets from `libpysal.examples` to avoid missing dataset errors during region tests:
+
+```bash
+python -c "import libpysal; libpysal.examples.fetch_all()"
+```
+
+Then run the test suite with `pytest`:
+
+```bash
+pytest spopt -v
+```
