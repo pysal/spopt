@@ -249,8 +249,9 @@ class SPENC(clust.SpectralClustering):
 
         """  # noqa: E501
 
-        if np.isinf(self.n_clusters):
-            self.assign_labels = "hierarchical"
+        assign_labels = (
+            "hierarchical" if np.isinf(self.n_clusters) else self.assign_labels
+        )
 
         if X is not None:
             X = check_array(
@@ -296,7 +297,7 @@ class SPENC(clust.SpectralClustering):
             del self.affinity_
             return self
 
-        if self.assign_labels == "hierarchical":
+        if assign_labels == "hierarchical":
             self.labels_ = self._spectral_bipartition(
                 grid_resolution=grid_resolution,
                 shift_invert=shift_invert,
@@ -309,15 +310,21 @@ class SPENC(clust.SpectralClustering):
         self.embedding_ = embedding.T
         random_state = check_random_state(self.random_state)
 
-        if self.assign_labels == "kmeans":
+        if assign_labels == "kmeans":
             self.labels_ = (
-                clust.KMeans(n_clusters=self.n_clusters).fit(self.embedding_).labels_
+                clust.KMeans(
+                    n_clusters=self.n_clusters,
+                    n_init=self.n_init,
+                    random_state=random_state,
+                )
+                .fit(self.embedding_)
+                .labels_
             )
         else:
             self.labels_ = _discretize(self.embedding_, random_state=random_state)
         return self
 
-    def _embed(self, affinity, shift_invert=True):
+    def _embed(self, affinity, shift_invert=True, k=None):
         """
         Compute the eigenspace embedding of a given affinity matrix.
 
@@ -329,27 +336,37 @@ class SPENC(clust.SpectralClustering):
         shift_invert:   bool
                         whether or not to use the shift-invert eigenvector search
                         trick useful for finding sparse eigenvectors.
+        k           :   int or None, default=None
+                        number of eigenvectors to compute. If None, defaults to
+                        self.n_clusters.
         """
+        n_clusters = self.n_clusters if k is None else k
         laplacian, orig_d = cg.laplacian(affinity, normed=True, return_diag=True)
         laplacian *= -1
         random_state = check_random_state(self.random_state)
         v0 = random_state.uniform(-1, 1, laplacian.shape[0])
 
-        if not shift_invert:
+        if laplacian.shape[0] <= n_clusters:
+            from scipy.linalg import eigh
+
+            arr = laplacian.toarray() if spar.issparse(laplacian) else laplacian
+            ev, spectrum = eigh(arr)
+            spectrum = spectrum[:, -n_clusters:]
+        elif not shift_invert:
             ev, spectrum = la.eigsh(
-                laplacian, which="LA", k=self.n_clusters, v0=v0, tol=self.eigen_tol
+                laplacian, which="LA", k=n_clusters, v0=v0, tol=self.eigen_tol
             )
         else:
             ev, spectrum = la.eigsh(
                 laplacian,
                 which="LM",
                 sigma=1,
-                k=self.n_clusters,
+                k=n_clusters,
                 v0=v0,
                 tol=self.eigen_tol,
             )
 
-        embedding = spectrum.T[self.n_clusters :: -1]  # sklearn/issues/8129
+        embedding = spectrum.T[n_clusters :: -1]  # sklearn/issues/8129
         embedding = embedding / orig_d
         embedding = _deterministic_vector_sign_flip(embedding)
         return embedding
@@ -407,21 +424,25 @@ class SPENC(clust.SpectralClustering):
         if spar.issparse(self.affinity_matrix_):
             self.affinity_matrix_ = self.affinity_matrix_.tocsr()
         threshold = self.n_clusters
-        self.n_clusters = 2
         discovered = 1
         this_cut = np.ones((self.affinity_matrix_.shape[0],)).astype(bool)
         cuts = []
         accepted_cuts = []
         while discovered < threshold:
             current_affinity = self.affinity_matrix_[this_cut, :][:, this_cut]
-            embedding = self._embed(current_affinity, shift_invert=shift_invert)
+            if current_affinity.shape[0] < 2:
+                try:
+                    this_cut = cuts.pop(0)
+                except IndexError:
+                    break
+                continue
+            embedding = self._embed(current_affinity, shift_invert=shift_invert, k=2)
             second_eigenvector = embedding[1]
             new_cut, score_of_cut = self._make_hierarchical_cut(
                 second_eigenvector,
                 current_affinity,
                 grid_resolution,
                 cut_method=cut_method,
-                floor=floor,
             )
             left_cut = this_cut.copy()
             left_cut[left_cut] *= new_cut
@@ -470,6 +491,8 @@ class SPENC(clust.SpectralClustering):
                 cut = second_eigenvector <= cutpoint
                 assocA = affinity_matrix[cut].sum(axis=1).sum()
                 assocB = affinity_matrix[~cut].sum(axis=1).sum()
+                if assocA == 0 or assocB == 0:
+                    return np.inf
                 cutAB = affinity_matrix[cut, :][:, ~cut].sum(axis=1).sum() * 2
                 score = cutAB / assocA + cutAB / assocB
                 if np.isnan(score):
