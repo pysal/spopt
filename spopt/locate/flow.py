@@ -2183,9 +2183,7 @@ class FRLM(FRLMCoverageMixin, FRLMNodeCoverageMixin, FRLMSolverStatsMixin):
             for coverage in self.flow_coverage.values()
         )
         total_flow = sum(self.flows.values())
-        coverage_pct = (
-            (covered_flow_sum / total_flow * 100) if total_flow > 0 else 0.0
-        )
+        coverage_pct = (covered_flow_sum / total_flow * 100) if total_flow > 0 else 0.0
 
         summary_data = {
             "Metric": [
