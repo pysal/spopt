@@ -34,3 +34,45 @@ class TestSpenc:
         model.solve()
 
         numpy.testing.assert_equal(model.labels_, self.non_default_mexico)
+
+    def test_spenc_hierarchical(self):
+        model = Spenc(
+            self.mexico,
+            self.w_mexico,
+            self.default_attrs_mexico,
+            n_clusters=5,
+            assign_labels="hierarchical",
+            random_state=RANDOM_STATE,
+        )
+        model.solve()
+
+        assert model.n_clusters == 5
+        assert len(numpy.unique(model.labels_)) == 5
+
+    def test_spenc_infinite_clusters(self):
+        model = Spenc(
+            self.mexico,
+            self.w_mexico,
+            self.default_attrs_mexico,
+            n_clusters=numpy.inf,
+            random_state=RANDOM_STATE,
+        )
+        model.solve()
+
+        assert numpy.isinf(model.n_clusters)
+        assert model.assign_labels == "discretize"
+        assert len(numpy.unique(model.labels_)) > 1
+
+    def test_spenc_kmeans(self):
+        model = Spenc(
+            self.mexico,
+            self.w_mexico,
+            self.default_attrs_mexico,
+            n_clusters=3,
+            assign_labels="kmeans",
+            random_state=RANDOM_STATE,
+        )
+        model.solve()
+
+        assert model.n_clusters == 3
+        assert len(numpy.unique(model.labels_)) == 3
