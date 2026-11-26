@@ -373,14 +373,14 @@ class FlowModelBuilder:
 class FRLMCoverageMixin:
     """Mixin to calculate flow coverage statistics for FRLM."""
 
-    def get_flow_coverage(self) -> None:
+    def get_flow_coverage(self) -> dict[str, float]:
         """Improved and fixed calculation of flow coverage."""
         if not hasattr(self, "facility_vars") or self.facility_vars is None:
             raise AttributeError(
                 "Model must be solved before calculating coverage. Call solve() first."
             )
 
-        if not self.flow_coverage:
+        if not hasattr(self, "flow_coverage") or not self.flow_coverage:
             self.flow_coverage = {}
 
             if self.use_ac_pc:
@@ -432,7 +432,7 @@ class FRLMCoverageMixin:
             self._calculate_path_distances()
 
         if not hasattr(self, "flow_coverage"):
-            self.calculate_flow_coverage()
+            self.get_flow_coverage()
 
         total_vmt = 0
         covered_vmt = 0
