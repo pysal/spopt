@@ -130,6 +130,25 @@ class TestFRLMObjectives:
         assert "vmt_coverage_percentage" in vmt_coverage
         assert vmt_coverage["covered_vmt"] > 0
 
+    def test_vmt_coverage_computes_flow_coverage_when_missing(
+        self, setup_network_with_distances
+    ):
+        network, flows = setup_network_with_distances
+        model = FRLM.from_flow_dataframe(
+            network=network,
+            flows=flows,
+            p_facilities=2,
+            vehicle_range=50,
+            objective="vmt",
+        )
+        model.solve(solver=pulp.PULP_CBC_CMD(msg=0))
+        if hasattr(model, "flow_coverage"):
+            delattr(model, "flow_coverage")
+        vmt_coverage = model.get_vmt_coverage()
+        assert "total_vmt" in vmt_coverage
+        assert "covered_vmt" in vmt_coverage
+        assert vmt_coverage["covered_vmt"] > 0
+
 
 class TestFRLMThresholdExtension:
     @pytest.fixture
